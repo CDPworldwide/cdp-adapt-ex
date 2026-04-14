@@ -1,0 +1,111 @@
+{
+  "location": "Cape Town, South Africa",
+  "locationData": {
+    "name": "City of Cape Town",
+    "countryName": "South Africa",
+    "lat": -33.92,
+    "lng": 18.42,
+    "isReportingLeader": true,
+    "hazards": {
+      "statistics": {
+        "vulnerableSectors": [
+          "WATER_SUPPLY",
+          "AGRICULTURE",
+          "ACCOMMODATION_FOOD_SERVICE",
+          "MANUFACTURING"
+        ]
+      },
+      "hazards": [
+        {
+          "hazardType": "WATER_STRESS",
+          "source": "City of Cape Town Climate Change Strategy, 2021; IPCC AR6",
+          "description": "Cape Town faces recurring and intensifying periods of water scarcity. The 2015-2018 drought nearly led to Day Zero.",
+          "impact": "Severe water rationing, economic losses, public health risks, and social unrest.",
+          "mostExposedSectors": [
+            "WATER_SUPPLY",
+            "AGRICULTURE",
+            "ACCOMMODATION_FOOD_SERVICE",
+            "MANUFACTURING"
+          ]
+        },
+        {
+          "hazardType": "COASTAL_FLOODING",
+          "otherHazardDetails": "Combined effect of sea-level rise and increased storm surge intensity.",
+          "impact": "Damage to property and infrastructure, displacement of communities, and salinization of coastal aquifers."
+        }
+      ]
+    },
+    "governmentActions": {
+      "goals": [
+        {
+          "description": "Ensure a safe, reliable, and resilient drinking water supply for all residents by diversifying water sources to include at least 300 million litres per day from non-surface water sources, such as desalination, groundwater, and water reuse, reducing reliance on rain-fed dams.",
+          "hazardsAddressed": [
+            "DROUGHT",
+            "WATER_STRESS",
+            "INCREASED_WATER_DEMAND"
+          ],
+          "targetYear": 2030
+        }
+      ],
+      "actions": [
+        {
+          "title": "Water Demand Management and Conservation Program",
+          "status": {
+            "statusType": "ACTION_IN_OPERATION_JURISDICTION_WIDE",
+            "otherStatusDetails": "Program includes tiered water tariffs, leak detection and repair, and public awareness campaigns."
+          },
+          "hazardsAddressed": [
+            "DROUGHT",
+            "WATER_STRESS"
+          ]
+        },
+        {
+          "title": "Urban Greening Initiative for Heat Island Mitigation",
+          "status": {
+            "statusType": "IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR",
+            "otherStatusDetails": "Focus on planting indigenous, drought-tolerant trees in priority neighborhoods."
+          },
+          "coBenefits": [
+            "Improved air quality",
+            "Enhanced biodiversity"
+          ],
+          "hazardsAddressed": [
+            "EXTREME_HEAT",
+            "LOSS_OF_GREEN_SPACE",
+            "URBAN_FLOODING"
+          ]
+        }
+      ],
+      "projects": [
+        {
+          "title": "Cape Flats Aquifer Recharge and Abstraction Project",
+          "status": "IMPLEMENTATION",
+          "fundedPercent": 85,
+          "totalAmount": 2500000000
+        }
+      ]
+    },
+    "solutions": {
+      "solutions": {}
+    }
+  },
+  "cases": [
+    {
+      "id": "cape-town-drinking-water-goal",
+      "questionType": "Actions",
+      "question": "What is the city's goal regarding drinking water?",
+      "expectedContains": [
+        "300 million litres per day",
+        "2030"
+      ]
+    },
+    {
+      "id": "cape-town-water-disruption-hazards",
+      "questionType": "Hazards",
+      "question": "Which hazards are associated with water supply disruption?",
+      "expectedContains": [
+        "water stress"
+      ]
+    }
+  ]
+}

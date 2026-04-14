@@ -1,0 +1,140 @@
+<div class="bg-white pb-6">
+  <!-- Hero image with close button -->
+  <div class="relative w-full h-52 bg-cdp-peach overflow-hidden flex items-start justify-end p-6">
+    <!-- Image placeholder (replace with real image when available) -->
+    <app-image-placeholder-icon
+      class="opacity-40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+    ></app-image-placeholder-icon>
+    <button type="button" (click)="close()" aria-label="Close" class="relative cursor-pointer">
+      <app-close-icon></app-close-icon>
+    </button>
+  </div>
+
+  <!-- Top header -->
+  <div class="flex flex-col gap-1 px-6 pt-8 lg:px-10">
+    <!-- Type label -->
+    <p class="text-xs font-medium text-cdp-text-secondary uppercase tracking-[1.5px] font-roboto">
+      {{ 'locationCard.govActions.adaptationGoal' | translate }}
+    </p>
+
+    <!-- Title -->
+    <h2 class="text-[32px] font-normal font-roboto text-black leading-tight">
+      {{ goal.title | autoTranslate }}
+    </h2>
+  </div>
+
+  <!-- Content sections -->
+  <div class="flex flex-col p-6 gap-6 lg:p-10">
+    <!-- Climate hazards -->
+    @if (goal.hazardsAddressed?.length) {
+      <div class="flex flex-col gap-4 pb-4">
+        <div class="h-px bg-gray-200"></div>
+        <div class="flex gap-4">
+          <div class="flex-1">
+            <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+              {{ 'locationCard.govActions.hazardsAddressed' | translate }}
+            </p>
+          </div>
+          <div class="flex-1 flex flex-row flex-wrap gap-x-6 gap-y-2">
+            @for (hazard of goal.hazardsAddressed; track hazard) {
+              <div class="h-6 inline-flex items-center gap-2">
+                <app-hazard-icon
+                  [hazard]="hazard.hazardType"
+                  [otherHazardDetails]="hazard.otherHazardDetails"
+                  size="16"
+                ></app-hazard-icon>
+                <span
+                  class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight"
+                >
+                  {{
+                    hazard.hazardType === 'OTHERS' && hazard.otherHazardDetails
+                      ? hazard.otherHazardDetails
+                      : ('locationCard.hazardNames.' + hazard.hazardType | translate)
+                  }}
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Metric / Indicator and Evidence -->
+    @if (goal.metricIndicator) {
+      <div class="flex flex-col gap-4 pb-4">
+        <div class="h-px bg-gray-200"></div>
+        <div class="flex gap-4">
+          <div class="flex-1">
+            <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+              {{ 'locationCard.govActions.detail.metricIndicator' | translate }}
+            </p>
+          </div>
+          <div class="flex-1">
+            <p class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight">
+              {{ goal.metricIndicator | autoTranslate }}
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Comment -->
+    @if (goal.comment) {
+      <div class="flex flex-col gap-4 pb-4">
+        <div class="h-px bg-gray-200"></div>
+        <div class="flex gap-4">
+          <div class="flex-1">
+            <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+              {{ 'locationCard.govActions.detail.comment' | translate }}
+            </p>
+          </div>
+          <div class="flex-1">
+            <p
+              class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight whitespace-pre-wrap"
+            >
+              {{ goal.comment | autoTranslate }}
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Base year -->
+    @if (goal.baseYear) {
+      <div class="flex flex-col gap-4 pb-4">
+        <div class="h-px bg-gray-200"></div>
+        <div class="flex gap-4">
+          <div class="flex-1">
+            <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+              {{ 'locationCard.govActions.detail.baseYear' | translate }}
+            </p>
+          </div>
+          <div class="flex-1">
+            <p class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight">
+              {{ goal.baseYear }}
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Target year -->
+    @if (goal.targetYear) {
+      <div class="flex flex-col gap-4 pb-4">
+        <div class="h-px bg-gray-200"></div>
+        <div class="flex gap-4">
+          <div class="flex-1">
+            <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+              {{ 'locationCard.govActions.targetYear' | translate }}
+            </p>
+          </div>
+          <div class="flex-1">
+            <p class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight">
+              {{ goal.targetYear }}
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

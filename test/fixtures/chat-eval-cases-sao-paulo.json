@@ -1,0 +1,119 @@
+{
+  "location": "Sao Paulo, Brazil",
+  "locationData": {
+    "name": "City of Sao Paulo",
+    "countryName": "Brazil",
+    "lat": -23.55,
+    "lng": -46.63,
+    "isReportingLeader": true,
+    "hazards": {
+      "statistics": {
+        "populationExposedPercentage": 32,
+        "gdpAtRiskPercentage": 22,
+        "vulnerableSectors": [
+          "WATER_SUPPLY",
+          "TRANSPORTATION_STORAGE"
+        ]
+      },
+      "hazards": [
+        {
+          "hazardType": "URBAN_FLOODING",
+          "source": "CDP",
+          "description": "Sao Paulo reports urban flooding driven by intense rainfall, with transport corridors and low-lying neighborhoods facing repeated disruption.",
+          "vulnerableGroups": [
+            "Residents in flood-prone neighborhoods"
+          ],
+          "mostExposedSectors": [
+            "TRANSPORTATION_STORAGE",
+            "WATER_SUPPLY"
+          ]
+        },
+        {
+          "hazardType": "WATER_STRESS",
+          "source": "CDP",
+          "description": "Sao Paulo identifies water stress as a priority risk, especially during prolonged dry periods that strain supply reservoirs.",
+          "vulnerableGroups": [
+            "Peripheral communities"
+          ],
+          "mostExposedSectors": [
+            "WATER_SUPPLY"
+          ]
+        }
+      ]
+    },
+    "governmentActions": {
+      "goals": [
+        {
+          "description": "Expand urban drainage capacity in flood-prone districts",
+          "hazardsAddressed": [
+            "URBAN_FLOODING"
+          ],
+          "targetYear": 2032
+        },
+        {
+          "description": "Reduce water losses across the municipal distribution network",
+          "hazardsAddressed": [
+            "WATER_STRESS"
+          ],
+          "targetYear": 2030
+        }
+      ],
+      "actions": [
+        {
+          "title": "Engineered and built environment actions: Expansion of retention basins and drainage works",
+          "status": "Implementation",
+          "hazardsAddressed": [
+            "URBAN_FLOODING"
+          ]
+        },
+        {
+          "title": "Government policies and programs actions: Watershed protection and demand management",
+          "status": "Implementation",
+          "hazardsAddressed": [
+            "WATER_STRESS"
+          ]
+        },
+        {
+          "title": "Technological actions: Flood monitoring and early warning upgrades",
+          "status": "Implementation",
+          "hazardsAddressed": [
+            "URBAN_FLOODING"
+          ]
+        }
+      ],
+      "projects": []
+    },
+    "solutions": {
+      "solutions": {}
+    }
+  },
+  "cases": [
+    {
+      "id": "sao-paulo-urban-flooding-hazard",
+      "questionType": "Hazards",
+      "question": "What urban flooding hazard is described for Sao Paulo?",
+      "expectedContains": [
+        "urban flooding",
+        "intense rainfall"
+      ]
+    },
+    {
+      "id": "sao-paulo-water-goal",
+      "questionType": "Actions",
+      "question": "What is Sao Paulo's goal for the municipal water distribution network?",
+      "expectedContains": [
+        "Reduce water losses across the municipal distribution network",
+        "2030"
+      ]
+    },
+    {
+      "id": "sao-paulo-flood-actions",
+      "questionType": "Actions",
+      "question": "What actions is Sao Paulo taking for urban flooding?",
+      "expectedContains": [
+        "Expansion of retention basins and drainage works",
+        "Flood monitoring and early warning upgrades"
+      ]
+    }
+  ]
+}

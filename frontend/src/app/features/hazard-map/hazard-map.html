@@ -1,0 +1,126 @@
+<div class="relative w-full h-full">
+  <div
+    #map
+    class="w-full h-full min-h-[200px] rounded-lg"
+    [ngClass]="{ 'rounded-none': isExpanded }"
+  ></div>
+  <button
+    *ngIf="showExpand && isHazardSupported(hazardType)"
+    class="absolute top-3 right-3 bg-black/80 hover:bg-black/90 border-none rounded-full flex items-center gap-1.5 px-3 py-1.5 cursor-pointer text-white transition-colors z-10 focus:outline-2 focus:outline-white focus:outline-offset-2"
+    (click)="toggleExpand()"
+    [attr.aria-label]="
+      isExpanded ? ('shared.collapseMap' | translate) : ('shared.expandMap' | translate)
+    "
+    type="button"
+  >
+    <mat-icon class="!text-sm !w-4 !h-4 !leading-none">{{
+      isExpanded ? 'close_fullscreen' : 'open_in_full'
+    }}</mat-icon>
+    <span class="text-xs font-medium">{{
+      isExpanded ? ('shared.collapseMap' | translate) : ('shared.expandMap' | translate)
+    }}</span>
+  </button>
+
+  <!-- Overlay for unsupported hazards -->
+  <div
+    *ngIf="hazardType && !isHazardSupported(hazardType)"
+    class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 p-6"
+  >
+    <p class="text-center text-xl font-normal text-black max-w-sm">
+      {{ 'maps.noHazardData' | translate }}
+    </p>
+  </div>
+
+  <!-- Hazard Legend for expanded view -->
+  <div
+    *ngIf="isExpanded && isHazardSupported(hazardType)"
+    class="pointer-events-auto box-border p-0 z-10 w-full fixed inset-x-0 bottom-0 md:absolute md:top-[96px] md:left-8 md:bottom-auto md:max-w-sm"
+  >
+    <mat-card
+      class="flex flex-col w-full shadow-[0_-6px_24px_rgba(0,0,0,0.12)] rounded-none md:rounded-lg"
+    >
+      <ng-container *ngTemplateOutlet="hazardLegendContent"></ng-container>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Hazard Legend -->
+<ng-template #hazardLegendContent>
+  <div class="p-5 md:p-6">
+    <div class="flex items-center gap-3">
+      <app-hazard-icon *ngIf="hazardType" [hazard]="hazardType" size="32"></app-hazard-icon>
+      <div>
+        <p class="text-sm">
+          <ng-container *ngIf="hazardType">{{
+            'locationCard.hazardNames.' + hazardType | translate
+          }}</ng-container>
+          in
+        </p>
+        <h2 class="text-lg font-medium">{{ locationName }}</h2>
+      </div>
+    </div>
+    <app-hazard-color-palette [palette]="palette"></app-hazard-color-palette>
+    <hr class="border-t border-cdp-gray my-4" />
+    <div class="mt-4" *ngIf="hazardSource">
+      <label class="block text-sm font-medium text-gray-700 mb-1 uppercase">{{
+        'maps.hazardLegend.source' | translate
+      }}</label>
+      <p class="text-xs text-gray-500">
+        {{ hazardSource }}
+      </p>
+    </div>
+
+    <hr class="border-t border-cdp-gray my-4" />
+    <div class="mt-4 grid grid-cols-1 gap-1" *ngIf="scenarios.length > 1 || yearRanges.length > 0">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1 uppercase">{{
+          'maps.hazardLegend.scenario' | translate
+        }}</label>
+        <div class="flex flex-wrap items-center gap-3">
+          <button
+            *ngFor="let scenario of scenarios"
+            (click)="onScenarioChange(scenario)"
+            type="button"
+            class="py-1 px-4 rounded-full flex items-center justify-center text-xs font-medium border transition-colors"
+            [ngClass]="{
+              'text-cdp-dark border-2 border-cdp-dark ring-1 ring-cdp-dark': scenarios.length === 1,
+              'text-cdp-red border-cdp-red ring-1 ring-cdp-red':
+                scenarios.length > 1 && selectedScenario === scenario,
+              'text-cdp-dark border-gray-300': scenarios.length > 1 && selectedScenario !== scenario
+            }"
+          >
+            <span>{{ formatScenarioLabel(scenario) }}</span>
+          </button>
+        </div>
+      </div>
+      <div>
+        <hr class="border-t border-cdp-gray my-4" />
+        <label class="block text-sm font-medium text-gray-700 mb-1 uppercase">{{
+          'maps.hazardLegend.timeframe' | translate
+        }}</label>
+        <div class="flex flex-wrap items-center gap-3">
+          <button
+            *ngFor="let yearRange of yearRanges"
+            (click)="onYearRangeChange(yearRange)"
+            type="button"
+            class="py-1 px-4 rounded-full flex items-center justify-center text-xs font-medium border transition-colors"
+            [ngClass]="{
+              'text-cdp-dark border-2 border-cdp-dark ring-1 ring-cdp-dark':
+                yearRanges.length === 1,
+              'text-cdp-red border-cdp-red ring-1 ring-cdp-red':
+                yearRanges.length > 1 &&
+                selectedYearRange.start === yearRange.start &&
+                selectedYearRange.end === yearRange.end,
+              'text-cdp-dark border-gray-300':
+                yearRanges.length > 1 &&
+                (selectedYearRange.start !== yearRange.start ||
+                  selectedYearRange.end !== yearRange.end)
+            }"
+          >
+            <span>{{ formatYearRangeLabel(yearRange) }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

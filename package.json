@@ -1,0 +1,32 @@
+{
+  "name": "pac-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PAC API monorepo",
+  "scripts": {
+    "dev:frontend": "bash -lc 'PID=$(lsof -t -i:4200 2>/dev/null || true); if [ -n \"$PID\" ]; then echo \"Killing process $PID on port 4200\"; kill -9 $PID 2>/dev/null || true; sleep 1; fi; echo \"Waiting for backend on port 4352...\"; for i in $(seq 1 30); do if curl -sf http://127.0.0.1:4352/docs > /dev/null 2>&1; then echo \"Backend is ready!\"; break; fi; sleep 1; done; if ! curl -sf http://127.0.0.1:4352/docs > /dev/null 2>&1; then echo \"Backend failed to start within 30 seconds\"; exit 1; fi; cd client && API_URL=http://127.0.0.1:4352 bash scripts/generate.sh && npm run build && cd ../frontend && npm run start'",
+    "dev:backend": "bash -lc 'PID=$(lsof -t -i:4352 2>/dev/null || true); if [ -n \"$PID\" ]; then echo \"Killing process $PID on port 4352\"; kill -9 $PID 2>/dev/null || true; sleep 1; fi; cd backend && uv run fastapi dev app/main.py --port 4352'",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && uv run pytest",
+    "test:frontend": "cd frontend && npm run test:ci",
+    "test:client": "bun test",
+    "test:chat": "bun --env-file=test/.env test test/chatbot.test.ts --test-name-pattern='requires LLM' --timeout 30000",
+    "test:chat-eval": "cd test && npm run test:chat-eval",
+    "test:chat-eval:ci": "cd test && npm run test:chat-eval:ci",
+    "test:chat-eval:report": "cd test && npm run test:chat-eval:report",
+    "lint": "npm run lint:backend",
+    "lint:backend": "cd backend && uv run ruff check .",
+    "lint:fix": "cd backend && uv run ruff check --fix .",
+    "format": "cd backend && uv run ruff format .",
+    "client": "npm run client:refresh",
+    "client:refresh": "cd client && npm run refresh",
+    "client:generate": "cd client && npm run generate",
+    "client:check": "cd client && npm run check",
+    "client:build": "cd client && npm run build",
+    "client:install": "cd client && npm install",
+    "sync:org-data": "npm run client:build && node scripts/sync-org-data.mjs"
+  },
+  "dependencies": {
+    "fuzzysort": "^3.1.0"
+  }
+}

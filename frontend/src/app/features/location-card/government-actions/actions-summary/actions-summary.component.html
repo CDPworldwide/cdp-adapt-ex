@@ -1,0 +1,291 @@
+<section>
+  <h2 class="text-base font-semibold font-roboto tracking-wide text-cdp-dark uppercase pb-4">
+    {{ 'locationCard.govActions.actionsSummary' | translate }}
+  </h2>
+
+  <!-- Mobile: column layout -->
+  <div class="flex md:hidden lg:hidden">
+    <!-- Hazard names column -->
+    <div class="flex flex-col flex-1 min-w-0 gap-px">
+      <div class="h-10"></div>
+      <!-- All row -->
+      <button
+        type="button"
+        (click)="selectFilter(null)"
+        class="flex items-center px-4 py-2.5 relative cursor-pointer transition-colors"
+        [class.bg-cdp-dark]="isSelected(null)"
+        [class.bg-cdp-neutral-02]="!isSelected(null)"
+      >
+        @if (isSelected(null)) {
+          <span
+            class="absolute -left-0.5 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-cdp-bg"
+          ></span>
+        }
+        <span
+          class="text-base font-normal font-roboto leading-6 tracking-wide"
+          [class.text-cdp-light-text]="isSelected(null)"
+          [class.text-cdp-dark]="!isSelected(null)"
+        >
+          {{ 'locationCard.govActions.all' | translate }}
+        </span>
+      </button>
+      <!-- Hazard rows -->
+      @for (row of summaryRows; track trackRow($index, row)) {
+        <button
+          type="button"
+          (click)="selectFilter(hazardKey(row))"
+          class="flex items-center gap-1 px-2 py-2.5 w-full relative cursor-pointer transition-colors"
+          [class.bg-cdp-dark]="isSelected(hazardKey(row))"
+          [class.border-b]="!isSelected(hazardKey(row))"
+          [class.border-cdp-gray]="!isSelected(hazardKey(row))"
+        >
+          @if (isSelected(hazardKey(row))) {
+            <span
+              class="absolute -left-0.5 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent border-l-[6px] border-l-cdp-bg"
+            ></span>
+          }
+          <app-hazard-icon
+            [hazard]="row.hazard.hazardType"
+            [otherHazardDetails]="row.hazard.otherHazardDetails"
+            size="16"
+            class="flex items-center justify-center w-6 h-6 p-1 shrink-0"
+          ></app-hazard-icon>
+          <span
+            class="text-base font-normal font-roboto leading-6 tracking-wide truncate"
+            [class.text-cdp-light-text]="isSelected(hazardKey(row))"
+            [class.text-cdp-dark]="!isSelected(hazardKey(row))"
+          >
+            @if (row.hazard.hazardType === 'OTHERS') {
+              {{ hazardName(row) }}
+            } @else {
+              {{ hazardTranslationKey(row) | translate }}
+            }
+          </span>
+        </button>
+      }
+    </div>
+    <!-- Goals & Actions columns -->
+    @for (col of ['goals', 'actions']; track col) {
+      <div class="flex flex-col items-center w-20 gap-px">
+        <div class="h-10 flex items-center justify-center px-2">
+          <span class="text-base font-medium font-roboto leading-6 tracking-wide text-cdp-dark">
+            {{ 'locationCard.govActions.' + col | translate }}
+          </span>
+        </div>
+        <!-- All total -->
+        <button
+          type="button"
+          (click)="selectFilter(null)"
+          class="flex items-center justify-center px-2 py-2.5 w-full cursor-pointer transition-colors"
+          [class.bg-black]="isSelected(null)"
+          [class.bg-cdp-neutral-02]="!isSelected(null)"
+        >
+          <span
+            class="text-base font-normal font-roboto leading-6 tracking-wide"
+            [class.text-cdp-light-text]="isSelected(null)"
+            [class.text-cdp-dark]="!isSelected(null)"
+          >
+            {{ col === 'goals' ? totalGoals : totalActions }}
+          </span>
+        </button>
+        <!-- Hazard counts -->
+        @for (row of summaryRows; track trackRow($index, row)) {
+          <button
+            type="button"
+            (click)="selectFilter(hazardKey(row))"
+            class="flex items-center justify-center px-2 py-2.5 w-full cursor-pointer transition-colors"
+            [class.bg-cdp-dark]="isSelected(hazardKey(row))"
+            [class.border-b]="!isSelected(hazardKey(row))"
+            [class.border-cdp-gray]="!isSelected(hazardKey(row))"
+          >
+            <span
+              class="text-base font-normal font-roboto leading-6 tracking-wide"
+              [class.text-cdp-light-text]="isSelected(hazardKey(row))"
+              [class.text-cdp-dark]="!isSelected(hazardKey(row))"
+            >
+              {{ (col === 'goals' ? row.goalsCount : row.actionsCount) || '-' }}
+            </span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Tablet: 2-column card grid -->
+  <div class="hidden md:grid lg:hidden grid-cols-2 gap-2 mt-4">
+    <!-- All card -->
+    <button
+      type="button"
+      (click)="selectFilter(null)"
+      class="flex h-[5.5rem] cursor-pointer transition-all"
+    >
+      <div class="flex items-center justify-center bg-cdp-dark w-32 shrink-0 relative">
+        <span class="text-base font-normal font-roboto leading-6 tracking-wide text-cdp-light-text">
+          {{ 'locationCard.govActions.all' | translate }}
+        </span>
+        @if (isSelected(null)) {
+          <span
+            class="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[8px] border-b-cdp-bg z-10"
+          ></span>
+        }
+      </div>
+      <div class="flex flex-1">
+        <div class="flex-1 flex flex-col items-center justify-center bg-cdp-dark-accent">
+          <span class="text-lg font-bold font-roboto text-cdp-light-text">{{ totalGoals }}</span>
+          <span class="text-sm font-normal font-roboto text-cdp-light-text">{{
+            'locationCard.govActions.goals' | translate
+          }}</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center justify-center bg-cdp-dark-accent">
+          <span class="text-lg font-bold font-roboto text-cdp-light-text">{{ totalActions }}</span>
+          <span class="text-sm font-normal font-roboto text-cdp-light-text">{{
+            'locationCard.govActions.actions' | translate
+          }}</span>
+        </div>
+      </div>
+    </button>
+    <!-- Hazard cards -->
+    @for (row of summaryRows; track trackRow($index, row)) {
+      <button
+        type="button"
+        (click)="selectFilter(hazardKey(row))"
+        class="flex h-[5.5rem] cursor-pointer transition-all"
+      >
+        <div
+          class="flex flex-col items-center justify-center bg-cdp-neutral-01 w-32 shrink-0 gap-1 relative overflow-hidden px-1"
+        >
+          <app-hazard-icon
+            [hazard]="row.hazard.hazardType"
+            [otherHazardDetails]="row.hazard.otherHazardDetails"
+            size="28"
+            class="shrink-0"
+          ></app-hazard-icon>
+          <span
+            class="text-sm font-normal font-roboto text-cdp-dark text-center leading-tight line-clamp-2"
+          >
+            @if (row.hazard.hazardType === 'OTHERS') {
+              {{ hazardName(row) }}
+            } @else {
+              {{ hazardTranslationKey(row) | translate }}
+            }
+          </span>
+          @if (isSelected(hazardKey(row))) {
+            <span
+              class="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[8px] border-b-cdp-bg z-10"
+            ></span>
+          }
+        </div>
+        <div class="flex flex-1">
+          <div
+            class="flex-1 flex flex-col items-center justify-center bg-white border border-gray-100"
+          >
+            <span class="text-lg font-bold font-roboto text-cdp-dark">{{
+              row.goalsCount || '-'
+            }}</span>
+            <span class="text-sm font-normal font-roboto text-cdp-dark">{{
+              'locationCard.govActions.goals' | translate
+            }}</span>
+          </div>
+          <div
+            class="flex-1 flex flex-col items-center justify-center bg-white border border-gray-100"
+          >
+            <span class="text-lg font-bold font-roboto text-cdp-dark">{{
+              row.actionsCount || '-'
+            }}</span>
+            <span class="text-sm font-normal font-roboto text-cdp-dark">{{
+              'locationCard.govActions.actions' | translate
+            }}</span>
+          </div>
+        </div>
+      </button>
+    }
+  </div>
+
+  <!-- Desktop: wrapping horizontal row -->
+  <div class="hidden lg:grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-6 mt-4">
+    <!-- All card -->
+    <button
+      type="button"
+      (click)="selectFilter(null)"
+      class="grid grid-cols-3 h-[5.25rem] cursor-pointer transition-all"
+    >
+      <div class="flex items-center justify-center bg-cdp-dark relative">
+        <span class="text-sm font-medium font-roboto tracking-tight text-cdp-light-text">
+          {{ 'locationCard.govActions.all' | translate }}
+        </span>
+        @if (isSelected(null)) {
+          <span
+            class="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[8px] border-b-cdp-bg z-10"
+          ></span>
+        }
+      </div>
+      <div class="flex items-center justify-center bg-black flex-col gap-1">
+        <span
+          class="text-base font-medium font-roboto leading-6 tracking-wide text-cdp-light-text"
+          >{{ totalGoals }}</span
+        >
+        <span class="text-xs font-normal font-roboto tracking-wider text-cdp-light-text">{{
+          'locationCard.govActions.goals' | translate
+        }}</span>
+      </div>
+      <div class="flex items-center justify-center bg-black flex-col gap-1">
+        <span
+          class="text-base font-medium font-roboto leading-6 tracking-wide text-cdp-light-text"
+          >{{ totalActions }}</span
+        >
+        <span class="text-xs font-normal font-roboto tracking-wider text-cdp-light-text">{{
+          'locationCard.govActions.actions' | translate
+        }}</span>
+      </div>
+    </button>
+    <!-- Hazard cards -->
+    @for (row of summaryRows; track trackRow($index, row)) {
+      <button
+        type="button"
+        (click)="selectFilter(hazardKey(row))"
+        class="grid grid-cols-3 h-[5.25rem] cursor-pointer transition-all"
+      >
+        <div
+          class="flex flex-col items-center justify-center bg-cdp-neutral-02 gap-1 px-2 relative overflow-hidden"
+        >
+          <app-hazard-icon
+            [hazard]="row.hazard.hazardType"
+            [otherHazardDetails]="row.hazard.otherHazardDetails"
+            size="24"
+            class="shrink-0"
+          ></app-hazard-icon>
+          <span
+            class="text-xs font-normal font-roboto text-cdp-dark text-center leading-tight tracking-wider line-clamp-2"
+          >
+            @if (row.hazard.hazardType === 'OTHERS') {
+              {{ hazardName(row) }}
+            } @else {
+              {{ hazardTranslationKey(row) | translate }}
+            }
+          </span>
+          @if (isSelected(hazardKey(row))) {
+            <span
+              class="absolute left-1/2 -translate-x-1/2 bottom-0 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-b-[8px] border-b-cdp-bg z-10"
+            ></span>
+          }
+        </div>
+        <div class="flex items-center justify-center bg-white flex-col gap-1">
+          <span class="text-base font-medium font-roboto leading-6 tracking-wide text-cdp-dark">{{
+            row.goalsCount || '-'
+          }}</span>
+          <span class="text-xs font-normal font-roboto tracking-wider text-cdp-dark">{{
+            'locationCard.govActions.goals' | translate
+          }}</span>
+        </div>
+        <div class="flex items-center justify-center bg-white flex-col gap-1">
+          <span class="text-base font-medium font-roboto leading-6 tracking-wide text-cdp-dark">{{
+            row.actionsCount || '-'
+          }}</span>
+          <span class="text-xs font-normal font-roboto tracking-wider text-cdp-dark">{{
+            'locationCard.govActions.actions' | translate
+          }}</span>
+        </div>
+      </button>
+    }
+  </div>
+</section>

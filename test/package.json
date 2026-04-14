@@ -1,0 +1,25 @@
+{
+  "name": "@pac-api/tests",
+  "version": "1.0.0",
+  "description": "Integration tests for PAC API using Vitest",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:chat-eval": "vitest run chat-eval.test.ts chat-eval-refusal.test.ts",
+    "test:chat-eval:ci": "CI=true vitest run --reporter=dot chat-eval.test.ts chat-eval-refusal.test.ts",
+    "test:chat-eval:report": "CHAT_EVAL_SUMMARY_PATH=./artifacts/chat-eval-summary.json vitest run --reporter=dot chat-eval.test.ts chat-eval-refusal.test.ts",
+    "test:watch": "vitest watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@types/node": "^24.6.0",
+    "@vitest/ui": "^2.1.8",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "dependencies": {
+    "@pac-api/client": "file:../client"
+  }
+}

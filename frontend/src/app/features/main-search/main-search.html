@@ -1,0 +1,223 @@
+<style>
+  .select-location .mat-mdc-option.mat-selected::after {
+    @apply hidden;
+  }
+  .select-location .mat-mdc-option mat-pseudo-checkbox {
+    @apply hidden;
+  }
+</style>
+<div class="flex flex-1 flex-col min-h-0 text-cdp-dark bg-cdp-bg">
+  <div class="flex flex-1 flex-col min-h-0">
+    <div
+      class="fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity duration-300"
+      [class.opacity-0]="!menuOpen"
+      [class.pointer-events-none]="!menuOpen"
+      (click)="closeMenu()"
+    ></div>
+
+    <div
+      id="mobile-drawer"
+      class="fixed top-0 left-0 h-full w-72 bg-white z-50 md:hidden flex flex-col shadow-xl transition-transform duration-300 ease-in-out"
+      [ngClass]="menuOpen ? 'translate-x-0' : '-translate-x-full'"
+      [attr.inert]="!menuOpen ? '' : null"
+    >
+      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+        <app-cdp-logo-with-text-icon
+          width="70"
+          height="18"
+          color="black"
+        ></app-cdp-logo-with-text-icon>
+        <button
+          type="button"
+          class="p-2 rounded-full hover:bg-gray-100 transition-colors"
+          (click)="closeMenu()"
+          aria-label="Close menu"
+        >
+          <mat-icon class="text-gray-600">close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <nav class="bg-cdp-bg flex-shrink-0">
+      <app-header
+        [showMenuButton]="true"
+        [menuExpanded]="menuOpen"
+        menuControlsId="mobile-drawer"
+        (menuToggle)="toggleMenu()"
+      ></app-header>
+      @if (isMapFocused) {
+        <div class="px-4 pb-4 md:hidden">
+          <ng-container *ngTemplateOutlet="searchBarTemplate"></ng-container>
+        </div>
+      }
+    </nav>
+
+    <div
+      class="flex flex-col items-center px-6 bg-cdp-bg flex-shrink-0 transition-all duration-500 ease-in-out overflow-hidden"
+      [ngClass]="
+        isMapFocused
+          ? 'h-0 py-0 opacity-0 pointer-events-none'
+          : isNotFound
+            ? 'h-80 md:h-64 py-8 md:py-10 opacity-100'
+            : 'h-64 py-8 md:py-10 opacity-100'
+      "
+    >
+      <h1
+        class="text-2xl md:text-3xl font-light text-center text-cdp-dark leading-snug mb-3 max-w-md md:max-w-2xl"
+      >
+        {{ 'homepage.hero.title' | translate }}
+      </h1>
+      <p class="text-sm text-center text-gray-500 mb-6 md:mb-8 max-w-xs md:max-w-xl">
+        {{ 'homepage.description.text' | translate }}
+      </p>
+
+      <div class="w-full max-w-md md:hidden">
+        <ng-container *ngTemplateOutlet="searchBarTemplate"></ng-container>
+      </div>
+    </div>
+
+    <div class="landing-map relative flex-1 min-h-0">
+      <app-maps class="block h-full w-full"></app-maps>
+
+      <div
+        class="absolute z-20 hidden md:block w-full transition-all duration-500 ease-in-out"
+        [ngClass]="
+          isMapFocused ? 'top-4 left-8 max-w-sm' : 'top-[-5rem] left-1/2 -translate-x-1/2 max-w-xl'
+        "
+      >
+        <ng-container *ngTemplateOutlet="searchBarTemplate"></ng-container>
+      </div>
+
+      <div
+        class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-cdp-bg to-transparent pointer-events-none z-10 transition-opacity duration-500"
+        [ngClass]="isMapFocused ? 'opacity-0' : 'opacity-100'"
+      ></div>
+
+      <div
+        class="absolute bottom-4 left-4 z-10 md:bottom-6 md:left-6 p-2 bg-zinc-100 rounded-full shadow-cdp-card inline-flex justify-center items-center gap-6 transition-opacity duration-500"
+        [ngClass]="isMapFocused ? 'opacity-0 pointer-events-none' : 'opacity-100'"
+      >
+        <div class="flex justify-start items-center gap-2 pl-2">
+          <div class="w-3 h-3 bg-cdp-red rounded-full"></div>
+          <div class="text-black text-xs font-normal font-roboto-mono leading-3 tracking-wide">
+            {{ 'homepage.legend.cities' | translate }}
+          </div>
+        </div>
+        <div class="flex justify-start items-center gap-2 pr-2">
+          <div class="w-3 h-3 bg-cdp-blue rounded-full"></div>
+          <div class="text-black text-xs font-normal font-roboto-mono leading-3 tracking-wide">
+            {{ 'homepage.legend.statesAndRegions' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #searchBarTemplate>
+  <form class="w-full max-w-md md:max-w-xl" (ngSubmit)="onSearch()">
+    <div class="relative" matAutocompleteOrigin #autocompleteOrigin="matAutocompleteOrigin">
+      <div
+        class="flex items-center w-full h-14 bg-white border border-gray-300 shadow-sm px-4 gap-3 rounded-t-[1.75rem]"
+        [ngClass]="{ 'rounded-b-[1.75rem]': !isAutocompleteOpen && !isNotFound }"
+      >
+        @if (isMapFocused) {
+          <button (click)="onBackHome()" class="-ml-2 flex items-center justify-center">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+        } @else {
+          <app-cdp-logo-icon size="20" color="black"></app-cdp-logo-icon>
+        }
+        <input
+          type="search"
+          #searchTrigger="matAutocompleteTrigger"
+          class="w-full bg-transparent text-base text-gray-900 placeholder:text-gray-500 focus:outline-none"
+          [ngClass]="{ 'text-cdp-red': isNotFound, 'opacity-50': isLoadingLocation }"
+          [placeholder]="'homepage.hero.searchPlaceholder' | translate"
+          [formControl]="searchControl"
+          [readonly]="isLoadingLocation"
+          [matAutocomplete]="auto"
+          [matAutocompleteConnectedTo]="autocompleteOrigin"
+          (input)="onInput()"
+          (focus)="onSearchInputInteraction('focus', searchTrigger)"
+          (click)="onSearchInputInteraction('click', searchTrigger)"
+          (blur)="onSearchInputBlur()"
+        />
+        <button
+          mat-icon-button
+          type="button"
+          class="text-gray-600 flex items-center justify-center"
+          [disabled]="isLoadingLocation"
+          [aria-label]="isNotFound ? 'Clear' : 'Search'"
+          (click)="isNotFound ? onBackHome() : onSearch()"
+        >
+          @if (isLoadingLocation) {
+            <mat-spinner diameter="20" class="text-gray-600"></mat-spinner>
+          } @else {
+            <mat-icon>{{ isNotFound ? 'close' : 'search' }}</mat-icon>
+          }
+        </button>
+      </div>
+
+      @if (isNotFound) {
+        <div
+          class="absolute w-full bg-white border border-t-0 border-gray-300 rounded-b-[1.75rem] shadow-lg p-6 z-50"
+        >
+          <div class="text-cdp-red text-base font-medium mb-4">
+            {{ 'homepage.hero.notFound' | translate: { location: searchControl.value } }}
+          </div>
+          <div class="text-cdp-dark text-sm mb-4 leading-relaxed">
+            {{ 'homepage.hero.notFoundExplanation' | translate }}
+          </div>
+          <div class="text-cdp-dark text-sm mb-6">
+            {{ 'homepage.hero.trySearchingAgain' | translate }}
+          </div>
+          <div class="flex justify-center">
+            <button
+              type="button"
+              (click)="onBackHome()"
+              class="px-10 py-3 bg-black text-white rounded-full font-medium hover:bg-gray-800 transition-colors"
+            >
+              {{ 'homepage.hero.goBack' | translate }}
+            </button>
+          </div>
+        </div>
+      }
+
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        class="select-location"
+        (opened)="onAutocompleteOpened()"
+        (closed)="onAutocompleteClosed()"
+        (optionSelected)="onSearch($event.option.value)"
+      >
+        <div class="text-cdp-red text-base font-medium">
+          {{ 'homepage.hero.searchSuggestions' | translate }}
+        </div>
+        <mat-option
+          *ngFor="let option of filteredLocations | async"
+          [value]="option.name"
+          class="py-2 select-location-option"
+        >
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-medium text-Schemes-On-Surface-Variant">{{
+              option.name
+            }}</span>
+            <app-cdp-logo-icon *ngIf="option.disclosesToCDP" class="w-5 h-5"></app-cdp-logo-icon>
+          </div>
+          <mat-icon class="text-black absolute right-4">north_east</mat-icon>
+        </mat-option>
+        <div class="pt-4 mt-2 border-t border-cdp-neutral-02 flex items-center gap-1">
+          <div class="w-4 h-4 p-1 inline-flex justify-center items-center gap-1">
+            <app-cdp-logo-icon class="text-cdp-neutral-05"></app-cdp-logo-icon>
+          </div>
+          <span
+            class="justify-center text-cdp-neutral-05 text-xs font-medium font-['Roboto'] leading-4 tracking-wide"
+          >
+            {{ 'homepage.hero.disclosesToCdp' | translate }}
+          </span>
+        </div>
+      </mat-autocomplete>
+    </div>
+  </form>
+</ng-template>

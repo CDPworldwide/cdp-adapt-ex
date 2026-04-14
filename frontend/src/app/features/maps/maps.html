@@ -1,0 +1,14 @@
+<div #map class="map-container"></div>
+
+@if (selectedLocation) {
+  <app-location-summary
+    [location]="selectedLocation"
+    [isLoading]="isLoadingHazardData"
+    [totalHazards]="totalHazardsCount"
+    [topHazards]="topFourHazards"
+    [implementedActions]="implementedActionsCount"
+    [projectsSeekingFunding]="projectsRequiringFundingCount"
+    (close)="closeCard()"
+    (learnMore)="goToLocationDetails()"
+  ></app-location-summary>
+}

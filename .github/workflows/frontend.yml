@@ -1,0 +1,405 @@
+name: Frontend CI/CD
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [main, production]
+    paths:
+      - "frontend/**"
+      - "test/**"
+      - "client/**"
+      - ".github/workflows/frontend.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: us-central1
+  ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
+  # Dynamic service name: production, dev, or PR-specific preview
+  SERVICE_NAME: >-
+    ${{ github.event_name == 'pull_request' && format('frontend-preview-pr-{0}', github.event.pull_request.number) ||
+        (github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend-dev') }}
+  IS_PREVIEW: ${{ github.event_name == 'pull_request' }}
+  ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
+  NODE_VERSION: "20.x"
+
+jobs:
+  build-and-test:
+    name: Build and test frontend
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      backend-url: ${{ steps.backend-url.outputs.url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+          cache-dependency-path: |
+            client/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install client dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "backend/.python-version"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.9.18"
+          enable-cache: true
+
+      - name: Install Graphviz
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgraphviz-dev
+
+      - name: Generate API client from OpenAPI spec
+        working-directory: client
+        run: ./scripts/generate.sh
+        env:
+          API_URL: http://127.0.0.1:4352
+
+      - name: Build client package
+        working-directory: client
+        run: npm run build
+
+      - name: Cache client build
+        uses: actions/cache@v4
+        with:
+          path: client/dist
+          key: client-build-${{ github.sha }}
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      # - name: Install integration test dependencies
+      #   if: github.event_name == 'pull_request'
+      #   working-directory: test
+      #   run: npm ci
+
+      - name: Authenticate to Google Cloud (for backend URL lookup)
+        if: github.event_name == 'pull_request'
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Set up Cloud SDK (for backend URL lookup)
+        if: github.event_name == 'pull_request'
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Determine backend URL
+        id: backend-url
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BACKEND_SERVICE="cdp-server-preview-pr-${{ github.event.pull_request.number }}"
+            echo "Waiting for backend service $BACKEND_SERVICE to be available..."
+            for i in {1..60}; do
+              BACKEND_URL=$(gcloud run services describe $BACKEND_SERVICE \
+                --region=us-central1 \
+                --format='value(status.url)' 2>/dev/null || echo "")
+
+              if [ -n "$BACKEND_URL" ]; then
+                echo "✓ Backend service found: $BACKEND_URL"
+                break
+              fi
+
+              echo "Attempt $i/60: Backend not ready yet, waiting 10s..."
+              sleep 10
+            done
+
+            if [ -z "$BACKEND_URL" ]; then
+              echo "❌ Backend service $BACKEND_SERVICE not found after 10 minutes"
+              exit 1
+            fi
+
+            echo "url=$BACKEND_URL" >> $GITHUB_OUTPUT
+            echo "Final backend URL: $BACKEND_URL"
+          else
+            echo "url=${{ secrets.BASE_URL }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Authenticate to Google Cloud (for secrets lookup)
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Get Frontend Secrets from Secret Manager
+        id: frontend-secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: |-
+            FIREBASE_API_KEY:${{ secrets.GCP_PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_API_KEY
+            FIREBASE_AUTH_DOMAIN:${{ secrets.GCP_PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_AUTH_DOMAIN
+            FIREBASE_PROJECT_ID:${{ secrets.GCP_PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_PROJECT_ID
+            FIREBASE_STORAGE_BUCKET:${{ secrets.GCP_PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_STORAGE_BUCKET
+            FIREBASE_MESSAGING_SENDER_ID:${{ secrets.GCP_PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_MESSAGING_SENDER_ID
+            FIREBASE_APP_ID:${{ secrets.GCP_PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_APP_ID
+            GOOGLE_MAPS_API_KEY:${{ secrets.GCP_PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
+
+      - name: Create environment.ts
+        working-directory: frontend
+        run: |
+          cat > src/environments/environment.ts <<EOF
+          export const environment = {
+            production: true,
+            baseUrl: '${{ steps.backend-url.outputs.url }}',
+            authDisabled: false,
+            isDebugMode: ${{ env.ENVIRONMENT == 'development' }},
+            firebaseConfig: {
+              apiKey: '${{ steps.frontend-secrets.outputs.FIREBASE_API_KEY }}',
+              authDomain: '${{ steps.frontend-secrets.outputs.FIREBASE_AUTH_DOMAIN }}',
+              projectId: '${{ steps.frontend-secrets.outputs.FIREBASE_PROJECT_ID }}',
+              storageBucket: '${{ steps.frontend-secrets.outputs.FIREBASE_STORAGE_BUCKET }}',
+              messagingSenderId: '${{ steps.frontend-secrets.outputs.FIREBASE_MESSAGING_SENDER_ID }}',
+              appId: '${{ steps.frontend-secrets.outputs.FIREBASE_APP_ID }}',
+              measurementId: 'DEV-ID',
+            },
+            mapsConfig: {
+              apiKey: '${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}',
+            },
+          };
+          EOF
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Check bundle size
+        working-directory: frontend
+        run: |
+          BUNDLE_SIZE=$(du -sk dist/frontend/browser | cut -f1)
+          echo "Bundle size: ${BUNDLE_SIZE}KB"
+          if [ "$BUNDLE_SIZE" -gt 1024 ]; then
+            echo "⚠️ Warning: Bundle size (${BUNDLE_SIZE}KB) exceeds 1MB"
+          fi
+
+      - name: Set up Chrome for testing
+        uses: browser-actions/setup-chrome@v2
+        with:
+          install-dependencies: true
+
+      - name: Run frontend tests
+        working-directory: frontend
+        run: npm run test:ci
+
+      # - name: Run chat eval regression suite
+      #   if: github.event_name == 'pull_request'
+      #   working-directory: test
+      #   env:
+      #     API_BASE_URL: ${{ steps.backend-url.outputs.url }}
+      #     CHAT_EVAL_MIN_RECALL: "1"
+      #     CHAT_EVAL_MIN_PRECISION: "1"
+      #     CHAT_EVAL_SUMMARY_PATH: ./artifacts/chat-eval-summary.json
+      #   run: npm run test:chat-eval:ci
+
+      - name: Run security audit
+        working-directory: frontend
+        run: npm audit --audit-level=moderate || true
+        continue-on-error: true
+
+      - name: Upload build artifacts
+        if: success() && (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build-${{ github.sha }}
+          path: frontend/dist/frontend/browser
+          retention-days: 7
+
+      - name: Upload test coverage
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ github.sha }}
+          path: frontend/coverage
+          retention-days: 7
+        continue-on-error: true
+
+      # - name: Upload chat eval summary
+      #   if: success() && github.event_name == 'pull_request'
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: chat-eval-summary-${{ github.sha }}
+      #     path: test/artifacts/chat-eval-summary.json
+      #     retention-days: 7
+
+  deploy-preview:
+    name: Deploy to Cloud Run (${{ github.ref == 'refs/heads/production' && 'production' || 'development' }})
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Determine backend URL
+        id: backend-url
+        run: |
+          BACKEND_SERVICE="cdp-server-preview-pr-${{ github.event.pull_request.number }}"
+          BACKEND_URL=$(gcloud run services describe $BACKEND_SERVICE \
+            --region=us-central1 \
+            --format='value(status.url)' 2>/dev/null || echo "")
+
+          if [ -z "$BACKEND_URL" ]; then
+            echo "❌ Backend service $BACKEND_SERVICE not found"
+            exit 1
+          fi
+
+          echo "url=$BACKEND_URL" >> $GITHUB_OUTPUT
+          echo "Backend URL: $BACKEND_URL"
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build-${{ github.sha }}
+          path: frontend/dist/frontend/browser
+
+      - name: Build and push Docker image
+        working-directory: frontend
+        run: |
+          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}"
+          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:latest"
+
+          docker build -t $IMAGE_TAG -t $IMAGE_LATEST .
+          docker push $IMAGE_TAG
+          docker push $IMAGE_LATEST
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ env.REGION }}
+          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          flags: |
+            --allow-unauthenticated
+            --min-instances=0
+            --max-instances=2
+            --memory=512Mi
+            --cpu=1
+            --timeout=60
+            --port=8080
+          labels: |
+            environment=preview
+            managed-by=github-actions
+            commit-sha=${{ github.sha }}
+            pr-number=${{ github.event.pull_request.number }}
+
+      - name: Verify deployment health
+        run: |
+          URL="${{ steps.deploy.outputs.url }}"
+          echo "Checking health of $URL..."
+          for i in {1..10}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $URL || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "✓ Deployment is healthy (HTTP $STATUS)"
+              exit 0
+            fi
+            echo "Attempt $i/10: HTTP $STATUS, waiting 5s..."
+            sleep 5
+          done
+          echo "⚠️ Warning: Deployment may not be healthy"
+          exit 1
+
+      - name: Comment PR with preview URL
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## 🚀 Frontend Preview Deployed
+
+            **URL:** ${{ steps.deploy.outputs.url }}
+            **Commit:** `${{ github.sha }}`
+            **Environment:** preview (PR #${{ github.event.pull_request.number }})
+            **Backend:** ${{ steps.backend-url.outputs.url }}
+
+            ### Test Credentials
+            Use these credentials to login to the preview:
+            - **Email:** `test@example.com`
+            - **Password:** `TestPassword123!`
+
+            ### Quick Test
+            ```bash
+            # Open the preview
+            open ${{ steps.deploy.outputs.url }}
+            ```
+
+            > This preview environment is isolated per PR and will remain active until the PR is closed.
+
+  cleanup-preview:
+    name: Cleanup Preview Environment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+
+    steps:
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Delete preview service
+        run: |
+          SERVICE_NAME="frontend-preview-pr-${{ github.event.pull_request.number }}"
+          gcloud run services delete $SERVICE_NAME \
+            --region=us-central1 \
+            --quiet || echo "Service already deleted or not found"
+
+      - name: Comment PR about cleanup
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## 🧹 Frontend Preview Environment Cleaned Up
+
+            The preview deployment `frontend-preview-pr-${{ github.event.pull_request.number }}` has been deleted.

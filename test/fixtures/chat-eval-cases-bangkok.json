@@ -1,0 +1,103 @@
+{
+  "location": "Bangkok, Thailand",
+  "locationData": {
+    "name": "Bangkok Metropolitan Administration",
+    "countryName": "Thailand",
+    "lat": 13.75,
+    "lng": 100.5,
+    "isReportingLeader": true,
+    "hazards": {
+      "statistics": {
+        "populationExposedPercentage": 72.0,
+        "vulnerableSectors": [
+          "TRANSPORTATION_STORAGE",
+          "WATER_SUPPLY",
+          "REAL_ESTATE"
+        ]
+      },
+      "hazards": [
+        {
+          "hazardType": "URBAN_FLOODING",
+          "source": "Bangkok Climate Change Master Plan",
+          "description": "Bangkok faces recurring urban flooding from intense rainfall, limited drainage capacity, and land subsidence.",
+          "vulnerableGroups": [
+            "Low-income residents in flood-prone districts"
+          ],
+          "mostExposedSectors": [
+            "TRANSPORTATION_STORAGE",
+            "REAL_ESTATE"
+          ]
+        },
+        {
+          "hazardType": "EXTREME_HEAT",
+          "source": "Bangkok Climate Change Master Plan",
+          "description": "Rising temperatures and the urban heat island effect increase health risks and energy demand across Bangkok.",
+          "mostExposedSectors": [
+            "HUMAN_HEALTH_SOCIAL_WORK",
+            "ELECTRICITY_GAS_STEAM_AIR"
+          ]
+        }
+      ]
+    },
+    "governmentActions": {
+      "goals": [
+        {
+          "description": "Expand canal drainage efficiency and detention capacity in flood-prone districts.",
+          "hazardsAddressed": [
+            "URBAN_FLOODING",
+            "HEAVY_PRECIPITATION"
+          ],
+          "targetYear": 2030
+        },
+        {
+          "description": "Increase urban tree canopy and shaded public spaces to reduce heat exposure.",
+          "hazardsAddressed": [
+            "EXTREME_HEAT"
+          ],
+          "targetYear": 2035
+        }
+      ],
+      "actions": [
+        {
+          "title": "Engineered and built environment actions: Canal rehabilitation and pumping station upgrades",
+          "status": "Implementation",
+          "hazardsAddressed": [
+            "URBAN_FLOODING",
+            "HEAVY_PRECIPITATION"
+          ]
+        },
+        {
+          "title": "Ecosystem-based actions: Urban greening and shaded corridor program",
+          "status": "Implementation",
+          "hazardsAddressed": [
+            "EXTREME_HEAT"
+          ]
+        }
+      ],
+      "projects": []
+    },
+    "solutions": {
+      "solutions": {}
+    }
+  },
+  "cases": [
+    {
+      "id": "bangkok-flood-hazard",
+      "questionType": "Hazards",
+      "question": "What urban flooding hazard is described for Bangkok?",
+      "expectedContains": [
+        "urban flooding",
+        "land subsidence"
+      ]
+    },
+    {
+      "id": "bangkok-heat-actions",
+      "questionType": "Actions",
+      "question": "What is Bangkok doing to reduce heat exposure?",
+      "expectedContains": [
+        "Urban greening and shaded corridor program",
+        "2035"
+      ]
+    }
+  ]
+}

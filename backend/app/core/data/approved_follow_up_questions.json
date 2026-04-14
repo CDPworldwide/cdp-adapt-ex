@@ -1,0 +1,97 @@
+{
+  "source_csv": "AI Chatbot Evaluation Dataset - Evaluation Dataset.csv",
+  "selection_rule": "Answer Review Completed == 'Yes' and Question Type != 'Unanswerable'",
+  "questions": [
+    {
+      "id": 32,
+      "question_type": "Actions",
+      "likelihood": "3 - High",
+      "likelihood_rank": 3,
+      "question": "Which actions have the highest positive impact for vulnerable populations?"
+    },
+    {
+      "id": 57,
+      "question_type": "Hazards",
+      "likelihood": "3 - High",
+      "likelihood_rank": 3,
+      "question": "What hazards are on the rise?"
+    },
+    {
+      "id": 58,
+      "question_type": "Hazards",
+      "likelihood": "3 - High",
+      "likelihood_rank": 3,
+      "question": "What hazards does this location face in severity order?"
+    },
+    {
+      "id": 59,
+      "question_type": "Hazards",
+      "likelihood": "3 - High",
+      "likelihood_rank": 3,
+      "question": "What percentage of GDP is at risk?"
+    },
+    {
+      "id": 61,
+      "question_type": "Hazards",
+      "likelihood": "3 - High",
+      "likelihood_rank": 3,
+      "question": "Which hazards are expected to have the highest financial impact?"
+    },
+    {
+      "id": 17,
+      "question_type": "Actions",
+      "likelihood": "2 - Medium",
+      "likelihood_rank": 2,
+      "question": "Are there any goals set for the year 2050?"
+    },
+    {
+      "id": 21,
+      "question_type": "Actions",
+      "likelihood": "2 - Medium",
+      "likelihood_rank": 2,
+      "question": "What is the status of the air quality initiatives?"
+    },
+    {
+      "id": 26,
+      "question_type": "Actions",
+      "likelihood": "2 - Medium",
+      "likelihood_rank": 2,
+      "question": "Which actions are being implemented to improve sewerage, wastewater management and remediation?"
+    },
+    {
+      "id": 55,
+      "question_type": "Hazards",
+      "likelihood": "2 - Medium",
+      "likelihood_rank": 2,
+      "question": "What is the projected risk level and trend for urban flooding?"
+    },
+    {
+      "id": 56,
+      "question_type": "Hazards",
+      "likelihood": "2 - Medium",
+      "likelihood_rank": 2,
+      "question": "What is the anticipated risk level for extreme heat in the medium-term?"
+    },
+    {
+      "id": 6,
+      "question_type": "Actions",
+      "likelihood": "1 - Low",
+      "likelihood_rank": 1,
+      "question": "List the climate hazards addressed by the city's green cover expansion goal."
+    },
+    {
+      "id": 8,
+      "question_type": "Actions",
+      "likelihood": "1 - Low",
+      "likelihood_rank": 1,
+      "question": "Are there any infrastructure rehabilitation planned?"
+    },
+    {
+      "id": 10,
+      "question_type": "Actions",
+      "likelihood": "1 - Low",
+      "likelihood_rank": 1,
+      "question": "Are early warning systems in place for reported hazards?"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+@if (location) {
+  <div
+    class="z-10 fixed bottom-0 inset-x-0 flex flex-col w-full py-4 gap-4 bg-cdp-neutral-01 rounded-t-lg shadow-cdp-card border-t border-cdp-neutral-02 pointer-events-auto font-roboto text-cdp-dark md:absolute md:top-24 md:bottom-auto md:left-8 md:w-120 md:py-6 md:gap-6 md:rounded-lg"
+  >
+    <header class="px-4 md:px-6 flex justify-between items-start gap-2 w-full">
+      <h2 class="text-3xl leading-9 md:leading-10 font-normal m-0 break-words hyphens-auto">
+        {{ location.name }}
+      </h2>
+      <button
+        (click)="onClose()"
+        class="w-6 text-xl leading-6 tracking-wide hover:opacity-70 transition-opacity flex-shrink-0"
+        aria-label="Close"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </header>
+
+    @if (isLoading) {
+      <div class="flex flex-col items-center justify-center w-full py-8">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p class="text-gray-500 mt-4">{{ 'maps.loading' | translate }}</p>
+      </div>
+    } @else {
+      <main class="flex flex-col w-full divide-y divide-cdp-neutral-02">
+        <!-- Hazards Section -->
+        <div class="px-4 md:px-6 py-4 md:py-6 first:pt-0 flex items-center gap-4">
+          <span class="text-5xl font-light leading-none w-12">{{ totalHazards }}</span>
+          <div class="flex-1 flex flex-col">
+            <span class="text-sm uppercase leading-5 tracking-tight">{{
+              'maps.totalReportedHazards' | translate
+            }}</span>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-xs font-medium leading-4 tracking-wide">{{
+                'maps.topHazards' | translate: { count: topHazards.length }
+              }}</span>
+              <div class="flex items-center gap-2 text-cdp-neutral-05">
+                @for (hazard of topHazards; track $index) {
+                  <app-hazard-icon
+                    [hazard]="hazard.hazardType"
+                    [otherHazardDetails]="hazard.otherHazardDetails"
+                    class="flex items-center justify-center"
+                  ></app-hazard-icon>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Implemented Actions -->
+        <div class="px-4 md:px-6 py-4 md:py-6 flex items-center gap-4">
+          <span class="text-5xl font-light leading-none w-12">{{ implementedActions }}</span>
+          <span class="flex-1 text-sm uppercase leading-5 tracking-tight">{{
+            'maps.implementedActions' | translate
+          }}</span>
+        </div>
+
+        <!-- Projects Seeking Funding -->
+        <div class="px-4 md:px-6 py-4 md:py-6 flex items-center gap-4">
+          <span class="text-5xl font-light leading-none w-12">{{ projectsSeekingFunding }}</span>
+          <span class="flex-1 text-sm uppercase leading-5 tracking-tight">{{
+            'maps.projectsSeekingFunding' | translate
+          }}</span>
+        </div>
+
+        <!-- Footer -->
+        <footer class="px-4 md:px-6 pt-4 md:pt-6">
+          <button
+            (click)="onLearnMore()"
+            class="px-4 py-3 bg-cdp-dark rounded-lg flex justify-center items-center hover:bg-opacity-90 transition-opacity text-white text-base font-inter leading-4"
+          >
+            {{ 'maps.learnMore' | translate }}
+          </button>
+        </footer>
+      </main>
+    }
+  </div>
+}

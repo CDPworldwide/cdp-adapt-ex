@@ -1,0 +1,785 @@
+{
+  "name": "City of Chicago",
+  "countryName": "United States of America",
+  "lat": 41.8400091,
+  "lng": -87.607126,
+  "isReportingLeader": false,
+  "disclosureYear": 2025,
+  "requesters": [
+    "C40 Cities",
+    "CDP",
+    "Global Covenant of Mayors",
+    "ICLEI - Local Governments for Sustainability e.V.",
+    "Race to Zero"
+  ],
+  "population": 2715450,
+  "hazards": {
+    "statistics": {
+      "populationExposedValue": null,
+      "populationExposedPercentage": 50,
+      "gdpAtRiskValue": null,
+      "gdpAtRiskPercentage": 25,
+      "gdpAtRiskCurrencyCode": null,
+      "vulnerableSectors": [
+        {
+          "sectorType": "WATER_SUPPLY",
+          "otherSectorDetails": null
+        },
+        {
+          "sectorType": "HUMAN_HEALTH_SOCIAL_WORK",
+          "otherSectorDetails": null
+        },
+        {
+          "sectorType": "SEWERAGE_WASTE_REMEDIATION",
+          "otherSectorDetails": null
+        },
+        {
+          "sectorType": "ELECTRICITY_GAS_STEAM_AIR",
+          "otherSectorDetails": null
+        },
+        {
+          "sectorType": "ADMIN_SUPPORT_SERVICES",
+          "otherSectorDetails": null
+        },
+        {
+          "sectorType": "CONSTRUCTION",
+          "otherSectorDetails": null
+        },
+        {
+          "sectorType": "EDUCATION",
+          "otherSectorDetails": null
+        },
+        {
+          "sectorType": "TRANSPORTATION_STORAGE",
+          "otherSectorDetails": null
+        }
+      ]
+    },
+    "hazards": [
+      {
+        "hazard": {
+          "hazardType": "HEAVY_PRECIPITATION",
+          "otherHazardDetails": null
+        },
+        "hazardRank": 1,
+        "source": null,
+        "description": "Chicago faces a medium-high risk from heavy precipitation, causing basement flooding, sewer backups, and water quality issues, disproportionately affecting vulnerable communities. This hazard's frequency and intensity are projected to increase significantly by mid-century, exacerbating impacts on exposed populations and critical infrastructure.",
+        "vulnerableGroups": [
+          "Elderly",
+          "Low-income households",
+          "Vulnerable health groups",
+          "Marginalized/minority communities"
+        ],
+        "proportionExposedRange": "11-20%",
+        "impact": "The most frequent impacts from flooding are basement groundwater infiltration, sewer back-ups, and road flooding. CSO outfall releases during major storms also significantly impact water quality and ecosystem stability. The City notes the disproportionate burden on low-income and BIPOC communities in terms of flooding damage and severity.",
+        "mostExposedSectors": [
+          {
+            "sectorType": "WATER_SUPPLY",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "SEWERAGE_WASTE_REMEDIATION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "HUMAN_HEALTH_SOCIAL_WORK",
+            "otherSectorDetails": null
+          }
+        ]
+      },
+      {
+        "hazard": {
+          "hazardType": "URBAN_FLOODING",
+          "otherHazardDetails": null
+        },
+        "hazardRank": 2,
+        "source": null,
+        "description": "Chicago faces a medium-high urban flooding risk, disproportionately impacting vulnerable communities and critical infrastructure. Chronic flooding, exacerbated by aging systems and climate change, is projected to increase in intensity and frequency by mid-century, leading to basement overflows and other damages.",
+        "vulnerableGroups": [
+          "Vulnerable health groups",
+          "Elderly",
+          "Low-income households",
+          "Children and youth",
+          "Marginalized/minority communities"
+        ],
+        "proportionExposedRange": "0-10%",
+        "impact": "Much of Chicago's stormwater infrastructure was built over a century ago as a combined sewer system. Chronic flooding—corroding the sewer system's capacity—has repeatedly impacted residents with basement overflows, electric fires, and smoke damage. This highlights systemic infrastructure inadequacies compounded by climate change. Underserved areas—especially on the South and West Sides—face disproportionate flooding risks. Legacy factors like high impervious surfaces, low green space, and weakened infrastructure mean these communities bear the brunt of damage and slow recovery. ",
+        "mostExposedSectors": [
+          {
+            "sectorType": "SEWERAGE_WASTE_REMEDIATION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "WATER_SUPPLY",
+            "otherSectorDetails": null
+          }
+        ]
+      },
+      {
+        "hazard": {
+          "hazardType": "EXTREME_HEAT",
+          "otherHazardDetails": null
+        },
+        "hazardRank": 3,
+        "source": null,
+        "description": "Chicago faces a high probability of extreme heat, with increasing intensity and frequency by mid-century. This hazard disproportionately impacts vulnerable populations, causing significant public health and social risks, as evidenced by past fatalities. Energy affordability and personal health sensitivities are critical challenges.",
+        "vulnerableGroups": [
+          "Marginalized/minority communities",
+          "Vulnerable health groups",
+          "Elderly",
+          "Children and youth",
+          "Outdoor workers",
+          "Low-income households"
+        ],
+        "proportionExposedRange": "21-30%",
+        "impact": "Chicago experienced a terrible heat wave in 1995 when over 700 people died in a short period of time. Impacts from heat wave are primarily social and public health risks. Increasingly severe and frequent heat events continue to harm and kill Chicago residents. Economic impacts are minimal except when this hazard invokes energy problems. \\n\\nA critical challenge about this hazard is that the level of personal variability in perception of need and ability to adapt to the temperatures. Personal health sensitivities, access to cooling, energy affordability, and environmental factors collectively impact personal and community-level vulnerability. Some people medically struggle to regulate their body's internal temperature thus they may experience greater, or more extended heat stress. Additionally, those who work or do strenuous activity outside, work in hot or poorly ventilated indoor conditions, or spend extended hours outside also are exposed to greater periods of heat. Energy affordability is a critical concern because access to indoor climate-control is increasingly important for homes, especially during warm evenings in communities that don't see cooling effects at night. ",
+        "mostExposedSectors": [
+          {
+            "sectorType": "CONSTRUCTION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "HUMAN_HEALTH_SOCIAL_WORK",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "ELECTRICITY_GAS_STEAM_AIR",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "WATER_SUPPLY",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "EDUCATION",
+            "otherSectorDetails": null
+          }
+        ]
+      },
+      {
+        "hazard": {
+          "hazardType": "SNOW_AND_ICE",
+          "otherHazardDetails": null
+        },
+        "hazardRank": 4,
+        "source": null,
+        "description": "Chicago faces a medium-high snow and ice risk, with increasing future intensity and frequency. This hazard costs millions, threatens life/safety, and disproportionately impacts vulnerable populations like the elderly and unhoused, particularly those in substandard housing.",
+        "vulnerableGroups": [
+          "Elderly",
+          "Marginalized/minority communities",
+          "Vulnerable health groups"
+        ],
+        "proportionExposedRange": "21-30%",
+        "impact": "Hundreds of millions are spent by the City for snow removal, and winter storms present a threat to life and safety. Particularly vulnerable groups of residents living in sub-standard housing, and with limited access to warming centers, are especially impacted by major winter storms.\\n\\nThe Office of Emergency Management and Communications works closely with other city departments to orchestrate preparedness and response strategies including opening a network of warming centers across the city, snow removal, and direct support services to unhoused Chicagoans who may need shelter. ",
+        "mostExposedSectors": [
+          {
+            "sectorType": "TRANSPORTATION_STORAGE",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "HUMAN_HEALTH_SOCIAL_WORK",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "ADMIN_SUPPORT_SERVICES",
+            "otherSectorDetails": null
+          }
+        ]
+      },
+      {
+        "hazard": {
+          "hazardType": "RIVER_FLOODING",
+          "otherHazardDetails": null
+        },
+        "hazardRank": 5,
+        "source": null,
+        "description": "Chicago faces an increasing river flooding risk, especially for vulnerable communities. Historically low, recent high Lake Michigan levels and storms show growing severity, with basement flooding already impacting low-income areas. Future intensity and frequency are expected to rise by mid-century.",
+        "vulnerableGroups": [
+          "Low-income households",
+          "Children and youth",
+          "Elderly",
+          "Marginalized/minority communities"
+        ],
+        "proportionExposedRange": "0-10%",
+        "impact": "Few areas of Chicago are mapped riverine floodplains, and river flooding risk was once deemed minimal since the Chicago River can backflow as needed to Lake Michigan. However, recent storms and flooding events have been cause for serious concern. A recent New York Times article detailed the six foot swing in Lake Michigan's surface level that took place over the last seven years. High Lake levels in 2020 caused engineers to consider whether the river would overflow into the central business district (which has not happened in modern history). River flooding is becoming a more severe issue as the effects of climate change materialize. On a more regular basis, basement flooding in low-income and BIPOC communities has become more frequent. ",
+        "mostExposedSectors": [
+          {
+            "sectorType": "SEWERAGE_WASTE_REMEDIATION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "WATER_SUPPLY",
+            "otherSectorDetails": null
+          }
+        ]
+      },
+      {
+        "hazard": {
+          "hazardType": "EXTREME_WIND",
+          "otherHazardDetails": null
+        },
+        "hazardRank": 6,
+        "source": null,
+        "description": "Chicago currently faces a low risk from extreme winds, with minimal historical impact. However, future intensity and frequency are projected to increase, posing a growing threat to vulnerable populations and electricity infrastructure, despite low current exposure.",
+        "vulnerableGroups": [
+          "Children and youth",
+          "Marginalized/minority communities",
+          "Low-income households",
+          "Elderly"
+        ],
+        "proportionExposedRange": "0-10%",
+        "impact": "Historically there have been minimal deaths and property damage from severe wind.",
+        "mostExposedSectors": [
+          {
+            "sectorType": "ELECTRICITY_GAS_STEAM_AIR",
+            "otherSectorDetails": null
+          }
+        ]
+      }
+    ]
+  },
+  "governmentActions": {
+    "goals": [
+      {
+        "title": "Modernize and expand application of Sustainable Development Policy (SDP) by 2023",
+        "description": "Modernize and expand application of Sustainable Development Policy (SDP) by 2023",
+        "hazardsAddressed": [
+          {
+            "hazardType": "HEAT_STRESS",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "LOSS_OF_GREEN_SPACE",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "URBAN_FLOODING",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "HEAVY_PRECIPITATION",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "BIODIVERSITY_LOSS",
+            "otherHazardDetails": null
+          }
+        ],
+        "metricIndicator": "Updated plan",
+        "comment": "In 2022, the Chicago Department of Planning and Development (DPD) began public discussions to update the 2017 Sustainable Development Policy (SDP), aiming to reflect current best practices, technological advancements, municipal code changes, and City-led initiatives. After engaging more than 150 stakeholders, DPD released the revised SDP in 2024.\\n\\nThe updated policy maintains its role in setting minimum sustainability standards for City-assisted projects—such as land transfers and grants—but now incorporates expanded strategies for energy efficiency, green infrastructure, EV charging, bird-friendly design, stormwater management, and public health. These enhancements align with broader citywide efforts, including the 2023 Environmental Justice Action Plan and the Chicago Climate Action Plan.\\n\\nEffective for all developments approved after January 1, 2025, the new SDP has already driven notable progress: bird-friendly design features are now present in approximately 50% of applicable projects, a significant rise from just 10% under the previous policy.\\n\\nFor more information about the 2024 SDP update, and previous editions, please visit https://www.chicago.gov/city/en/sites/sustainable-development-policy/home/2024-update.html\\n",
+        "baseYear": 2014,
+        "targetYear": 2025
+      },
+      {
+        "title": "CAP Action 5.3.B Integrate community-level climate resiliency strategies into the City's Emergency Operations Plan",
+        "description": "CAP Action 5.3.B Integrate community-level climate resiliency strategies into the City's Emergency Operations Plan",
+        "hazardsAddressed": [
+          {
+            "hazardType": "INCREASED_WATER_DEMAND",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "HEAVY_PRECIPITATION",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "EXTREME_WIND",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "STORM",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "URBAN_FLOODING",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "EXTREME_HEAT",
+            "otherHazardDetails": null
+          }
+        ],
+        "metricIndicator": "Adoption of 2023 EOP with strengthened equitable climate resilient language; # of supporting plans and policies updated to reflect equitable climate resilience needs (i.e. Chicago's 2022 THIRA/SPR)",
+        "comment": "Led by the City's Office of Emergency Management (OEM), Chicago continues to update strategic plans bearing in mind climate impacts and uncertainties. In alignment with federal guidance, rather than viewing climate as an isolated hazard, updates to the plans are beginning to consider climate as a destabilizing factor for all hazards and threats.\\n\\nThe central strategic documents that are undergoing updates are the Emergency Operation Plan (EOP), Threats and Hazard Identification and Risk Assessment (THIRA), Stakeholder Progress Report (SPR), and the Hazard Mitigation Plan (HMP) which also impact coordination with County emergency responders as well. Across all tools, the Department of Environment seeks to advocate for greater emphasis on racial equity, community capacity building, and community-led response strategies.\\n\\nThrough the CAP monitoring process, the Department of Environment will track policies and plans that have been updated alongside the Office of Emergency Management on the issues related to community resilience",
+        "baseYear": 2022,
+        "targetYear": 2030
+      },
+      {
+        "title": "CAP Action 5.2.C Develop a Heat Vulnerability Index",
+        "description": "CAP Action 5.2.C Develop a Heat Vulnerability Index",
+        "hazardsAddressed": [
+          {
+            "hazardType": "EXTREME_HEAT",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "HEAT_STRESS",
+            "otherHazardDetails": null
+          }
+        ],
+        "metricIndicator": "Indicators include development of working group; community engagement process; money allocated to supporting community participation; policy development and adoption by City Council; and number of policies using the HVI results to inform strategies",
+        "comment": "In 2022-2023, City staff received grants to work with NIHHIS/NOAA to lead a community heat mapping exercise. Chicago's summary report from the activation can be found at \\nhttps://www.chicago.gov/content/dam/city/depts/cdph/environment/heat_watch/Summary-Report-Heat-Watch-Chicago_CAPA-12.15.2023.pdf\\n\\nThe development of public health informed Heat Vulnerability Index is underway in demonstrable ways. In 2022-2023, City staff received grants to work with NIHHIS/NOAA to lead a community heat mapping exercise. Chicago's summary report from the activation can be found at https://www.chicago.gov/content/dam/city/depts/cdph/environment/heat_watch/Summary-Report-Heat-Watch-Chicago_CAPA-12.15.2023.pdf An interactive map from the activation be found at https://www.arcgis.com/apps/webappviewer/index.html?id5158c9de931142c8a753b6a5ad2cf866&extent-9786504.1092%2C5128072.947%2C-9721265.1055%2C5158112.6991%2C102100 More information about these mapping exercises can be found at https://www.heat.gov/pages/mapping-campaigns \\n\\n Additionally, in 2023 the City joined “Defusing Disasters Project” in academic partnership a member of a winning grant from Northwestern University's Buffett Institute of Global Affairs to fund the research and development of an HVI of Chicago. Through this partnership, the City has established relationships with community organizations, health care professionals and city residents where community informed 46 research variables for data consideration to better understand the complexity of heat vulnerability. \\n\\nThe analysis of Heat Vulnerability Index version 1.0 was completed and publicly presented during community went “1995 Heat Wave Commemoration and Defusing Disasters Project Showcase”, July 15, 2025. Alongside the development of an HVI the Defusing Disasters Project created a policy working group to discuss policy challenges related to heat vulnerability. The group met once a week over the course of three months with community organizations, health care professional, and city residents to develop a comprehensive list of 30 community policy and program recommendations. During the summer season 2025 a community survey is gathering community top policy and program priorities for future consideration from DOE and the City of Chicago.",
+        "baseYear": 2022,
+        "targetYear": 2026
+      },
+      {
+        "title": "CAP Action 5.1.C: Establish a robust outdoor air quality monitoring network by 2025",
+        "description": "CAP Action 5.1.C: Establish a robust outdoor air quality monitoring network by 2025",
+        "hazardsAddressed": [
+          {
+            "hazardType": "FIRE_WEATHER",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "EXTREME_HEAT",
+            "otherHazardDetails": null
+          }
+        ],
+        "metricIndicator": "Number of air activated monitoring stations and/or devices",
+        "comment": "While wildfires are not a direct threat to Chicago, 2023 demonstrated the impacts of wildfire smoke on the city's air quality. In 2025, CDPH and the UIC School of Public Health launched and began installing the Chicago Air Sensor Network—nearly 280 solar-powered sensors mounted on CDOT light poles—to deliver neighborhood-level PM and NO₂ data; installation is expected to be complete by the end of summer 2025, with a public dashboard anticipated in early 2026. The climate action plan commitment to establish a robust monitoring system hinged upon both the number of monitoring devices as well as an equitably design process for data collection, analysis, and community collaboration. The network uses a grid design informed by EPA ambient air-monitoring criteria, the Chicago Environmental Justice Index, and community input to prioritize placement \\n\\n \\n\\nAs the City launches it's own monitoring system, community scientists, institutions, and nonprofit partners remain instrumental in program design and implementation. CDPH formed a community Advisory Board through Healthy Chicago Zones to guide sensor siting, training, and dashboard usability, and finalized an MOU with CDOT to support citywide deployment. Following the conclusion of Microsoft's Project Eclipse in March 2023, CDPH and partners procured more than 150 low-cost sensors in 2024 and advanced assembly and QA/QC preparations in early 2025 to enable the new network rollout.\\n\\n2024 Report: https://elpc.org/resources/air-quality-chicago-report/",
+        "baseYear": 2022,
+        "targetYear": 2025
+      },
+      {
+        "title": "2002 Cooling Ordinance",
+        "description": "2002 Cooling Ordinance",
+        "hazardsAddressed": [
+          {
+            "hazardType": "HEAT_STRESS",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "EXTREME_HEAT",
+            "otherHazardDetails": null
+          }
+        ],
+        "metricIndicator": "Presence of an indoor common gathering space, accessible to each resident of the building free of charge.",
+        "comment": "In 2022, the City of Chicago enacted a Cooling Ordinance requiring certain new and existing residential buildings to install air conditioning in indoor common areas. These spaces must be accessible to residents as cooling centers whenever the City's heat index exceeds 80°F. Installation of permanent cooling systems requires a permit from the Department of Buildings (DOB), and the equipment must maintain safe indoor conditions during heat events.\\n\\nTo support implementation, the Department of Environment partnered with DOB and the nonprofit Elevate to host seminars for stakeholders in the real estate and building trades sectors. Between 2024 and 2025, DOB responded to complaints about ordinance violations. When property owners failed to take corrective action, the department collaborated with the Law Department to pursue enforcement through the Department of Administrative Hearings and circuit court.\\n\\nAdditionally, during extreme-heat advisories in 2025, the Office of Emergency Management and Communications (OEMC) reminded property owners of their legal obligation to provide air-conditioned common areas or in-unit cooling when the heat index exceeds 80°F.\\n\\nFor more information, visit: \\nhttps://www.chicago.gov/city/en/depts/bldgs/supp_info/cooling-requirements.html#:~:text=In%20June%202022%2C%20the%20Chicago,index%20exceeds%2080%C2%B0F.",
+        "baseYear": 2022,
+        "targetYear": 2026
+      }
+    ],
+    "actions": [
+      {
+        "title": "Ecosystem-based actions: Community-based natural resource management",
+        "status": {
+          "statusType": "ACTION_IN_OPERATION_MOST_OF_JURISDICTION",
+          "otherStatusDetails": null
+        },
+        "coBenefits": [
+          "Environmental: Increased/improved green space",
+          "Public Health: Improved air quality",
+          "Public Health: Improved mental wellbeing/quality of life"
+        ],
+        "hazardsAddressed": [
+          {
+            "hazardType": "EXTREME_HEAT",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "HEAVY_PRECIPITATION",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "URBAN_FLOODING",
+            "otherHazardDetails": null
+          }
+        ],
+        "totalCostUsd": 51000000,
+        "timeframe": "Long-term (after 2050)",
+        "description": "Our Roots Chicago is a multi-departmental, data-informed, community-driven strategy to expand the tree canopy in Chicago through an equitable approach focusing on South and West side communities. The goal is to plant 75,000 new trees in 5 years through the $46 million Chicago Recovery Plan investment. The City created a 'tree equity tool' that brought together public health, environmental, social and economic data to prioritize communities that would benefit greatly from trees. The City now uses a '\\ncommunity priority area tree equity dashboard\\n' in partnership with The Morton Arboretum- which overlays data on tree canopy with asthma, air quality, land surface temperatures, and other social vulnerability and environmental factors - to plant trees where there is the greatest need. The identification of tree planting locations is supported by a diverse, 170+ member community-based Tree Equity Working Group\\nconvened by CDPH. CDPH also co-leads\\nTree Ambassador trainings in priority communities to train residents how to survey and submit potential tree planting sites on behalf of residents through 3-1-1 based on the Chicago Landscape Ordinance, performed in partnership with The Morton Arboretum and the DSS Bureau of Forestry. \\n\\nThere are 19 community organizations funded in the Tree Ambassador Program, and The Arboretum will be providing $640,000 in Inflation Reduction Act (IRA) funding received through the U.S. Forest Service to support 32 additional Tree Ambassador community organizations in their work over the next two to four years. The trees are then planted by the City's Department of Streets and Sanitation Bureau of Forestry and Department of Transportation and are warrantied for two years free of charge. In 2022, the City planted over 18,000 parkway trees; in 2023, over 23,000 parkway trees have been planted, for a total of over 41,000 public parkway trees planted; and the City is well on its way to reaching the 5-year goal. Recently, through another IRA grant, $3 million for the City of Chicago and $1.5 million for the Chicago Park District for separate projects that will involve significant community engagement and job creation for work including the development of Urban Forestry Management Plans and a 100% inventory of the city's public trees. \\n\\nThe City of Chicago is also investing $5,000,000 in expanding green infrastructure via our Green Alleys program, improving urban stormwater infiltration in neighborhoods burdened by extreme flooding. This program is funded through the Chicago Recovery Plan via general obligation bonds.",
+        "resilienceEnhanced": "Community participation|Coordination & governance|Distributive equity|Finance & resource management|Natural resources|Self-determination",
+        "impactedSectors": [
+          {
+            "sectorType": "CONSERVATION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "EDUCATION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "FORESTRY",
+            "otherSectorDetails": null
+          }
+        ]
+      },
+      {
+        "title": "Educational/Informational actions: Undertaken source-related studies to understand sources of air pollution",
+        "status": {
+          "statusType": "ACTION_IN_OPERATION_JURISDICTION_WIDE",
+          "otherStatusDetails": null
+        },
+        "coBenefits": [
+          "Public Health: Improved air quality",
+          "Public Health: Improved physical health",
+          "Social: Improved education and public awareness on climate issues",
+          "Social: Increased transparency and accountability"
+        ],
+        "hazardsAddressed": [
+          {
+            "hazardType": "LOSS_OF_GREEN_SPACE",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "OTHERS",
+            "otherHazardDetails": "Air quality and vulnerability assessment"
+          }
+        ],
+        "totalCostUsd": 0,
+        "timeframe": "Medium-term (2026-2050)",
+        "description": "Chicago's Cumulative Impact Assessment illustrates that communities of greatest concern for pollution burdens and vulnerability to its effects - specifically with regard to intensive industry and truck traffic- are primarily located on the South and West Sides of the City. The combined environmental, health, and social stressors make these areas more vulnerable to negative health outcomes and widens equity gaps.\\n\\nIn addition to delivering this assessment, the collaborative partnership between policy makers, EJ community members, community based organizations, businesses, and technical advisors went on to sponsor an Environmental Justice Executive Order which states that the Cumulative Impact Assessment shall be used by the Mayor's Office and all City departments and offices to inform decision-making in policy areas such as land use and zoning, transportation, permitting, enforcement, and other interventions that consider the burdens of existing and proposed intensive industrial operations and better protect Environmental Justice Neighborhoods, as described in the Environmental Justice Action Plan. https://www.chicago.gov/content/dam/city/sites/climate-action-plan/documents/Chicago-CAP-071822.pdf\\n\\nThe 2020 Air Quality and Health Report found that air pollution disproportionately burdens neighborhoods on the South and West Sides, with parts of the City bisected by major highways and high concentrations of industry facing significant impacts. This report provides a public health foundation to inform the City's air quality agenda. The report has been used as the foundation for various policies and has informed many City plans and strategies.\\n\\nLink to report: https://www.chicago.gov/content/dam/city/depts/cdph/statistics_and_reports/Air_Quality_Health_doc_FINALv4.pdf",
+        "resilienceEnhanced": "Planning & strategy",
+        "impactedSectors": [
+          {
+            "sectorType": "CONSERVATION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "HUMAN_HEALTH_SOCIAL_WORK",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "INFORMATION_COMMUNICATION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "MANUFACTURING",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "PROFESSIONAL_SCIENTIFIC_TECHNICAL",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "TRANSPORTATION_STORAGE",
+            "otherSectorDetails": null
+          }
+        ]
+      },
+      {
+        "title": "Engineered and built environment actions: Building codes",
+        "status": {
+          "statusType": "ACTION_IN_OPERATION_JURISDICTION_WIDE",
+          "otherStatusDetails": null
+        },
+        "coBenefits": [
+          "Economic: Increased energy security",
+          "Public Health: Reduced health impacts from extreme heat or cold weather",
+          "Social: Increased security/protection for poor/vulnerable populations"
+        ],
+        "hazardsAddressed": [
+          {
+            "hazardType": "EXTREME_HEAT",
+            "otherHazardDetails": null
+          }
+        ],
+        "totalCostUsd": 0,
+        "timeframe": "Medium-term (2026-2050)",
+        "description": "The Chicago City Council adopted the 2022 Cooling Ordinance, an ordinance requiring certain new and existing residential buildings to install air conditioning equipment in indoor common gathering areas and to make these areas available to building residents as cooling centers when the outdoor heat index exceeds 80°F. As of May 2024, buildings over 80 feet tall, with more than 100 residential units, or operated as “housing for older persons”—must install air conditioning equipment in indoor common gathering areas\\n\\nhttps://www.chicago.gov/city/en/depts/bldgs/supp_info/cooling-requirements.html#:~:text=In%20June%202022%2C%20the%20Chicago,index%20exceeds%2080%C2%B0F|In November 2022, the Chicago Energy Transformation Code was enacted making Chicago one of the first major U.S. cities and the first city in Illinois to adopt and exceed the 2021 edition of the International Energy Conservation Code (IECC). The 2022 Code will result in an approximately 40% improvement in energy efficiency for residential and commercial buildings compared to the 2001 ordinance. Since instituting the Ordinance, the City of Chicago has begun to catalyze substantial energy and cost savings for building owners, developed climate-aligned infrastructure with electrification and solar readiness, as well as streamlined compliance options via certification programs.\\nhttps://www.chicago.gov/city/en/depts/bldgs/provdrs/bldg_code/news/2022/september/energycode.html?utm_source=chatgpt.com\\n\\n",
+        "resilienceEnhanced": "Anticipation & preparedness|Infrastructural assets|Planning & strategy|Self-determination",
+        "impactedSectors": [
+          {
+            "sectorType": "CONSTRUCTION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "ELECTRICITY_GAS_STEAM_AIR",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "HUMAN_HEALTH_SOCIAL_WORK",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "REAL_ESTATE",
+            "otherSectorDetails": null
+          }
+        ]
+      },
+      {
+        "title": "Engineered and built environment actions: Sea walls and coastal protection structures",
+        "status": {
+          "statusType": "IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR",
+          "otherStatusDetails": null
+        },
+        "coBenefits": [
+          "Economic: Reduced disruption of energy, transport, water or communications networks",
+          "Economic: Reduced natural resource depletion",
+          "Social: Improved road safety"
+        ],
+        "hazardsAddressed": [
+          {
+            "hazardType": "COASTAL_FLOODING",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "SOIL_DEGRADATION_EROSION",
+            "otherHazardDetails": null
+          }
+        ],
+        "totalCostUsd": 301000000,
+        "timeframe": "Medium-term (2026-2050)",
+        "description": "The Chicago Shoreline Protection Project provides storm damage protection to the Lake Michigan shoreline and Lake Shore Drive. The existing shoreline structures, built in the early 1900s, have deteriorated and no longer function to protect against storms, flooding, and erosion. \\n\\nAs part of the long-running Shoreline Protection Program led jointly by the U.S. Army Corps of Engineers, the City of Chicago, and the Chicago Park District, the 2023 capital bond allocated $5 million for planning and design of shoreline protection at Promontory Point—a historic lakefront structure. The Corps also received $450,000 in federal funding for a third-party technical review to ensure the rehabilitation aligns with historic preservation standards.\\n\\nThe Corps, along with Chicago and the Park District, is conducting a General Reevaluation Report, funded jointly, to assess at-risk shoreline areas not previously addressed, such as vulnerable segments near Lake Shore Drive and critical infrastructures like the South Water Purification Plant.\\n\\nIn early 2024, the Public Building Commission, Chicago DOT, Park District, and the Corps began hosting community meetings and workshops to discuss the Morgan Shoal Shoreline Reconstruction—which spans 45th to 51st Streets. These engagements informed planning, design, procurement, and future construction.\\n\\nWhile primarily flood-control focused, the Chicago Park District's 2024 initiative to restore shoreline ecosystems includes shoring up riparian areas along the North Branch of the Chicago River, notably Kiwanis Park. This project entails stabilizing banks, removing invasive species, and restoring native vegetation—enhancing erosion control and ecological health.\\n\\nIn April 2024, the Chicago Shoreline Advisory Board was established, through an ordinance passed by the Chicago City Council. This ordinance amended the municipal code to create Section 2-31-045, which outlines the board's purpose: developing and updating a shoreline management plan to address erosion, flooding, and climate resilience.\\n\\n",
+        "resilienceEnhanced": "Anticipation & preparedness|Infrastructural assets",
+        "impactedSectors": [
+          {
+            "sectorType": "CONSERVATION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "PUBLIC_ADMIN_DEFENCE",
+            "otherSectorDetails": null
+          }
+        ]
+      },
+      {
+        "title": "Government policies and programs actions: Development of targeted plan/program to address hazard(s) selected",
+        "status": null,
+        "coBenefits": [
+          "Economic: Reduced natural resource depletion",
+          "Environmental: Increased/improved green space",
+          "Public Health: Reduced health impacts from extreme heat or cold weather",
+          "Social: Improved education and public awareness on climate issues"
+        ],
+        "hazardsAddressed": [
+          {
+            "hazardType": "EXTREME_COLD",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "EXTREME_HEAT",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "HEAVY_PRECIPITATION",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "RIVER_FLOODING",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "SOIL_DEGRADATION_EROSION",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "STORM",
+            "otherHazardDetails": null
+          },
+          {
+            "hazardType": "URBAN_FLOODING",
+            "otherHazardDetails": null
+          }
+        ],
+        "totalCostUsd": 0,
+        "timeframe": "Medium-term (2026-2050)",
+        "description": "The Cook County Department of Emergency Management and Regional Security (EMRS) initiated the 2024 update of the Multi‑Jurisdictional Hazard Mitigation Plan, following FEMA requirements and the Disaster Mitigation Act of 2000.The City of Chicago prepared its own annex to the updated Cook County Hazard Mitigation Plan, known as the “2024 City of Chicago Annex.” This annex outlines mitigation goals, strategies, and actions tailored specifically for the city, reflecting its unique risk profile and needs. It was incorporated directly into the county-wide update process, with the city adopting Volume I of the County Plan and Volume II's City Annex to maintain FEMA funding eligibility.\\n\\nThe updated plan—including the Cook County HMP and the City of Chicago Annex—was formally adopted by the Chicago City Council under Resolution R2024‑0014213. It was introduced on December 2, 2024, recommended by the Committee on Public Safety, and officially signed and adopted by the council on January 15, 2025.\\n\\nhttps://chicago.councilmatic.org/legislation/r2024-0014213/?utm_source=chatgpt.com|More than 60% of Chicago's population, or 1.7 million people live urban heat islands an experience temperatures 8 degrees higher than other parts of the city.\\n\\nThe Defusing Disasters Working Group through the Northwestern University Buffett Institute for Global Affairs serves as the engine for community dialogue and engagement to anchor the tool in information valuable to community. During the summer of 2025, the City along with the Defusing Disasters Working Group conducted a city-wide Heat Vulnerability survey designed to capture residents' lived experiences and priorities. The Survey is part of a multi-phase community engagement process designed to gather insights from residents directly impacted by extreme heat. In addition to the survey, the City of Chicago and the Defusing Disasters Working Group commemorated Chicago's 1995 Heat Wave by hosting an awareness event that included a screening of the movie \\'Cooked: Survival by Zip Code\\', and a panel discussion that shared ideas of how to tackle the extreme heat in Chicago with data, and policy recommendations.\\n\\nhttps://www.eventbrite.com/e/1995-heat-wave-commemoration-and-defusing-disasters-project-showcase-tickets-1471370321239?aff=ebdsshcopyurl&utm-campaign=social&utm-content=attendeeshare&utm-medium=discovery&utm-term=organizer-profile&utm-share-source=organizer-profile\\n",
+        "resilienceEnhanced": "Anticipation & preparedness|Community participation|Coordination & governance|Decision-making capacity|Informal learning|Infrastructural assets|Leadership|Natural resources|Planning & strategy",
+        "impactedSectors": [
+          {
+            "sectorType": "ADMIN_SUPPORT_SERVICES",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "CONSTRUCTION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "EDUCATION",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "HUMAN_HEALTH_SOCIAL_WORK",
+            "otherSectorDetails": null
+          },
+          {
+            "sectorType": "INFORMATION_COMMUNICATION",
+            "otherSectorDetails": null
+          }
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "title": "Building Decarbonization Strategy",
+        "status": "PROJECT_STRUCTURING",
+        "description": "The City of Chicago seeks to advancing energy justice and climate resilience through efficiency and renewable energy investments. By strategically investing in moderate income (LMI), homes, affordable housing, neighborhood anchor buildings and institutions, public libraries, and historic protected landmarks. These projects will equitably decarbonize and retrofit LMI homes and units across the City to enhance resilience to climate change, lower utility costs, and improve livability. Further, funding for retrofits and renewable energy projects will be delivered to cornerstone neighborhood institutions (e.g., community centers and libraries), improving their long-term environmental and economic sustainability. The City will also invest in decarbonizing historic sites and support pilot industrial energy efficiency and renewable energy work.",
+        "projectArea": "Buildings",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public-private partnership|Bonds|Public finance- own budget|Public finance- national government",
+        "fundedPercent": null,
+        "totalAmount": 41000000,
+        "totalNeeded": null
+      },
+      {
+        "title": "Climate Infrastructure Fund (EE/RE)",
+        "status": "TRANSACTION_PREPARATION",
+        "description": "The newly established Climate Infrastructure Fund will provide grants up to $250,000 for renewable energy and energy efficiency improvements in buildings, support the purchase of electric vehicles and installation of electric vehicle charging stations, and enable green infrastructure solutions to capture stormwater and reduce onsite flooding. Applications will be scored on criteria related to climate mitigation and resilience factors, equity impact, and project readiness. \\n\\n\\n\\nhttps://www.chicago.gov/city/en/sites/dpd-recovery-plan/home/climate-infrastructure-projects.html",
+        "projectArea": "Buildings",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public finance- own budget|Public finance- national government|Bonds",
+        "fundedPercent": null,
+        "totalAmount": 0,
+        "totalNeeded": null
+      },
+      {
+        "title": "Green Homes Chicago",
+        "status": "IMPLEMENTATION",
+        "description": "This program provides free home energy upgrades and energy efficiency retrofits to income-eligible homeowners, including new insulation and heat pump heating and cooling systems. Selection for this program is based on household eligibility (up to 80 percent of area median income) and available funding and is not guaranteed. A site inspection will determine eligibility and scope of work.\\n\\nUpgrades may include new insulation,\\nheat pump HVAC systems, and more. In\\nmost circumstances, participation will\\ninvolve replacing your current\\nappliances with new, high-efficiency\\nelectrical appliances and completely\\ndiscontinuing the use of natural gas.\\n\\nhttps://www.chicago.gov/city/en/depts/doh/provdrs/homeowners/svcs/green-homes-chicago.html",
+        "projectArea": "Buildings",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public finance- own budget|Public finance- national government|Bonds",
+        "fundedPercent": null,
+        "totalAmount": 0,
+        "totalNeeded": null
+      },
+      {
+        "title": "Urban Tree Canopy Expansion",
+        "status": "IMPLEMENTATION",
+        "description": "Expand canopy coverage by 15k trees annually for 5 years, creating job opportunities for planting and maintenance in partnership with City departments, sister agencies, community based organizations, workforce development programs, and other urban forestry organizations. \\n\\nhttps://www.chicago.gov/city/en/sites/our-roots-chicago/home.html",
+        "projectArea": "Nature-Based Solutions",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public finance- own budget|Grants|Bonds|Public-private partnership|Public finance- national government",
+        "fundedPercent": null,
+        "totalAmount": 46000000,
+        "totalNeeded": null
+      },
+      {
+        "title": "Heat Health and Safety Program",
+        "status": "SCOPING",
+        "description": "In an effort to deepen the work developed over the last 2 years around extreme heat preparedness and response, additional funds would be ideal to \\n- update the HVI periodically over 5-10 years \\n- support meaningful community engagement methods, including stipends, food, language access needs, etc.. \\n- create a fund for community-designed and -led preparedness and response strategies \\n- marketing and public service announcements through digital channels, printed flyers, and direct outreach to more vulnerable communities\\n- personal action kits (ex: cooling kit) for residents to use agnostic of formal emergency declaration\\n- infrastructure updates a municipally operated cooling centers (i.e. water filling stations and HVAC systems)\\n\\nhttps://chicago.gov/coolchi",
+        "projectArea": "Other: Extreme Weather Preparedness and Response",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public-private partnership|Public finance- own budget",
+        "fundedPercent": null,
+        "totalAmount": null,
+        "totalNeeded": null
+      },
+      {
+        "title": "Climate Infrastructure Fund (Green Infrastructure)",
+        "status": "TRANSACTION_PREPARATION",
+        "description": "The newly established Climate Infrastructure Fund will provide grants up to $250,000 for renewable energy and energy efficiency improvements in buildings, support the purchase of electric vehicles and installation of electric vehicle charging stations, and enable green infrastructure solutions to capture stormwater and reduce onsite flooding. Applications will be scored on criteria related to climate mitigation and resilience factors, equity impact, and project readiness. \\n\\n\\n\\nhttps://www.chicago.gov/city/en/sites/dpd-recovery-plan/home/climate-infrastructure-projects.html",
+        "projectArea": "Public and green spaces",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Bonds",
+        "fundedPercent": null,
+        "totalAmount": 0,
+        "totalNeeded": null
+      },
+      {
+        "title": "Space to Grow ",
+        "status": "IMPLEMENTATION",
+        "description": "Space to Grow is a partnership between City of Chicago, Chicago Public Schools, Metropolitan Water Reclamation District (implementation partners) and managing partners Healthy Schools Campaign and Openlands to build resilient green stormwater infrastructure schoolyards that reduce urban flooding, while doubling as playgrounds, gardens and outdoor learning laboratories.\\n\\nhttps://www.spacetogrowchicago.org/national-report/",
+        "projectArea": "Public and green spaces",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Grants|Public finance- national government|Public finance- own budget|Public-private partnership|Bonds",
+        "fundedPercent": null,
+        "totalAmount": 15000000,
+        "totalNeeded": null
+      },
+      {
+        "title": "Bike Chicago and GreenCorps Youth Program",
+        "status": "IMPLEMENTATION",
+        "description": "The Chicago Department of Transportation (CDOT) has set an ambitious vision to make cycling a safe and affordable option for more Chicagoans. In addition to connecting bike networks and increasing the number of low-stress and protected bike lane miles in the city, the Bike Chicago program goal has been to distribute 5,000 bicycles, as well as safety and maintenance equipment, to eligible residents by year end 2026. This year, 1229 bikes, helmets, and accessories were distributed to people across Chicago (a/o Oct. 2024). To date, we have distributed 3118 bikes, helmets, and accessories to people across Chicago. 88% of respondents surveyed reported that they were Very Satisfied with their overall Bike Chicago experience.\\n\\nIn addition, Bike Chicago along with Chicago's Safe Ambassadors have provided over 85 trainings on helmet donning and other bike safety measures that will help keep cyclist safe while riding. \\n\\nAdditional funding for Bike Chicago and the Greencorps Youth Program would enable program expansion in the following ways: \\n\\n- Provide bikes and helmets to the additional 1,530 participants\\n\\n- Support inventory, tracking, matching, and distribution of materials including a utility van for inventory redistribution and storage\\n\\n- Increase the number of bike safety trainings and maintenance courses. \\n\\n- Expand/host group bike rides to all 77 community areas. \\n\\n- EV charging equipment for Green Team\\n\\n\\nhttps://www.chicago.gov/city/en/sites/bike-chicago/home.html",
+        "projectArea": "Transport",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public-private partnership|Bonds|Public finance- own budget",
+        "fundedPercent": null,
+        "totalAmount": 900000,
+        "totalNeeded": null
+      },
+      {
+        "title": "Climate Infrastructure Fund (EV)",
+        "status": "TRANSACTION_PREPARATION",
+        "description": "The newly established Climate Infrastructure Fund will provide grants up to $250,000 for renewable energy and energy efficiency improvements in buildings, support the purchase of electric vehicles and installation of electric vehicle charging stations, and enable green infrastructure solutions to capture stormwater and reduce onsite flooding. Applications will be scored on criteria related to climate mitigation and resilience factors, equity impact, and project readiness. \\n\\n\\n\\nhttps://www.chicago.gov/city/en/sites/dpd-recovery-plan/home/climate-infrastructure-projects.html",
+        "projectArea": "Transport",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public finance- national government|Bonds|Public finance- own budget",
+        "fundedPercent": null,
+        "totalAmount": 2,
+        "totalNeeded": null
+      },
+      {
+        "title": "Community charging pilot",
+        "status": "PROJECT_STRUCTURING",
+        "description": "The transportation sector is the second highest source of GHG emissions in Chicago and is a major contributor to poor air quality in our region. CDOT and the City more broadly are focused on lowering emissions from the transportation sector while improving air quality, increasing residents' mobility and job access, lowering household transportation costs, and improving public health.\\nThe Charge Up Chicago! Chicago Community Resources and Charging Infrastructure Implementation (CUC) project will bring unique community benefits to Chicago by enabling equitable access to electric vehicles and E-mobility options in the city. CUC will then invest in community developed and owned charging station projects in addition to City of Chicago owned public charging stations. Leveraging the geographic diversity and equitable access mission of the Chicago Public Libraries, City-owned stations will be deployed at libraries to fill gaps in existing charging infrastructure, support high density multifamily housing communities, and create shared-use charging access to expand the City's EV municipal fleet in addition to ride hail, taxi and rental EV fleets serving Midway Airport. \\n\\nCurrently, there are 720 publicly available EV passenger vehicle chargers in Chicago. Every community has registered EVs, but 70% of all public charging stations are concentrated in just three Community Areas. Of the 77 total Community Areas in Chicago, 47 do not have any public charging stations. The South and West Sides of Chicago have few public locations for Level 2 charging and virtually no access to DC fast charging. \\n\\nThis project will work to overcome past planning shortcomings by ensuring CBOs are funded and positioned as leaders in the identification of local needs, with technical advisors to support them. CNT acts as the convener and facilitator of the Transportation Equity Network, a coalition of CBOs who will be the primary beneficiaries of this project. CNT's role on this project is to convene the participating CBOs, including maintaining direct and personal connections with each of them to ensure they see the value in participating and continually look for opportunities to improve our engagement process. \\n\\nCNT, Forth, and IACT will convene the 2 CBO partners for the training series, spanning approximately 9 months. The technical assistance and capacity building training will start with building a foundation on electric mobility to allow participants to have the same baseline of knowledge on transportation decarbonization. Learnings will build on each other throughout the course of training. After a foundation is established, Forth and partners will work with the CBOs to identify what topics to focus deeper on and are the most relevant for the communities they serve.",
+        "projectArea": "Transport",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public finance- national government",
+        "fundedPercent": null,
+        "totalAmount": 0,
+        "totalNeeded": null
+      },
+      {
+        "title": "Drive Clean Truck Chicago",
+        "status": "PROJECT_FEASIBILITY",
+        "description": "- Monitor and apply for funding opportunities to replace CDOT's oldest diesel equipment\\n\\n-Leveraging partnerships like the Illinois Alliance for Clean Transportation to support local businesses in transitioning their fleets and applying for funding opportunities.\\n\\n- Analyze CDOT's light-duty fleet for electrification opportunities- Explore funding opportunities for equipment upgrades and electrification\\n\\n- Advocate for reinstatement of Buy America Waiver in order to release $17M in federal funds for the Drive Clean Truck Program\\n\\n- Develop strategy to increase Drive Clean Truck Program utilization in communities disproportionately impacted by diesel emissions\\n\\n- Continue participating and leading the Chicago Area Clean Cities Coalition, encouraging more fleets to participate and commit to take action\\n\\n- Launch and promote the Chicago Commercial Electric Vehicle Readiness Guidelines Source: https://www.chicago.gov/content/dam/city/depts/cdot/general/Chicago_Transportation_Report_060721_Digital.pdf",
+        "projectArea": "Transport",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Bonds|Public finance- national government|Grants",
+        "fundedPercent": null,
+        "totalAmount": 0,
+        "totalNeeded": null
+      },
+      {
+        "title": "Municipal Fleet Electrification",
+        "status": "IMPLEMENTATION",
+        "description": "As a way to increase the use of low-carbon vehicles in the government fleet, Chicago is prioritizing the conversion of all non-emergency light-duty fleet vehicles to electric vehicles. This internal goal from 2021 was publicized through the 2022 Climate Action Plan and applies to approximately 1,289 vehicles. This strategy is also informed by the City's 2021 Air Quality and Health report. Fleets at facilities located in communities experiencing greater lower air quality are considered for priority conversion. The City has begun the process of buying electric vehicles as well as installing chargers through Chicago Recovery grant money. The City will continue to apply for grants and mobilize funds as they become available",
+        "projectArea": "Transport",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public finance- own budget|Bonds",
+        "fundedPercent": null,
+        "totalAmount": 11300000,
+        "totalNeeded": null
+      },
+      {
+        "title": "Community Garden Compost Pilot",
+        "status": "IMPLEMENTATION",
+        "description": "In November 2022, the City of Chicago announced a pilot project to divert household food scraps into composting through six community garden sites. The project was implemented in collaboration with the nonprofit NeighborSpace and was partially funded through the National Resources Defense Council. The announcement embedded the project in the city's effort to explore waste reuse strategies that contribute to reducing greenhouse gas emissions. Six gardens were chosen across Chicago in collaboration with the nonprofit NeighborSpace. \\n\\nAll six gardens composted food scraps during 2023; gardens acted as environmental education\\nsites, introducing participants to the practice and importance of composting.\\n100+ food scrap participants participated in the program across six community gardens and\\nthe majority of participants lived in proximity to their submission garden. Gardens established unique systems for collecting food scraps in ways that were culturally relevant to their community. \\n\\nChicago has great potential to divert food scrap waste from landfills. A 2021 study of Chicago\\nwaste generation estimated 522,510 tons of organic waste annually, almost half of which\\noriginates in single-family households. The study recommends investment in residential\\nsource reduction and community education programs. Evaluation data demonstrates that the\\nprogram addressed both recommendations (Delta Institute, 2021).\\nhttps://www.chicago.gov/city/en/sites/chicago-recycles/home/compost.html",
+        "projectArea": "Waste management (including waste recycling)",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public-private partnership|Bonds|Public finance- own budget",
+        "fundedPercent": null,
+        "totalAmount": 0,
+        "totalNeeded": null
+      },
+      {
+        "title": "Food Scrap Drop Off Program",
+        "status": "IMPLEMENTATION",
+        "description": "Chicago launched its first food scrap drop-off program in October 2023. Beginning with 15 collection sites, there will be continual expansion to sites across other communities. Currently, receptacles are sited a City facilities which streamlines waste pickup and bin replacement. The program is made possible by funding through the Chicago Recovery Plan via general obligation bonds.\\n\\nFrom Oct-Dec 2023, 27.49 tons of food waste collected for composting, resulting in 17.97 MTCO2E emissions reductions. The program experienced minimal issues with waste stream contamination which may be due to significant educational material on the program's website. Further funding would allow for additional outreach and education, and program expansion to all 77 community areas.\\n\\nhttps://www.chicago.gov/city/en/sites/chicago-recycles/home/food-scrap-drop-off.html",
+        "projectArea": "Waste management (including waste recycling)",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Bonds",
+        "fundedPercent": null,
+        "totalAmount": 0,
+        "totalNeeded": null
+      },
+      {
+        "title": "Lead Service Line Replacement",
+        "status": "IMPLEMENTATION",
+        "description": "The City of Chicago has launched a lead service line replacement (LSLR) program that removes barriers to program access for low-income residents. The program provides both low-cost and free line replacement for qualifying residents.\\n\\nChicago has the most LSLs of any City in the country. The City will require Federal financial assistance to replace all the LSLs. The local impact of an LSLR program would result in $4.8 billion in local economic activity and over 45,000 jobs generated.\\n\\nSource: https://www.metroplanning.org/news/8845/The-costs-of-lead-in-our-drinking-water",
+        "projectArea": "Water management",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public finance- own budget|Public finance- national government",
+        "fundedPercent": null,
+        "totalAmount": 3200000000,
+        "totalNeeded": null
+      },
+      {
+        "title": "Rain Readiness Program",
+        "status": "PROJECT_STRUCTURING",
+        "description": "In Summer 2023, two extreme rainfall events took place in Chicago, earning both state and federal disaster designation. Source: https://www.chicago.gov/city/en/depts/oem/supp_info/flash-flood-declaration-status.html \\n\\nThe “rain readiness” program is currently in development and is expected to offer funding for homes to invest in infrastructure to improve resilience in the face of increasing storm intensity, heavy precipitation, and urban flooding. Improvements include, but are not limited to, leak detection and repair, foundation cracks, downspout disconnection and other remedies to reduce the likelihood of flooding at the site level. The City expects to prioritize household located in high flood risk communities on the City's far west and mid-south sides. The City anticipates the release of a request for proposals in early 2025. This work is also taking place across the County and will be a part of 2024 Multi-Jurisdictional Hazard Mitigation Plan update",
+        "projectArea": "Water management",
+        "financeStatus": "Project partially funded and seeking additional funding",
+        "financeModel": "Public finance- own budget|Public-private partnership|Public finance- national government|Bonds",
+        "fundedPercent": null,
+        "totalAmount": 100000,
+        "totalNeeded": null
+      }
+    ]
+  },
+  "solutions": {
+    "solutions": {}
+  }
+}

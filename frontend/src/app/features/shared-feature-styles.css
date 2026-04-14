@@ -1,0 +1,74 @@
+/* Shared Feature Component Styles */
+
+/* Centered Container with Gradient Background */
+.feature-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: #f0f0f0;
+}
+
+/* White Card Styling */
+.feature-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+}
+
+.feature-card mat-card-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.feature-card mat-card-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+/* Form Styling */
+.feature-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feature-card mat-form-field {
+  width: 100%;
+}
+
+.feature-card mat-form-field.mat-form-field {
+  margin-bottom: 8px;
+}
+
+/* Button Styling */
+.feature-card .full-width {
+  width: 100%;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.feature-card .full-width:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.feature-card .full-width:not(:disabled):active {
+  transform: translateY(0);
+}
+
+.feature-card .full-width:disabled {
+  opacity: 0.6;
+}

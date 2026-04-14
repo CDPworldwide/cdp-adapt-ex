@@ -1,0 +1,107 @@
+.header-toolbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 24px;
+  min-height: 64px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-right: 24px;
+  white-space: nowrap;
+  color: #000000;
+  letter-spacing: -0.5px;
+  justify-self: start;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: center;
+  /* Ensure it doesn't overflow on small screens */
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-links a {
+  color: #4b5563;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-radius: 9999px;
+  padding: 8px 20px;
+  text-decoration: none;
+  white-space: nowrap;
+  /* Prevents the text from overlapping when resizing */
+  flex-shrink: 0;
+}
+
+.nav-links a:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.nav-links a.active-link {
+  background-color: #1f2937;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-self: end;
+}
+
+.session-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f9fafb;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+.session-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  color: #6b7280;
+}
+
+.session-text {
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+  color: #374151;
+  font-weight: 500;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.header-button {
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #000000;
+}
+
+.header-button mat-icon {
+  margin: 0;
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+}

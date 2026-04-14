@@ -1,0 +1,262 @@
+{
+  "homepage": {
+    "hero": {
+      "title": "探讨适应和恢复力方面的计划",
+      "searchPlaceholder": "搜索位置",
+      "notFound": "抱歉，我们找不到'{{location}}'。",
+      "notFoundExplanation": "我们的数据库中可能没有该地点的信息，或者该地点尚未与我们的披露数据关联。",
+      "trySearchingAgain": "请稍后再试。",
+      "goBack": "返回",
+      "searchSuggestions": "搜索建议",
+      "disclosesToCdp": "向 CDP 报告位置"
+    },
+    "description": {
+      "text": "浏览全球各地城市、州和地区正在寻求资金支持的当地气候灾害、行动和适应项目。"
+    },
+    "nav": {
+      "title": "Adaptation & action explorer",
+      "explore": "探索",
+      "compare": "比较",
+      "fund": "基金"
+    }
+  },
+  "maps": {
+    "totalReportedHazards": "报告的危害总数",
+    "topHazards": "前 {{count}} 大风险",
+    "implementedActions": "已实施适应措施",
+    "projectsSeekingFunding": "寻求资金的项目",
+    "learnMore": "了解更多",
+    "reportingLeader": "CDP报告负责人",
+    "noHazardData": "暂无此灾害的地图数据。"
+  },
+  "shared": {
+    "showMore": "显示更多",
+    "showLess": "显示更少",
+    "showMoreHazards": "显示更多灾害",
+
+    "selectLanguage": "选择语言",
+    "expandMap": "展开地图",
+    "collapseMap": "收起地图"
+  },
+  "locationCard": {
+    "backToMap": "返回地图",
+    "header": {
+      "estimatedPopulation": "估计人口：",
+      "reportingLeader": "CDP报告负责人"
+    },
+    "tabs": {
+      "hazards": "危险",
+      "governmentActions": "政府行动",
+      "solutions": "解决方案"
+    },
+    "hazardNames": {
+      "HEAT_STRESS": "热应激",
+      "EXTREME_HEAT": "极端高温",
+      "EXTREME_COLD": "极寒",
+      "SNOW_AND_ICE": "冰雪",
+      "FIRE_WEATHER": "火灾天气",
+      "DROUGHT": "干旱",
+      "WATER_STRESS": "水胁迫",
+      "INCREASED_WATER_DEMAND": "用水需求增加",
+      "URBAN_FLOODING": "城市内涝",
+      "RIVER_FLOODING": "河流洪水",
+      "COASTAL_FLOODING": "沿海洪水",
+      "TROPICAL_CYCLONE": "飓风/台风",
+      "EXTREME_WIND": "极端大风",
+      "STORM": "风暴",
+      "HEAVY_PRECIPITATION": "强降水",
+      "MASS_MOVEMENT": "滑坡",
+      "LOSS_OF_GREEN_SPACE": "绿地丧失",
+      "SOIL_DEGRADATION_EROSION": "土壤退化",
+      "LANDSCAPE_SHIFT_DEGRADATION": "其他景观变化",
+      "INFECTIOUS_DISEASE": "传染病",
+      "BIODIVERSITY_LOSS": "生物多样性丧失"
+    },
+    "sectorNames": {
+      "AGRICULTURE": "农业",
+      "FORESTRY": "林业",
+      "FISHING": "渔业",
+      "MINING_QUARRYING": "采矿和采石",
+      "CONSERVATION": "保护",
+      "MANUFACTURING": "制造业",
+      "CONSTRUCTION": "建造",
+      "ELECTRICITY_GAS_STEAM_AIR": "电力、燃气、蒸汽",
+      "SEWERAGE_WASTE_REMEDIATION": "水和污水处理",
+      "WASTE_MANAGEMENT": "废物管理",
+      "WHOLESALE_RETAIL_TRADE": "批发/零售",
+      "TRANSPORTATION_STORAGE": "运输与仓储",
+      "INFORMATION_COMMUNICATION": "信息与通信",
+      "ACCOMMODATION_FOOD_SERVICE": "住宿及餐饮",
+      "FINANCIAL_INSURANCE": "金融与保险",
+      "REAL_ESTATE": "房地产",
+      "PROFESSIONAL_SCIENTIFIC_TECHNICAL": "专业/科学",
+      "ADMIN_SUPPORT_SERVICES": "行政支持",
+      "PUBLIC_ADMIN_DEFENCE": "公共管理与国防",
+      "EDUCATION": "教育",
+      "HUMAN_HEALTH_SOCIAL_WORK": "人类健康",
+      "ARTS_ENTERTAINMENT_RECREATION": "艺术与休闲"
+    },
+    "solutionCategoryNames": {
+      "ENGINEERED_BUILT_ENVIRONMENT": "工程和建筑环境行动",
+      "ECONOMIC": "经济行动",
+      "LAWS_REGULATIONS": "法律法规行动",
+      "TECHNOLOGICAL": "技术行动",
+      "BEHAVIOURAL": "行为",
+      "EDUCATIONAL_INFORMATIONAL": "教育/信息活动",
+      "ECOSYSTEM_BASED": "基于生态系统的行动",
+      "SERVICES": "服务行动",
+      "GOVERNMENT_POLICIES_PROGRAMS": "政府政策和方案行动"
+    },
+    "hazardDetail": {
+      "topNHazards": "前 {{count}} 大风险",
+      "hazardsDisclosedCount": "（{{count}} 已披露）",
+      "noGeeData": "此危害没有外部危害数据。",
+      "crvaTitle": "已开展气候风险和脆弱性评估",
+      "crvaRecentYear": "最近一次评估年份：",
+      "crvaSourceGee": "数据来源：CDP/GEE数据分析",
+      "crvaVisitPortal": "访问 CDP 开放数据门户",
+      "requestersTitle": "数据披露请求",
+      "aiSummary": "人工智能概要",
+      "proportionLabel": "最易受影响的人口比例",
+      "vulnerablePopTitle": "最易受影响的弱势群体",
+      "factorsLabel": "影响适应能力的因素",
+      "impactLabel": "影响描述",
+      "challengeLabel": "挑战/支持理由",
+      "mostExposedSectors": "受影响最大的行业",
+      "exploreActions": "探索{{count}}适应行动",
+      "noActionsDisclosed": "针对此危害，尚未公布任何适应措施。"
+    },
+    "hazardOverview": {
+      "title": "危险概述",
+      "topHazards": "已披露的主要风险",
+      "mostExposedSectors": "受影响最大的经济部门"
+    },
+    "geeCard": {
+      "riskOfOccurrence": "发生风险",
+      "source": "来源",
+      "scenarios": "场景",
+      "timeframes": "可用时间范围"
+    },
+    "banners": {
+      "nonPublic": {
+        "title": "报告未公开。",
+        "description": "该辖区的CDP报告无法显示。本页显示的所有危险信息均来自CDP分析。",
+        "cta": "了解更多关于报告的信息",
+        "ctaDescription": "要了解更多向 CDP 报告的城市、州和地区的信息，请访问我们的网站。"
+      },
+      "nonDisclosing": {
+        "title": "未发现任何危险",
+        "description": "该辖区在其CDP问卷调查回复中未报告任何危害。本页显示的所有危害信息均来自CDP分析。",
+        "cta": "访问 CDP 开放数据门户",
+        "ctaDescription": "要了解该辖区报告的更多内容，请从 CDP 开放数据门户网站下载完整问卷。"
+      },
+      "noReport": {
+        "title": "暂无报告",
+        "description": "该辖区目前未通过CDP问卷报告信息。本页显示的所有风险信息均来自CDP分析。",
+        "cta": "了解更多关于报告的信息",
+        "ctaDescription": "要了解更多向 CDP 报告的城市、州和地区的信息，请访问我们的网站。"
+      }
+    },
+    "govActions": {
+      "actionsSummary": "行动概要",
+      "all": "全部",
+      "goals": "目标",
+      "actions": "行动",
+      "disclosed": "已披露",
+      "adaptationGoals": "适应性目标（{{count}} 已公开）",
+      "hazardsAddressed": "已解决的风险",
+      "targetYear": "目标年份",
+      "adaptationActions": "适应措施（{{count}} 已公开）",
+      "coBenefits": "共同利益",
+      "projectsSeekingFundingWithCount": "寻求资金的项目（{{count}}已公开）",
+      "projectSeekingFunding": "寻求资金的项目",
+      "status": "地位",
+      "totalFundingNeeded": "所需资金总额",
+      "types": {
+        "adaptationGoal": "适应目标",
+        "adaptationAction": "适应行动",
+        "projectSeekingFunding": "寻求资金的项目"
+      },
+      "adaptationAction": "适应行动",
+      "funded": "已资助",
+      "remaining": "剩余",
+      "more": "更多",
+      "detail": {
+        "climateHazards": "气候灾害",
+        "description": "描述",
+        "statusOfAction": "行动状态",
+        "coBenefits": "共同利益",
+        "resilienceAttributesEnhanced": "增强的韧性属性",
+        "impactedSectors": "受影响行业",
+        "totalFunded": "已资助总额",
+        "totalNeeded": "所需总额",
+        "projectArea": "项目区域",
+        "financeModel": "融资模式",
+        "financeStatus": "融资状态",
+        "totalCostOfAction": "行动总费用（美元）",
+        "timeframe": "时间框架",
+        "multipleTimeframes": "多个时间框架",
+        "multipleTimeframesTooltip": "该地区公开了多个具有多个时间框架的类似行动。"
+      },
+      "projectStatuses": {
+        "SCOPING": "范围界定",
+        "PRE_FEASIBILITY": "预可行性研究",
+        "PROJECT_FEASIBILITY": "项目可行性研究",
+        "PROJECT_STRUCTURING": "项目结构化",
+        "TRANSACTION_PREPARATION": "交易准备",
+        "IMPLEMENTATION": "实施中",
+        "POST_IMPLEMENTATION": "实施后"
+      }
+    },
+    "actionStatusesFull": {
+      "SCOPING": "范围界定",
+      "PRE_FEASIBILITY_STUDY": "预可行性研究",
+      "FEASIBILITY_FINALIZED_NO_FINANCE": "可行性研究完成，目前尚未获得资金",
+      "FEASIBILITY_FINALIZED_PARTIAL_FINANCE": "可行性研究完成，资金部分到位",
+      "FEASIBILITY_FINALIZED_FULL_FINANCE": "可行性研究完成，资金完全到位",
+      "IMPLEMENTATION_COMPLETE_REPORTING_YEAR": "报告年度实施完成",
+      "IMPLEMENTATION_UNDERWAY_COMPLETION_LT_ONE_YEAR": "实施进行中，预计一年内完成",
+      "IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR": "实施进行中，预计一年以上完成",
+      "ACTION_IN_OPERATION_JURISDICTION_WIDE": "行动运行中（管辖区范围）",
+      "ACTION_IN_OPERATION_MOST_OF_JURISDICTION": "行动运行中（管辖区大部分地区）",
+      "ACTION_IN_OPERATION_TARGETED": "行动运行中（针对特定行业/地区）",
+      "OTHERS": "其他"
+    },
+    "actionStatuses": {
+      "SCOPING": "范围界定",
+      "PRE_FEASIBILITY_STUDY": "预可行性研究",
+      "FEASIBILITY_FINALIZED_NO_FINANCE": "可行性研究完成",
+      "FEASIBILITY_FINALIZED_PARTIAL_FINANCE": "可行性研究完成",
+      "FEASIBILITY_FINALIZED_FULL_FINANCE": "可行性研究完成",
+      "IMPLEMENTATION_COMPLETE_REPORTING_YEAR": "实施完成",
+      "IMPLEMENTATION_UNDERWAY_COMPLETION_LT_ONE_YEAR": "实施进行中",
+      "IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR": "实施进行中",
+      "ACTION_IN_OPERATION_JURISDICTION_WIDE": "行动进行中",
+      "ACTION_IN_OPERATION_MOST_OF_JURISDICTION": "行动进行中",
+      "ACTION_IN_OPERATION_TARGETED": "行动进行中",
+      "OTHERS": "其他"
+    },
+    "solutions": {
+      "popularSolutionsTitle": "热门解决方案",
+      "totalCostOfAction": "行动总成本（美元）",
+      "timeframe": "大体时间",
+      "hazardFiltersTitle": "前 {{count}} 名危险过滤器",
+      "description": "描述",
+      "sourceDescription": "来源：CDP汇总和分析来自同类城市的{{year}}披露信息",
+      "climateHazards": "气候灾害",
+      "statusOfAction": "行动状态",
+      "coBenefits": "共同利益",
+      "hazardsAddressed": "已解决的风险",
+      "jurisdictionsTakingAction": "采取此项行动的司法管辖区",
+      "exampleActions": "示例操作",
+      "resilienceAttributes": "韧性属性增强",
+      "impactedSectors": "受影响行业"
+    }
+  },
+  "askCdpAi": {
+    "buttonText": "询问 CDP AI",
+    "input": {
+      "placeholder": "询问 CDP..."
+    }
+  }
+}

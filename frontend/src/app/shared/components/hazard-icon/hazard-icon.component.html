@@ -1,0 +1,10 @@
+<div
+  [matTooltip]="
+    hazard === 'OTHERS'
+      ? otherHazardDetails || 'Other'
+      : ('locationCard.hazardNames.' + hazard | translate)
+  "
+  matTooltipPosition="above"
+>
+  <ng-container *ngComponentOutlet="iconComponent(); inputs: iconInputs"></ng-container>
+</div>

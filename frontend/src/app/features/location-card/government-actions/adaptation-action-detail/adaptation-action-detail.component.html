@@ -1,0 +1,335 @@
+<div
+  class="flex flex-col lg:flex-row w-full lg:w-300 max-w-full bg-white rounded-2xl overflow-hidden"
+>
+  <!-- Top/Left Side: Image Placeholder -->
+  @if (showHeroImage) {
+    <div
+      class="relative w-full h-52 lg:w-96 lg:min-h-200 lg:h-auto self-stretch bg-cdp-peach flex-shrink-0 flex items-center justify-center p-6 lg:p-10"
+    >
+      <app-image-placeholder-icon
+        class="opacity-40 w-24 h-24 lg:w-32 lg:h-32"
+      ></app-image-placeholder-icon>
+      <!-- Close Button for Mobile (on the image) -->
+      <button
+        type="button"
+        (click)="close()"
+        aria-label="Close"
+        class="lg:hidden absolute top-4 right-4 p-2 flex justify-center items-center rounded-full bg-white/50 backdrop-blur-sm hover:bg-white/80 transition-colors"
+      >
+        <app-close-icon color="black"></app-close-icon>
+      </button>
+    </div>
+  }
+
+  <!-- Content Side -->
+  <div class="flex-1 flex flex-col items-start min-w-0">
+    <!-- Hero Section -->
+    <div class="self-stretch px-6 pt-6 inline-flex justify-between items-start">
+      <div class="flex-1 inline-flex flex-col justify-start items-start gap-10">
+        <div class="self-stretch flex flex-col justify-start items-start gap-3">
+          @if (locationName) {
+            <div class="inline-flex justify-start items-center gap-4">
+              <mat-icon class="!text-cdp-red !text-sm !w-4 !h-4 leading-none">location_on</mat-icon>
+              <div class="flex justify-start items-center gap-1">
+                <div
+                  class="justify-start text-cdp-text-secondary text-xs font-medium font-roboto uppercase leading-4 tracking-widest"
+                >
+                  {{ locationName }}
+                </div>
+                @if (countryName) {
+                  <div
+                    class="justify-start text-cdp-text-secondary text-xs font-medium font-roboto uppercase leading-4 tracking-widest"
+                  >
+                    ,
+                  </div>
+                  <div
+                    class="justify-start text-cdp-text-secondary text-xs font-medium font-roboto uppercase leading-4 tracking-widest"
+                  >
+                    {{ countryName }}
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <div
+              class="text-cdp-text-secondary text-xs font-medium font-roboto uppercase leading-4 tracking-wider"
+            >
+              {{ 'locationCard.govActions.adaptationAction' | translate }}
+            </div>
+          }
+          <div class="self-stretch inline-flex justify-start items-start gap-2">
+            <h2
+              class="text-black text-[32px] font-normal font-roboto leading-snug break-words hyphens-auto"
+            >
+              {{ action.title | autoTranslate }}
+            </h2>
+          </div>
+          @if (action.status) {
+            <div
+              class="px-2 py-0.5 rounded-sm inline-flex justify-start items-center gap-1 overflow-hidden"
+              [ngClass]="getStatusBadgeClass(action.status)"
+            >
+              <div class="text-right text-white text-xs font-medium font-roboto">
+                {{
+                  action.status.statusType === 'OTHERS' && action.status.otherStatusDetails
+                    ? action.status.otherStatusDetails
+                    : ('locationCard.actionStatuses.' + action.status.statusType | translate)
+                }}
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Cost and Timeframe -->
+        <div class="self-stretch h-auto inline-flex justify-start items-start gap-10">
+          <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
+            <div class="text-cdp-dark text-xs font-bold font-inter">
+              {{ 'locationCard.govActions.detail.totalCostOfAction' | translate }}
+            </div>
+            <div class="inline-flex justify-start items-baseline gap-2">
+              <div class="text-cdp-dark text-2xl font-normal font-roboto tracking-wide">
+                {{ (action.totalCostUsd | currency: 'USD' : 'symbol' : '1.0-0') || '—' }}
+              </div>
+            </div>
+          </div>
+          <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
+            <div class="flex items-center gap-1.5 h-4">
+              <div class="text-cdp-dark text-xs font-bold font-inter">
+                {{
+                  (hasMultipleTimeframes()
+                    ? 'locationCard.govActions.detail.multipleTimeframes'
+                    : 'locationCard.govActions.detail.timeframe'
+                  ) | translate
+                }}
+              </div>
+              @if (hasMultipleTimeframes()) {
+                <app-info-icon
+                  [matTooltip]="
+                    'locationCard.govActions.detail.multipleTimeframesTooltip' | translate
+                  "
+                  size="14"
+                  class="text-gray-400 cursor-help"
+                ></app-info-icon>
+              }
+            </div>
+
+            @if (hasMultipleTimeframes()) {
+              <div class="flex flex-col gap-2 mt-1">
+                @for (t of getTimeframes(); track $index) {
+                  <div class="flex items-baseline gap-2">
+                    <div class="text-cdp-dark text-lg font-normal font-roboto leading-none">
+                      {{ t.main }}
+                    </div>
+                    @if (t.secondary) {
+                      <div class="text-cdp-dark text-xs font-normal font-inter opacity-60">
+                        {{ t.secondary }}
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="inline-flex justify-start items-baseline gap-2">
+                <div class="text-cdp-dark text-2xl font-normal font-roboto tracking-wide">
+                  {{ getTimeframeMain() }}
+                </div>
+                @if (getTimeframeSecondary()) {
+                  <div class="text-cdp-dark text-xs font-normal font-inter opacity-60">
+                    {{ getTimeframeSecondary() }}
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Close Button for Desktop (beside the title) -->
+      <button
+        type="button"
+        (click)="close()"
+        aria-label="Close"
+        class="hidden lg:flex p-2 justify-center items-center rounded-full hover:bg-gray-100 transition-colors"
+      >
+        <app-close-icon color="black"></app-close-icon>
+      </button>
+    </div>
+
+    <!-- Body Content -->
+    <div class="self-stretch px-6 pb-6 bg-white flex flex-col justify-start items-start lg:px-10">
+      <!-- Description with expand/collapse -->
+      @if (action.description) {
+        <div class="self-stretch flex flex-col items-center gap-4 py-6">
+          <div class="self-stretch">
+            <p
+              class="text-black text-base font-normal font-roboto leading-6 tracking-wide"
+              [class.line-clamp-6]="!expanded"
+            >
+              {{ action.description | autoTranslate }}
+            </p>
+          </div>
+
+          <!-- Toggle Button -->
+          <button
+            type="button"
+            (click)="toggleExpand()"
+            class="px-6 py-3 bg-white rounded-3xl shadow-cdp-card border border-gray-100 inline-flex justify-center items-center gap-2.5 hover:bg-gray-50 transition-colors"
+          >
+            <span class="text-cdp-red text-base font-medium font-roboto leading-6 tracking-wide">
+              {{
+                (expanded
+                  ? 'locationCard.govActions.detail.showLess'
+                  : 'locationCard.govActions.detail.showMore'
+                ) | translate
+              }}
+            </span>
+          </button>
+        </div>
+      }
+
+      <div class="self-stretch flex flex-col gap-4">
+        <!-- Climate hazards -->
+        @if (action.hazardsAddressed?.length) {
+          <div class="flex flex-col gap-4 pb-4">
+            <div class="h-px bg-gray-200"></div>
+            <div class="flex gap-4">
+              <div class="flex-1">
+                <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+                  {{ 'locationCard.govActions.detail.climateHazards' | translate }}
+                </p>
+              </div>
+              <div class="flex-1 flex flex-row flex-wrap gap-x-6 gap-y-2">
+                @for (hazard of action.hazardsAddressed; track $index) {
+                  <div class="h-6 inline-flex items-center gap-2">
+                    <app-hazard-icon
+                      [hazard]="hazard.hazardType"
+                      [otherHazardDetails]="hazard.otherHazardDetails"
+                      size="16"
+                    ></app-hazard-icon>
+                    <div
+                      class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight"
+                    >
+                      {{
+                        hazard.hazardType === 'OTHERS'
+                          ? hazard.otherHazardDetails
+                          : ('locationCard.hazardNames.' + hazard.hazardType | translate)
+                      }}
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Status of Action -->
+        @if (action.status) {
+          <div class="flex flex-col gap-4 pb-4">
+            <div class="h-px bg-gray-200"></div>
+            <div class="flex gap-4">
+              <div class="flex-1">
+                <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+                  {{ 'locationCard.govActions.detail.statusOfAction' | translate }}
+                </p>
+              </div>
+              <div class="flex-1">
+                <p class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight">
+                  {{
+                    action.status.statusType === 'OTHERS' && action.status.otherStatusDetails
+                      ? action.status.otherStatusDetails
+                      : ('locationCard.actionStatusesFull.' + action.status.statusType | translate)
+                  }}
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Co-benefits -->
+        @if (action.coBenefits?.length) {
+          <div class="flex flex-col gap-4 pb-4">
+            <div class="h-px bg-gray-200"></div>
+            <div class="flex gap-4">
+              <div class="flex-1">
+                <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+                  {{ 'locationCard.govActions.detail.coBenefits' | translate }}
+                </p>
+              </div>
+              <div class="flex-1">
+                <div
+                  class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight"
+                >
+                  @for (benefit of action.coBenefits; track $index) {
+                    <div class="flex flex-col">
+                      {{ benefit | autoTranslate }}
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Resilience attributes enhanced -->
+        @if (action.resilienceEnhanced?.length) {
+          <div class="flex flex-col gap-4 pb-4">
+            <div class="h-px bg-gray-200"></div>
+            <div class="flex gap-4">
+              <div class="flex-1">
+                <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+                  {{ 'locationCard.govActions.detail.resilienceAttributesEnhanced' | translate }}
+                </p>
+              </div>
+              <div class="flex-1">
+                <div
+                  class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight"
+                >
+                  @for (attr of action.resilienceEnhanced; track $index) {
+                    <div class="flex flex-col">
+                      {{ attr | autoTranslate }}
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Impacted sectors -->
+        @if (action.impactedSectors?.length) {
+          <div class="flex flex-col gap-4 pb-4">
+            <div class="h-px bg-gray-200"></div>
+            <div class="flex gap-4">
+              <div class="flex-1">
+                <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+                  {{ 'locationCard.govActions.detail.impactedSectors' | translate }}
+                </p>
+              </div>
+              <div class="flex-1 flex flex-row flex-wrap gap-x-6 gap-y-2">
+                @for (sector of action.impactedSectors; track $index) {
+                  <div class="h-6 inline-flex items-center gap-2">
+                    <app-sector-icon
+                      [sector]="sector.sectorType"
+                      [otherSectorDetails]="sector.otherSectorDetails"
+                      size="16"
+                    ></app-sector-icon>
+                    <div
+                      class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight"
+                    >
+                      {{
+                        sector.sectorType === 'OTHERS'
+                          ? sector.otherSectorDetails ??
+                            ('locationCard.sectorNames.OTHERS' | translate)
+                          : ('locationCard.sectorNames.' + sector.sectorType | translate)
+                      }}
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
