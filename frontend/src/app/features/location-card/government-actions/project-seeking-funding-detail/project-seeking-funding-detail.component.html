@@ -6,10 +6,6 @@
     <!-- Image placeholder -->
     @if (project.imageUrl) {
       <img [src]="project.imageUrl" alt="" class="absolute inset-0 w-full h-full object-cover" />
-    } @else {
-      <app-image-placeholder-icon
-        class="opacity-40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-150"
-      ></app-image-placeholder-icon>
     }
     <button type="button" (click)="close()" aria-label="Close" class="relative cursor-pointer z-10">
       <app-close-icon></app-close-icon>
@@ -44,22 +40,12 @@
           </p>
         </div>
 
-        <!-- Toggle Button -->
+        <!-- Show More/Less Button -->
         @if (canExpand) {
-          <button
-            type="button"
-            (click)="toggleExpand()"
-            class="px-6 py-3 bg-white rounded-3xl shadow-cdp-card border border-gray-100 inline-flex justify-center items-center gap-2.5 hover:bg-gray-50 transition-colors"
-          >
-            <span class="text-cdp-red text-base font-medium font-roboto leading-6 tracking-wide">
-              {{
-                (expanded
-                  ? 'locationCard.govActions.detail.showLess'
-                  : 'locationCard.govActions.detail.showMore'
-                ) | translate
-              }}
-            </span>
-          </button>
+          <app-show-more-button
+            [isExpanded]="expanded"
+            (clicked)="toggleExpand()"
+          ></app-show-more-button>
         }
       </div>
     }

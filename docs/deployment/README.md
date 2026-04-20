@@ -1,86 +1,134 @@
-# CI/CD Deployment Setup Guide
+# Deployment & CI/CD Guide
 
-Automatic deployments to Cloud Run for both frontend and backend based on the target branch.
+This document provides a comprehensive overview of the deployment architecture, environment configuration, and CI/CD pipelines.
 
-> **Regular deployments:**
-> - Push to `main` to deploy to the **Development** environment.
-> - Push to `production` to deploy to the **Production** environment.
+---
 
-## Overview
+## 🏗 Part 1: Deployment & Infrastructure
 
-| Branch | Environment | Backend Service | Frontend Service | Secret Prefix |
-|--------|-------------|-----------------|------------------|---------------|
-| `main` | `development` | `cdp-server-dev` | `frontend-dev` | `development-` |
-| `production` | `production` | `cdp-server-prod` | `frontend-prod` | `production-` |
-| `PR Previews` | `development` | `cdp-server-preview-pr-X` | `frontend-preview-pr-X` | `development-` |
+The platform uses a fully serverless architecture on **Google Cloud Platform (GCP)**.
 
-All workflows can be triggered manually via `workflow_dispatch`.
+### Architecture Overview
 
-### PR Preview Deployments
-
-When a PR is opened against `main` or `production`, the workflow automatically deploys to a temporary preview environment:
-- **Environment:** Uses `development` configuration and secrets.
-- **Isolation:** Each PR gets its own isolated Cloud Run services.
-- **Cleanup:** Preview services are automatically deleted when the PR is closed.
-
-A comment is added to the PR with the preview URL.
-
-## Secret Management
-
-We use **GCP Secret Manager** as the single source of truth for sensitive environment configuration.
-
-### Secret Naming Convention
-Secrets must be prefixed with the environment name:
-- `development-<SECRET_NAME>`
-- `production-<SECRET_NAME>`
-
-### Required Secrets in GCP
-The following secrets must be defined in GCP Secret Manager for **both** prefixes:
-
-| Secret Name | Description |
-|-------------|-------------|
-| `POSTGRES_PASSWORD` | Password for the Cloud SQL user |
-| `POSTGRES_HOST` | Unix Socket Path for Cloud Run: `/cloudsql/PROJECT_ID:REGION:INSTANCE_NAME` |
-| `POSTGRES_DB` | Name of the PostgreSQL database |
-| `POSTGRES_USER` | Username for the PostgreSQL database |
-| `LLM_API_KEY` | Google VertexAI / Gemini API Key |
-| `ALLOWED_ORIGINS` | CORS allowed origins (comma-separated) |
-| `FIREBASE_API_KEY` | Frontend Firebase API Key |
-| `FIREBASE_AUTH_DOMAIN` | Frontend Firebase Auth Domain |
-| `FIREBASE_PROJECT_ID` | Frontend Firebase Project ID |
-| `GOOGLE_MAPS_API_KEY` | Frontend Google Maps API Key |
-
-### Cloud SQL Instances
-The environments are hardcoded to point to separate Cloud SQL instances:
-- **Development:** `cdp-dev`
-- **Production:** `cdp-prod`
-
-## Architecture Overview
+Both the frontend (Angular) and backend (FastAPI) are containerized and deployed to **Cloud Run**.
 
 ```mermaid
 flowchart TB
-    subgraph GitHub["GitHub Repository"]
-        PR[Pull Request]
-        Main[Main Branch]
+    subgraph GitHub["GitHub (CDPworldwide/pac-api)"]
         Actions[GitHub Actions]
+        SecretsGH[GitHub Secrets]
     end
 
     subgraph GCP["Google Cloud Platform"]
         WIF[Workload Identity Federation]
         AR[Artifact Registry]
-        CR[Cloud Run]
+        CR_FE[Cloud Run: Frontend]
+        CR_BE[Cloud Run: Backend]
+        SM[Secret Manager]
+        SQL[(Cloud SQL: PostgreSQL)]
     end
 
-    PR -->|triggers| Actions
-    Main -->|triggers| Actions
-    Actions -->|authenticates via| WIF
-    WIF -->|grants access to| AR
-    WIF -->|grants access to| CR
-    Actions -->|pushes Docker images| AR
-    AR -->|deploys backend & frontend to| CR
+    Actions -->|Auth via| WIF
+    Actions -->|Push Images| AR
+    Actions -->|Deploy| CR_FE
+    Actions -->|Deploy| CR_BE
+    CR_BE -->|Fetch Sensitive Config| SM
+    CR_FE -->|Fetch API Keys at Build| SM
+    CR_BE -->|Query| SQL
+    SecretsGH -->|Infra Config| Actions
 ```
 
-## CI/CD Pipeline Flow
+### 🌍 Environments & Branching
+
+We maintain separate environments for development, staging (previews), and production.
+
+| Branch | Environment | Backend Service | Frontend Service | Cloud SQL Instance | Secret Prefix |
+|--------|-------------|-----------------|------------------|-------------------|---------------|
+| `main` | `development` | `cdp-server-dev` | `frontend-dev` | `cdp-test` | `development-` |
+| `production` | `production` | `cdp-server-prod` | `frontend-prod` | `cdp-prod` | `production-` |
+| `PR Previews` | `preview` | `cdp-server-preview-pr-X` | `frontend-preview-pr-X` | `cdp-test` | `development-` |
+
+### 🛠 One-Time Infrastructure Setup
+
+Before the first deployment, the following GCP infrastructure must be configured.
+
+#### 1. Enable APIs
+```bash
+gcloud services enable \
+  run.googleapis.com \
+  artifactregistry.googleapis.com \
+  secretmanager.googleapis.com \
+  sqladmin.googleapis.com \
+  iam.googleapis.com
+```
+
+#### 2. Create Artifact Registry
+```bash
+gcloud artifacts repositories create cdp \
+  --repository-format=docker \
+  --location=us-central1 \
+  --description="CDP Docker images"
+```
+
+### 🔑 Configuration & Secrets
+
+Secrets are split between GitHub (for CI/CD infrastructure) and GCP Secret Manager (for application runtime).
+
+#### GCP Secret Manager
+Sensitive variables must be defined in Secret Manager with the appropriate environment prefix. These are accessed by the application at runtime (Backend) or during the build process (Frontend).
+
+| Secret Name | Description |
+|-------------|-------------|
+| `POSTGRES_PASSWORD` | Database user password. |
+| `POSTGRES_HOST` | Database host (e.g., Cloud SQL Unix socket path). |
+| `POSTGRES_DB` | Database name (e.g., `cdp`). |
+| `POSTGRES_USER` | Database username. |
+| `LLM_API_KEY` | API Key for Vertex AI / Gemini. |
+| `ALLOWED_ORIGINS` | CORS origins (comma-separated). |
+| `GOOGLE_MAPS_API_KEY` | Google Maps API Key. |
+
+### 📈 Monitoring & Logs
+
+#### View Deployment Logs
+```bash
+# List revisions for a service
+gcloud run revisions list --service [SERVICE_NAME] --region us-central1
+
+# View logs for the latest revision
+gcloud run services describe [SERVICE_NAME] --region us-central1 --format="value(status.latestReadyRevisionName)" | \
+  xargs -I {} gcloud logging read "resource.labels.revision_name={}" --limit 50
+```
+
+#### Performance Metrics
+Monitoring can be found in the [Cloud Run Console](https://console.cloud.google.com/run) under each service:
+- **Metrics Tab**: Request count, latency, memory/CPU utilization.
+- **Log Health**: Set up Cloud Monitoring alerts for error rate thresholds.
+
+---
+
+## 🚀 Part 2: CI/CD Pipelines
+
+Our automation is handled via GitHub Actions, following a modular "Orchestrator" pattern.
+
+### 🔑 GitHub-GCP Authentication (WIF)
+
+Before the pipelines can run, you must establish a secure connection between GitHub and Google Cloud using **Workload Identity Federation (WIF)**. This eliminates the need for long-lived service account keys.
+
+- **Workload Identity Pool**: `github-actions`
+- **Provider**: `github`
+- **Setup Link**: [Follow the official Google guide for WIF setup](https://github.com/google-github-actions/auth#direct-wif).
+
+### 🔑 Required GitHub Secrets
+
+The following repository secrets must be configured in GitHub (**Settings > Secrets and variables > Actions**) for the pipelines to function:
+
+| Secret Name | Description |
+|-------------|-------------|
+| `GCP_PROJECT_ID` | Your Google Cloud Project ID. |
+| `GCP_WORKLOAD_IDENTITY_PROVIDER` | The full resource name of the WIF provider (e.g., `projects/123/locations/global/workloadIdentityPools/github-actions/providers/github`). |
+| `BASE_URL` | (Optional) The production URL of the backend, used if auto-detection fails. |
+
+### Pipeline Flow
 
 ```mermaid
 sequenceDiagram
@@ -114,94 +162,30 @@ sequenceDiagram
     GH-->>Dev: Show result
 ```
 
-## Quick Links
+### 1. Production & Development (`deploy.yml`)
+Triggered on **push** to `main` or `production` branches.
+- **Orchestration**: Deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the correct `baseUrl` injected at compile time.
+- **Verification**: Automatically rolls back if the backend health check fails.
 
-- **GitHub Secrets:** https://github.com/CDPworldwide/pac-api/settings/secrets/actions
-- **Cloud Run Console:** https://console.cloud.google.com/run
-- **Artifact Registry:** https://console.cloud.google.com/artifacts
-
-## First Deployment Order
-
-```mermaid
-flowchart LR
-    A[1. Configure all secrets] --> B[2. Deploy Backend]
-    B --> C[3. Get Cloud Run URL]
-    C --> D[4. Set BASE_URL secret]
-    D --> E[5. Deploy Frontend]
-    E --> F[6. Verify both services]
-```
-
-1. Complete [Backend Deployment Setup](./backend.md) first
-2. Get the Cloud Run URL after deployment
-3. Set `BASE_URL` GitHub secret with the Cloud Run URL
-4. Complete [Frontend Deployment Setup](./frontend.md)
-
-## Troubleshooting
-
-### "Permission denied" on Workload Identity
-
-Ensure the repository name in the IAM binding matches exactly (case-sensitive):
-```bash
-gcloud iam service-accounts get-iam-policy github-actions-deployer@PROJECT_ID.iam.gserviceaccount.com
-```
-
-### Tests fail in CI but pass locally
-
-Check environment variables - CI may be missing secrets or have different values.
-
-### Updating Secrets
-
-**Google Cloud Secret Manager:**
-```bash
-echo -n "NEW_VALUE" | gcloud secrets versions add SECRET_NAME --data-file=-
-```
-
-**GitHub Secrets:**
-1. Go to Settings → Secrets and variables → Actions
-2. Click on the secret
-3. Click "Update" and paste the new value
+### 2. PR Previews (`backend-deploy.yml` & `frontend.yml`)
+Triggered on **pull request** updates.
+- **Isolation**: Each PR gets a unique service name (`*-pr-{NUMBER}`).
+- **Database**: Uses the `development` database and secrets.
+- **Cleanup**: Previews are automatically deleted when PRs are closed.
 
 ---
 
-## PR Preview Deployments
+## 🔍 Troubleshooting
 
-The `backend-deploy.yml` workflow handles both production and preview deployments:
-
-```mermaid
-flowchart LR
-    subgraph PR["Pull Request"]
-        Open[PR Opened/Updated]
-    end
-
-    subgraph Preview["Preview Environment"]
-        PrevCR[cdp-server-preview]
-        PrevDB[(dev database)]
-    end
-
-    subgraph Prod["Production"]
-        ProdCR[cdp-server]
-        ProdDB[(cdp database)]
-    end
-
-    Open -->|deploy| PrevCR
-    PrevCR -->|connects to| PrevDB
-
-    Merge[PR Merged] -->|deploy| ProdCR
-    ProdCR -->|connects to| ProdDB
+### "Env var type" deployment error
+If switching from a Secret Manager reference to a plain string (or vice-versa), Cloud Run may fail to update.
+**Fix**: Delete the service and redeploy:
+```bash
+gcloud run services delete [SERVICE_NAME] --region us-central1
 ```
 
-### How It Works
+### Permission Denied (WIF)
+Ensure the repository path in the IAM binding matches exactly: `CDPworldwide/pac-api`.
 
-| Event | Service | Database | APP_ENV |
-|-------|---------|----------|---------|
-| PR opened/updated | `cdp-server-preview` | `dev` | `staging` |
-| PR merged to main | `cdp-server` | `cdp` | `production` |
-
-When a PR is opened, the workflow:
-1. Runs tests
-2. Deploys to `cdp-server-preview`
-3. Comments on the PR with the preview URL
-
-When the PR is merged, the workflow:
-1. Runs tests
-2. Deploys to production `cdp-server`
+### Frontend connecting to wrong backend
+The frontend build injects the backend URL at compile time. Ensure the `deploy-backend` job in `deploy.yml` finishes successfully and outputs the correct URL to the `deploy-frontend` job.

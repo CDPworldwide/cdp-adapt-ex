@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from app.schemas.hazard_layer import HazardLayer, ScenarioEnum, TileHazardLayerData
-from app.schemas.location_v2 import HazardEnum
+from app.schemas.location import HazardEnum
 from app.services.clients.earth_engine_client import EarthEngineClient
 from app.services.impls.earth_engine_hazard_data_provider_impl import (
     EarthEngineHazardDataProviderImpl,

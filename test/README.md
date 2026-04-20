@@ -1,6 +1,6 @@
-# PAC API Integration Tests
+# CDP Adaptation & Action Explorer Integration Tests
 
-This directory contains integration tests for the PAC API using Vitest.
+This directory contains integration tests for the CDP Adaptation & Action Explorer using Vitest.
 
 ## Prerequisites
 
@@ -27,7 +27,7 @@ TEST_USER_PASSWORD=TestUser123!
 
 ## Running Tests
 
-Make sure the API is running on `http://localhost:8000` (or configure `API_BASE_URL` in your environment).
+Make sure the API is running (default port is `4352` if started via root `npm run dev:backend`, or `8000` if started directly via FastAPI).
 
 Run all tests:
 ```bash

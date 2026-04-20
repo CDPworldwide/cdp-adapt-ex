@@ -1,5 +1,16 @@
 <div class="flex h-screen flex-col overflow-hidden">
-  <main class="flex min-h-0 flex-1 flex-col overflow-auto">
+  <button
+    type="button"
+    (click)="skipToMain($event)"
+    class="sr-only focus:not-sr-only focus:absolute focus:z-[9999] focus:top-2 focus:left-2 focus:bg-white focus:text-cdp-dark focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:outline-2 focus:outline-cdp-red"
+  >
+    Skip to main content
+  </button>
+  <main
+    id="main-content"
+    tabindex="-1"
+    class="flex min-h-0 flex-1 flex-col overflow-auto focus:outline-none"
+  >
     <router-outlet />
   </main>
 </div>

@@ -58,12 +58,17 @@ export class MainSearchComponent implements OnInit {
 
   hasMapPinSelected = false;
   isMapClicked = false;
+  pinFilter: 'all' | 'city' | 'region' = 'all';
 
   get isMapFocused(): boolean {
     return this.hasMapPinSelected || this.isMapClicked;
   }
 
   private destroyRef = inject(DestroyRef);
+
+  togglePinFilter(type: 'city' | 'region') {
+    this.pinFilter = this.pinFilter === type ? 'all' : type;
+  }
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;

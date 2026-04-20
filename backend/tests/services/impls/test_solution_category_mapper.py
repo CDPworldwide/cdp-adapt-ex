@@ -1,7 +1,7 @@
 """Tests for SolutionCategoryMapper."""
 
 import pytest
-from app.schemas.location_v2 import SolutionCategoryEnum
+from app.schemas.location import SolutionCategoryEnum
 from app.services.impls.solution_category_mapper import SolutionCategoryMapper
 
 

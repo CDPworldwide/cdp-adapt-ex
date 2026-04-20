@@ -12,7 +12,7 @@ from app.models.location_details import (
     PeerSolutions,
     SolutionsExamples,
 )
-from app.schemas.location_v2 import (
+from app.schemas.location import (
     ActionStatusEnum,
     HazardEnum,
     LocationPin,

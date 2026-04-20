@@ -5,7 +5,7 @@ import logging
 from functools import lru_cache
 from pathlib import Path
 
-from app.schemas.location_v2 import LocationProfile
+from app.schemas.location import LocationProfile
 
 logger = logging.getLogger(__name__)
 

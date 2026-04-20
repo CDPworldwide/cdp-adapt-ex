@@ -7,12 +7,12 @@ class PACUser(HttpUser):
     @task(4)
     def get_location_names(self):
         """Task to hit the location names endpoint."""
-        self.client.get("/api/v1/location/names")
+        self.client.get("/api/v1/locations/names")
 
     @task(4)
     def get_location_pins(self):
         """Task to hit the location pins endpoint."""
-        self.client.get("/api/v1/location/pins")
+        self.client.get("/api/v1/locations/pins")
 
     @task(1)
     def chat_completion(self):
@@ -36,12 +36,12 @@ class PACUser(HttpUser):
                 "solutions": {},
             },
         }
-        self.client.post("/api/v1/chat/completions", json=payload)
+        self.client.post("/api/v1/chats/completions", json=payload)
 
     @task(1)
     def get_location_details_by_id(self):
         """Task to hit the location details endpoint by ID."""
-        self.client.get("/api/v1/location/id/46473")
+        self.client.get("/api/v1/locations/id/46473")
 
     def on_start(self):
         """Executed when a simulated user starts."""

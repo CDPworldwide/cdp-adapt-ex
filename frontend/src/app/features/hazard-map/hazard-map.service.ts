@@ -6,9 +6,11 @@ import {
   TileHazardLayerData,
   HazardEnum,
   ScenarioEnum,
-  getEeHazardLayerApiV1EeHazardHazardTypeGet,
-  getHazardLayerConfigApiV1EeLayerConfigGet,
+  getEeHazardLayerApiV1HazardsHazardTypeGet,
+  getHazardLayerConfigApiV1HazardsLayerConfigGet,
   HazardLayerOptions,
+  HazardLayerResponse,
+  HazardLayerConfigResponse,
 } from '@pac-api/client';
 import { environment } from '@env/environment';
 import { createClient, createConfig } from '@pac-api/client/client';
@@ -42,11 +44,11 @@ export class HazardMapService {
     }
 
     const newRequest$ = from(
-      getHazardLayerConfigApiV1EeLayerConfigGet({
+      getHazardLayerConfigApiV1HazardsLayerConfigGet({
         client: this.client,
       }),
     ).pipe(
-      map((response) => response.data || {}),
+      map((response) => (response.data as HazardLayerConfigResponse)?.config || {}),
       catchError((error) => {
         console.error('Error loading hazard layer config:', error);
         return of({});
@@ -89,14 +91,14 @@ export class HazardMapService {
     }
 
     const newRequest$ = from(
-      getEeHazardLayerApiV1EeHazardHazardTypeGet({
+      getEeHazardLayerApiV1HazardsHazardTypeGet({
         client: this.client,
         path: { hazard_type: hazardType },
         query: { scenario: scenario, start_year: startYear, end_year: endYear },
       }),
     ).pipe(
       map((response) => {
-        const hazardData = response.data?.hazard_data;
+        const hazardData = (response.data as HazardLayerResponse)?.layer?.hazard_data;
         if (!this.isTileHazardLayerData(hazardData)) {
           console.error(`Unsupported hazard data type or missing data for ${hazardType}`);
           return null;
@@ -110,7 +112,7 @@ export class HazardMapService {
               .replace('{z}', zoom.toString());
           },
           tileSize: new google.maps.Size(256, 256),
-          name: response.data?.name || 'Hazard Layer',
+          name: (response.data as HazardLayerResponse)?.layer?.name || 'Hazard Layer',
           opacity: 0.7,
         });
       }),

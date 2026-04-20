@@ -1,7 +1,7 @@
 from typing import Optional, Protocol
 
 from app.schemas.hazard_layer import HazardLayer, ScenarioEnum, YearRange
-from app.schemas.location_v2 import HazardEnum
+from app.schemas.location import HazardEnum
 
 
 class HazardDataProviderInterface(Protocol):

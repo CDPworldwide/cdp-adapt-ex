@@ -2,15 +2,14 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of, from } from 'rxjs';
 import { tap, map, catchError, switchMap } from 'rxjs/operators';
 import {
-  chatCompletionsApiV1ChatCompletionsPost,
-  suggestFollowUpsApiV1SuggestFollowUpsSuggestFollowUpsPost,
+  chatCompletionsApiV1ChatsCompletionsPost,
+  suggestFollowUpsApiV1SuggestFollowUpsPost,
   type LocationProfileInput,
   type OpenAiChatCompletionRequest,
   type OpenAiChatCompletionResponse,
 } from '@pac-api/client';
 import { createClient, createConfig } from '@pac-api/client/client';
 import { environment } from '@env/environment';
-import { AuthService } from '../auth/auth.service';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,7 +18,6 @@ import { TranslateService } from '@ngx-translate/core';
   providedIn: 'root',
 })
 export class AskCdpAiService {
-  private authService = inject(AuthService);
   private translateService = inject(TranslateService);
   private client = createClient(
     createConfig({
@@ -39,16 +37,6 @@ export class AskCdpAiService {
 
   private locationContext: LocationProfileInput | null = null;
   private locationContextKey: string | null = null;
-
-  constructor() {
-    this.client.interceptors.request.use((request) => {
-      const token = this.authService.retrieveToken();
-      if (token) {
-        request.headers.set('Authorization', `Bearer ${token}`);
-      }
-      return request;
-    });
-  }
 
   setLocationContext(locationData: LocationProfileInput | null | undefined): void {
     const nextLocationContext = locationData ?? null;
@@ -92,7 +80,7 @@ export class AskCdpAiService {
     this.followUpError.set(null);
 
     return from(
-      suggestFollowUpsApiV1SuggestFollowUpsSuggestFollowUpsPost({
+      suggestFollowUpsApiV1SuggestFollowUpsPost({
         client: this.client,
         body: this.buildChatRequest(),
       }),
@@ -129,7 +117,7 @@ export class AskCdpAiService {
     this.conversationHistory.update((history) => [...history, { role: 'user', content: query }]);
 
     return from(
-      chatCompletionsApiV1ChatCompletionsPost({
+      chatCompletionsApiV1ChatsCompletionsPost({
         client: this.client,
         body: this.buildChatRequest(),
       }),

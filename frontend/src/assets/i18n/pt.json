@@ -7,11 +7,18 @@
       "notFoundExplanation": "É possível que não tenhamos esse local em nosso banco de dados ou que ele ainda não esteja vinculado aos nossos dados de divulgação.",
       "trySearchingAgain": "Por favor, tente pesquisar novamente.",
       "goBack": "Voltar",
+      "noDataTitle": "Não há dados de divulgação disponíveis para '{{location}}'",
+      "noDataBody": "Ainda não temos dados para exibir para este local. Estamos expandindo continuamente nossa cobertura com divulgações históricas e fontes de dados confiáveis adicionais.",
       "searchSuggestions": "Sugestões de pesquisa",
       "disclosesToCdp": "Relatórios de localização para o CDP"
     },
     "description": {
-      "text": "Explore os riscos climáticos locais, as ações e os projetos de adaptação que buscam financiamento de cidades, estados e regiões em todo o mundo."
+      "text": "Explore os riscos climáticos locais, as ações e os projetos de adaptação que buscam financiamento de cidades, estados e regiões em todo o mundo.",
+      "learnMore": "Saber mais"
+    },
+    "legend": {
+      "cities": "Cidades",
+      "statesAndRegions": "Estados e Regiões"
     },
     "nav": {
       "title": "Adaptation & action explorer",
@@ -27,7 +34,12 @@
     "projectsSeekingFunding": "Projetos que buscam financiamento",
     "learnMore": "Saber mais",
     "reportingLeader": "Líder de Relatórios do CDP",
-    "noHazardData": "Não há dados de mapa disponíveis para este perigo."
+    "noHazardData": "Não há dados de mapa disponíveis para este perigo.",
+    "hazardLegend": {
+      "source": "Fonte",
+      "scenario": "Cenários",
+      "timeframe": "Prazos disponíveis"
+    }
   },
   "shared": {
     "showMore": "Mostrar mais",
@@ -41,10 +53,17 @@
     "backToMap": "Voltar ao mapa",
     "header": {
       "estimatedPopulation": "População estimada:",
+      "populationTooltip": "Estimativas populacionais da divulgação do CDP de {{location}}'s",
       "reportingLeader": "Líder de Relatórios do CDP"
     },
+    "footer": {
+      "termsOfUse": "Termos de uso",
+      "methodology": "Metodologia",
+      "downloadAllData": "Baixar todos os dados",
+      "contactUs": "Contate-nos"
+    },
     "tabs": {
-      "hazards": "Perigos",
+      "hazards": "riscos",
       "governmentActions": "Ações governamentais",
       "solutions": "Soluções"
     },
@@ -109,12 +128,19 @@
     "hazardDetail": {
       "topNHazards": "Os {{count}} principais riscos",
       "hazardsDisclosedCount": "({{count}} divulgados)",
+      "topFourHazardsDisclosed": "Os 4 principais riscos ({{count}})",
+      "topHazardsDisclosed": "Principais riscos divulgados ({{count}})",
+      "topTwoComputed": "Os 2 principais riscos calculados",
+      "topFourComputed": "Os 4 principais riscos calculados",
       "noGeeData": "Não há dados disponíveis sobre riscos externos para este perigo.",
       "crvaTitle": "Foi realizada uma Avaliação de Riscos e Vulnerabilidades Climáticas.",
       "crvaRecentYear": "Ano de avaliação mais recente:",
+      "crvaSource": "Fonte: ",
+      "disclosure": "Divulgação",
       "crvaSourceGee": "Fonte: Análise de dados do CDP/GEE",
       "crvaVisitPortal": "Visite o Portal de Dados Abertos do CDP",
       "requestersTitle": "Divulgação de dados solicitada por",
+      "requestersTooltip": "Estas são organizações que solicitaram a divulgação de informações a esta jurisdição. Esta lista não é exaustiva e não indica conformidade governamental nem a finalidade específica para a qual as informações foram divulgadas.",
       "aiSummary": "Resumo de IA",
       "proportionLabel": "Proporção da população mais exposta",
       "vulnerablePopTitle": "Grupos populacionais vulneráveis mais expostos",
@@ -123,12 +149,19 @@
       "challengeLabel": "Justificativa de desafio/apoio",
       "mostExposedSectors": "Setores mais expostos",
       "exploreActions": "Explore as ações de adaptação {{count}}",
-      "noActionsDisclosed": "Nenhuma ação de adaptação foi divulgada para este risco."
+      "noActionsDisclosed": "Nenhuma ação de adaptação foi divulgada para este risco.",
+      "noGeeDataInfo": "O CDP e seus parceiros ainda não identificaram uma fonte de dados ou metodologia confiável para exibir essas informações de forma significativa.",
+      "noMapData": "Não há dados de mapa disponíveis para este perigo."
     },
     "hazardOverview": {
       "title": "Visão geral dos riscos",
+      "source": "Fonte: ",
+      "disclosure": "Divulgação",
+      "sourceTemplate": "Fonte: {{location}} {{year}} Divulgação do CDP",
       "topHazards": "Principais riscos divulgados",
-      "mostExposedSectors": "Setores econômicos mais expostos"
+      "topHazardsTooltip": "Os perigos são classificados de acordo com a probabilidade de ocorrência e a gravidade do impacto potencial. Esta lista apresenta os quatro principais riscos — pode haver outros perigos divulgados que não estão incluídos aqui.",
+      "mostExposedSectors": "Setores econômicos mais expostos",
+      "mostExposedSectorsTooltip": "Os setores são derivados de divulgações e classificados por número de menções ou em ordem alfabética. Isso reflete apenas o que foi divulgado e não indica importância relativa ou abrangência."
     },
     "geeCard": {
       "riskOfOccurrence": "Risco de ocorrência",
@@ -163,7 +196,7 @@
       "actions": "Ações",
       "disclosed": "Divulgados",
       "adaptationGoals": "Metas de adaptação ({{count}} Divulgado)",
-      "hazardsAddressed": "Perigos abordados",
+      "hazardsAddressed": "riscos abordados",
       "targetYear": "Ano alvo",
       "adaptationActions": "Ações de adaptação ({{count}} Divulgadas)",
       "coBenefits": "Benefícios colaterais",
@@ -236,6 +269,8 @@
       "OTHERS": "Outros"
     },
     "solutions": {
+      "alsoHasLocalAction": "também possui ação(ões) nesta categoria",
+      "exampleActionsCount": "Veja {{count}} exemplos de ações",
       "popularSolutionsTitle": "Soluções populares",
       "totalCostOfAction": "Custo total da ação (USD)",
       "timeframe": "Período de tempo",
@@ -245,7 +280,7 @@
       "climateHazards": "Riscos climáticos",
       "statusOfAction": "Estado da ação",
       "coBenefits": "Benefícios colaterais",
-      "hazardsAddressed": "Perigos abordados",
+      "hazardsAddressed": "riscos abordados",
       "jurisdictionsTakingAction": "Jurisdições que tomaram essa medida",
       "exampleActions": "Ações de exemplo",
       "resilienceAttributes": "Atributos de resiliência aprimorados",
@@ -253,9 +288,9 @@
     }
   },
   "askCdpAi": {
-    "buttonText": "Perguntar ao CDP AI",
+    "buttonText": "Pergunte ao Explorador de IA",
     "input": {
-      "placeholder": "Perguntar ao CDP..."
+      "placeholder": "Pergunte ao Explorador de IA..."
     }
   }
 }

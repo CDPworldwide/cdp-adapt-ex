@@ -1,33 +1,45 @@
 {
   "homepage": {
     "hero": {
-      "title": "適応と回復力に関する計画を探る",
+      "title": "適応およびレジリエンスに関する計画を検討する",
       "searchPlaceholder": "場所を検索",
       "notFound": "申し訳ありませんが、'{{location}}'は見つかりませんでした。",
       "notFoundExplanation": "弊社データベースにその場所の情報がないか、開示データとまだ連携されていない可能性があります。",
       "trySearchingAgain": "再度検索をお試しください。",
       "goBack": "戻る",
+      "noDataTitle": "{{location}}に関する開示データは現在ご利用いただけません",
+      "noDataBody": "この場所に関するデータは、現時点ではまだ提供していません。過去の開示情報や信頼できるデータソースを追加し、情報提供範囲を継続的に拡大しています。",
       "searchSuggestions": "検索候補",
-      "disclosesToCdp": "CDPへの位置情報報告"
+      "disclosesToCdp": "CDPへの場所情報報告"
     },
     "description": {
-      "text": "世界中の都市、州、地域から資金提供を求めている、地域の気候変動による災害、対策、適応プロジェクトを閲覧する"
+      "text": "世界各地の都市、州、地域が資金調達を求めている、地域の気候リスク、対策および適応プロジェクトを閲覧する",
+      "learnMore": "詳細を見る"
+    },
+    "legend": {
+      "cities": "都市",
+      "statesAndRegions": "州・地域"
     },
     "nav": {
       "title": "Adaptation & action explorer",
-      "explore": "探検する",
+      "explore": "探索する",
       "compare": "比較する",
-      "fund": "基金"
+      "fund": "資金源"
     }
   },
   "maps": {
-    "totalReportedHazards": "報告された危険の総数",
+    "totalReportedHazards": "報告されたハザードの総数",
     "topHazards": "上位 {{count}} の危険",
-    "implementedActions": "適応策を実施しました",
-    "projectsSeekingFunding": "資金提供を求めるプロジェクト",
-    "learnMore": "もっと詳しく知る",
+    "implementedActions": "実施済みの適応策",
+    "projectsSeekingFunding": "資金調達を目指すプロジェクト",
+    "learnMore": "詳細を見る",
     "reportingLeader": "CDPレポートリーダー",
-    "noHazardData": "このハザード（災害）に関する地図データは利用できません。"
+    "noHazardData": "このハザード（災害）に関する地図データは利用できません。",
+    "hazardLegend": {
+      "source": "原因",
+      "scenario": "想定される状況",
+      "timeframe": "利用可能な期間"
+    }
   },
   "shared": {
     "showMore": "もっと見る",
@@ -41,17 +53,24 @@
     "backToMap": "地図に戻る",
     "header": {
       "estimatedPopulation": "推定人口：",
+      "populationTooltip": "{{location}}のCDP開示に基づく人口推計",
       "reportingLeader": "CDPレポートリーダー"
     },
+    "footer": {
+      "termsOfUse": "利用規約",
+      "methodology": "方法論",
+      "downloadAllData": "すべてのデータをダウンロード",
+      "contactUs": "お問い合わせ"
+    },
     "tabs": {
-      "hazards": "危険",
-      "governmentActions": "政府の行動",
-      "solutions": "ソリューション"
+      "hazards": "ハザード",
+      "governmentActions": "政府の施策",
+      "solutions": "解決策"
     },
     "hazardNames": {
       "HEAT_STRESS": "熱ストレス",
-      "EXTREME_HEAT": "極度の暑さ",
-      "EXTREME_COLD": "極寒",
+      "EXTREME_HEAT": "極端高温",
+      "EXTREME_COLD": "極端低温",
       "SNOW_AND_ICE": "雪と氷",
       "FIRE_WEATHER": "火災気象",
       "DROUGHT": "干ばつ",
@@ -63,8 +82,8 @@
       "TROPICAL_CYCLONE": "ハリケーン／台風",
       "EXTREME_WIND": "強風",
       "STORM": "嵐",
-      "HEAVY_PRECIPITATION": "大雨",
-      "MASS_MOVEMENT": "土砂崩れ・地すべり",
+      "HEAVY_PRECIPITATION": "豪雨",
+      "MASS_MOVEMENT": "マスムーブメント",
       "LOSS_OF_GREEN_SPACE": "緑地の喪失",
       "SOIL_DEGRADATION_EROSION": "土壌劣化",
       "LANDSCAPE_SHIFT_DEGRADATION": "その他の景観の変化",
@@ -75,47 +94,54 @@
       "AGRICULTURE": "農業",
       "FORESTRY": "林業",
       "FISHING": "漁業",
-      "MINING_QUARRYING": "鉱業および採石業",
+      "MINING_QUARRYING": "採鉱・採石",
       "CONSERVATION": "保全",
       "MANUFACTURING": "製造業",
-      "CONSTRUCTION": "工事",
+      "CONSTRUCTION": "建設業",
       "ELECTRICITY_GAS_STEAM_AIR": "電気、ガス、蒸気",
-      "SEWERAGE_WASTE_REMEDIATION": "上下水道廃棄物",
+      "SEWERAGE_WASTE_REMEDIATION": "上下水道・廃棄物処理",
       "WASTE_MANAGEMENT": "廃棄物管理",
-      "WHOLESALE_RETAIL_TRADE": "卸売／小売",
-      "TRANSPORTATION_STORAGE": "輸送と保管",
-      "INFORMATION_COMMUNICATION": "情報通信",
-      "ACCOMMODATION_FOOD_SERVICE": "宿泊と食事",
-      "FINANCIAL_INSURANCE": "金融・保険",
-      "REAL_ESTATE": "不動産",
-      "PROFESSIONAL_SCIENTIFIC_TECHNICAL": "専門職／科学者",
-      "ADMIN_SUPPORT_SERVICES": "管理サポート",
-      "PUBLIC_ADMIN_DEFENCE": "公共行政と国防",
+      "WHOLESALE_RETAIL_TRADE": "卸売・小売業",
+      "TRANSPORTATION_STORAGE": "運送業・倉庫業",
+      "INFORMATION_COMMUNICATION": "情報通信業",
+      "ACCOMMODATION_FOOD_SERVICE": "宿泊・飲食業",
+      "FINANCIAL_INSURANCE": "金融・保険業",
+      "REAL_ESTATE": "不動産業",
+      "PROFESSIONAL_SCIENTIFIC_TECHNICAL": "専門・科学技術サービス業",
+      "ADMIN_SUPPORT_SERVICES": "事務支援",
+      "PUBLIC_ADMIN_DEFENCE": "公務・防衛",
       "EDUCATION": "教育",
-      "HUMAN_HEALTH_SOCIAL_WORK": "人間の健康",
-      "ARTS_ENTERTAINMENT_RECREATION": "芸術とレクリエーション"
+      "HUMAN_HEALTH_SOCIAL_WORK": "保険・医療",
+      "ARTS_ENTERTAINMENT_RECREATION": "芸術・娯楽"
     },
     "solutionCategoryNames": {
-      "ENGINEERED_BUILT_ENVIRONMENT": "エンジニアリングおよび建築環境における活動",
-      "ECONOMIC": "経済対策",
+      "ENGINEERED_BUILT_ENVIRONMENT": "インフラ・建築物に関する取り組み",
+      "ECONOMIC": "経済面の取り組み",
       "LAWS_REGULATIONS": "法律および規制措置",
-      "TECHNOLOGICAL": "技術的行動",
-      "BEHAVIOURAL": "行動",
-      "EDUCATIONAL_INFORMATIONAL": "教育・情報提供活動",
-      "ECOSYSTEM_BASED": "生態系に基づく活動",
-      "SERVICES": "サービスアクション",
-      "GOVERNMENT_POLICIES_PROGRAMS": "政府の政策とプログラムの行動"
+      "TECHNOLOGICAL": "技術面の取り組み",
+      "BEHAVIOURAL": "行動面の取り組み",
+      "EDUCATIONAL_INFORMATIONAL": "教育・情報提供に関する取り組み",
+      "ECOSYSTEM_BASED": "生態系を活用した取り組み",
+      "SERVICES": "サービス面の取り組み",
+      "GOVERNMENT_POLICIES_PROGRAMS": "政府の政策・制度に関する取り組み"
     },
     "hazardDetail": {
       "topNHazards": "上位 {{count}} の危険",
       "hazardsDisclosedCount": "（{{count}} 件開示）",
-      "noGeeData": "このハザードに関する外部ハザードデータは入手できません。",
+      "topFourHazardsDisclosed": "上位4つのハザード（{{count}}）",
+      "topHazardsDisclosed": "開示された上位ハザード（開示数）",
+      "topTwoComputed": "算出された上位2つのハザード",
+      "topFourComputed": "算出された上位4つのハザード",
+      "noGeeData": "このハザードに関する外部データは利用できません。",
       "crvaTitle": "気候リスクと脆弱性の評価が実施されました。",
       "crvaRecentYear": "直近の評価年度：",
+      "crvaSource": "出典：",
+      "disclosure": "開示",
       "crvaSourceGee": "出典：CDP/GEEデータ分析",
-      "crvaVisitPortal": "CDPオープンデータポータルにアクセスしてください",
-      "requestersTitle": "データ開示の要請",
-      "aiSummary": "AIの概要",
+      "crvaVisitPortal": "CDPオープンデータポータルにアクセス",
+      "requestersTitle": "データ開示の要請元",
+      "requestersTooltip": "これは当該管轄区域に対して情報開示を要請した組織の一覧です。この一覧は網羅的なものではなく、また地方政府の法令遵守状況や情報開示の具体的な目的を示すものではありません。",
+      "aiSummary": "AIによる概要",
       "proportionLabel": "最も曝露度の高い人口の割合",
       "vulnerablePopTitle": "最も影響を受けやすい脆弱な集団",
       "factorsLabel": "適応能力に影響を与える要因",
@@ -123,53 +149,60 @@
       "challengeLabel": "異議申し立て／支持の根拠",
       "mostExposedSectors": "最も影響を受けやすいセクター",
       "exploreActions": "{{count}}件の適応策を探る",
-      "noActionsDisclosed": "この災害に対する適応策は公表されていない。"
+      "noActionsDisclosed": "この災害に対する適応策は公表されていない。",
+      "noGeeDataInfo": "CDPとそのパートナーは、この情報を意味のある形で表示および共有するための信頼できるデータソースや方法論をまだ特定できていない。",
+      "noMapData": "このハザード（災害）に関する地図データは利用できません。"
     },
     "hazardOverview": {
       "title": "危険性の概要",
-      "topHazards": "主な危険要因が明らかに",
-      "mostExposedSectors": "最も影響を受けやすい経済セクター"
+      "source": "出典：",
+      "disclosure": "開示",
+      "sourceTemplate": "出典：{{location}} {{year}} CDP開示",
+      "topHazards": "開示された上位ハザード",
+      "topHazardsTooltip": "ハザードは、発生確率と影響の深刻度に基づいてランク付けされています。これは上位4つを示していますが、このリストに含まれていない他のハザードも存在する可能性があります。",
+      "mostExposedSectors": "最も影響を受けやすい経済セクター",
+      "mostExposedSectorsTooltip": "セクターは開示情報に基づいて選定され、言及数またはアルファベット順に並べられています。これは開示された情報のみを反映したものであり、相対的な重要性や網羅性を示すものではありません。"
     },
     "geeCard": {
       "riskOfOccurrence": "発生リスク",
-      "source": "ソース",
-      "scenarios": "シナリオ",
-      "timeframes": "利用可能な時間枠"
+      "source": "原因",
+      "scenarios": "想定される状況",
+      "timeframes": "利用可能な期間"
     },
     "banners": {
       "nonPublic": {
         "title": "報告書は一般公開されていません",
         "description": "この管轄区域のCDPレポートは表示できません。このページに表示されているすべてのハザード情報は、CDPの分析に基づいています。",
-        "cta": "レポートについて詳しくはこちらをご覧ください",
-        "ctaDescription": "CDPにデータを提供している都市、州、地域に関する詳細については、当社のウェブサイトをご覧ください。"
+        "cta": "報告について詳しくはこちらをご覧ください",
+        "ctaDescription": "CDPに報告を行っている都市、州、地域に関する詳細については、CDPのウェブサイトをご覧ください。"
       },
       "nonDisclosing": {
-        "title": "危険は開示されていません",
-        "description": "この管轄区域は、CDPアンケートへの回答において、いかなる危険も報告していません。このページに表示されている危険情報はすべて、CDPの分析に基づいています。",
-        "cta": "CDPオープンデータポータルにアクセスしてください",
-        "ctaDescription": "この管轄区域が報告した内容の詳細については、CDPオープンデータポータルからアンケート全文をダウンロードしてください。"
+        "title": "ハザードは開示されていません",
+        "description": "この管轄区域は、CDP質問書の回答において、いかなるハザードを報告していません。このページに表示されているハザードに関する情報は、すべてCDPの分析に基づいています。",
+        "cta": "CDPオープンデータポータルにアクセス",
+        "ctaDescription": "この管轄区域が報告した内容の詳細については、CDPオープンデータポータルから質問書全文をダウンロードしてください。"
       },
       "noReport": {
         "title": "レポートはありません",
-        "description": "この管轄区域では現在、CDPアンケートによる情報提供は行っていません。このページに表示されているすべての危険情報は、CDPの分析結果に基づいています。",
-        "cta": "レポートについて詳しくはこちらをご覧ください",
-        "ctaDescription": "CDPにデータを提供している都市、州、地域に関する詳細については、当社のウェブサイトをご覧ください。"
+        "description": "この管轄区域は、現在CDP質問書を通じて情報を報告していません。このページに表示されているハザードに関する情報は、すべてCDPの分析に基づいています。",
+        "cta": "報告について詳しくはこちらをご覧ください",
+        "ctaDescription": "CDPに報告を行っている都市、州、地域に関する詳細については、CDPのウェブサイトをご覧ください。"
       }
     },
     "govActions": {
-      "actionsSummary": "アクションの概要",
+      "actionsSummary": "取り組みの概要",
       "all": "すべて",
       "goals": "目標",
       "actions": "行動",
       "disclosed": "開示済み",
       "adaptationGoals": "適応目標（{{count}}公開済み）",
-      "hazardsAddressed": "対処された危険",
+      "hazardsAddressed": "対処したハザード",
       "targetYear": "目標年",
       "adaptationActions": "適応策（{{count}}公開済み件数）",
-      "coBenefits": "共同利益",
+      "coBenefits": "コベネフィット",
       "projectsSeekingFundingWithCount": "資金提供を希望するプロジェクト（{{count}}公開数）",
       "projectSeekingFunding": "資金提供を希望するプロジェクト",
-      "status": "状態",
+      "status": "状況",
       "totalFundingNeeded": "必要な資金総額",
       "types": {
         "adaptationGoal": "適応目標",
@@ -181,10 +214,10 @@
       "remaining": "残り",
       "more": "以上",
       "detail": {
-        "climateHazards": "気候災害",
+        "climateHazards": "気候ハザード",
         "description": "説明",
         "statusOfAction": "行動の状況",
-        "coBenefits": "共同利益",
+        "coBenefits": "コベネフィット",
         "resilienceAttributesEnhanced": "強化されたレジリエンス属性",
         "impactedSectors": "影響を受けるセクター",
         "totalFunded": "資金提供総額",
@@ -236,26 +269,28 @@
       "OTHERS": "その他"
     },
     "solutions": {
+      "alsoHasLocalAction": "このカテゴリのアクションも含まれています",
+      "exampleActionsCount": "{{count}} 個の例のアクションを表示",
       "popularSolutionsTitle": "一般的な解決策",
-      "totalCostOfAction": "総費用（米ドル）",
-      "timeframe": "時間枠",
+      "totalCostOfAction": "取り組みの総費用(米ドル)",
+      "timeframe": "期間",
       "hazardFiltersTitle": "上位{{count}}つの危険フィルター",
       "description": "説明",
       "sourceDescription": "出典：CDPによる{{year}}年の同業都市からの開示情報の集計および分析",
-      "climateHazards": "気候災害",
+      "climateHazards": "気候ハザード",
       "statusOfAction": "行動状況",
-      "coBenefits": "共同利益",
-      "hazardsAddressed": "対処された危険",
+      "coBenefits": "コベネフィット",
+      "hazardsAddressed": "対処したハザード",
       "jurisdictionsTakingAction": "この措置を講じている管轄区域",
       "exampleActions": "アクション例",
-      "resilienceAttributes": "回復力特性が強化されました",
+      "resilienceAttributes": "レジリエンス向上項目",
       "impactedSectors": "影響を受けるセクター"
     }
   },
   "askCdpAi": {
-    "buttonText": "CDP AI に聞く",
+    "buttonText": "AIエクスプローラーに質問する",
     "input": {
-      "placeholder": "CDP に聞く..."
+      "placeholder": "AIエクスプローラーに質問する..."
     }
   }
 }

@@ -1,4 +1,4 @@
-.PHONY: help install install-backend install-client install-frontend build build-client build-frontend test test-backend test-frontend lint lint-backend lint-fix clean db-check db-create kill-port setup-hooks
+.PHONY: help install install-backend install-client install-frontend build build-client build-frontend run-backend run-frontend test test-backend test-frontend lint lint-backend lint-fix clean db-check db-create kill-port setup-hooks
 
 PROJECT_ROOT := $(shell pwd)
 BACKEND_DIR := $(PROJECT_ROOT)/backend
@@ -14,6 +14,8 @@ help:
 	@echo "  build            - Build for production"
 	@echo "  build-client     - Build API client package"
 	@echo "  build-frontend   - Build Angular frontend"
+	@echo "  run-backend      - Start backend development server"
+	@echo "  run-frontend     - Start frontend development server"
 	@echo "  test             - Run all tests"
 	@echo "  test-backend     - Run backend tests"
 	@echo "  test-frontend    - Run frontend tests"
@@ -36,7 +38,7 @@ install-backend:
 ifeq ($(shell uname),Darwin)
 	@cd $(BACKEND_DIR) && CFLAGS="-I$$(brew --prefix graphviz)/include" LDFLAGS="-L$$(brew --prefix graphviz)/lib" uv sync
 else
-	@cd $(BACKEND_DIR) && uv sync || (echo "If pygraphviz fails, install graphviz: apt-get install graphviz graphviz-dev" && exit 1)
+	@cd $(BACKEND_DIR) && uv sync || (echo "If install fails, ensure system dependencies are installed: sudo apt-get install graphviz graphviz-dev libpq-dev" && exit 1)
 endif
 	@cd $(BACKEND_DIR) && test -f .env || cp .env-example .env
 	@echo "Backend setup complete!"
@@ -44,22 +46,32 @@ endif
 install-client:
 	@echo "Setting up client package..."
 	@cd $(CLIENT_DIR) && npm install
+	@cd $(CLIENT_DIR) && npm run generate
 	@cd $(CLIENT_DIR) && npm run build
 	@echo "Client setup complete!"
 
 install-frontend:
 	@echo "Setting up frontend environment..."
-	@cd $(FRONTEND_DIR) && pnpm install
+	@cd $(FRONTEND_DIR) && npm install
 	@cd $(FRONTEND_DIR) && test -f src/environments/environment.development.ts || cp src/environments/environment-example.ts src/environments/environment.development.ts
 	@echo "Frontend setup complete!"
 
 build: build-client build-frontend
 
 build-client:
+	@cd $(CLIENT_DIR) && npm run generate
 	@cd $(CLIENT_DIR) && npm run build
 
 build-frontend:
-	@cd $(FRONTEND_DIR) && pnpm ng build
+	@cd $(FRONTEND_DIR) && npm run build
+
+run-backend:
+	@echo "Starting backend server..."
+	@cd $(BACKEND_DIR) && uv run fastapi dev app/main.py
+
+run-frontend:
+	@echo "Starting frontend server..."
+	@cd $(FRONTEND_DIR) && npm start
 
 test: test-backend test-frontend
 
@@ -67,7 +79,7 @@ test-backend:
 	@cd $(BACKEND_DIR) && uv run pytest
 
 test-frontend:
-	@cd $(FRONTEND_DIR) && pnpm test:ci
+	@cd $(FRONTEND_DIR) && npm run test:ci
 
 load-test:
 	@cd $(BACKEND_DIR) && uv run locust -f tests/load/locustfile.py

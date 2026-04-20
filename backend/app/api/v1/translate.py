@@ -10,7 +10,7 @@ from starlette.concurrency import run_in_threadpool
 router = APIRouter()
 
 
-@router.post("/translate", response_model=TranslateResponse)
+@router.post("", response_model=TranslateResponse)
 @limiter.limit("60 per minute")
 async def translate_texts(
     request: Request,

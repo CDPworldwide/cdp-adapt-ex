@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, from } from 'rxjs';
-import { getAllLocationPinsApiV1LocationPinsGet, LocationPin } from '@pac-api/client';
+import {
+  getAllLocationPinsApiV1LocationsPinsGet,
+  LocationPin,
+  LocationPinsResponse,
+} from '@pac-api/client';
 import { createClient, createConfig } from '@pac-api/client/client';
 import { environment } from '@env/environment';
 
@@ -18,13 +22,13 @@ export class LocationPinsService {
 
   getAllLocationPins(): Observable<LocationPin[]> {
     return from(
-      getAllLocationPinsApiV1LocationPinsGet({
+      getAllLocationPinsApiV1LocationsPinsGet({
         client: this.client,
       }).then((res) => {
         if (res.error) {
           throw res.error;
         }
-        return (res.data || []) as LocationPin[];
+        return ((res.data as LocationPinsResponse)?.pins || []) as LocationPin[];
       }),
     );
   }

@@ -3,7 +3,7 @@
 import re
 from typing import Dict, List, Optional
 
-from app.schemas.location_v2 import Sector, SectorEnum
+from app.schemas.location import Sector, SectorEnum
 from app.shared.logging import logger
 
 _SECTOR_SPLIT_REGEX = re.compile(r"[|]")

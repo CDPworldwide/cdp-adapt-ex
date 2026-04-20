@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from app.schemas.location_v2 import (
+from app.schemas.location import (
     ActionStatus,
     ActionStatusEnum,
     PlannedProjectStatusEnum,

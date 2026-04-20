@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainSearchComponent } from './main-search';
@@ -34,7 +34,9 @@ class FakeLoader implements TranslateLoader {
   standalone: true,
   template: '',
 })
-class StubMapsComponent {}
+class StubMapsComponent {
+  @Input() pinFilter: 'all' | 'city' | 'region' = 'all';
+}
 
 describe('MainSearchComponent', () => {
   let component: MainSearchComponent;

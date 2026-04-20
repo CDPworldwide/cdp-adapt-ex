@@ -17,6 +17,12 @@ export class App implements OnInit {
   private hazardMapService = inject(HazardMapService);
   protected readonly title = signal('frontend');
 
+  skipToMain(event: Event) {
+    event.preventDefault();
+    const target = document.getElementById('page-content');
+    target?.focus();
+  }
+
   ngOnInit() {
     this.languageService.init();
     this.hazardMapService.preloadHazardLayers().subscribe();

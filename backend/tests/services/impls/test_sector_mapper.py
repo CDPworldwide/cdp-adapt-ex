@@ -1,7 +1,7 @@
 """Tests for SectorMapper."""
 
 import pytest
-from app.schemas.location_v2 import Sector, SectorEnum
+from app.schemas.location import Sector, SectorEnum
 from app.services.impls.sector_mapper import SectorMapper
 
 

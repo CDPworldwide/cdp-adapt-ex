@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { A11yModule } from '@angular/cdk/a11y';
 import { TranslateModule } from '@ngx-translate/core';
 import { ActionStatus, ActionStatusEnum } from '@pac-api/client';
 import type {
@@ -11,6 +12,7 @@ import type {
 } from '@pac-api/client';
 
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
+import { NoHazardsIconComponent } from '../../../shared/icons';
 import { AdaptationActionDetailComponent } from './adaptation-action-detail/adaptation-action-detail.component';
 import { AdaptationGoalDetailComponent } from './adaptation-goal-detail/adaptation-goal-detail.component';
 import { ProjectSeekingFundingDetailComponent } from './project-seeking-funding-detail/project-seeking-funding-detail.component';
@@ -27,11 +29,13 @@ export type { HazardSummaryRow, DetailItemType };
     CommonModule,
     TranslateModule,
     HazardIconComponent,
+    NoHazardsIconComponent,
     AdaptationActionDetailComponent,
     AdaptationGoalDetailComponent,
     ProjectSeekingFundingDetailComponent,
     ActionsSummaryComponent,
     AutoTranslatePipe,
+    A11yModule,
   ],
   templateUrl: './government-actions.component.html',
   styleUrls: ['./government-actions.component.css'],
@@ -40,16 +44,27 @@ export class GovernmentActionsComponent implements OnChanges {
   @Input() data: ActionsTab | null = null;
   @Input() locationName: string = '';
   @Input() countryName: string = '';
+  @Input() disclosureYear: number | null | undefined;
   @Input() selectedFilter: string | null = null;
 
   summaryRows: HazardSummaryRow[] = [];
   totalGoals: number = 0;
   totalActions: number = 0;
+  totalProjects: number = 0;
   filteredGoals: AdaptationGoal[] = [];
   filteredActions: AdaptationAction[] = [];
   filteredProjects: ProjectSeekingFunding[] = [];
+
+  get isAllEmpty(): boolean {
+    return this.totalGoals === 0 && this.totalActions === 0 && this.totalProjects === 0;
+  }
+
+  get isAnyEmpty(): boolean {
+    return this.totalGoals === 0 || this.totalActions === 0 || this.totalProjects === 0;
+  }
   selectedType: DetailItemType | null = null;
   selectedItem: AdaptationGoal | AdaptationAction | ProjectSeekingFunding | null = null;
+  private previousFocus: HTMLElement | null = null;
 
   get selectedAction(): AdaptationAction {
     return this.selectedItem as AdaptationAction;
@@ -108,6 +123,7 @@ export class GovernmentActionsComponent implements OnChanges {
     this.summaryRows = Array.from(summaryMap.values());
     this.totalGoals = this.data.goals?.length || 0;
     this.totalActions = this.data.actions?.length || 0;
+    this.totalProjects = this.data.projects?.length || 0;
     this.applyFilter();
   }
 
@@ -145,6 +161,7 @@ export class GovernmentActionsComponent implements OnChanges {
     type: DetailItemType,
     item: AdaptationGoal | AdaptationAction | ProjectSeekingFunding,
   ): void {
+    this.previousFocus = document.activeElement as HTMLElement;
     this.selectedType = type;
     this.selectedItem = item;
   }
@@ -152,6 +169,7 @@ export class GovernmentActionsComponent implements OnChanges {
   closeDetail(): void {
     this.selectedType = null;
     this.selectedItem = null;
+    setTimeout(() => this.previousFocus?.focus());
   }
 
   // TODO: Differentiate between status for adaptation action and status for project seeking funding.

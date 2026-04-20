@@ -3,7 +3,7 @@ from typing import Literal, Union
 
 from pydantic import BaseModel, Field
 
-from app.schemas.location_v2 import HazardEnum
+from app.schemas.location import HazardEnum
 
 
 class YearRange(BaseModel):
@@ -44,3 +44,15 @@ class HazardLayerOptions(BaseModel):
     palette: list[str]
     source: str | None = None
     partial_image_id_templates: dict[str, str]
+
+
+class HazardLayerConfigResponse(BaseModel):
+    """Response wrapper for hazard layer configurations."""
+
+    config: dict[HazardEnum, HazardLayerOptions]
+
+
+class HazardLayerResponse(BaseModel):
+    """Response wrapper for a single hazard layer."""
+
+    layer: HazardLayer

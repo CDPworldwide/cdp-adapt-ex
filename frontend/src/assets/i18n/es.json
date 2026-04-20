@@ -7,11 +7,18 @@
       "notFoundExplanation": "Es posible que esa ubicación no esté registrada en nuestra base de datos, o que aún no esté vinculada a nuestros datos de divulgación.",
       "trySearchingAgain": "Por favor, intente buscar de nuevo.",
       "goBack": "Volver",
+      "noDataTitle": "No hay datos disponibles para la divulgación de información en '{{location}}'.",
+      "noDataBody": "Aún no tenemos datos para mostrar en esta ubicación. Estamos ampliando continuamente nuestra cobertura con divulgaciones históricas y fuentes de datos confiables adicionales.",
       "searchSuggestions": "Sugerencias de búsqueda",
       "disclosesToCdp": "Informes de ubicación a CDP"
     },
     "description": {
-      "text": "Explore los riesgos climáticos locales, las acciones y los proyectos de adaptación que buscan financiación de ciudades, estados y regiones de todo el mundo."
+      "text": "Explore los riesgos climáticos locales, las acciones y los proyectos de adaptación que buscan financiación de ciudades, estados y regiones de todo el mundo.",
+      "learnMore": "Más información"
+    },
+    "legend": {
+      "cities": "Ciudades",
+      "statesAndRegions": "Estados y Regiones"
     },
     "nav": {
       "title": "Adaptation & action explorer",
@@ -27,7 +34,12 @@
     "projectsSeekingFunding": "Proyectos que buscan financiación",
     "learnMore": "Más información",
     "reportingLeader": "Líder de informes de CDP",
-    "noHazardData": "No hay datos cartográficos disponibles para este peligro."
+    "noHazardData": "No hay datos cartográficos disponibles para este peligro.",
+    "hazardLegend": {
+      "source": "Fuente",
+      "scenario": "Escenarios",
+      "timeframe": "Plazos disponibles"
+    }
   },
   "shared": {
     "showMore": "Mostrar más",
@@ -41,7 +53,14 @@
     "backToMap": "Volver al mapa",
     "header": {
       "estimatedPopulation": "Población estimada:",
+      "populationTooltip": "Estimaciones de población según la información divulgada por {{location}} en el CDP.",
       "reportingLeader": "Líder de informes de CDP"
+    },
+    "footer": {
+      "termsOfUse": "Condiciones de uso",
+      "methodology": "Metodología",
+      "downloadAllData": "Descargar todos los datos",
+      "contactUs": "Contáctanos"
     },
     "tabs": {
       "hazards": "Peligros",
@@ -109,12 +128,19 @@
     "hazardDetail": {
       "topNHazards": "Los {{count}} principales riesgos",
       "hazardsDisclosedCount": "({{count}} revelados)",
+      "topFourHazardsDisclosed": "Los 4 principales riesgos ({{count}})",
+      "topHazardsDisclosed": "Principales riesgos revelados ({{count}})",
+      "topTwoComputed": "Los 2 principales riesgos calculados",
+      "topFourComputed": "Los 4 principales riesgos calculados",
       "noGeeData": "No se dispone de datos externos sobre peligros para este peligro.",
       "crvaTitle": "Se ha realizado una evaluación de riesgos y vulnerabilidad climática.",
       "crvaRecentYear": "Año de evaluación más reciente:",
+      "crvaSource": "Fuente: ",
+      "disclosure": "Divulgación",
       "crvaSourceGee": "Fuente: Análisis de datos de CDP/GEE",
       "crvaVisitPortal": "Visite el portal de datos abiertos de CDP.",
       "requestersTitle": "Divulgación de datos solicitada por",
+      "requestersTooltip": "Estas son organizaciones que han solicitado información a esta jurisdicción. Esta lista no es exhaustiva y no indica el cumplimiento por parte del gobierno ni el propósito específico para el cual se divulgó la información.",
       "aiSummary": "Resumen de IA",
       "proportionLabel": "Proporción de la población más expuesta",
       "vulnerablePopTitle": "Los grupos de población vulnerables son los más expuestos.",
@@ -123,12 +149,19 @@
       "challengeLabel": "Justificación del desafío/apoyo",
       "mostExposedSectors": "Sectores más expuestos",
       "exploreActions": "Explorar {{count}} acciones de adaptación",
-      "noActionsDisclosed": "No se han revelado medidas de adaptación para este riesgo."
+      "noActionsDisclosed": "No se han revelado medidas de adaptación para este riesgo.",
+      "noGeeDataInfo": "CDP y sus socios aún no han identificado una fuente de datos o una metodología fiable para mostrar esta información de forma significativa.",
+      "noMapData": "No hay datos cartográficos disponibles para este peligro."
     },
     "hazardOverview": {
       "title": "Descripción general de los riesgos",
+      "source": "Fuente: ",
+      "disclosure": "Divulgación",
+      "sourceTemplate": "Fuente: {{location}} {{year}} Divulgación de CDP",
       "topHazards": "Principales riesgos revelados",
-      "mostExposedSectors": "Sectores económicos más expuestos"
+      "topHazardsTooltip": "Los riesgos se clasifican según su probabilidad de ocurrencia y la gravedad de su impacto. Aquí se muestran los cuatro principales; puede haber otros riesgos divulgados que no se incluyen en esta lista.",
+      "mostExposedSectors": "Sectores económicos más expuestos",
+      "mostExposedSectorsTooltip": "Los sectores se derivan de las divulgaciones y se ordenan por número de menciones o alfabéticamente. Esto refleja únicamente la información divulgada y no indica su importancia relativa ni su exhaustividad."
     },
     "geeCard": {
       "riskOfOccurrence": "Riesgo de ocurrencia",
@@ -236,6 +269,8 @@
       "OTHERS": "Otros"
     },
     "solutions": {
+      "alsoHasLocalAction": "También tiene acciones en esta categoría.",
+      "exampleActionsCount": "Ver {{count}} ejemplos de acciones",
       "popularSolutionsTitle": "Soluciones populares",
       "totalCostOfAction": "Costo total de la acción (USD)",
       "timeframe": "Periodo de tiempo",
@@ -253,9 +288,9 @@
     }
   },
   "askCdpAi": {
-    "buttonText": "Preguntar a CDP AI",
+    "buttonText": "Pregúntale al explorador de IA",
     "input": {
-      "placeholder": "Preguntar a CDP..."
+      "placeholder": "Pregúntale al explorador de IA..."
     }
   }
 }

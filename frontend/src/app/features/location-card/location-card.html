@@ -65,17 +65,19 @@
               {{ formatPopulation(data.population) }}
             </div>
           </div>
-          <div
+          <button
+            type="button"
             matTooltip="{{
               'locationCard.header.populationTooltip' | translate: { location: data.name }
             }}"
+            aria-label="Population information"
             class="flex items-center justify-center cursor-pointer group"
           >
             <app-info-icon
               size="14"
               class="text-cdp-neutral-05 group-hover:text-cdp-dark transition-colors"
             ></app-info-icon>
-          </div>
+          </button>
         </div>
       </div>
     </div>
@@ -90,8 +92,9 @@
       class="flex-1 py-3 px-2 text-sm font-medium text-center transition-colors"
       [ngClass]="{
         'text-gray-900 border-b-2 border-gray-900': activeTab === 'hazards',
-        'text-gray-500 hover:text-gray-700': activeTab !== 'hazards'
+        'text-cdp-dark hover:text-cdp-dark': activeTab !== 'hazards'
       }"
+      id="tab-hazards"
       role="tab"
       [attr.aria-selected]="activeTab === 'hazards'"
       aria-controls="hazards-panel"
@@ -103,8 +106,9 @@
       class="flex-1 py-3 px-2 text-sm font-medium text-center transition-colors"
       [ngClass]="{
         'text-gray-900 border-b-2 border-gray-900': activeTab === 'actions',
-        'text-gray-500 hover:text-gray-700': activeTab !== 'actions'
+        'text-cdp-dark hover:text-cdp-dark': activeTab !== 'actions'
       }"
+      id="tab-actions"
       role="tab"
       [attr.aria-selected]="activeTab === 'actions'"
       aria-controls="government-actions-panel"
@@ -116,8 +120,9 @@
       class="flex-1 py-3 px-2 text-sm font-medium text-center transition-colors"
       [ngClass]="{
         'text-gray-900 border-b-2 border-gray-900': activeTab === 'solutions',
-        'text-gray-500 hover:text-gray-700': activeTab !== 'solutions'
+        'text-cdp-dark hover:text-cdp-dark': activeTab !== 'solutions'
       }"
+      id="tab-solutions"
       role="tab"
       [attr.aria-selected]="activeTab === 'solutions'"
       aria-controls="solutions-panel"
@@ -129,20 +134,32 @@
   <!-- Tab Content -->
   <div class="py-6 px-0 lg:px-6">
     <!-- Hazards Tab -->
-    <div *ngIf="activeTab === 'hazards'" id="hazards-panel" role="tabpanel">
+    <div
+      *ngIf="activeTab === 'hazards'"
+      id="hazards-panel"
+      role="tabpanel"
+      aria-labelledby="tab-hazards"
+    >
       <app-hazards
         [data]="data"
         [jurisdictionBounds]="jurisdictionBounds"
         (exploreActions)="exploreHazardActions($event)"
+        (tabChange)="setActiveTab($event)"
       ></app-hazards>
     </div>
 
     <!-- Government actions Tab -->
-    <div *ngIf="activeTab === 'actions'" id="government-actions-panel" role="tabpanel">
+    <div
+      *ngIf="activeTab === 'actions'"
+      id="government-actions-panel"
+      role="tabpanel"
+      aria-labelledby="tab-actions"
+    >
       <app-government-actions
         [data]="data.governmentActions"
         [locationName]="data.name"
         [countryName]="data.countryName"
+        [disclosureYear]="data.disclosureYear"
         [selectedFilter]="selectedHazardFilter"
       ></app-government-actions>
     </div>
@@ -153,6 +170,7 @@
       class="min-h-[200px]"
       id="solutions-panel"
       role="tabpanel"
+      aria-labelledby="tab-solutions"
     >
       <app-solutions [data]="data"></app-solutions>
     </div>

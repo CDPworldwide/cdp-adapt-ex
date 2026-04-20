@@ -98,8 +98,8 @@ jobs:
             DEBUG=${{ env.ENVIRONMENT == 'production' && 'false' || 'true' }}
             LOG_FORMAT=json
             POSTGRES_PORT=5432
-            RATE_LIMIT_CHAT=500 per minute
-            RATE_LIMIT_SUGGEST_FOLLOW_UPS=500 per minute
+            RATE_LIMIT_CHAT=10 per minute
+            RATE_LIMIT_SUGGEST_FOLLOW_UPS=10 per minute
           env_vars_update_strategy: overwrite
 
       - name: Show deployed service URL

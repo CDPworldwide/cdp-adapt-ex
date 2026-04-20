@@ -4,7 +4,7 @@
       "title": "Explore plans around adaptation and resilience",
       "searchPlaceholder": "Search for a location",
       "notFound": "Sorry, we couldn't find '{{location}}'",
-      "notFoundExplanation": "We may not have that location in our database, or it may not yet be connected to our disclosure data.",
+      "notFoundExplanation": "We may not have that location in our database, or it may not yet be connected to our disclosure data. Please try searching again.",
       "trySearchingAgain": "Please try searching again",
       "goBack": "Go back",
       "noDataTitle": "No disclosure data available for '{{location}}'",
@@ -73,7 +73,16 @@
       "sectionTitle": "Regional Vulnerabilities",
       "populationLabel": "Population Exposed to Primary Hazards",
       "gdpLabel": "Total GDP at Risk in USD",
-      "sectorsLabel": "Vulnerable economic sectors"
+      "sectorsLabel": "Vulnerable economic sectors",
+      "noHazardsBanner": {
+        "title": "No hazards disclosed",
+        "description": "This jurisdiction didn’t report any hazards on their CDP report.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP open data portal.",
+        "button": "Visit the CDP Open Data Portal"
+      },
+      "noHazardsContent": {
+        "title": "{{location}} hasn't disclosed hazard information for their jurisdiction as of the {{year}} CDP disclosure",
+        "description": "Currently there isn’t any hazard information in the {{year}} CDP disclosure from {{location}}. There could be a few reasons for this, but for the sake of trust, accuracy and quality we aren’t showing other information.<br><br>As this project matures we are hoping to bring in previous years disclosures if they exist. We also want to apply methodologies and trusted external hazard data sources to compute hazards that could impact this location, as well as other locations globally. You can view other disclosed data for this location in the <a class=\"gov-actions-link text-cdp-red font-medium cursor-pointer hover:underline\">Government actions</a> tab for goals, actions and other projects for {{location}}."
+      }
     },
     "hazardNames": {
       "HEAT_STRESS": "Heat Stress",
@@ -134,7 +143,7 @@
       "PUBLIC_ADMIN_DEFENCE": "Public Admin & Defense",
       "EDUCATION": "Education",
       "HUMAN_HEALTH_SOCIAL_WORK": "Human Health",
-      "ARTS_ENTERTAINMENT_RECREATION": "Arts & Recreation",
+      "ARTS_ENTERTAINMENT_RECREATION": "Arts & recreation",
       "CONSERVATION": "Conservation",
       "OTHERS": "Other"
     },
@@ -170,15 +179,9 @@
       "topHazardsDisclosed": "Top hazards disclosed ({{count}} disclosed)",
       "topTwoComputed": "Top 2 computed hazards",
       "topFourComputed": "Top 4 computed hazards",
-      "crvaTitle": "A Climate Risk and Vulnerability Assessment has been undertaken",
-      "crvaRecentYear": "Most recent year of assessment:",
-      "crvaSource": "Source:",
-      "crvaSourceGee": "Source: CDP/GEE data analysis",
-      "crvaVisitPortal": "Visit the CDP Open Data Portal",
       "requestersTitle": "Data disclosure requested by",
       "requestersTooltip": "These are organizations that have requested disclosure from this jurisdiction. This list is not exhaustive and does not indicate government compliance or the specific purpose for which information was disclosed.",
       "unknown": "Unknown",
-      "noData": "No hazard data available",
       "mostExposedSectors": "Most exposed sectors",
       "showMoreHazards": "Show more hazards",
       "aiSummary": "AI summary",
@@ -240,8 +243,24 @@
       "remaining": "Remaining",
       "totalFundingNeeded": "Total funding needed",
       "more": "more",
-
       "noData": "No government actions data available.",
+      "noActionsBanner": {
+        "title": "Not all information was disclosed",
+        "description": "This jurisdiction is missing some information on their CDP report.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP open data portal.",
+        "button": "Visit the CDP Open Data Portal"
+      },
+      "noGoals": {
+        "title": "Adaptation goals",
+        "description": "<strong>{{location}}</strong> didn’t disclose any hazard related <strong>adaptation goals</strong> in {{year}} in the CDP disclosure. There can be many reasons why the data hasn’t been disclosed, and ideally we would like to have them show up here."
+      },
+      "noActions": {
+        "title": "Adaptation actions",
+        "description": "<strong>{{location}}</strong> didn’t disclose any hazard related <strong>adaptation actions</strong> in {{year}} in the CDP disclosure. There could be any reason why we can’t display the data, but we hope to increase the data available over future and past years as we expand the capabilities of this product."
+      },
+      "noProjects": {
+        "title": "Projects seeking funding",
+        "description": "<strong>{{location}}</strong> didn’t disclose any hazard related <strong>projects seeking funding</strong> in {{year}} in the CDP disclosure. Due to the lack of information we can’t provide any details or insights into funding gaps for {{location}}’s projects or progress in their process to obtain funding or manage these projects."
+      },
       "detail": {
         "climateHazards": "Climate hazards",
         "description": "Description",
@@ -262,6 +281,7 @@
         "showMore": "Show more",
         "showLess": "Show less",
         "totalCostOfAction": "Total cost of action (USD)",
+        "totalCostTooltip": "Total project cost and investment needed provided by discloser in selected currency, converted to USD by CDP.",
         "timeframe": "Timeframe",
         "multipleTimeframes": "Multiple timeframes",
         "multipleTimeframesTooltip": "This location disclosed multiple similar actions with multiple timeframes."
@@ -276,7 +296,6 @@
         "POST_IMPLEMENTATION": "Post-implementation"
       }
     },
-
     "actionStatuses": {
       "SCOPING": "Scoping",
       "PRE_FEASIBILITY_STUDY": "Pre-feasibility study",
@@ -291,7 +310,6 @@
       "ACTION_IN_OPERATION_TARGETED": "Action in operation",
       "OTHERS": "Other"
     },
-
     "actionStatusesFull": {
       "SCOPING": "Scoping",
       "PRE_FEASIBILITY_STUDY": "Pre-feasibility study",
@@ -306,7 +324,6 @@
       "ACTION_IN_OPERATION_TARGETED": "Action in operation (targeted to sector/location)",
       "OTHERS": "Other"
     },
-
     "solutions": {
       "alsoHasLocalAction": "also has action(s) in this category",
       "exampleActionsCount": "View {{count}} example actions",
@@ -323,11 +340,20 @@
       "jurisdictionsTakingAction": "Jurisdictions taking this action",
       "exampleActions": "Example actions",
       "resilienceAttributes": "Resilience attributes enhanced",
-      "impactedSectors": "Impacted sectors"
+      "impactedSectors": "Impacted sectors",
+      "noSolutionsBanner": {
+        "title": "Not all information was disclosed",
+        "description": "This jurisdiction is missing some information on their CDP report.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP open data portal.",
+        "button": "Visit the CDP Open Data Portal"
+      },
+      "noSolutionsContent": {
+        "title": "{{location}} hasn't disclosed hazard information for their jurisdiction as of the {{year}} CDP disclosure",
+        "description": "Currently there isn’t any hazard information in the {{year}} CDP disclosure from {{location}}. There could be a few reasons for this, but for the sake of trust, accuracy and quality we aren’t showing other information.<br><br>Since we don't have hazard data we can’t compute comparable locations that are affected by similar environmental hazards. What you could see here, and other locations in this product have solutions here, is a list of categories of solutions that are implemented other places around the world that share similar hazard profiles.<br><br>Solutions are categorized actions that could be applied at other locations around the world. Enabling users to look at their location and see what others are doing around the world that could be applied or implemented here."
+      }
     }
   },
   "askCdpAi": {
-    "buttonText": "Ask CDP AI",
+    "buttonText": "Ask the AI Explorer",
     "emptyState": {
       "title": "Ask a question about {{location}}.",
       "description": "Use the input below to ask about risks, actions, or climate context for this location."
@@ -344,7 +370,7 @@
       "wasThisHelpful": "Was this helpful?"
     },
     "input": {
-      "placeholder": "Ask CDP..."
+      "placeholder": "Ask the AI Explorer..."
     }
   },
   "cityDetail": {

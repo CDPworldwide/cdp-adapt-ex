@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, from, map, catchError, of, throwError } from 'rxjs';
 import {
-  getLocationApiV1LocationLocationNameGet,
-  getLocationByOrgIdApiV1LocationIdOrganizationIdGet,
-  getAllLocationNamesApiV1LocationNamesGet,
-  type GetAllLocationNamesApiV1LocationNamesGetResponse,
+  getLocationApiV1LocationsLocationNameGet,
+  getLocationByOrgIdApiV1LocationsIdOrganizationIdGet,
+  getAllLocationNamesApiV1LocationsNamesGet,
+  type LocationNamesResponse,
 } from '@pac-api/client';
-import type { LocationProfile } from '@pac-api/client';
+import type { LocationProfile, LocationResponse } from '@pac-api/client';
 import { createClient, createConfig } from '@pac-api/client/client';
 import { environment } from '@env/environment';
 import { LocationSuggestion } from './location-suggestion';
@@ -23,7 +23,7 @@ export class LocationService {
 
   getLocation(locationName: string): Observable<LocationProfile> {
     return from(
-      getLocationApiV1LocationLocationNameGet({
+      getLocationApiV1LocationsLocationNameGet({
         client: this.client,
         path: { location_name: locationName },
       }),
@@ -32,14 +32,14 @@ export class LocationService {
         if (response.error) {
           throw response;
         }
-        return response.data as LocationProfile;
+        return (response.data as LocationResponse).location as LocationProfile;
       }),
     );
   }
 
   getLocationByOrganizationId(organizationId: string): Observable<LocationProfile> {
     return from(
-      getLocationByOrgIdApiV1LocationIdOrganizationIdGet({
+      getLocationByOrgIdApiV1LocationsIdOrganizationIdGet({
         client: this.client,
         path: { organization_id: Number(organizationId) },
       }),
@@ -48,14 +48,14 @@ export class LocationService {
         if (response.error) {
           throw response;
         }
-        return response.data as LocationProfile;
+        return (response.data as LocationResponse).location as LocationProfile;
       }),
     );
   }
 
   getAllLocationNames(): Observable<LocationSuggestion[]> {
     return from(
-      getAllLocationNamesApiV1LocationNamesGet({
+      getAllLocationNamesApiV1LocationsNamesGet({
         client: this.client,
       }),
     ).pipe(
@@ -64,21 +64,19 @@ export class LocationService {
           throw response.error;
         }
 
-        return (response.data as GetAllLocationNamesApiV1LocationNamesGetResponse).flatMap(
-          (location) => {
-            if (!location.name) {
-              return [];
-            }
+        return (response.data as LocationNamesResponse).locations.flatMap((location) => {
+          if (!location.name) {
+            return [];
+          }
 
-            return [
-              {
-                organizationId: location.id,
-                name: location.name,
-                disclosesToCDP: true,
-              },
-            ];
-          },
-        );
+          return [
+            {
+              organizationId: location.id,
+              name: location.name,
+              disclosesToCDP: true,
+            },
+          ];
+        });
       }),
       catchError((error) => {
         console.error('Error fetching location names:', error);

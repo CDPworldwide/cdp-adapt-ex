@@ -1,7 +1,7 @@
 """Tests for HazardMapper."""
 
 import pytest
-from app.schemas.location_v2 import Hazard, HazardEnum
+from app.schemas.location import Hazard, HazardEnum
 from app.services.impls.hazard_mapper import HazardMapper
 
 

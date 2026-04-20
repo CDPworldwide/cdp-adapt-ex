@@ -1,6 +1,6 @@
 """Solution category mapping logic."""
 
-from app.schemas.location_v2 import SolutionCategoryEnum
+from app.schemas.location import SolutionCategoryEnum
 from app.shared.logging import logger
 
 _SOLUTION_CATEGORY_MAPPING: dict[str, SolutionCategoryEnum] = {

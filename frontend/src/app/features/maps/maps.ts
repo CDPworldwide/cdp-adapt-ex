@@ -6,6 +6,9 @@ import {
   ElementRef,
   OnDestroy,
   NgZone,
+  Input,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -33,7 +36,8 @@ const REGION_PIN_SELECTED_ICON_URL = '/assets/icons/cdp_map_pin-blue-selected.sv
   templateUrl: './maps.html',
   styleUrls: ['../shared-feature-styles.css', './maps.css'],
 })
-export class Maps implements OnInit, AfterViewInit, OnDestroy {
+export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+  @Input() pinFilter: 'all' | 'city' | 'region' = 'all';
   @ViewChild('map', { static: true }) mapElementRef!: ElementRef;
   private googleMap!: google.maps.Map;
   private markers: Map<
@@ -123,6 +127,22 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
     this.topFourHazards = (data.hazards?.hazards || [])
       .map((hazardProfile: HazardProfile) => hazardProfile.hazard)
       .slice(0, 4);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['pinFilter']) {
+      this.applyPinFilter();
+    }
+  }
+
+  private applyPinFilter(): void {
+    this.markers.forEach((markerData) => {
+      const show =
+        this.pinFilter === 'all' ||
+        (this.pinFilter === 'city' && markerData.orgType === OrgTypeEnum.CITY) ||
+        (this.pinFilter === 'region' && markerData.orgType === OrgTypeEnum.STATE_AND_REGION);
+      markerData.marker.map = show ? this.googleMap : null;
+    });
   }
 
   ngAfterViewInit(): void {}

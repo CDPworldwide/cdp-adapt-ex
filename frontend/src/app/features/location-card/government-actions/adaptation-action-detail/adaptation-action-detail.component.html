@@ -6,9 +6,6 @@
     <div
       class="relative w-full h-52 lg:w-96 lg:min-h-200 lg:h-auto self-stretch bg-cdp-peach flex-shrink-0 flex items-center justify-center p-6 lg:p-10"
     >
-      <app-image-placeholder-icon
-        class="opacity-40 w-24 h-24 lg:w-32 lg:h-32"
-      ></app-image-placeholder-icon>
       <!-- Close Button for Mobile (on the image) -->
       <button
         type="button"
@@ -83,8 +80,19 @@
         <!-- Cost and Timeframe -->
         <div class="self-stretch h-auto inline-flex justify-start items-start gap-10">
           <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
-            <div class="text-cdp-dark text-xs font-bold font-inter">
-              {{ 'locationCard.govActions.detail.totalCostOfAction' | translate }}
+            <div class="flex items-center gap-1.5 h-4">
+              <div class="text-cdp-dark text-xs font-bold font-inter">
+                {{ 'locationCard.govActions.detail.totalCostOfAction' | translate }}
+              </div>
+              <div
+                [matTooltip]="'locationCard.govActions.detail.totalCostTooltip' | translate"
+                class="flex items-center justify-center cursor-pointer group"
+              >
+                <app-info-icon
+                  size="14"
+                  class="text-cdp-neutral-05 group-hover:text-cdp-dark transition-colors"
+                ></app-info-icon>
+              </div>
             </div>
             <div class="inline-flex justify-start items-baseline gap-2">
               <div class="text-cdp-dark text-2xl font-normal font-roboto tracking-wide">
@@ -162,6 +170,7 @@
         <div class="self-stretch flex flex-col items-center gap-4 py-6">
           <div class="self-stretch">
             <p
+              #descriptionElement
               class="text-black text-base font-normal font-roboto leading-6 tracking-wide"
               [class.line-clamp-6]="!expanded"
             >
@@ -169,21 +178,13 @@
             </p>
           </div>
 
-          <!-- Toggle Button -->
-          <button
-            type="button"
-            (click)="toggleExpand()"
-            class="px-6 py-3 bg-white rounded-3xl shadow-cdp-card border border-gray-100 inline-flex justify-center items-center gap-2.5 hover:bg-gray-50 transition-colors"
-          >
-            <span class="text-cdp-red text-base font-medium font-roboto leading-6 tracking-wide">
-              {{
-                (expanded
-                  ? 'locationCard.govActions.detail.showLess'
-                  : 'locationCard.govActions.detail.showMore'
-                ) | translate
-              }}
-            </span>
-          </button>
+          <!-- Show More/Less Button -->
+          @if (canExpand) {
+            <app-show-more-button
+              [isExpanded]="expanded"
+              (clicked)="toggleExpand()"
+            ></app-show-more-button>
+          }
         </div>
       }
 

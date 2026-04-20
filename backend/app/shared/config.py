@@ -17,11 +17,10 @@ class Environment(str, Enum):
     """Application environment types.
 
     Defines the possible environments the application can run in:
-    development, staging, production, and test.
+    development, production, and test.
     """
 
     DEVELOPMENT = "development"
-    STAGING = "staging"
     PRODUCTION = "production"
     TEST = "test"
 
@@ -39,8 +38,6 @@ def get_environment() -> Environment:
     match env_val:
         case "production" | "prod":
             return Environment.PRODUCTION
-        case "staging" | "stage":
-            return Environment.STAGING
         case "test":
             return Environment.TEST
         case _:
@@ -163,20 +160,6 @@ class Settings:
         )
         self.MAX_LLM_CALL_RETRIES = int(os.getenv("MAX_LLM_CALL_RETRIES", "3"))
 
-        # JWT Configuration
-        self.JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "")
-        self.JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-        self.JWT_ACCESS_TOKEN_EXPIRE_DAYS = int(
-            os.getenv("JWT_ACCESS_TOKEN_EXPIRE_DAYS", "30")
-        )
-
-        self.DISABLE_AUTH = os.getenv("DISABLE_AUTH", "false").lower() in (
-            "true",
-            "1",
-            "t",
-            "yes",
-        )
-
         # Logging Configuration
         self.LOG_DIR = Path(os.getenv("LOG_DIR", "../logs"))
         self.LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
@@ -203,13 +186,8 @@ class Settings:
 
         # Rate limit endpoints defaults
         default_endpoints = {
-            "chat": ["500 per minute"],
-            "suggest_follow_ups": ["500 per minute"],
-            "messages": ["50 per minute"],
-            "register": ["10 per hour"],
-            "login": ["20 per minute"],
-            "root": ["10 per minute"],
-            "health": ["20 per minute"],
+            "chat": ["10 per minute"],
+            "suggest_follow_ups": ["10 per minute"],
         }
 
         # Update rate limit endpoints from environment variables
@@ -229,9 +207,6 @@ class Settings:
         )
 
         # BigQuery Configuration
-        self.BIGQUERY_PROJECT_ID = os.getenv("BIGQUERY_PROJECT_ID", "")
-        self.BIGQUERY_DATASET_ID = os.getenv("BIGQUERY_DATASET_ID", "cdp_cstar_public")
-
         # Evaluation Configuration
         self.EVALUATION_LLM = os.getenv("EVALUATION_LLM", "gpt-4o-mini")
         self.EVALUATION_BASE_URL = os.getenv(
@@ -251,11 +226,6 @@ class Settings:
                 "LOG_LEVEL": "DEBUG",
                 "LOG_FORMAT": "console",
                 "RATE_LIMIT_DEFAULT": ["1000 per day", "200 per hour"],
-            },
-            Environment.STAGING: {
-                "DEBUG": False,
-                "LOG_LEVEL": "INFO",
-                "RATE_LIMIT_DEFAULT": ["500 per day", "100 per hour"],
             },
             Environment.PRODUCTION: {
                 "DEBUG": False,

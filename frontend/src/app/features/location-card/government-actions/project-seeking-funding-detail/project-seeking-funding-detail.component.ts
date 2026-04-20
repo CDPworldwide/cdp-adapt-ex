@@ -18,6 +18,7 @@ import { CloseIconComponent } from '../../../../shared/icons/close-icon.componen
 import { ImagePlaceholderIconComponent } from '../../../../shared/icons/image-placeholder-icon.component';
 import { HazardIconComponent } from '../../../../shared/components/hazard-icon/hazard-icon.component';
 import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
+import { ShowMoreButtonComponent } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-project-seeking-funding-detail',
@@ -29,6 +30,7 @@ import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe'
     ImagePlaceholderIconComponent,
     HazardIconComponent,
     AutoTranslatePipe,
+    ShowMoreButtonComponent,
   ],
   templateUrl: './project-seeking-funding-detail.component.html',
 })
@@ -65,7 +67,8 @@ export class ProjectSeekingFundingDetailComponent implements AfterViewInit, OnCh
     setTimeout(() => {
       if (this.descriptionElement && !this.expanded) {
         const el = this.descriptionElement.nativeElement;
-        const isTruncated = el.scrollHeight > el.clientHeight;
+        // Use a 1px tolerance for subpixel rounding issues
+        const isTruncated = el.scrollHeight > el.clientHeight + 1;
         if (this.canExpand !== isTruncated) {
           this.canExpand = isTruncated;
           this.cdr.detectChanges();

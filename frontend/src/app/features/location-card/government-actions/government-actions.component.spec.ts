@@ -80,6 +80,18 @@ describe('GovernmentActionsComponent', () => {
           adaptationActions: 'Adaptation actions ({{count}} disclosed)',
           projectsSeekingFundingWithCount: 'Projects seeking funding ({{count}} disclosed)',
           projectSeekingFunding: 'Project seeking funding',
+          noActionsBanner: {
+            title: 'Not all information was disclosed',
+          },
+          noGoals: {
+            description: 'No goals description',
+          },
+          noActions: {
+            description: 'No actions description',
+          },
+          noProjects: {
+            description: 'No projects description',
+          },
         },
       },
     });
@@ -90,6 +102,30 @@ describe('GovernmentActionsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show "Not all information was disclosed" banner when everything is empty', () => {
+    fixture.componentRef.setInput('data', { goals: [], actions: [], projects: [] });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Not all information was disclosed');
+    expect(compiled.textContent).toContain('No goals description');
+    expect(compiled.textContent).toContain('No actions description');
+    expect(compiled.textContent).toContain('No projects description');
+  });
+
+  it('should show banner when only one section is empty', () => {
+    fixture.componentRef.setInput('data', {
+      goals: [{ title: 'Goal 1', hazardsAddressed: [] }],
+      actions: [{ title: 'Action 1', hazardsAddressed: [] }],
+      projects: [],
+    });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain('Not all information was disclosed');
+    expect(compiled.textContent).toContain('No projects description');
   });
 
   it('should show (0) in subheaders when actions are empty', () => {

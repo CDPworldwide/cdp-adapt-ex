@@ -1,4 +1,14 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ElementRef,
+  ChangeDetectorRef,
+  SimpleChanges,
+  HostListener,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -10,6 +20,7 @@ import { InfoIconComponent } from '../../../../shared/icons/info-icon.component'
 import { HazardIconComponent } from '../../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../../shared/components/sector-icon/sector-icon.component';
 import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
+import { ShowMoreButtonComponent } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-adaptation-action-detail',
@@ -25,6 +36,7 @@ import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe'
     MatTooltipModule,
     MatIconModule,
     AutoTranslatePipe,
+    ShowMoreButtonComponent,
   ],
   templateUrl: './adaptation-action-detail.component.html',
 })
@@ -35,7 +47,29 @@ export class AdaptationActionDetailComponent {
   @Input() showHeroImage: boolean = true;
   @Output() closed = new EventEmitter<void>();
 
+  @ViewChild('descriptionElement') descriptionElement?: ElementRef<HTMLElement>;
+
   expanded = false;
+  canExpand = false;
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  ngAfterViewInit(): void {
+    this.checkTruncation();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['action']) {
+      this.expanded = false;
+      this.canExpand = false;
+      this.checkTruncation();
+    }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.checkTruncation();
+  }
 
   toggleExpand(): void {
     this.expanded = !this.expanded;
@@ -79,5 +113,20 @@ export class AdaptationActionDetailComponent {
     if (!this.action.timeframe) return null;
     const match = this.action.timeframe.match(/\(([^)]+)\)/);
     return match ? match[1] : null;
+  }
+
+  checkTruncation(): void {
+    // Small timeout to allow the view to render
+    setTimeout(() => {
+      if (this.descriptionElement && !this.expanded) {
+        const el = this.descriptionElement.nativeElement;
+        // Use a 1px tolerance for subpixel rounding issues
+        const isTruncated = el.scrollHeight > el.clientHeight + 1;
+        if (this.canExpand !== isTruncated) {
+          this.canExpand = isTruncated;
+          this.cdr.detectChanges();
+        }
+      }
+    }, 0);
   }
 }

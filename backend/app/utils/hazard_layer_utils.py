@@ -3,7 +3,7 @@
 from typing import Optional
 
 from app.schemas.hazard_layer import HazardLayerOptions, ScenarioEnum, YearRange
-from app.schemas.location_v2 import HazardEnum
+from app.schemas.location import HazardEnum
 from app.shared.config import settings
 from app.shared.exceptions import HazardLayerNotFoundException
 

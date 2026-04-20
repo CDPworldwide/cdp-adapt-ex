@@ -16,7 +16,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 router = APIRouter()
 
 
-@router.post("/suggest-follow-ups", response_model=SuggestFollowUpsResponse)
+@router.post("", response_model=SuggestFollowUpsResponse)
 @limiter.limit(settings.RATE_LIMIT_ENDPOINTS["suggest_follow_ups"][0])
 async def suggest_follow_ups(
     request: Request,

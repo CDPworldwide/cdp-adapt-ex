@@ -4,9 +4,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import type { LocationProfile } from '@pac-api/client';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { HazardMapService } from '../../hazard-map/hazard-map.service';
-import { GoogleMapsLoaderService } from '../../../shared/services/google-maps-loader.service';
-import { of } from 'rxjs';
 
 describe('HazardsComponent', () => {
   let component: HazardsComponent;
@@ -109,10 +106,7 @@ describe('HazardsComponent', () => {
         hazardDetail: {
           topNHazards: 'Top {{count}} hazards',
           hazardsDisclosedCount: '({{count}} disclosed)',
-          crvaTitle: 'A Climate Risk and Vulnerability Assessment has been undertaken',
-          crvaRecentYear: 'Most recent year of assessment:',
-          crvaSource: 'Source:',
-          crvaVisitPortal: 'Visit the CDP Open Data Portal',
+          disclosure: 'disclosure',
           requestersTitle: 'Data disclosure requested by',
           requestersTooltip: 'Tooltip text',
           unknown: 'Unknown',
@@ -130,6 +124,16 @@ describe('HazardsComponent', () => {
         },
         sectorNames: {
           AGRICULTURE: 'Agriculture',
+        },
+        hazards: {
+          noHazardsBanner: {
+            title: 'No hazards disclosed',
+            description: 'Banner description',
+          },
+          noHazardsContent: {
+            title: 'No disclosed hazard information',
+            description: 'Content description <a class="gov-actions-link">Government actions</a>',
+          },
         },
       },
     });
@@ -195,7 +199,7 @@ describe('HazardsComponent', () => {
       expect(disclosedText).toBeTruthy();
     });
 
-    it('should not render header when there are no hazards', () => {
+    it('should not render top hazards header when there are no hazards', () => {
       component.data = {
         ...mockLocationData,
         hazards: { ...mockLocationData.hazards, hazards: [] },
@@ -203,33 +207,43 @@ describe('HazardsComponent', () => {
       fixture.detectChanges();
 
       const headers = fixture.nativeElement.querySelectorAll('h2');
-      // If no hazards, we shouldn't see "Top N hazards"
-      const hasTopN = Array.from(headers).some((h: any) => h.textContent.includes('hazards'));
+      // "Top N hazards" header should not be present
+      const hasTopN = Array.from(headers).some((h: any) => h.textContent.includes('Top 0 hazards'));
       expect(hasTopN).toBeFalse();
     });
   });
 
-  describe('CRVA Banner', () => {
-    it('should show CRVA banner', () => {
-      component.data = { ...mockLocationData };
+  describe('No Hazards View', () => {
+    it('should show "No hazards disclosed" banner when hazards array is empty', () => {
+      component.data = {
+        ...mockLocationData,
+        hazards: {
+          ...mockLocationData.hazards!,
+          hazards: [],
+        },
+      };
       fixture.detectChanges();
 
-      const banner = fixture.nativeElement.querySelector('.mb-6.p-6.bg-white');
-      expect(banner).toBeTruthy();
-      expect(banner.textContent).toContain(
-        'A Climate Risk and Vulnerability Assessment has been undertaken',
-      );
-      expect(banner.textContent).toContain('2025');
-      expect(banner.textContent).toContain('Minas Gerais, Brazil 2025 disclosure');
+      const bannerElement = fixture.nativeElement.querySelector('.bg-cdp-red');
+      expect(bannerElement).toBeTruthy();
+      expect(bannerElement.textContent).toContain('No hazards disclosed');
     });
 
-    it('should show "Unknown" for disclosure year when not provided', () => {
-      component.data = { ...mockLocationData, disclosureYear: undefined };
+    it('should emit tabChange when "Government actions" link is clicked', () => {
+      component.data = {
+        ...mockLocationData,
+        hazards: {
+          ...mockLocationData.hazards!,
+          hazards: [],
+        },
+      };
       fixture.detectChanges();
 
-      const banner = fixture.nativeElement.querySelector('.mb-6.p-6.bg-white');
-      expect(banner.textContent).toContain('Unknown');
-      expect(banner.textContent).toContain('Minas Gerais, Brazil Unknown disclosure');
+      spyOn(component.tabChange, 'emit');
+      const actionsLink = fixture.nativeElement.querySelector('.gov-actions-link');
+      actionsLink.click();
+
+      expect(component.tabChange.emit).toHaveBeenCalledWith('actions');
     });
   });
 

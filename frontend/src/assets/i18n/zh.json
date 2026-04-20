@@ -1,17 +1,24 @@
 {
   "homepage": {
     "hero": {
-      "title": "探讨适应和恢复力方面的计划",
+      "title": "探讨适应与气候韧性相关的规划与举措",
       "searchPlaceholder": "搜索位置",
       "notFound": "抱歉，我们找不到'{{location}}'。",
       "notFoundExplanation": "我们的数据库中可能没有该地点的信息，或者该地点尚未与我们的披露数据关联。",
       "trySearchingAgain": "请稍后再试。",
       "goBack": "返回",
+      "noDataTitle": "暂无“{{location}}”的披露数据",
+      "noDataBody": "我们目前还没有该地点的数据可供显示。我们正在不断扩展覆盖范围，纳入历史披露信息和其他可信数据源。",
       "searchSuggestions": "搜索建议",
       "disclosesToCdp": "向 CDP 报告位置"
     },
     "description": {
-      "text": "浏览全球各地城市、州和地区正在寻求资金支持的当地气候灾害、行动和适应项目。"
+      "text": "了解全球各地城市、州和地区正在寻求资金支持的本地气候灾害应对、气候行动及适应与韧性相关项目。",
+      "learnMore": "了解更多"
+    },
+    "legend": {
+      "cities": "城市",
+      "statesAndRegions": "州和地区"
     },
     "nav": {
       "title": "Adaptation & action explorer",
@@ -21,19 +28,23 @@
     }
   },
   "maps": {
-    "totalReportedHazards": "报告的危害总数",
+    "totalReportedHazards": "披露的灾害总数",
     "topHazards": "前 {{count}} 大风险",
     "implementedActions": "已实施适应措施",
     "projectsSeekingFunding": "寻求资金的项目",
     "learnMore": "了解更多",
     "reportingLeader": "CDP报告负责人",
-    "noHazardData": "暂无此灾害的地图数据。"
+    "noHazardData": "暂无此灾害的地图数据。",
+    "hazardLegend": {
+      "source": "来源",
+      "scenario": "场景",
+      "timeframe": "可用时间范围"
+    }
   },
   "shared": {
     "showMore": "显示更多",
     "showLess": "显示更少",
     "showMoreHazards": "显示更多灾害",
-
     "selectLanguage": "选择语言",
     "expandMap": "展开地图",
     "collapseMap": "收起地图"
@@ -42,10 +53,17 @@
     "backToMap": "返回地图",
     "header": {
       "estimatedPopulation": "估计人口：",
+      "populationTooltip": "根据{{location}}的CDP披露数据估算的人口数量",
       "reportingLeader": "CDP报告负责人"
     },
+    "footer": {
+      "termsOfUse": "使用条款",
+      "methodology": "方法论",
+      "downloadAllData": "下载所有数据",
+      "contactUs": "联系我们"
+    },
     "tabs": {
-      "hazards": "危险",
+      "hazards": "灾害",
       "governmentActions": "政府行动",
       "solutions": "解决方案"
     },
@@ -110,12 +128,19 @@
     "hazardDetail": {
       "topNHazards": "前 {{count}} 大风险",
       "hazardsDisclosedCount": "（{{count}} 已披露）",
-      "noGeeData": "此危害没有外部危害数据。",
+      "topFourHazardsDisclosed": "前四大风险（{{count}}）",
+      "topHazardsDisclosed": "已披露的主要风险（{{count}}）",
+      "topTwoComputed": "前2名计算风险",
+      "topFourComputed": "计算风险排名前四",
+      "noGeeData": "此灾害没有外部灾害数据。",
       "crvaTitle": "已开展气候风险和脆弱性评估",
       "crvaRecentYear": "最近一次评估年份：",
+      "crvaSource": "来源：",
+      "disclosure": "披露",
       "crvaSourceGee": "数据来源：CDP/GEE数据分析",
       "crvaVisitPortal": "访问 CDP 开放数据门户",
       "requestersTitle": "数据披露请求",
+      "requestersTooltip": "以下列出的是已向本司法管辖区提出信息披露请求的组织。此列表并不完整，也不代表政府是否已遵照执行，或信息披露的具体目的。",
       "aiSummary": "人工智能概要",
       "proportionLabel": "最易受影响的人口比例",
       "vulnerablePopTitle": "最易受影响的弱势群体",
@@ -124,12 +149,19 @@
       "challengeLabel": "挑战/支持理由",
       "mostExposedSectors": "受影响最大的行业",
       "exploreActions": "探索{{count}}适应行动",
-      "noActionsDisclosed": "针对此危害，尚未公布任何适应措施。"
+      "noActionsDisclosed": "针对此灾害，尚未公布任何适应措施。",
+      "noGeeDataInfo": "CDP及其合作伙伴尚未找到可靠的数据来源或方法来以有意义的方式展示这些信息。",
+      "noMapData": "暂无此灾害的地图数据。"
     },
     "hazardOverview": {
-      "title": "危险概述",
+      "title": "灾害概述",
+      "source": "来源",
+      "disclosure": "披露",
+      "sourceTemplate": "来源：{{location}} {{year}} CDP披露",
       "topHazards": "已披露的主要风险",
-      "mostExposedSectors": "受影响最大的经济部门"
+      "topHazardsTooltip": "灾害因素按其发生的可能性和影响的严重程度进行排名。以下列出了排名前四的灾害因素——可能还有其他已披露的灾害因素未包含在此列表中。",
+      "mostExposedSectors": "受影响最大的经济部门",
+      "mostExposedSectorsTooltip": "行业分类依据披露信息，并按提及次数或字母顺序排序。这仅反映已披露的信息，并不代表其相对重要性或完整性。"
     },
     "geeCard": {
       "riskOfOccurrence": "发生风险",
@@ -140,12 +172,12 @@
     "banners": {
       "nonPublic": {
         "title": "报告未公开。",
-        "description": "该辖区的CDP报告无法显示。本页显示的所有危险信息均来自CDP分析。",
+        "description": "该辖区的CDP披露无法显示。本页显示的所有灾害信息均来自CDP分析。",
         "cta": "了解更多关于报告的信息",
         "ctaDescription": "要了解更多向 CDP 报告的城市、州和地区的信息，请访问我们的网站。"
       },
       "nonDisclosing": {
-        "title": "未发现任何危险",
+        "title": "未发现任何灾害",
         "description": "该辖区在其CDP问卷调查回复中未报告任何危害。本页显示的所有危害信息均来自CDP分析。",
         "cta": "访问 CDP 开放数据门户",
         "ctaDescription": "要了解该辖区报告的更多内容，请从 CDP 开放数据门户网站下载完整问卷。"
@@ -237,6 +269,8 @@
       "OTHERS": "其他"
     },
     "solutions": {
+      "alsoHasLocalAction": "此类别中也包含操作",
+      "exampleActionsCount": "查看 {{count}} 个示例操作",
       "popularSolutionsTitle": "热门解决方案",
       "totalCostOfAction": "行动总成本（美元）",
       "timeframe": "大体时间",
@@ -254,9 +288,9 @@
     }
   },
   "askCdpAi": {
-    "buttonText": "询问 CDP AI",
+    "buttonText": "向人工智能探索者提问",
     "input": {
-      "placeholder": "询问 CDP..."
+      "placeholder": "向人工智能探索者提问..."
     }
   }
 }

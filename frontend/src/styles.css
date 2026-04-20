@@ -15,6 +15,15 @@
     font-family: Roboto, 'Helvetica Neue', sans-serif;
     background-color: #f2f2f2;
   }
+
+  *:focus-visible {
+    outline: 2px solid #e81647;
+    outline-offset: 2px;
+  }
+
+  .bg-cdp-dark *:focus-visible {
+    outline-color: white;
+  }
 }
 
 /*

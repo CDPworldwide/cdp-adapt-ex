@@ -29,13 +29,9 @@ describe('ProjectSeekingFundingDetailComponent', () => {
     // Set up translation service
     const translate = TestBed.inject(TranslateService);
     translate.setTranslation('en', {
-      locationCard: {
-        govActions: {
-          detail: {
-            showMore: 'Show more',
-            showLess: 'Show less',
-          },
-        },
+      shared: {
+        showMore: 'Show more',
+        showLess: 'Show less',
       },
     });
     translate.use('en');

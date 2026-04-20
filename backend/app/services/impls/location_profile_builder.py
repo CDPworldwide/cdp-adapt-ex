@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from app.models.location_details import DimCentral
-from app.schemas.location_v2 import (
+from app.schemas.location import (
     ActionsTab,
     AdaptationAction,
     AdaptationGoal,

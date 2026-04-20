@@ -6,7 +6,7 @@ from app.schemas.hazard_layer import (
     TileHazardLayerData,
     YearRange,
 )
-from app.schemas.location_v2 import HazardEnum
+from app.schemas.location import HazardEnum
 from app.services.clients.earth_engine_client import EarthEngineClient
 from app.services.interfaces.hazard_data_provider_interface import (
     HazardDataProviderInterface,

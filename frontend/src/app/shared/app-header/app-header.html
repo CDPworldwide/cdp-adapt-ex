@@ -1,4 +1,4 @@
-<div class="flex items-center justify-between px-4 py-3 md:px-8">
+<header class="flex items-center justify-between px-4 py-3 md:px-8">
   <div class="flex items-center gap-3">
     @if (showMenuButton) {
       <button
@@ -19,7 +19,7 @@
         height="18"
         color="black"
       ></app-cdp-logo-with-text-icon>
-      <span class="text-xs text-gray-500">{{ 'homepage.nav.title' | translate }}</span>
+      <span class="text-xs text-cdp-dark">{{ 'homepage.nav.title' | translate }}</span>
     </a>
   </div>
 
@@ -33,7 +33,7 @@
       <mat-icon class="text-gray-500 !text-xl">language</mat-icon>
     </button>
   </div>
-</div>
+</header>
 
 <mat-menu #languageMenu="matMenu">
   @for (lang of languageService.languages; track lang.code) {

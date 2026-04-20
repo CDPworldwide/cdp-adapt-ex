@@ -54,7 +54,7 @@ async def test_chat_completions_passes_location_data_to_llm_client(
         return_value=mock_response
     )
 
-    response = await client.post("/api/v1/chat/completions", json=payload)
+    response = await client.post("/api/v1/chats/completions", json=payload)
 
     assert response.status_code == 200
     mock_llm_client.llm_chat_completion_response_async.assert_called_once()
@@ -83,7 +83,7 @@ async def test_chat_completions_coerces_missing_usage_counts(client, mock_llm_cl
         return_value=mock_response
     )
 
-    response = await client.post("/api/v1/chat/completions", json=payload)
+    response = await client.post("/api/v1/chats/completions", json=payload)
 
     assert response.status_code == 200
     assert response.json()["usage"] == {

@@ -4,7 +4,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
-import { InfoIconComponent, ArrowRightIconComponent } from '../../../shared/icons';
+import {
+  InfoIconComponent,
+  ArrowRightIconComponent,
+  NoHazardsIconComponent,
+} from '../../../shared/icons';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   HazardEnum,
@@ -24,6 +28,7 @@ import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
     HazardIconComponent,
     InfoIconComponent,
     ArrowRightIconComponent,
+    NoHazardsIconComponent,
     MatTooltipModule,
     MatDialogModule,
     AutoTranslatePipe,
@@ -39,6 +44,10 @@ export class SolutionsComponent {
   selectedHazard: HazardEnum | null = null;
 
   constructor() {}
+
+  get isNoHazards(): boolean {
+    return !this.data?.hazards?.hazards?.length;
+  }
 
   get hazardFilters() {
     return [

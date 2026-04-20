@@ -59,9 +59,7 @@ async def test_suggest_follow_ups_success(client, mock_llm_client):
         return_value=mock_response
     )
 
-    response = await client.post(
-        "/api/v1/suggest-follow-ups/suggest-follow-ups", json=payload
-    )
+    response = await client.post("/api/v1/suggest-follow-ups", json=payload)
 
     assert response.status_code == 200
     data = response.json()
@@ -107,9 +105,7 @@ async def test_suggest_follow_ups_uses_parsed_response(client, mock_llm_client):
         return_value=mock_response
     )
 
-    response = await client.post(
-        "/api/v1/suggest-follow-ups/suggest-follow-ups", json=payload
-    )
+    response = await client.post("/api/v1/suggest-follow-ups", json=payload)
 
     assert response.status_code == 200
     assert response.json() == {
@@ -140,9 +136,7 @@ async def test_suggest_follow_ups_recovers_wrapped_json_text(client, mock_llm_cl
         return_value=mock_response
     )
 
-    response = await client.post(
-        "/api/v1/suggest-follow-ups/suggest-follow-ups", json=payload
-    )
+    response = await client.post("/api/v1/suggest-follow-ups", json=payload)
 
     assert response.status_code == 200
     assert response.json() == {
@@ -175,9 +169,7 @@ async def test_suggest_follow_ups_recovers_exact_questions_from_plain_text(
         return_value=mock_response
     )
 
-    response = await client.post(
-        "/api/v1/suggest-follow-ups/suggest-follow-ups", json=payload
-    )
+    response = await client.post("/api/v1/suggest-follow-ups", json=payload)
 
     assert response.status_code == 200
     assert response.json() == {
@@ -201,9 +193,7 @@ async def test_suggest_follow_ups_error(client, mock_llm_client):
         "locationData": _location_payload(),
     }
 
-    response = await client.post(
-        "/api/v1/suggest-follow-ups/suggest-follow-ups", json=payload
-    )
+    response = await client.post("/api/v1/suggest-follow-ups", json=payload)
 
     assert response.status_code == 500
     assert response.json()["detail"] == "An unexpected error occurred"

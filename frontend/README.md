@@ -1,59 +1,105 @@
 # Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.8.
+It is built with **Angular 20**, **Tailwind CSS**, and **Angular Material**.
 
-## Development server
+## 🚀 Getting Started
 
-To start a local development server, run:
+### 1. Prerequisites
+- **Node.js**: v20+ (v24 verified)
+- **npm**: v10+
+- **API Client**: This frontend depends on a local API client located in the `../client` directory. Ensure the client is built before starting the frontend.
 
+### 2. Setup
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Configure Environment**:
+   Copy the example environment file and update it with your local backend URL:
+   ```bash
+   cp src/environments/environment-example.ts src/environments/environment.development.ts
+   ```
+   **CRITICAL**: Open `src/environments/environment.development.ts` and set the `baseUrl` to match your running backend.
+   - If running via `uv run fastapi dev`, the default is usually `http://localhost:8000`.
+
+### 3. Build the API Client (CRITICAL)
+If you haven't built the client yet, or if the backend API has changed:
 ```bash
-ng serve
+cd ../client
+npm install
+npm run build
+cd ../frontend
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🛠 Development
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### Start Development Server
 ```bash
-ng generate component component-name
+npm start
+```
+Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+### Code Scaffolding
+Run `ng generate component component-name` to generate a new component.
+
+## 🏗 Architecture
+
+The application follows a modular architecture based on Angular best practices, divided into three main layers:
+
+```text
+src/app/
+├── core/               # Singleton services and universal components
+│   ├── footer/         # Global footer component
+│   └── header/         # Global header component
+├── features/           # Main application features
+│   ├── ask-cdp-ai/     # AI Chat
+│   ├── city-detail/    # Location details
+│   ├── hazard-map/     # Map view with hazard layers
+│   ├── main-search/    # Search landing page
+│   └── maps/           # Global map views
+└── shared/             # Reusable UI components, pipes, and services
+    ├── components/     # UI widgets (buttons, modals, etc.)
+    ├── icons/          # Custom SVG icon components
+    └── services/       # Shared business logic and API wrappers
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### 1. Core Layer (`src/app/core/`)
+Contains singleton services and components that are instantiated once per application lifecycle.
+- **Components**: `HeaderComponent`, `FooterComponent`.
+- **Services**: AI interaction services.
 
-```bash
-ng generate --help
-```
+### 2. Feature Layer (`src/app/features/`)
+Each directory here represents a specific functional area of the application.
+- `ask-cdp-ai/`: The AI chat for querying city data and hazard information.
+- `main-search/`: The primary search landing page, integrating location suggestions and map selection.
+- `city-detail/` & `location-card/`: Detailed views and summary cards for specific cities or locations.
+- `maps/` & `hazard-map/`: Map-based visualizations for global location data and specific environmental hazards.
 
-## Building
+### 3. Shared Layer (`src/app/shared/`)
+Contains reusable components, directives, and services used across multiple features.
+- **Components**: UI building blocks like buttons, spinners, and modals.
+- **Icons**: Custom SVG icons managed as standalone Angular components in `src/app/shared/icons/`.
+- **Services**: Shared utilities like `LocationService`, `LanguageService`, and `GoogleMapsLoaderService`.
 
-To build the project run:
+### API Integration
+The frontend consumes an auto-generated TypeScript client located in the `client/` directory (at the project root).
+- **Package**: `@pac-api/client` (imported as a local dependency in `package.json`).
+- **Usage**: The frontend uses this client to interact with the FastAPI backend.
+- **CRITICAL**: Do not manually edit files in the `client/` directory. Use the `client/scripts/generate.sh` script to update it when the backend schema changes.
 
-```bash
-ng build
-```
+## 🧪 Testing
+- **Unit Tests**: `npm test` (interactive) or `npm run test:ci` (headless).
+- **Style Check**: We use Prettier for formatting. Ensure your code is formatted before committing.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🎨 Styling & UI
+- **Tailwind CSS**: We use Tailwind utility classes for almost all styling. Avoid custom CSS in `.css` files unless absolutely necessary.
+- **Design Tokens**: Follow the custom tokens defined in `tailwind.config.js`.
+  - **Colors**: Use the numeric scale for neutrals (e.g., `text-cdp-neutral-08`).
+- **Icons**: Custom SVG icons are located in `src/app/shared/icons/`. Use them as Angular components (e.g., `<app-info-icon>`).
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 🌐 Internationalization (i18n)
+We use `@ngx-translate/core`.
+- **Do not** hardcode text in templates.
+- Add new strings to `src/assets/i18n/en.json`.
+- Use the `translate` pipe: `{{ 'key.name' | translate }}`.

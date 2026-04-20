@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import pytest
 from app.schemas.hazard_layer import ScenarioEnum, YearRange
-from app.schemas.location_v2 import HazardEnum
+from app.schemas.location import HazardEnum
 from app.shared.exceptions import HazardLayerNotFoundException
 from app.utils.hazard_layer_utils import get_image_id, get_vis_params
 

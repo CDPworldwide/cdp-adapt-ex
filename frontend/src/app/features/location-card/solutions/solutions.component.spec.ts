@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SolutionsComponent } from './solutions.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HazardEnum, SolutionCategoryEnum } from '@pac-api/client';
 import { MOCK_LOCATION_DATA_WITH_SOLUTIONS, MOCK_SOLUTION_CARD } from './solutions.mock';
 
@@ -30,6 +30,32 @@ describe('SolutionsComponent', () => {
     fixture = TestBed.createComponent(SolutionsComponent);
     component = fixture.componentInstance;
     dialog = fixture.debugElement.injector.get(MatDialog) as jasmine.SpyObj<MatDialog>;
+
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setTranslation('en', {
+      locationCard: {
+        govActions: {
+          all: 'All',
+        },
+        hazardNames: {
+          EXTREME_HEAT: 'Extreme Heat',
+          URBAN_FLOODING: 'Urban Flooding',
+        },
+        solutions: {
+          hazardFiltersTitle: 'Hazard Filters',
+          popularSolutionsTitle: 'Popular Solutions',
+          sourceDescription: 'Source',
+          noSolutionsBanner: {
+            title: 'Not all information was disclosed',
+          },
+          noSolutionsContent: {
+            description: "Since we don't have hazard data",
+          },
+        },
+      },
+    });
+    translateService.use('en');
+
     fixture.componentRef.setInput('data', MOCK_LOCATION_DATA_WITH_SOLUTIONS);
     fixture.detectChanges();
   });
@@ -89,5 +115,20 @@ describe('SolutionsComponent', () => {
     component.selectHazard(HazardEnum.EXTREME_HEAT);
     expect(component.isSelected(HazardEnum.EXTREME_HEAT)).toBeTrue();
     expect(component.isSelected(null)).toBeFalse();
+  });
+
+  it('should show empty state banner when no hazards are present', () => {
+    fixture.componentRef.setInput('data', {
+      ...MOCK_LOCATION_DATA_WITH_SOLUTIONS,
+      hazards: {
+        hazards: [],
+      },
+    });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('.bg-cdp-red')).toBeTruthy();
+    expect(compiled.textContent).toContain('Not all information was disclosed');
+    expect(compiled.textContent).toContain("Since we don't have hazard data");
   });
 });

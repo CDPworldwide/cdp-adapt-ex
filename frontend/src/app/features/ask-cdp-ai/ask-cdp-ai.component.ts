@@ -68,8 +68,9 @@ export class AskCdpAiComponent implements OnChanges {
 
   sendQuery() {
     if (!this.userQuery.trim()) return;
-    if (typeof gtag === 'function') {
-      gtag('event', 'chatbot_query_submit');
+    const globalGtag = (window as any).gtag;
+    if (typeof globalGtag === 'function') {
+      globalGtag('event', 'chatbot_query_submit');
     }
     this.executeChatQuery(this.userQuery.trim());
     this.userQuery = '';
@@ -78,8 +79,9 @@ export class AskCdpAiComponent implements OnChanges {
   onFollowUpClick(question: string) {
     if (this.isFollowUpLoading()) return;
     this.isFollowUpLoading.set(true);
-    if (typeof gtag === 'function') {
-      gtag('event', 'chatbot_suggest_click', { query_text: question });
+    const globalGtag = (window as any).gtag;
+    if (typeof globalGtag === 'function') {
+      globalGtag('event', 'chatbot_suggest_click', { query_text: question });
     }
     this.executeChatQuery(question);
   }

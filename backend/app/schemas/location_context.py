@@ -2,7 +2,7 @@ from typing import Annotated
 
 from pydantic import Field
 
-from app.schemas.location_v2 import LocationProfile
+from app.schemas.location import LocationProfile
 
 LocationContext = Annotated[
     LocationProfile | None,

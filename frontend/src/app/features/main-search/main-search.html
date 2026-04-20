@@ -17,9 +17,12 @@
 
     <div
       id="mobile-drawer"
+      role="dialog"
+      aria-label="Navigation menu"
       class="fixed top-0 left-0 h-full w-72 bg-white z-50 md:hidden flex flex-col shadow-xl transition-transform duration-300 ease-in-out"
       [ngClass]="menuOpen ? 'translate-x-0' : '-translate-x-full'"
       [attr.inert]="!menuOpen ? '' : null"
+      (keydown.escape)="closeMenu()"
     >
       <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
         <app-cdp-logo-with-text-icon
@@ -38,7 +41,7 @@
       </div>
     </div>
 
-    <nav class="bg-cdp-bg flex-shrink-0">
+    <nav aria-label="Main navigation" class="bg-cdp-bg flex-shrink-0">
       <app-header
         [showMenuButton]="true"
         [menuExpanded]="menuOpen"
@@ -53,7 +56,9 @@
     </nav>
 
     <div
-      class="flex flex-col items-center px-6 bg-cdp-bg flex-shrink-0 transition-all duration-500 ease-in-out overflow-hidden"
+      id="page-content"
+      tabindex="-1"
+      class="flex flex-col items-center px-6 bg-cdp-bg flex-shrink-0 transition-all duration-500 ease-in-out overflow-hidden focus:outline-none"
       [ngClass]="
         isMapFocused
           ? 'h-0 py-0 opacity-0 pointer-events-none'
@@ -77,7 +82,7 @@
     </div>
 
     <div class="landing-map relative flex-1 min-h-0">
-      <app-maps class="block h-full w-full"></app-maps>
+      <app-maps class="block h-full w-full" [pinFilter]="pinFilter"></app-maps>
 
       <div
         class="absolute z-20 hidden md:block w-full transition-all duration-500 ease-in-out"
@@ -94,28 +99,42 @@
       ></div>
 
       <div
-        class="absolute bottom-4 left-4 z-10 md:bottom-6 md:left-6 p-2 bg-zinc-100 rounded-full shadow-cdp-card inline-flex justify-center items-center gap-6 transition-opacity duration-500"
-        [ngClass]="isMapFocused ? 'opacity-0 pointer-events-none' : 'opacity-100'"
+        class="absolute bottom-4 left-4 z-10 md:bottom-6 md:left-6 p-2 bg-zinc-100 rounded-full shadow-cdp-card inline-flex justify-center items-center gap-1"
       >
-        <div class="flex justify-start items-center gap-2 pl-2">
+        <button
+          type="button"
+          (click)="togglePinFilter('city')"
+          class="flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors cursor-pointer"
+          [ngClass]="pinFilter === 'region' ? 'opacity-40' : ''"
+        >
           <div class="w-3 h-3 bg-cdp-red rounded-full"></div>
-          <div class="text-black text-xs font-normal font-roboto-mono leading-3 tracking-wide">
+          <span class="text-black text-xs font-normal font-roboto-mono leading-3 tracking-wide">
             {{ 'homepage.legend.cities' | translate }}
-          </div>
-        </div>
-        <div class="flex justify-start items-center gap-2 pr-2">
+          </span>
+        </button>
+        <button
+          type="button"
+          (click)="togglePinFilter('region')"
+          class="flex items-center gap-2 px-3 py-1.5 rounded-full transition-colors cursor-pointer"
+          [ngClass]="pinFilter === 'city' ? 'opacity-40' : ''"
+        >
           <div class="w-3 h-3 bg-cdp-blue rounded-full"></div>
-          <div class="text-black text-xs font-normal font-roboto-mono leading-3 tracking-wide">
+          <span class="text-black text-xs font-normal font-roboto-mono leading-3 tracking-wide">
             {{ 'homepage.legend.statesAndRegions' | translate }}
-          </div>
-        </div>
+          </span>
+        </button>
       </div>
     </div>
   </div>
 </div>
 
 <ng-template #searchBarTemplate>
-  <form class="w-full max-w-md md:max-w-xl" (ngSubmit)="onSearch()">
+  <form
+    role="search"
+    aria-label="Search locations"
+    class="w-full max-w-md md:max-w-xl"
+    (ngSubmit)="onSearch()"
+  >
     <div class="relative" matAutocompleteOrigin #autocompleteOrigin="matAutocompleteOrigin">
       <div
         class="flex items-center w-full h-14 bg-white border border-gray-300 shadow-sm px-4 gap-3 rounded-t-[1.75rem]"

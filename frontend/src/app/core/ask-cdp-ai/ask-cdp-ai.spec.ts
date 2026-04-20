@@ -1,13 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { AskCdpAiService } from './ask-cdp-ai.service';
-import { AuthService } from '../auth/auth.service';
 import { type LocationProfileInput } from '@pac-api/client';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('AskCdpAiService', () => {
   let service: AskCdpAiService;
   let translate: TranslateService;
-  let authServiceMock: jasmine.SpyObj<AuthService>;
   let originalFetch: any;
   const mockLocationData: LocationProfileInput = {
     organizationId: 12345,
@@ -38,13 +36,9 @@ describe('AskCdpAiService', () => {
   };
 
   beforeEach(() => {
-    // Mock AuthService
-    authServiceMock = jasmine.createSpyObj('AuthService', ['retrieveToken']);
-    authServiceMock.retrieveToken.and.returnValue('mock-token');
-
     TestBed.configureTestingModule({
       imports: [TranslateModule.forRoot()],
-      providers: [AskCdpAiService, { provide: AuthService, useValue: authServiceMock }],
+      providers: [AskCdpAiService],
     });
     service = TestBed.inject(AskCdpAiService);
     translate = TestBed.inject(TranslateService);

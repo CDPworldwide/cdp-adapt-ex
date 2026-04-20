@@ -3,7 +3,7 @@
 import re
 from typing import Dict, List, Optional
 
-from app.schemas.location_v2 import Hazard, HazardEnum
+from app.schemas.location import Hazard, HazardEnum
 from app.shared.logging import logger
 
 _HAZARD_SPLIT_REGEX = re.compile(r"[|]")

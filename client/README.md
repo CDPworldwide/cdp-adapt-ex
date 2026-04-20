@@ -26,28 +26,27 @@ They should be produced from `openapi.json`, not edited by hand.
 
 ## Commands
 
-Install the client generator dependencies once:
+You can run these commands from the **root** of the monorepo:
 
+Install the client generator dependencies:
 ```bash
 npm run client:install
 ```
 
 Regenerate the SDK from the tracked `openapi.json` snapshot:
-
 ```bash
 npm run client:generate
 ```
 
-Refresh `openapi.json` from the backend and regenerate the SDK:
-
+Refresh `openapi.json` from a running backend and regenerate the SDK:
 ```bash
 npm run client:refresh
 ```
 
-Check whether the expected generated files are present:
-
+Build the client for consumption by the frontend:
 ```bash
-npm run client:check
+npm run client:build
+```
 ```
 
 ## Recommended Workflow

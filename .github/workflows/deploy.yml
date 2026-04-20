@@ -116,8 +116,8 @@ jobs:
             DEFAULT_LLM_TEMPERATURE=0.2
             MAX_TOKENS=2000
             MAX_LLM_CALL_RETRIES=3
-            RATE_LIMIT_CHAT=500 per minute
-            RATE_LIMIT_SUGGEST_FOLLOW_UPS=500 per minute
+            RATE_LIMIT_CHAT=10 per minute
+            RATE_LIMIT_SUGGEST_FOLLOW_UPS=10 per minute
           env_vars_update_strategy: overwrite
 
       - name: Verify backend revision and health
@@ -227,12 +227,6 @@ jobs:
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
           secrets: |-
-            FIREBASE_API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_API_KEY
-            FIREBASE_AUTH_DOMAIN:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_AUTH_DOMAIN
-            FIREBASE_PROJECT_ID:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_PROJECT_ID
-            FIREBASE_STORAGE_BUCKET:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_STORAGE_BUCKET
-            FIREBASE_MESSAGING_SENDER_ID:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_MESSAGING_SENDER_ID
-            FIREBASE_APP_ID:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-FIREBASE_APP_ID
             GOOGLE_MAPS_API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
 
       - name: Create production environment.ts
@@ -242,17 +236,7 @@ jobs:
           export const environment = {
             production: true,
             baseUrl: '${{ steps.decode-url.outputs.url }}',
-            authDisabled: false,
             isDebugMode: ${{ env.ENVIRONMENT == 'development' }},
-            firebaseConfig: {
-              apiKey: '${{ steps.frontend-secrets.outputs.FIREBASE_API_KEY }}',
-              authDomain: '${{ steps.frontend-secrets.outputs.FIREBASE_AUTH_DOMAIN }}',
-              projectId: '${{ steps.frontend-secrets.outputs.FIREBASE_PROJECT_ID }}',
-              storageBucket: '${{ steps.frontend-secrets.outputs.FIREBASE_STORAGE_BUCKET }}',
-              messagingSenderId: '${{ steps.frontend-secrets.outputs.FIREBASE_MESSAGING_SENDER_ID }}',
-              appId: '${{ steps.frontend-secrets.outputs.FIREBASE_APP_ID }}',
-              measurementId: '${{ env.ENVIRONMENT == 'production' && 'PROD-ID' || 'DEV-ID' }}',
-            },
             mapsConfig: {
               apiKey: '${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}',
             },

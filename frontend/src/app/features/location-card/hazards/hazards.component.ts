@@ -5,10 +5,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { HazardMapComponent } from '../../hazard-map/hazard-map';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../shared/components/sector-icon/sector-icon.component';
-import { InfoIconComponent, ArrowRightIconComponent } from '../../../shared/icons';
+import {
+  InfoIconComponent,
+  ArrowRightIconComponent,
+  NoHazardsIconComponent,
+} from '../../../shared/icons';
 import { ShowMoreButtonComponent } from '../../../shared/components/show-more-button/show-more-button.component';
 import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
 import type { AdaptationAction, Hazard, LocationProfile } from '@pac-api/client';
+import type { LocationCardTabKey } from '../location-card-tabs';
 
 @Component({
   selector: 'app-hazards',
@@ -22,6 +27,7 @@ import type { AdaptationAction, Hazard, LocationProfile } from '@pac-api/client'
     SectorIconComponent,
     InfoIconComponent,
     ArrowRightIconComponent,
+    NoHazardsIconComponent,
     ShowMoreButtonComponent,
     AutoTranslatePipe,
   ],
@@ -33,9 +39,17 @@ export class HazardsComponent {
   @Input() jurisdictionBounds?: google.maps.LatLngBounds;
 
   @Output() exploreActions = new EventEmitter<Hazard>();
+  @Output() tabChange = new EventEmitter<LocationCardTabKey>();
 
   expandedHazards = new Set<string>();
   showAllHazards = false;
+
+  onDescriptionClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (target.classList.contains('gov-actions-link')) {
+      this.tabChange.emit('actions');
+    }
+  }
 
   getActionsCountForHazard(hazard: Hazard): number {
     if (!this.data?.governmentActions?.actions) return 0;

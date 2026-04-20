@@ -1,7 +1,7 @@
 """Tests for StatusMapper."""
 
 import pytest
-from app.schemas.location_v2 import ActionStatusEnum
+from app.schemas.location import ActionStatusEnum
 from app.services.impls.status_mapper import StatusMapper
 
 

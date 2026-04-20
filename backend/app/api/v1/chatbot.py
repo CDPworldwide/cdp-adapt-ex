@@ -29,7 +29,7 @@ def strip_geometry_from_chat_request(
     return chat_request.model_copy(update={"location_data": sanitized_location_data})
 
 
-@router.post("/chat/completions", response_model=OpenAIChatCompletionResponse)
+@router.post("/completions", response_model=OpenAIChatCompletionResponse)
 @limiter.limit(settings.RATE_LIMIT_ENDPOINTS["chat"][0])
 async def chat_completions(
     request: Request,

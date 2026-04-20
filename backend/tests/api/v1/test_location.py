@@ -4,7 +4,7 @@ import pytest
 from app.api.v1.deps import get_location_details_service
 from app.main import app
 from app.models.location_details import OrganizationSummary
-from app.schemas.location_v2 import (
+from app.schemas.location import (
     ActionsTab,
     HazardsTab,
     LocationProfile,
@@ -49,11 +49,11 @@ async def test_get_location_success(client, mock_location_details_service):
     )
 
     # Act
-    response = await client.get("/api/v1/location/London")
+    response = await client.get("/api/v1/locations/London")
 
     # Assert
     assert response.status_code == 200
-    assert response.json() == expected_location.model_dump(by_alias=True)
+    assert response.json()["location"] == expected_location.model_dump(by_alias=True)
     mock_location_details_service.get_eligible_location_details_by_name.assert_called_once()
     app.dependency_overrides.clear()
 
@@ -70,7 +70,7 @@ async def test_get_location_not_found(client, mock_location_details_service):
     )
 
     # Act
-    response = await client.get("/api/v1/location/NonExistentLocation")
+    response = await client.get("/api/v1/locations/NonExistentLocation")
 
     # Assert
     assert response.status_code == 404
@@ -108,10 +108,10 @@ async def test_get_location_by_org_id_success(client, mock_location_details_serv
         lambda: mock_location_details_service
     )
 
-    response = await client.get("/api/v1/location/id/867355")
+    response = await client.get("/api/v1/locations/id/867355")
 
     assert response.status_code == 200
-    assert response.json() == expected_location.model_dump(by_alias=True)
+    assert response.json()["location"] == expected_location.model_dump(by_alias=True)
     mock_location_details_service.get_location_details_by_org_id.assert_called_once_with(
         867355
     )
@@ -128,7 +128,7 @@ async def test_get_location_by_org_id_not_found(client, mock_location_details_se
         lambda: mock_location_details_service
     )
 
-    response = await client.get("/api/v1/location/id/999999")
+    response = await client.get("/api/v1/locations/id/999999")
 
     assert response.status_code == 404
     assert response.json() == {"detail": "City not found: 999999"}
@@ -164,10 +164,10 @@ async def test_get_all_location_names_returns_organization_summaries(
         lambda: mock_location_details_service
     )
 
-    response = await client.get("/api/v1/location/names")
+    response = await client.get("/api/v1/locations/names")
 
     assert response.status_code == 200
-    assert response.json() == [
+    assert response.json()["locations"] == [
         location.model_dump(by_alias=True) for location in expected_locations
     ]
     mock_location_details_service.get_all_location_summaries.assert_called_once_with()
