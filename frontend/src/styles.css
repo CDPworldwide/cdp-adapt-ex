@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  body {
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    background-color: #f2f2f2;
+  }
+
+  *:focus-visible {
+    outline: 2px solid #e81647;
+    outline-offset: 2px;
+  }
+
+  .bg-cdp-dark *:focus-visible {
+    outline-color: white;
+  }
+}
+
+/*
+ * Styles for the custom autocomplete panel to match the Figma design.
+ * Using standard CSS to ensure it overrides Angular Material defaults.
+ *
+ * I had little luck getting this to work with tailwind. Needed a very high specific selector to override Angular Material defaults.
+ */
+.mat-mdc-autocomplete-panel.select-location {
+  padding: 16px;
+  gap: 10px;
+  background-color: white;
+  border-radius: 1rem; /* Rounds all corners */
+  border: 1px solid #d1d5db;
+  margin-top: -0.5px;
+}

@@ -1,0 +1,7 @@
+/* Location Card Styles - Using Tailwind utilities in template */
+/* This file can be used for any component-specific overrides if needed */
+
+:host {
+  display: block;
+  width: 100%;
+}

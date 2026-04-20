@@ -1,0 +1,16 @@
+<span
+  [matTooltip]="
+    hazard === 'OTHERS'
+      ? otherHazardDetails || 'Other'
+      : ('locationCard.hazardNames.' + hazard | translate)
+  "
+  matTooltipPosition="above"
+  [attr.aria-label]="
+    hazard === 'OTHERS'
+      ? otherHazardDetails || 'Other'
+      : ('locationCard.hazardNames.' + hazard | translate)
+  "
+  class="inline-flex"
+>
+  <ng-container *ngComponentOutlet="iconComponent(); inputs: iconInputs"></ng-container>
+</span>

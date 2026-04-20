@@ -1,0 +1,187 @@
+<div class="bg-white pb-10">
+  <!-- Hero image with close button -->
+  <div
+    class="relative w-full h-52 lg:h-100 bg-cdp-peach overflow-hidden flex items-start justify-end p-6"
+  >
+    <!-- Image placeholder -->
+    @if (project.imageUrl) {
+      <img [src]="project.imageUrl" alt="" class="absolute inset-0 w-full h-full object-cover" />
+    }
+    <button type="button" (click)="close()" aria-label="Close" class="relative cursor-pointer z-10">
+      <app-close-icon></app-close-icon>
+    </button>
+  </div>
+
+  <!-- Top header -->
+  <div class="flex flex-col gap-1 px-6 pt-8 lg:px-10">
+    <!-- Type label -->
+    <p class="text-xs font-medium text-cdp-text-secondary uppercase tracking-[1.5px] font-roboto">
+      {{ 'locationCard.govActions.projectSeekingFunding' | translate }}
+    </p>
+
+    <!-- Title -->
+    <h2 class="text-[32px] font-normal font-roboto text-black leading-tight">
+      {{ project.title | autoTranslate }}
+    </h2>
+  </div>
+
+  <!-- Content sections -->
+  <div class="flex flex-col p-6 gap-6 lg:p-10">
+    <!-- Description with expand/collapse -->
+    @if (project.description) {
+      <div class="flex flex-col items-center gap-4">
+        <div class="self-stretch">
+          <p
+            #descriptionElement
+            class="text-black text-base font-normal font-roboto leading-6 tracking-wide"
+            [class.line-clamp-6]="!expanded"
+          >
+            {{ project.description | autoTranslate }}
+          </p>
+        </div>
+
+        <!-- Show More/Less Button -->
+        @if (canExpand) {
+          <app-show-more-button
+            [isExpanded]="expanded"
+            (clicked)="toggleExpand()"
+          ></app-show-more-button>
+        }
+      </div>
+    }
+
+    <!-- Details Table -->
+    <div class="flex flex-col gap-4">
+      <!-- Stage of project development -->
+      @if (project.status) {
+        <div class="flex flex-col gap-4 pb-4">
+          <div class="h-px bg-gray-200"></div>
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+                {{ 'locationCard.govActions.detail.stageOfProjectDevelopment' | translate }}
+              </p>
+            </div>
+            <div class="flex-1">
+              <p class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight">
+                {{ 'locationCard.govActions.projectStatuses.' + project.status | translate }}
+              </p>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Hazards addressed -->
+      @if (project.hazardsAddressed?.length) {
+        <div class="flex flex-col gap-4 pb-4">
+          <div class="h-px bg-gray-200"></div>
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+                {{ 'locationCard.govActions.hazardsAddressed' | translate }}
+              </p>
+            </div>
+            <div class="flex-1 flex flex-row flex-wrap gap-x-6 gap-y-2">
+              @for (hazard of project.hazardsAddressed; track hazard) {
+                <div class="h-6 inline-flex items-center gap-2">
+                  <app-hazard-icon
+                    [hazard]="hazard.hazardType"
+                    [otherHazardDetails]="hazard.otherHazardDetails"
+                    size="16"
+                  ></app-hazard-icon>
+                  <span
+                    class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight"
+                  >
+                    {{
+                      hazard.hazardType === 'OTHERS' && hazard.otherHazardDetails
+                        ? hazard.otherHazardDetails
+                        : ('locationCard.hazardNames.' + hazard.hazardType | translate)
+                    }}
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Project Area -->
+      @if (project.projectArea) {
+        <div class="flex flex-col gap-4 pb-4">
+          <div class="h-px bg-gray-200"></div>
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+                {{ 'locationCard.govActions.detail.projectArea' | translate }}
+              </p>
+            </div>
+            <div class="flex-1">
+              <p class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight">
+                {{ project.projectArea | autoTranslate }}
+              </p>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Finance Status -->
+      @if (project.financeStatus) {
+        <div class="flex flex-col gap-4 pb-4">
+          <div class="h-px bg-gray-200"></div>
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+                {{ 'locationCard.govActions.detail.financeStatus' | translate }}
+              </p>
+            </div>
+            <div class="flex-1">
+              <p class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight">
+                {{ project.financeStatus | autoTranslate }}
+              </p>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Financing model -->
+      @if (financeModels.length) {
+        <div class="flex flex-col gap-4 pb-4">
+          <div class="h-px bg-gray-200"></div>
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+                {{ 'locationCard.govActions.detail.financeModel' | translate }}
+              </p>
+            </div>
+            <div class="flex-1 flex flex-col gap-1">
+              @for (model of financeModels; track model) {
+                <p class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight">
+                  {{ model }}
+                </p>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Total funds needed -->
+      @if (project.totalNeeded != null) {
+        <div class="flex flex-col gap-4 pb-4">
+          <div class="h-px bg-gray-200"></div>
+          <div class="flex gap-4">
+            <div class="flex-1">
+              <p class="text-stone-900 text-sm font-medium font-roboto leading-5 tracking-tight">
+                {{ 'locationCard.govActions.detail.totalFundsNeeded' | translate }}
+              </p>
+            </div>
+            <div class="flex-1">
+              <p class="text-stone-900 text-sm font-normal font-roboto leading-5 tracking-tight">
+                {{ project.totalNeeded | currency: 'USD' : 'symbol' : '1.0-0' }} USD
+              </p>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+ ID , Question Type , Question , Location , Answer , Relevant Data
+csv-mumbai-water,Actions,What is the city's target for meeting water demand through conservation?,"Mumbai, India",50% of the city's water demand,"{
+  ""name"": ""City of Mumbai"",
+  ""countryName"": ""India"",
+  ""governmentActions"": {
+    ""goals"": [
+      {
+        ""description"": ""Ensure that up to 50% of the city's water demand is met through localized water conservation and efficient use initiatives"",
+        ""hazardsAddressed"": [""WATER_STRESS"", ""HEAT_STRESS"", ""INCREASED_WATER_DEMAND""],
+        ""targetYear"": 2030
+      }
+    ],
+    ""actions"": [],
+    ""projects"": []
+  }
+}"
+csv-jakarta-heat,Actions,"What is Jakarta's goal related to green open space?","Jakarta, Indonesia",Expand green open space coverage across the city,"{
+  ""name"": ""DKI Jakarta"",
+  ""countryName"": ""Indonesia"",
+  ""governmentActions"": {
+    ""goals"": [
+      {
+        ""description"": ""Expand green open space coverage across the city"",
+        ""hazardsAddressed"": [""EXTREME_HEAT""],
+        ""targetYear"": 2030
+      }
+    ],
+    ""actions"": [],
+    ""projects"": []
+  }
+}"

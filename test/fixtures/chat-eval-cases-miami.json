@@ -1,0 +1,215 @@
+{
+  "location": "Miami, United States",
+  "locationData": {
+    "name": "City of Miami",
+    "countryName": "United States",
+    "lat": 25.76,
+    "lng": -80.19,
+    "isReportingLeader": true,
+    "hazards": {
+      "statistics": {
+        "populationExposedValue": 1850000,
+        "populationExposedPercentage": 68.5,
+        "gdpAtRiskValue": 52700000000,
+        "gdpAtRiskPercentage": 13.2,
+        "gdpAtRiskCurrencyCode": "USD",
+        "vulnerableSectors": [
+          "REAL_ESTATE",
+          "ACCOMMODATION_FOOD_SERVICE",
+          "TRANSPORTATION_STORAGE",
+          "FINANCIAL_INSURANCE",
+          "HUMAN_HEALTH_SOCIAL_WORK"
+        ]
+      },
+      "hazards": [
+        {
+          "hazardType": "COASTAL_FLOODING",
+          "source": "NOAA Sea Level Rise Viewer and Miami-Dade County Flood Zone Maps",
+          "description": "Recurrent sunny-day tidal flooding in low-lying areas, particularly Miami Beach, Downtown, and Shorecrest, driven by sea-level rise.",
+          "vulnerableGroups": [
+            "Residents in low-elevation coastal neighborhoods",
+            "Elderly populations with mobility challenges",
+            "Small business owners in flood-prone commercial districts"
+          ],
+          "proportionExposedRange": "Approximately 30-40% of the city's land area is highly susceptible.",
+          "impact": "Significant damage to public infrastructure, devaluation of real estate, and increased flood insurance costs.",
+          "mostExposedSectors": [
+            "REAL_ESTATE",
+            "TRANSPORTATION_STORAGE",
+            "ACCOMMODATION_FOOD_SERVICE"
+          ]
+        },
+        {
+          "hazardType": "TROPICAL_CYCLONE",
+          "source": "National Hurricane Center (NHC) Historical Data and Saffir-Simpson Scale",
+          "description": "High frequency of exposure to tropical cyclones, including major hurricanes, with destructive winds, storm surge, and extreme rainfall.",
+          "vulnerableGroups": [
+            "Populations residing in coastal areas exposed to storm surge",
+            "Residents of older buildings not built to modern hurricane codes",
+            "Individuals dependent on electricity for medical equipment"
+          ],
+          "proportionExposedRange": "100% of the population and assets are at risk during hurricane season.",
+          "impact": "Widespread power outages, severe structural damage, and large-scale business interruption.",
+          "mostExposedSectors": [
+            "ELECTRICITY_GAS_STEAM_AIR",
+            "CONSTRUCTION",
+            "PUBLIC_ADMIN_DEFENCE",
+            "FINANCIAL_INSURANCE"
+          ]
+        },
+        {
+          "hazardType": "EXTREME_HEAT",
+          "source": "National Weather Service (NWS) Heat Index and CDC Climate and Health Data",
+          "description": "A rising number of days per year with a heat index exceeding 105F during summer months.",
+          "vulnerableGroups": [
+            "Outdoor workers",
+            "Low-income households without access to or unable to afford air conditioning",
+            "The elderly and young children"
+          ],
+          "proportionExposedRange": "Over 90% of the population is regularly exposed to dangerous heat levels during the summer.",
+          "impact": "Increased public health emergencies, reduced labor productivity, and heightened risk of rolling blackouts.",
+          "mostExposedSectors": [
+            "HUMAN_HEALTH_SOCIAL_WORK",
+            "CONSTRUCTION",
+            "AGRICULTURE",
+            "ELECTRICITY_GAS_STEAM_AIR"
+          ]
+        }
+      ]
+    },
+    "governmentActions": {
+      "goals": [
+        {
+          "description": "Ensure all critical public infrastructure (hospitals, shelters, utilities) is resilient to a Category 4 hurricane storm surge and wind loads by 2040.",
+          "hazardsAddressed": [
+            "TROPICAL_CYCLONE",
+            "EXTREME_WIND"
+          ],
+          "targetYear": 2040
+        },
+        {
+          "description": "Reduce the impact of urban heat islands by increasing tree canopy coverage by 30% and implementing cool pavement standards for 50% of public surfaces by 2035.",
+          "hazardsAddressed": [
+            "EXTREME_HEAT",
+            "HEAT_STRESS"
+          ],
+          "targetYear": 2035
+        }
+      ],
+      "actions": [
+        {
+          "title": "Miami Forever Bond - Seawall and Stormwater Pump Station Upgrades",
+          "status": {
+            "statusType": "IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR",
+            "otherStatusDetails": ""
+          },
+          "coBenefits": [
+            "Creation of local engineering and construction jobs",
+            "Protection of high-value real estate",
+            "Improved water quality in Biscayne Bay"
+          ],
+          "hazardsAddressed": [
+            "COASTAL_FLOODING",
+            "HEAVY_PRECIPITATION"
+          ]
+        },
+        {
+          "title": "Resilient Neighborhoods Program: Cooling Centers and Green Infrastructure",
+          "status": {
+            "statusType": "ACTION_IN_OPERATION_TARGETED",
+            "otherStatusDetails": "Currently active in Little Haiti and Allapattah, with plans for city-wide expansion."
+          },
+          "coBenefits": [
+            "Enhanced public health outcomes for vulnerable groups",
+            "Improved neighborhood aesthetics and social cohesion",
+            "Reduced stormwater runoff"
+          ],
+          "hazardsAddressed": [
+            "EXTREME_HEAT",
+            "URBAN_FLOODING"
+          ]
+        },
+        {
+          "title": "Public Climate Risk Information Campaign",
+          "status": {
+            "statusType": "OTHERS",
+            "otherStatusDetails": "Phase 2 of the digital and community outreach program is underway."
+          },
+          "coBenefits": [
+            "Increased citizen preparedness",
+            "Greater public support for adaptation investments"
+          ],
+          "hazardsAddressed": [
+            "TROPICAL_CYCLONE",
+            "COASTAL_FLOODING"
+          ]
+        }
+      ],
+      "projects": [
+        {
+          "title": "Virginia Key Wastewater Treatment Plant Flood Protection and Hardening",
+          "status": "PROJECT_FEASIBILITY",
+          "fundedPercent": 35,
+          "totalAmount": 275000000
+        },
+        {
+          "title": "Biscayne Bay Mangrove Restoration and Living Shoreline Project",
+          "status": "PROJECT_STRUCTURING",
+          "fundedPercent": 60,
+          "totalAmount": 85000000
+        }
+      ]
+    },
+    "solutions": {
+      "solutions": {}
+    }
+  },
+  "cases": [
+    {
+      "id": "miami-multi-hazard-actions",
+      "questionType": "Actions",
+      "question": "Are there actions that approach more than one hazard?",
+      "expectedContains": [
+        "Miami Forever Bond",
+        "Resilient Neighborhoods Program"
+      ]
+    },
+    {
+      "id": "miami-co-benefits",
+      "questionType": "Actions",
+      "question": "Which co-benefits has the city identified for adaptation actions?",
+      "expectedContains": [
+        "Improved water quality in Biscayne Bay",
+        "Enhanced public health outcomes for vulnerable groups",
+        "Increased citizen preparedness"
+      ]
+    },
+    {
+      "id": "miami-heat-source",
+      "questionType": "Hazards",
+      "question": "What is the source of the hazard data for Extreme Heat?",
+      "expectedContains": [
+        "National Weather Service",
+        "CDC Climate and Health Data"
+      ]
+    },
+    {
+      "id": "miami-gdp-risk",
+      "questionType": "Hazards",
+      "question": "What percentage of GDP is at risk?",
+      "expectedContains": [
+        "13.2%"
+      ]
+    },
+    {
+      "id": "miami-top-hazards",
+      "questionType": "Actions",
+      "question": "What is the city doing to address its top hazards?",
+      "expectedContains": [
+        "coastal flooding",
+        "tropical cyclones",
+        "extreme heat"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "location": "Ho Chi Minh City, Vietnam",
+  "locationData": {
+    "name": "Ho Chi Minh City",
+    "countryName": "Vietnam",
+    "lat": 10.82,
+    "lng": 106.63,
+    "isReportingLeader": true,
+    "hazards": {
+      "statistics": {
+        "vulnerableSectors": [
+          "MANUFACTURING",
+          "TRANSPORTATION_STORAGE",
+          "REAL_ESTATE",
+          "WATER_SUPPLY",
+          "AGRICULTURE"
+        ]
+      },
+      "hazards": [
+        {
+          "hazardType": "URBAN_FLOODING",
+          "source": "Asian Development Bank (ADB) Climate Risk Country Profile: Viet Nam",
+          "description": "Intense monsoonal rainfall combined with an aging, overloaded drainage system and land subsidence causes severe inundation in low-lying districts.",
+          "vulnerableGroups": [
+            "Low-income households in informal settlements",
+            "Small business owners",
+            "Commuters and transport workers"
+          ],
+          "proportionExposedRange": "25-35% of the city area during peak events",
+          "impact": "Significant disruption to economic activity, damage to critical infrastructure, and increased risk of waterborne diseases.",
+          "mostExposedSectors": [
+            "TRANSPORTATION_STORAGE",
+            "WHOLESALE_RETAIL_TRADE",
+            "MANUFACTURING"
+          ]
+        },
+        {
+          "hazardType": "RIVER_FLOODING",
+          "source": "Vietnam Ministry of Natural Resources and Environment (MONRE) Climate Scenarios",
+          "description": "Seasonal high tides and upstream discharge from the Saigon and Dong Nai river systems lead to overbank flooding.",
+          "vulnerableGroups": [
+            "Industrial workers in riverside factories",
+            "Farmers",
+            "Residents in riverside communities"
+          ],
+          "proportionExposedRange": "10-20% of the city area, concentrated along river corridors",
+          "impact": "Direct damage to industrial facilities, loss of agricultural yields, and contamination of municipal water sources.",
+          "mostExposedSectors": [
+            "MANUFACTURING",
+            "AGRICULTURE",
+            "WATER_SUPPLY",
+            "SEWERAGE_WASTE_REMEDIATION"
+          ]
+        },
+        {
+          "hazardType": "COASTAL_FLOODING",
+          "otherHazardDetails": "Compounded by storm surge from tropical cyclones and sea level rise.",
+          "source": "Climate Central Sea Level Rise Projections",
+          "description": "Accelerating sea level rise poses a long-term threat to coastal districts, especially Can Gio.",
+          "vulnerableGroups": [
+            "Coastal communities",
+            "Fishermen",
+            "Tourism operators"
+          ],
+          "proportionExposedRange": "5-10% of total city area, but nearly 100% of the Can Gio district",
+          "impact": "Permanent loss of land, salinization of freshwater aquifers and agricultural land, and damage to coastal protection infrastructure.",
+          "mostExposedSectors": [
+            "FISHING",
+            "ACCOMMODATION_FOOD_SERVICE",
+            "CONSERVATION"
+          ]
+        }
+      ]
+    },
+    "governmentActions": {
+      "goals": [
+        {
+          "description": "Protect major industrial parks and residential areas from a 1-in-100-year river flood event by 2035 through a comprehensive system of dikes and sluice gates.",
+          "hazardsAddressed": [
+            "RIVER_FLOODING"
+          ],
+          "targetYear": 2035
+        },
+        {
+          "description": "Reduce urban flood inundation depth by 30% in 13 core districts by 2030 through upgraded drainage capacity and the development of water retention areas.",
+          "hazardsAddressed": [
+            "URBAN_FLOODING",
+            "HEAVY_PRECIPITATION"
+          ],
+          "targetYear": 2030
+        }
+      ],
+      "actions": [
+        {
+          "title": "Integrated Urban Drainage and Flood Management Master Plan",
+          "status": {
+            "statusType": "FEASIBILITY_FINALIZED_PARTIAL_FINANCE",
+            "otherStatusDetails": "Seeking international development bank co-financing for several key components."
+          },
+          "coBenefits": [
+            "Improved public health",
+            "Enhanced water quality in canals"
+          ],
+          "hazardsAddressed": [
+            "URBAN_FLOODING",
+            "RIVER_FLOODING"
+          ]
+        },
+        {
+          "title": "Green Infrastructure Incentive Program for Private Development",
+          "status": {
+            "statusType": "ACTION_IN_OPERATION_TARGETED",
+            "otherStatusDetails": "Pilot program active in Thu Duc City and District 7."
+          },
+          "hazardsAddressed": [
+            "URBAN_FLOODING",
+            "HEAT_STRESS"
+          ]
+        }
+      ],
+      "projects": [
+        {
+          "title": "Thu Duc City Right Bank Anti-Flooding Embankment and Sluice Gate System",
+          "status": "IMPLEMENTATION",
+          "fundedPercent": 75,
+          "totalAmount": 12000000000000
+        },
+        {
+          "title": "Nhieu Loc - Thi Nghe Canal Basin Wastewater and Flood Control - Phase 3",
+          "status": "PROJECT_FEASIBILITY",
+          "fundedPercent": 20,
+          "totalAmount": 8500000000000
+        }
+      ]
+    },
+    "solutions": {
+      "solutions": {}
+    }
+  },
+  "cases": [
+    {
+      "id": "hcmc-water-based-actions",
+      "questionType": "Actions",
+      "question": "Show me water-based actions?",
+      "expectedContains": [
+        "Integrated Urban Drainage and Flood Management Master Plan",
+        "Thu Duc City Right Bank Anti-Flooding Embankment and Sluice Gate System"
+      ]
+    },
+    {
+      "id": "hcmc-flooding-hazard-count",
+      "questionType": "Hazards",
+      "question": "How many flooding hazards are there?",
+      "expectedContains": [
+        "3",
+        "Urban Flooding",
+        "River Flooding",
+        "Coastal Flooding"
+      ]
+    },
+    {
+      "id": "hcmc-highest-exposure-hazard",
+      "questionType": "Hazards",
+      "question": "What hazards have a high level of exposure?",
+      "expectedContains": [
+        "urban flooding"
+      ]
+    }
+  ]
+}

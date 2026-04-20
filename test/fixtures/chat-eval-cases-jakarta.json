@@ -1,0 +1,119 @@
+{
+  "location": "Jakarta, Indonesia",
+  "locationData": {
+    "name": "DKI Jakarta",
+    "countryName": "Indonesia",
+    "lat": -6.2,
+    "lng": 106.8,
+    "isReportingLeader": true,
+    "hazards": {
+      "statistics": {
+        "populationExposedPercentage": 40,
+        "gdpAtRiskPercentage": 30,
+        "vulnerableSectors": [
+          "WATER_SUPPLY",
+          "TRANSPORTATION_STORAGE"
+        ]
+      },
+      "hazards": [
+        {
+          "hazardType": "COASTAL_FLOODING",
+          "source": "CDP",
+          "description": "Jakarta reports coastal flooding as a high-priority hazard affecting low-lying northern districts and critical infrastructure.",
+          "vulnerableGroups": [
+            "Low-income communities"
+          ],
+          "mostExposedSectors": [
+            "TRANSPORTATION_STORAGE",
+            "WATER_SUPPLY"
+          ]
+        },
+        {
+          "hazardType": "EXTREME_HEAT",
+          "source": "CDP",
+          "description": "Jakarta faces increasing extreme heat, especially in dense urban districts with limited tree cover.",
+          "vulnerableGroups": [
+            "Outdoor workers"
+          ],
+          "mostExposedSectors": [
+            "HUMAN_HEALTH_SOCIAL_WORK"
+          ]
+        }
+      ]
+    },
+    "governmentActions": {
+      "goals": [
+        {
+          "description": "Expand green open space coverage across the city",
+          "hazardsAddressed": [
+            "EXTREME_HEAT"
+          ],
+          "targetYear": 2030
+        },
+        {
+          "description": "Reduce tidal flooding impacts in northern Jakarta",
+          "hazardsAddressed": [
+            "COASTAL_FLOODING"
+          ],
+          "targetYear": 2030
+        }
+      ],
+      "actions": [
+        {
+          "title": "Engineered and built environment actions: Coastal dikes and sea wall improvements",
+          "status": "Implementation",
+          "hazardsAddressed": [
+            "COASTAL_FLOODING"
+          ]
+        },
+        {
+          "title": "Ecosystem-based actions: Mangrove restoration in northern Jakarta",
+          "status": "Implementation",
+          "hazardsAddressed": [
+            "COASTAL_FLOODING"
+          ]
+        },
+        {
+          "title": "Technological actions: Heat early warning and urban cooling measures",
+          "status": "Implementation",
+          "hazardsAddressed": [
+            "EXTREME_HEAT"
+          ]
+        }
+      ],
+      "projects": []
+    },
+    "solutions": {
+      "solutions": {}
+    }
+  },
+  "cases": [
+    {
+      "id": "jakarta-coastal-flooding-hazard",
+      "questionType": "Hazards",
+      "question": "What coastal flooding hazard is described for Jakarta?",
+      "expectedContains": [
+        "coastal flooding",
+        "northern districts"
+      ]
+    },
+    {
+      "id": "jakarta-heat-goal",
+      "questionType": "Actions",
+      "question": "What is Jakarta's goal related to green open space?",
+      "expectedContains": [
+        "Expand green open space coverage across the city",
+        "2030"
+      ]
+    },
+    {
+      "id": "jakarta-coastal-actions",
+      "questionType": "Actions",
+      "question": "What actions is Jakarta taking for coastal flooding?",
+      "expectedContains": [
+        "Coastal dikes and sea wall improvements",
+        "Mangrove restoration in northern Jakarta"
+      ]
+    }
+  ]
+}

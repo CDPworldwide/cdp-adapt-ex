@@ -1,0 +1,296 @@
+{
+  "homepage": {
+    "hero": {
+      "title": "Explore planos relacionados à adaptação e resiliência.",
+      "searchPlaceholder": "Pesquisar localização",
+      "notFound": "Desculpe, não conseguimos encontrar '{{location}}'.",
+      "notFoundExplanation": "É possível que não tenhamos esse local em nosso banco de dados ou que ele ainda não esteja vinculado aos nossos dados de divulgação.",
+      "trySearchingAgain": "Por favor, tente pesquisar novamente.",
+      "goBack": "Voltar",
+      "noDataTitle": "Não há dados de divulgação disponíveis para '{{location}}'",
+      "noDataBody": "Ainda não temos dados para exibir para este local. Estamos expandindo continuamente nossa cobertura com divulgações históricas e fontes de dados confiáveis adicionais.",
+      "searchSuggestions": "Sugestões de pesquisa",
+      "disclosesToCdp": "Relatórios de localização para o CDP"
+    },
+    "description": {
+      "text": "Explore os riscos climáticos locais, as ações e os projetos de adaptação que buscam financiamento de cidades, estados e regiões em todo o mundo.",
+      "learnMore": "Saber mais"
+    },
+    "legend": {
+      "cities": "Cidades",
+      "statesAndRegions": "Estados e Regiões"
+    },
+    "nav": {
+      "title": "Adaptation & action explorer",
+      "explore": "Explorar",
+      "compare": "Comparar",
+      "fund": "Fundo"
+    }
+  },
+  "maps": {
+    "totalReportedHazards": "Total de riscos relatados",
+    "topHazards": "{{count}} principais riscos",
+    "implementedActions": "Ações de adaptação implementadas",
+    "projectsSeekingFunding": "Projetos que buscam financiamento",
+    "learnMore": "Saber mais",
+    "reportingLeader": "Líder de Relatórios do CDP",
+    "noHazardData": "Não há dados de mapa disponíveis para este perigo.",
+    "hazardLegend": {
+      "source": "Fonte",
+      "scenario": "Cenários",
+      "timeframe": "Prazos disponíveis"
+    }
+  },
+  "shared": {
+    "showMore": "Mostrar mais",
+    "showLess": "Mostrar menos",
+    "showMoreHazards": "Mostrar mais perigos",
+    "selectLanguage": "Selecionar idioma",
+    "expandMap": "Expandir mapa",
+    "collapseMap": "Recolher mapa"
+  },
+  "locationCard": {
+    "backToMap": "Voltar ao mapa",
+    "header": {
+      "estimatedPopulation": "População estimada:",
+      "populationTooltip": "Estimativas populacionais da divulgação do CDP de {{location}}'s",
+      "reportingLeader": "Líder de Relatórios do CDP"
+    },
+    "footer": {
+      "termsOfUse": "Termos de uso",
+      "methodology": "Metodologia",
+      "downloadAllData": "Baixar todos os dados",
+      "contactUs": "Contate-nos"
+    },
+    "tabs": {
+      "hazards": "riscos",
+      "governmentActions": "Ações governamentais",
+      "solutions": "Soluções"
+    },
+    "hazardNames": {
+      "HEAT_STRESS": "Estresse térmico",
+      "EXTREME_HEAT": "Calor extremo",
+      "EXTREME_COLD": "Frio extremo",
+      "SNOW_AND_ICE": "Neve e gelo",
+      "FIRE_WEATHER": "Condições de incêndio",
+      "DROUGHT": "Seca",
+      "WATER_STRESS": "Estresse hídrico",
+      "INCREASED_WATER_DEMAND": "Aumento da demanda de água",
+      "URBAN_FLOODING": "Inundações urbanas",
+      "RIVER_FLOODING": "Inundação do rio",
+      "COASTAL_FLOODING": "Inundações costeiras",
+      "TROPICAL_CYCLONE": "Furacões/Tufões",
+      "EXTREME_WIND": "Vento extremo",
+      "STORM": "Tempestade",
+      "HEAVY_PRECIPITATION": "Precipitação intensa",
+      "MASS_MOVEMENT": "Movimento de Massas",
+      "LOSS_OF_GREEN_SPACE": "Perda de espaços verdes",
+      "SOIL_DEGRADATION_EROSION": "Degradação do solo",
+      "LANDSCAPE_SHIFT_DEGRADATION": "Outra mudança de cenário",
+      "INFECTIOUS_DISEASE": "Doenças Infecciosas",
+      "BIODIVERSITY_LOSS": "Perda de biodiversidade"
+    },
+    "sectorNames": {
+      "AGRICULTURE": "Agricultura",
+      "FORESTRY": "Silvicultura",
+      "FISHING": "Pesca",
+      "MINING_QUARRYING": "Mineração e extração de pedras",
+      "CONSERVATION": "Conservação",
+      "MANUFACTURING": "Fabricação",
+      "CONSTRUCTION": "Construção",
+      "ELECTRICITY_GAS_STEAM_AIR": "Eletricidade, gás, vapor",
+      "SEWERAGE_WASTE_REMEDIATION": "Resíduos de água e esgoto",
+      "WASTE_MANAGEMENT": "Gestão de Resíduos",
+      "WHOLESALE_RETAIL_TRADE": "Atacado/Varejo",
+      "TRANSPORTATION_STORAGE": "Transporte e armazenamento",
+      "INFORMATION_COMMUNICATION": "Informação e Comunicações",
+      "ACCOMMODATION_FOOD_SERVICE": "Alojamento e alimentação",
+      "FINANCIAL_INSURANCE": "Serviços financeiros e de seguros",
+      "REAL_ESTATE": "Imobiliária",
+      "PROFESSIONAL_SCIENTIFIC_TECHNICAL": "Profissional/Científico",
+      "ADMIN_SUPPORT_SERVICES": "Suporte administrativo",
+      "PUBLIC_ADMIN_DEFENCE": "Administração Pública e Defesa",
+      "EDUCATION": "Educação",
+      "HUMAN_HEALTH_SOCIAL_WORK": "Saúde Humana",
+      "ARTS_ENTERTAINMENT_RECREATION": "Artes e recreação"
+    },
+    "solutionCategoryNames": {
+      "ENGINEERED_BUILT_ENVIRONMENT": "Ações relacionadas ao ambiente construído e projetado",
+      "ECONOMIC": "Ações econômicas",
+      "LAWS_REGULATIONS": "Ações de leis e regulamentos",
+      "TECHNOLOGICAL": "Ações tecnológicas",
+      "BEHAVIOURAL": "Ações comportamentais",
+      "EDUCATIONAL_INFORMATIONAL": "Ações educativas/informativas",
+      "ECOSYSTEM_BASED": "Ações baseadas no ecossistema",
+      "SERVICES": "Ações de serviços",
+      "GOVERNMENT_POLICIES_PROGRAMS": "Ações de políticas e programas governamentais"
+    },
+    "hazardDetail": {
+      "topNHazards": "Os {{count}} principais riscos",
+      "hazardsDisclosedCount": "({{count}} divulgados)",
+      "topFourHazardsDisclosed": "Os 4 principais riscos ({{count}})",
+      "topHazardsDisclosed": "Principais riscos divulgados ({{count}})",
+      "topTwoComputed": "Os 2 principais riscos calculados",
+      "topFourComputed": "Os 4 principais riscos calculados",
+      "noGeeData": "Não há dados disponíveis sobre riscos externos para este perigo.",
+      "crvaTitle": "Foi realizada uma Avaliação de Riscos e Vulnerabilidades Climáticas.",
+      "crvaRecentYear": "Ano de avaliação mais recente:",
+      "crvaSource": "Fonte: ",
+      "disclosure": "Divulgação",
+      "crvaSourceGee": "Fonte: Análise de dados do CDP/GEE",
+      "crvaVisitPortal": "Visite o Portal de Dados Abertos do CDP",
+      "requestersTitle": "Divulgação de dados solicitada por",
+      "requestersTooltip": "Estas são organizações que solicitaram a divulgação de informações a esta jurisdição. Esta lista não é exaustiva e não indica conformidade governamental nem a finalidade específica para a qual as informações foram divulgadas.",
+      "aiSummary": "Resumo de IA",
+      "proportionLabel": "Proporção da população mais exposta",
+      "vulnerablePopTitle": "Grupos populacionais vulneráveis mais expostos",
+      "factorsLabel": "Fatores que afetam a capacidade de adaptação",
+      "impactLabel": "Descrição do impacto",
+      "challengeLabel": "Justificativa de desafio/apoio",
+      "mostExposedSectors": "Setores mais expostos",
+      "exploreActions": "Explore as ações de adaptação {{count}}",
+      "noActionsDisclosed": "Nenhuma ação de adaptação foi divulgada para este risco.",
+      "noGeeDataInfo": "O CDP e seus parceiros ainda não identificaram uma fonte de dados ou metodologia confiável para exibir essas informações de forma significativa.",
+      "noMapData": "Não há dados de mapa disponíveis para este perigo."
+    },
+    "hazardOverview": {
+      "title": "Visão geral dos riscos",
+      "source": "Fonte: ",
+      "disclosure": "Divulgação",
+      "sourceTemplate": "Fonte: {{location}} {{year}} Divulgação do CDP",
+      "topHazards": "Principais riscos divulgados",
+      "topHazardsTooltip": "Os perigos são classificados de acordo com a probabilidade de ocorrência e a gravidade do impacto potencial. Esta lista apresenta os quatro principais riscos — pode haver outros perigos divulgados que não estão incluídos aqui.",
+      "mostExposedSectors": "Setores econômicos mais expostos",
+      "mostExposedSectorsTooltip": "Os setores são derivados de divulgações e classificados por número de menções ou em ordem alfabética. Isso reflete apenas o que foi divulgado e não indica importância relativa ou abrangência."
+    },
+    "geeCard": {
+      "riskOfOccurrence": "Risco de ocorrência",
+      "source": "Fonte",
+      "scenarios": "Cenários",
+      "timeframes": "Prazos disponíveis"
+    },
+    "banners": {
+      "nonPublic": {
+        "title": "Relatório não disponível para visualização pública.",
+        "description": "O relatório do CDP desta jurisdição não está disponível para visualização. Todas as informações sobre riscos exibidas nesta página são provenientes da análise do CDP.",
+        "cta": "Saiba mais sobre como fazer denúncias.",
+        "ctaDescription": "Para saber mais sobre as cidades, estados e regiões que reportam ao CDP, visite nosso site."
+      },
+      "nonDisclosing": {
+        "title": "Nenhum risco divulgado",
+        "description": "Esta jurisdição não relatou nenhum risco em sua resposta ao questionário do CDP. Todas as informações sobre riscos exibidas nesta página são provenientes da análise do CDP.",
+        "cta": "Visite o Portal de Dados Abertos do CDP",
+        "ctaDescription": "Para obter mais informações sobre o que essa jurisdição relatou, baixe o questionário completo no Portal de Dados Abertos do CDP."
+      },
+      "noReport": {
+        "title": "Nenhum relatório disponível",
+        "description": "Esta jurisdição não reporta atualmente informações através do questionário do CDP. Todas as informações sobre riscos exibidas nesta página são provenientes de análises do CDP.",
+        "cta": "Saiba mais sobre como fazer denúncias.",
+        "ctaDescription": "Para saber mais sobre as cidades, estados e regiões que reportam ao CDP, visite nosso site."
+      }
+    },
+    "govActions": {
+      "actionsSummary": "Resumo das ações",
+      "all": "Todos",
+      "goals": "Metas",
+      "actions": "Ações",
+      "disclosed": "Divulgados",
+      "adaptationGoals": "Metas de adaptação ({{count}} Divulgado)",
+      "hazardsAddressed": "riscos abordados",
+      "targetYear": "Ano alvo",
+      "adaptationActions": "Ações de adaptação ({{count}} Divulgadas)",
+      "coBenefits": "Benefícios colaterais",
+      "projectsSeekingFundingWithCount": "Projetos em busca de financiamento ({{count}} Divulgados)",
+      "projectSeekingFunding": "Projeto em busca de financiamento",
+      "status": "Status",
+      "totalFundingNeeded": "Financiamento total necessário",
+      "types": {
+        "adaptationGoal": "Objetivo de adaptação",
+        "adaptationAction": "Ação de adaptação",
+        "projectSeekingFunding": "Projeto em busca de financiamento"
+      },
+      "adaptationAction": "Ação de adaptação",
+      "funded": "Financiado",
+      "remaining": "Restante",
+      "more": "mais",
+      "detail": {
+        "climateHazards": "Riscos climáticos",
+        "description": "Descrição",
+        "statusOfAction": "Estado da ação",
+        "coBenefits": "Benefícios colaterais",
+        "resilienceAttributesEnhanced": "Atributos de resiliência aprimorados",
+        "impactedSectors": "Setores afetados",
+        "totalFunded": "Total financiado",
+        "totalNeeded": "Total necessário",
+        "projectArea": "Área do projeto",
+        "financeModel": "Modelo de financiamento",
+        "financeStatus": "Status do financiamento",
+        "totalCostOfAction": "Custo total da ação (USD)",
+        "timeframe": "Prazo",
+        "multipleTimeframes": "Múltiplos prazos",
+        "multipleTimeframesTooltip": "Esta localização divulgou múltiplas ações semelhantes com múltiplos prazos."
+      },
+      "projectStatuses": {
+        "SCOPING": "Definição do escopo",
+        "PRE_FEASIBILITY": "Pré-viabilidade",
+        "PROJECT_FEASIBILITY": "Viabilidade do projeto",
+        "PROJECT_STRUCTURING": "Estruturação do projeto",
+        "TRANSACTION_PREPARATION": "Preparação da transação",
+        "IMPLEMENTATION": "Implementação",
+        "POST_IMPLEMENTATION": "Pós-implementação"
+      }
+    },
+    "actionStatusesFull": {
+      "SCOPING": "Escopo",
+      "PRE_FEASIBILITY_STUDY": "Estudo de pré-viabilidade",
+      "FEASIBILITY_FINALIZED_NO_FINANCE": "Viabilidade finalizada, sem financiamento assegurado atualmente",
+      "FEASIBILITY_FINALIZED_PARTIAL_FINANCE": "Viabilidade finalizada, financiamento parcialmente assegurado",
+      "FEASIBILITY_FINALIZED_FULL_FINANCE": "Viabilidade finalizada, financiamento totalmente assegurado",
+      "IMPLEMENTATION_COMPLETE_REPORTING_YEAR": "Implementação concluída no ano de relatório",
+      "IMPLEMENTATION_UNDERWAY_COMPLETION_LT_ONE_YEAR": "Implementação em andamento, conclusão prevista em menos de um ano",
+      "IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR": "Implementação em andamento, conclusão prevista em mais de um ano",
+      "ACTION_IN_OPERATION_JURISDICTION_WIDE": "Ação em operação (em toda a jurisdição)",
+      "ACTION_IN_OPERATION_MOST_OF_JURISDICTION": "Ação em operação (na maior parte da jurisdição)",
+      "ACTION_IN_OPERATION_TARGETED": "Ação em operação (direcionada a setor/localização)",
+      "OTHERS": "Outros"
+    },
+    "actionStatuses": {
+      "SCOPING": "Escopo",
+      "PRE_FEASIBILITY_STUDY": "Estudo de pré-viabilidade",
+      "FEASIBILITY_FINALIZED_NO_FINANCE": "Estudo de viabilidade finalizado",
+      "FEASIBILITY_FINALIZED_PARTIAL_FINANCE": "Estudo de viabilidade finalizado",
+      "FEASIBILITY_FINALIZED_FULL_FINANCE": "Estudo de viabilidade finalizado",
+      "IMPLEMENTATION_COMPLETE_REPORTING_YEAR": "Implementação concluída",
+      "IMPLEMENTATION_UNDERWAY_COMPLETION_LT_ONE_YEAR": "Implementação em andamento",
+      "IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR": "Implementação em andamento",
+      "ACTION_IN_OPERATION_JURISDICTION_WIDE": "Ação em operação",
+      "ACTION_IN_OPERATION_MOST_OF_JURISDICTION": "Ação em operação",
+      "ACTION_IN_OPERATION_TARGETED": "Ação em operação",
+      "OTHERS": "Outros"
+    },
+    "solutions": {
+      "alsoHasLocalAction": "também possui ação(ões) nesta categoria",
+      "exampleActionsCount": "Veja {{count}} exemplos de ações",
+      "popularSolutionsTitle": "Soluções populares",
+      "totalCostOfAction": "Custo total da ação (USD)",
+      "timeframe": "Período de tempo",
+      "hazardFiltersTitle": "Os {{count}} principais filtros de risco",
+      "description": "Descrição",
+      "sourceDescription": "Fonte: Agregação e análise do CDP de divulgações de {{year}} de cidades semelhantes",
+      "climateHazards": "Riscos climáticos",
+      "statusOfAction": "Estado da ação",
+      "coBenefits": "Benefícios colaterais",
+      "hazardsAddressed": "riscos abordados",
+      "jurisdictionsTakingAction": "Jurisdições que tomaram essa medida",
+      "exampleActions": "Ações de exemplo",
+      "resilienceAttributes": "Atributos de resiliência aprimorados",
+      "impactedSectors": "Setores afetados"
+    }
+  },
+  "askCdpAi": {
+    "buttonText": "Pergunte ao Explorador de IA",
+    "input": {
+      "placeholder": "Pergunte ao Explorador de IA..."
+    }
+  }
+}

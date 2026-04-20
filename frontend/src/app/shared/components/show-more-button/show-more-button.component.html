@@ -1,0 +1,9 @@
+<button
+  type="button"
+  (click)="onClick()"
+  class="px-6 py-3 bg-white rounded-3xl shadow-cdp-card border border-zinc-100 inline-flex justify-center items-center gap-2.5 hover:bg-zinc-50 active:bg-zinc-100 transition-colors cursor-pointer"
+>
+  <span class="text-cdp-red text-base font-medium font-roboto leading-6 tracking-wide">
+    {{ (isExpanded ? 'shared.showLess' : 'shared.showMore') | translate }}
+  </span>
+</button>

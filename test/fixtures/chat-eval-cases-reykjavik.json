@@ -1,0 +1,122 @@
+{
+  "location": "Reykjavik, Iceland",
+  "locationData": {
+    "name": "City of Reykjavik",
+    "countryName": "Iceland",
+    "lat": 64.15,
+    "lng": -21.94,
+    "isReportingLeader": true,
+    "hazards": {
+      "statistics": {
+        "populationExposedValue": 85000,
+        "populationExposedPercentage": 65.4,
+        "gdpAtRiskValue": 1200000000,
+        "gdpAtRiskPercentage": 5.2,
+        "gdpAtRiskCurrencyCode": "ISK",
+        "vulnerableSectors": [
+          "TRANSPORTATION_STORAGE",
+          "FISHING",
+          "ACCOMMODATION_FOOD_SERVICE",
+          "ELECTRICITY_GAS_STEAM_AIR",
+          "HUMAN_HEALTH_SOCIAL_WORK"
+        ]
+      },
+      "hazards": [
+        {
+          "hazardType": "COASTAL_FLOODING",
+          "source": "Icelandic Meteorological Office & University of Iceland Climate Projections 2023",
+          "description": "Rising sea levels combined with increased storm surge frequency pose a significant threat to low-lying coastal areas."
+        },
+        {
+          "hazardType": "EXTREME_WIND",
+          "source": "National Power Company of Iceland (Landsvirkjun) Grid Resilience Study",
+          "description": "Climate models predict an increase in the frequency and intensity of severe North Atlantic winter storms."
+        },
+        {
+          "hazardType": "SNOW_AND_ICE",
+          "source": "Reykjavik Public Works Department, Winter Maintenance Report",
+          "description": "The city is experiencing more frequent intense snowfall events and ice storm conditions."
+        }
+      ]
+    },
+    "governmentActions": {
+      "goals": [
+        {
+          "description": "Protect 90% of critical coastal infrastructure and residential areas from a 1-in-100-year storm surge event through a combination of hard and soft engineering solutions.",
+          "hazardsAddressed": [
+            "COASTAL_FLOODING"
+          ],
+          "targetYear": 2040
+        },
+        {
+          "description": "Enhance the resilience of the city's power grid and building stock to withstand wind speeds up to 45 m/s.",
+          "hazardsAddressed": [
+            "EXTREME_WIND"
+          ],
+          "targetYear": 2035
+        },
+        {
+          "description": "Improve winter maintenance capacity to ensure all primary and secondary roads are cleared within 12 hours of a major snowfall event.",
+          "hazardsAddressed": [
+            "SNOW_AND_ICE"
+          ],
+          "targetYear": 2030
+        }
+      ],
+      "actions": [
+        {
+          "title": "Reykjavik Coastal Resilience Program - Phase 1: Sea Wall & Dune Restoration",
+          "status": {
+            "statusType": "FEASIBILITY_FINALIZED_PARTIAL_FINANCE",
+            "otherStatusDetails": "Federal co-financing application pending."
+          },
+          "hazardsAddressed": [
+            "COASTAL_FLOODING"
+          ]
+        },
+        {
+          "title": "Grid Hardening and Undergrounding Feasibility Study",
+          "status": {
+            "statusType": "PRE_FEASIBILITY_STUDY",
+            "otherStatusDetails": ""
+          },
+          "hazardsAddressed": [
+            "EXTREME_WIND"
+          ]
+        },
+        {
+          "title": "Smart Winter Maintenance Fleet Upgrade",
+          "status": {
+            "statusType": "IMPLEMENTATION_UNDERWAY_COMPLETION_LT_ONE_YEAR",
+            "otherStatusDetails": ""
+          },
+          "hazardsAddressed": [
+            "SNOW_AND_ICE"
+          ]
+        }
+      ]
+    },
+    "solutions": {
+      "solutions": {}
+    }
+  },
+  "cases": [
+    {
+      "id": "reykjavik-population-exposed",
+      "questionType": "Hazards",
+      "question": "What percentage of the population is exposed to hazards?",
+      "expectedContains": [
+        "65.4%"
+      ]
+    },
+    {
+      "id": "reykjavik-goals-2050",
+      "questionType": "Actions",
+      "question": "Are there any goals set for the year 2050?",
+      "expectedContains": [
+        "no",
+        "2050"
+      ]
+    }
+  ]
+}

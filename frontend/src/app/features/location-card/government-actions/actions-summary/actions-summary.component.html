@@ -1,0 +1,51 @@
+<section>
+  <h2
+    class="py-4 text-base font-semibold font-roboto uppercase leading-6 tracking-wide text-cdp-dark"
+  >
+    {{ 'locationCard.govActions.actionsSummary' | translate }}
+  </h2>
+
+  <div class="flex gap-px overflow-x-auto" style="-ms-overflow-style: none; scrollbar-width: none">
+    <!-- All button -->
+    <button
+      type="button"
+      (click)="selectFilter(null)"
+      class="flex flex-col items-center justify-center w-20 h-20 shrink-0 p-2 transition-colors"
+      [ngClass]="{
+        'bg-cdp-dark text-white': isSelected(null),
+        'bg-cdp-neutral-02 text-cdp-dark': !isSelected(null)
+      }"
+    >
+      <span class="text-sm font-medium text-center leading-4 tracking-tight">
+        {{ 'locationCard.govActions.all' | translate }}
+      </span>
+    </button>
+    <!-- Hazard buttons -->
+    @for (row of summaryRows; track trackRow($index, row)) {
+      <button
+        type="button"
+        (click)="selectFilter(hazardKey(row))"
+        class="flex flex-col items-center justify-center w-20 h-20 shrink-0 p-2 transition-colors"
+        [ngClass]="{
+          'bg-cdp-dark text-white': isSelected(hazardKey(row)),
+          'bg-cdp-neutral-02 text-cdp-dark': !isSelected(hazardKey(row))
+        }"
+      >
+        <app-hazard-icon
+          [hazard]="row.hazard.hazardType"
+          [otherHazardDetails]="row.hazard.otherHazardDetails"
+          size="24"
+          [color]="isSelected(hazardKey(row)) ? 'white' : 'black'"
+          class="mb-1"
+        ></app-hazard-icon>
+        <span class="text-sm font-medium text-center leading-4 tracking-tight">
+          @if (row.hazard.hazardType === 'OTHERS') {
+            {{ hazardName(row) }}
+          } @else {
+            {{ hazardTranslationKey(row) | translate }}
+          }
+        </span>
+      </button>
+    }
+  </div>
+</section>

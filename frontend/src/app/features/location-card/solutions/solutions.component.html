@@ -1,0 +1,284 @@
+<div class="flex flex-col gap-4 px-4 lg:px-0 pb-6">
+  @if (isNoHazards) {
+    <div class="mb-8">
+      <!-- Banner -->
+      <div class="w-full px-6 py-4 bg-cdp-red flex justify-start items-center gap-6 rounded-lg">
+        <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
+          <app-no-hazards-icon size="44" color="white"></app-no-hazards-icon>
+        </div>
+        <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
+          <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
+            <div
+              class="self-stretch justify-start text-white text-base font-semibold font-roboto leading-6 tracking-tight"
+            >
+              {{ 'locationCard.solutions.noSolutionsBanner.title' | translate }}
+            </div>
+            <div
+              class="self-stretch text-white text-sm font-normal font-roboto leading-5 tracking-tight"
+              [innerHTML]="'locationCard.solutions.noSolutionsBanner.description' | translate"
+            ></div>
+          </div>
+          <div class="h-12 flex justify-center items-center shrink-0">
+            <a
+              href="https://data.cdp.net/"
+              target="_blank"
+              class="bg-white rounded inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-gray-100 transition-colors"
+            >
+              <div
+                class="justify-center text-cdp-red text-sm font-medium font-roboto leading-5 tracking-tight"
+              >
+                {{ 'locationCard.solutions.noSolutionsBanner.button' | translate }}
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content below banner -->
+      <div class="mt-12 max-w-3xl mx-auto">
+        <h2 class="text-cdp-dark text-2xl font-normal font-roboto leading-8 mb-6">
+          {{
+            'locationCard.solutions.noSolutionsContent.title'
+              | translate
+                : {
+                    location: (data?.name ?? '') + ', ' + (data?.countryName ?? ''),
+                    year: data?.disclosureYear || ('locationCard.hazardDetail.unknown' | translate)
+                  }
+          }}
+        </h2>
+        <div
+          class="text-zinc-800 text-sm font-normal font-roboto leading-5 tracking-tight"
+          [innerHTML]="
+            'locationCard.solutions.noSolutionsContent.description'
+              | translate
+                : {
+                    location: (data?.name ?? '') + ', ' + (data?.countryName ?? ''),
+                    year: data?.disclosureYear || ('locationCard.hazardDetail.unknown' | translate)
+                  }
+          "
+        ></div>
+      </div>
+    </div>
+  } @else {
+    <!-- Hazard Filters -->
+    <section class="mb-4">
+      <h2
+        class="pb-4 text-base font-semibold font-roboto uppercase leading-6 tracking-wide text-cdp-dark"
+      >
+        {{ 'locationCard.solutions.hazardFiltersTitle' | translate: { count: hazardFiltersCount } }}
+      </h2>
+      <div class="flex flex-wrap gap-px">
+        @for (filter of hazardFilters; track filter.type) {
+          <button
+            (click)="selectHazard(filter.type)"
+            class="flex flex-col items-center justify-center w-20 h-20 p-2 transition-colors"
+            [ngClass]="{
+              'bg-cdp-dark text-white': isSelected(filter.type),
+              'bg-cdp-neutral-02 text-cdp-dark': !isSelected(filter.type)
+            }"
+          >
+            @if (filter.type) {
+              <app-hazard-icon
+                [hazard]="filter.type"
+                size="24"
+                [color]="isSelected(filter.type) ? 'white' : 'black'"
+                class="mb-1"
+              ></app-hazard-icon>
+            }
+            <span class="text-sm font-medium text-center leading-4 tracking-tight">
+              {{
+                filter.type
+                  ? ('locationCard.hazardNames.' + filter.type | translate)
+                  : ('locationCard.govActions.all' | translate)
+              }}
+            </span>
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- Popular Solutions Header -->
+    <section class="flex flex-col justify-center items-start">
+      <h2
+        class="text-base font-semibold font-roboto uppercase leading-6 tracking-wide text-cdp-dark"
+      >
+        {{ 'locationCard.solutions.popularSolutionsTitle' | translate }}
+      </h2>
+      <div class="flex items-center gap-1 mt-1">
+        <p class="text-cdp-text-secondary text-sm font-normal font-roboto leading-5 tracking-tight">
+          {{
+            'locationCard.solutions.sourceDescription'
+              | translate
+                : {
+                    year: data?.disclosureYear || ('locationCard.hazardDetail.unknown' | translate)
+                  }
+          }}
+        </p>
+      </div>
+    </section>
+
+    <!-- Categories -->
+    @for (category of categories; track category.category) {
+      <div class="flex flex-col gap-6">
+        <header class="py-4 flex justify-start items-center gap-2">
+          <h3
+            class="text-sm font-normal font-roboto uppercase leading-6 tracking-wide text-cdp-dark"
+          >
+            {{ 'locationCard.solutionCategoryNames.' + category.category | translate }}
+          </h3>
+          <div class="flex items-center text-cdp-dark text-sm font-medium leading-6 tracking-wide">
+            <span>(</span>
+            <span class="font-normal">{{ category.solutions.length }}</span>
+            <span>)</span>
+          </div>
+        </header>
+
+        <!-- Solutions Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          @for (solution of category.solutions; track solution.solution; let i = $index) {
+            <article
+              (click)="openSolutionDetail(solution)"
+              (keydown.enter)="openSolutionDetail(solution)"
+              (keydown.space)="openSolutionDetail(solution); $event.preventDefault()"
+              tabindex="0"
+              role="button"
+              class="w-full h-72 relative overflow-hidden group cursor-pointer bg-cdp-dark rounded focus:outline-2 focus:outline-offset-2 focus:outline-cdp-dark"
+            >
+              <!-- Background Gradient/Overlay -->
+              <div
+                class="absolute inset-0 bg-gradient-to-b from-cdp-dark/20 to-cdp-dark/80 transition-opacity duration-300 group-hover:opacity-90"
+              ></div>
+
+              <!-- Content Container -->
+              <div class="absolute inset-0 p-6 flex flex-col justify-between items-start z-10">
+                <!-- Top Section: ID, Title, Local Action -->
+                <div class="w-full flex flex-col gap-2 min-h-0">
+                  <span class="text-white text-2xl font-bold tracking-wide">
+                    {{ i + 1 }}
+                  </span>
+                  <h4
+                    class="text-white text-2xl font-normal tracking-wide leading-snug line-clamp-2 break-words hyphens-auto"
+                  >
+                    {{ solution.solution | autoTranslate }}
+                  </h4>
+                </div>
+
+                <!-- Bottom Section: Hazards, Jurisdictions, Footer -->
+                <div class="w-full flex flex-col gap-4 shrink-0">
+                  <div class="flex items-start gap-4">
+                    <!-- Hazards Addressed -->
+                    @if (solution.solutionHazardsAddressed; as hazards) {
+                      <div class="flex flex-col gap-2">
+                        <span class="text-white text-sm font-medium leading-5 tracking-tight">
+                          {{ 'locationCard.solutions.hazardsAddressed' | translate }}
+                        </span>
+
+                        <!-- 1 Hazard: Icon + Text -->
+                        @if (hazards.length === 1) {
+                          <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-2">
+                              <app-hazard-icon
+                                [hazard]="hazards[0].hazardType"
+                                size="18"
+                                color="white"
+                              ></app-hazard-icon>
+                              <span class="text-white text-sm font-normal leading-5 tracking-tight">
+                                {{
+                                  'locationCard.hazardNames.' + hazards[0].hazardType | translate
+                                }}
+                              </span>
+                            </div>
+                          </div>
+                        }
+
+                        <!-- 2-4 Hazards: Only Icons in a row -->
+                        @if (hazards.length > 1 && hazards.length <= 4) {
+                          <div class="flex flex-row items-center gap-2">
+                            @for (h of hazards; track h.hazardType) {
+                              <app-hazard-icon
+                                [hazard]="h.hazardType"
+                                size="18"
+                                color="white"
+                              ></app-hazard-icon>
+                            }
+                          </div>
+                        }
+
+                        <!-- > 4 Hazards: 3 Icons + Plus Pill -->
+                        @if (hazards.length > 4) {
+                          <div class="flex flex-row items-center gap-2">
+                            @for (h of hazards | slice: 0 : 3; track h.hazardType) {
+                              <app-hazard-icon
+                                [hazard]="h.hazardType"
+                                size="18"
+                                color="white"
+                              ></app-hazard-icon>
+                            }
+                            <div
+                              class="w-6 h-6 bg-white rounded-full flex justify-center items-center"
+                            >
+                              <span class="text-black text-[10px] font-bold leading-none"
+                                >+{{ hazards.length - 3 }}</span
+                              >
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    }
+
+                    <!-- Vertical Divider -->
+                    <div class="w-px h-14 bg-cdp-neutral-05 self-center"></div>
+
+                    <!-- Jurisdictions Taking this Action -->
+                    <div class="flex flex-col gap-2">
+                      <span class="text-white text-sm font-medium leading-5 tracking-tight">
+                        {{ 'locationCard.solutions.jurisdictionsTakingAction' | translate }}
+                      </span>
+                      <div class="flex items-center gap-2">
+                        <div
+                          class="w-6 h-6 rounded-full flex-shrink-0"
+                          [style.background]="
+                            'conic-gradient(#5FE992 ' +
+                            (solution.pctPeerTakingAction || 0) +
+                            '%, #333333 0)'
+                          "
+                          style="
+                            mask-image: radial-gradient(transparent 58%, black 60%);
+                            -webkit-mask-image: radial-gradient(transparent 58%, black 60%);
+                          "
+                        ></div>
+                        <div class="flex items-baseline">
+                          <span class="text-white text-2xl font-normal tracking-wide">{{
+                            solution.pctPeerTakingAction || 0 | number: '1.0-2'
+                          }}</span>
+                          <span class="text-white text-2xl font-normal tracking-wide">%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Footer: Example Actions -->
+                  <footer class="flex items-center gap-2.5 group/footer">
+                    <div class="flex items-center gap-1">
+                      <span class="text-white text-base font-medium leading-6 tracking-wide">{{
+                        solution.peerActions?.length || 0
+                      }}</span>
+                      <span class="text-white text-base font-medium leading-6 tracking-wide">
+                        {{ 'locationCard.solutions.exampleActions' | translate }}
+                      </span>
+                    </div>
+                    <app-arrow-right-icon
+                      size="20"
+                      color="white"
+                      class="transform transition-transform group-hover/footer:translate-x-1"
+                    ></app-arrow-right-icon>
+                  </footer>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

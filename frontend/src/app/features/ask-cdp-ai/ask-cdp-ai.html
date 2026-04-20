@@ -1,0 +1,181 @@
+<div class="bg-white border-l border-gray-200 flex flex-col h-full">
+  <!-- Header Section -->
+  <div
+    class="p-4 bg-white border-b border-gray-200 flex justify-between items-center flex-shrink-0"
+  >
+    <h2 class="text-lg font-semibold text-gray-800">{{ 'askCdpAi.buttonText' | translate }}</h2>
+    <button
+      data-testid="ask-ai-toggle"
+      (click)="toggleOpen()"
+      class="text-gray-500 hover:text-gray-700"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M17 8l4 4m0 0l-4 4m4-4H3"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="p-4 flex-grow overflow-y-auto">
+    <!-- Conversation History -->
+    @for (message of conversationHistory(); track $index) {
+      @if (message.role === 'user') {
+        <div class="mb-4 flex justify-end">
+          <div class="bg-cdp-red text-white rounded-lg p-3 max-w-lg">
+            <p>{{ message.content }}</p>
+          </div>
+        </div>
+      } @else if (message.role === 'assistant') {
+        <div class="mb-4">
+          <div class="bg-gray-100 rounded-lg p-3 max-w-lg">
+            <p [innerHTML]="getSafeHtml(message.content)"></p>
+          </div>
+        </div>
+        <!-- Follow-up questions for the last assistant message -->
+        @if ($index === conversationHistory().length - 1) {
+          <!-- Follow-up Questions -->
+          @if (isFollowUpLoading() || followUpError() || followUpQuestions().length > 0) {
+            <div class="pt-4 mt-4 border-t border-gray-200">
+              <!-- Loading State for Follow Up Questions -->
+              @if (isFollowUpLoading()) {
+                <div class="flex justify-center items-center py-4">
+                  <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-cdp-red"></div>
+                </div>
+              }
+
+              <!-- Error State for Follow Up Questions -->
+              @if (followUpError()) {
+                <div
+                  class="mb-2 p-2 bg-red-50 text-red-700 rounded-md border border-red-200 text-sm"
+                >
+                  {{ followUpError() }}
+                </div>
+              }
+
+              @if (!isFollowUpLoading() && !followUpError() && followUpQuestions().length > 0) {
+                <div class="space-y-2">
+                  @for (q of followUpQuestions(); track $index) {
+                    <button
+                      data-testid="ask-ai-suggestion"
+                      (click)="onFollowUpClick(q)"
+                      class="w-full text-left text-sm text-white bg-cdp-red hover:bg-red-600 py-2 px-3 rounded-full transition-colors flex justify-between items-center"
+                    >
+                      <span>{{ q }}</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          }
+        }
+      }
+    }
+
+    <!-- Loading State for Disclosure -->
+    @if (isDisclosureLoading()) {
+      <div class="flex justify-center items-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-cdp-red"></div>
+      </div>
+    }
+
+    <!-- Error State for Disclosure -->
+    @if (disclosureError()) {
+      <div class="mb-4 p-3 bg-red-50 text-red-700 rounded-md border border-red-200">
+        {{ disclosureError() }}
+      </div>
+    }
+
+    @if (conversationHistory().length === 0 && !isDisclosureLoading()) {
+      <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+        <p class="text-sm font-medium text-gray-700">
+          {{ 'askCdpAi.emptyState.title' | translate: { location: locationData?.name } }}
+        </p>
+        <p class="mt-1 text-sm text-gray-500">
+          {{ 'askCdpAi.emptyState.description' | translate }}
+        </p>
+      </div>
+    }
+  </div>
+
+  <!-- Input Section -->
+  <div class="p-4 bg-white border-t border-gray-200 flex-shrink-0">
+    <!-- Starter questions -->
+    @if (conversationHistory().length === 0 && followUpQuestions().length > 0) {
+      <div class="space-y-2 mb-4">
+        @for (q of followUpQuestions(); track $index) {
+          <button
+            data-testid="ask-ai-suggestion"
+            (click)="onFollowUpClick(q)"
+            class="w-full text-left text-sm text-white bg-cdp-red hover:bg-red-600 py-2 px-3 rounded-full transition-colors flex justify-between items-center"
+          >
+            <span>{{ q }}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        }
+      </div>
+    }
+    <div class="relative">
+      <input
+        data-testid="ask-ai-input"
+        type="text"
+        [(ngModel)]="userQuery"
+        (keyup.enter)="sendQuery()"
+        [placeholder]="'askCdpAi.input.placeholder' | translate"
+        class="w-full pl-4 pr-12 py-2 bg-gray-100 border-gray-200 border rounded-full text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none"
+      />
+      <button
+        data-testid="ask-ai-send-button"
+        (click)="sendQuery()"
+        [disabled]="!userQuery.trim()"
+        class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-red-600 disabled:opacity-50 disabled:hover:text-gray-400 transition-colors"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="w-5 h-5"
+        >
+          <path d="M2 3L18 10L2 17V13L7 10L2 7V3Z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>

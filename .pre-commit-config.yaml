@@ -1,0 +1,33 @@
+# Pre-commit hooks for automated code quality checks
+# These hooks run automatically before each commit to catch issues early
+#
+# Setup: make setup-hooks (or: pip install pre-commit && pre-commit install)
+# Manual run: pre-commit run --all-files
+# Skip hooks once: git commit --no-verify
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+        files: ^backend/
+      - id: ruff
+        args: ["check", "--select", "I", "--fix"]
+        files: ^backend/
+      - id: ruff-format
+        files: ^backend/
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    hooks:
+      - id: prettier
+        files: ^frontend/.*\.(js|ts|json|css|scss|html)$

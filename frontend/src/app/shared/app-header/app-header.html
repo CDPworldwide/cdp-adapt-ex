@@ -1,0 +1,48 @@
+<header class="flex items-center justify-between px-4 py-3 md:px-8">
+  <div class="flex items-center gap-3">
+    @if (showMenuButton) {
+      <button
+        type="button"
+        class="p-1 -ml-1 md:hidden"
+        (click)="onMenuToggle()"
+        aria-label="Open menu"
+        [attr.aria-expanded]="menuExpanded"
+        [attr.aria-controls]="menuControlsId"
+      >
+        <mat-icon class="text-gray-700">menu</mat-icon>
+      </button>
+    }
+
+    <a routerLink="/" class="flex flex-col cursor-pointer hover:opacity-80 transition-opacity">
+      <app-cdp-logo-with-text-icon
+        width="70"
+        height="18"
+        color="black"
+      ></app-cdp-logo-with-text-icon>
+      <span class="text-xs text-cdp-dark">{{ 'homepage.nav.title' | translate }}</span>
+    </a>
+  </div>
+
+  <div class="flex items-center gap-1">
+    <button
+      type="button"
+      class="p-2 rounded-full hover:bg-gray-100 transition-colors"
+      [matMenuTriggerFor]="languageMenu"
+      [attr.aria-label]="'shared.selectLanguage' | translate"
+    >
+      <mat-icon class="text-gray-500 !text-xl">language</mat-icon>
+    </button>
+  </div>
+</header>
+
+<mat-menu #languageMenu="matMenu">
+  @for (lang of languageService.languages; track lang.code) {
+    <button
+      mat-menu-item
+      (click)="languageService.switchLanguage(lang.code)"
+      [class.font-bold]="languageService.currentLang() === lang.code"
+    >
+      {{ lang.label }}
+    </button>
+  }
+</mat-menu>

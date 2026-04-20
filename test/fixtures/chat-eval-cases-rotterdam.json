@@ -1,0 +1,104 @@
+{
+  "location": "Rotterdam, Netherlands",
+  "locationData": {
+    "name": "City of Rotterdam",
+    "countryName": "Netherlands",
+    "lat": 51.92,
+    "lng": 4.48,
+    "isReportingLeader": true,
+    "hazards": {
+      "statistics": {
+        "populationExposedPercentage": 58.0,
+        "gdpAtRiskPercentage": 18.4,
+        "vulnerableSectors": [
+          "TRANSPORTATION_STORAGE",
+          "REAL_ESTATE",
+          "WATER_SUPPLY"
+        ]
+      },
+      "hazards": [
+        {
+          "hazardType": "COASTAL_FLOODING",
+          "source": "Rotterdam Climate Adaptation Strategy",
+          "description": "Rotterdam faces coastal flooding risk from storm surge and sea level rise affecting port operations and low-lying districts.",
+          "vulnerableGroups": [
+            "Residents in low-lying neighborhoods"
+          ],
+          "mostExposedSectors": [
+            "TRANSPORTATION_STORAGE",
+            "REAL_ESTATE"
+          ]
+        },
+        {
+          "hazardType": "HEAVY_PRECIPITATION",
+          "source": "Rotterdam Climate Adaptation Strategy",
+          "description": "Intense rainfall causes pluvial flooding, sewer surcharge, and disruption across paved urban districts.",
+          "mostExposedSectors": [
+            "TRANSPORTATION_STORAGE",
+            "WATER_SUPPLY"
+          ]
+        }
+      ]
+    },
+    "governmentActions": {
+      "goals": [
+        {
+          "description": "Increase urban water storage and stormwater retention capacity in vulnerable districts.",
+          "hazardsAddressed": [
+            "HEAVY_PRECIPITATION",
+            "URBAN_FLOODING"
+          ],
+          "targetYear": 2030
+        },
+        {
+          "description": "Strengthen multifunctional flood defences protecting the port and surrounding neighborhoods.",
+          "hazardsAddressed": [
+            "COASTAL_FLOODING"
+          ],
+          "targetYear": 2040
+        }
+      ],
+      "actions": [
+        {
+          "title": "Engineered and built environment actions: Water squares and retention basins expansion",
+          "status": "Implementation",
+          "hazardsAddressed": [
+            "HEAVY_PRECIPITATION",
+            "URBAN_FLOODING"
+          ]
+        },
+        {
+          "title": "Engineered and built environment actions: Dike reinforcement and storm surge barrier upgrades",
+          "status": "Implementation",
+          "hazardsAddressed": [
+            "COASTAL_FLOODING"
+          ]
+        }
+      ],
+      "projects": []
+    },
+    "solutions": {
+      "solutions": {}
+    }
+  },
+  "cases": [
+    {
+      "id": "rotterdam-coastal-hazard",
+      "questionType": "Hazards",
+      "question": "What coastal flooding risk is described for Rotterdam?",
+      "expectedContains": [
+        "coastal flooding",
+        "storm surge"
+      ]
+    },
+    {
+      "id": "rotterdam-rain-actions",
+      "questionType": "Actions",
+      "question": "What actions is Rotterdam taking for heavy precipitation and urban flooding?",
+      "expectedContains": [
+        "Water squares and retention basins",
+        "heavy precipitation"
+      ]
+    }
+  ]
+}

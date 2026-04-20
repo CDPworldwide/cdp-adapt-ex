@@ -1,0 +1,124 @@
+# CDP Adaptation & Action Explorer - Backend
+
+A FastAPI-based backend providing climate intelligence, hazard data, and AI-powered insights.
+
+## Tech Stack
+
+- **Framework:** [FastAPI](https://fastapi.tiangolo.com/)
+- **Database:** [SQLModel](https://sqlmodel.tiangolo.com/) (SQLAlchemy + Pydantic) with PostgreSQL
+- **AI/LLM:** Google Vertex AI (Gemini)
+- **Geospatial:** Google Earth Engine (Hazard data)
+- **Package Management:** [uv](https://github.com/astral-sh/uv)
+
+## Architecture Overview
+
+```mermaid
+flowchart TB
+    subgraph External["External Clients"]
+        FE[Frontend App]
+        API_CLIENT[API Consumers]
+    end
+
+    subgraph Backend["CDP Adaptation & Action Explorer Backend"]
+        subgraph API["API Layer"]
+            LOC_API[Location Endpoints]
+            CHAT_API[Chat Endpoints]
+            HAZARD_API[Hazard Endpoints]
+            TRANS_API[Translate Endpoints]
+        end
+
+        subgraph Core["Business Logic"]
+            LOC_SVC[LocationDetailsService]
+            SUGGEST[Follow-up Suggestions]
+        end
+
+        subgraph Services["Service Layer"]
+            DB_SVC[DatabaseService]
+            GEMINI[GeminiLLMClient]
+            TRANSLATE[TranslateClient]
+            EE_SVC[EarthEngineClient]
+        end
+    end
+
+    subgraph External_Services["External Services"]
+        PG[(PostgreSQL)]
+        VERTEX[Google VertexAI]
+        EE[Google Earth Engine]
+        G_TRANS[Google Translate API]
+    end
+
+    FE --> API
+    API_CLIENT --> API
+
+    LOC_API --> LOC_SVC
+    LOC_SVC --> DB_SVC
+
+    CHAT_API --> GEMINI
+    SUGGEST --> GEMINI
+
+    HAZARD_API --> EE_SVC
+
+    TRANS_API --> TRANSLATE
+
+    DB_SVC --> PG
+    GEMINI --> VERTEX
+    EE_SVC --> EE
+    TRANSLATE --> G_TRANS
+```
+
+## Project Structure
+
+```text
+backend/
+├── app/
+│   ├── api/v1/         # API routes (chatbot, hazards, locations, etc.)
+│   ├── core/           # Business logic (follow-up suggestions)
+│   ├── models/         # SQLModel database entities
+│   ├── schemas/        # Pydantic API schemas
+│   ├── services/       # Service clients and implementations
+│   │   ├── clients/    # External API clients (Gemini, Earth Engine)
+│   │   ├── impls/      # Service implementations
+│   │   └── interfaces/ # Service contracts (Protocols)
+│   ├── shared/         # Configuration, logging, and common utilities
+│   └── utils/          # Utilities (prompts, sanitization)
+├── docs/               # Technical documentation & AI Prompts
+│   └── prompts/        # Active system prompts used by the LLM
+├── scripts/            # Utility and maintenance scripts
+└── tests/              # Pytest suite
+```
+
+## Getting Started
+
+For detailed installation and local development instructions, please refer to the **[root SETUP.md](../SETUP.md)**.
+
+### Quick Start (Backend)
+
+1. **Environment Setup**:
+   ```bash
+   cp .env-example .env
+   ```
+2. **Install Dependencies**:
+   ```bash
+   uv sync
+   ```
+3. **Run Server**:
+   ```bash
+   uv run fastapi dev app/main.py
+   ```
+
+The API will be available at `http://localhost:8000`.
+Swagger documentation is at `http://localhost:8000/docs`.
+
+### Testing
+
+```bash
+make test-backend
+```
+
+## Documentation
+
+Detailed technical guides are available in the [docs/](./docs/) directory:
+
+- [Database Layer](./docs/database.md): SQLModel entities, repositories, and connection pooling.
+- [LLM Integration](./docs/llm-integration.md): Gemini API, follow-up suggestions, and chat completions.
+- [Hazard Data Service](./docs/hazard-service.md): Earth Engine integration for geospatial layers.

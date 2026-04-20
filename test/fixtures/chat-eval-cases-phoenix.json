@@ -1,0 +1,107 @@
+{
+  "location": "Phoenix, United States",
+  "locationData": {
+    "name": "City of Phoenix",
+    "countryName": "United States",
+    "lat": 33.45,
+    "lng": -112.07,
+    "isReportingLeader": true,
+    "hazards": {
+      "hazards": [
+        {
+          "hazardType": "EXTREME_HEAT",
+          "source": "City of Phoenix Climate Action Plan, NOAA Climate Data",
+          "description": "Phoenix is experiencing a significant increase in the frequency and intensity of extreme heat events, with the number of days over 110F rising annually.",
+          "vulnerableGroups": [
+            "Elderly",
+            "Low-income communities",
+            "Outdoor workers",
+            "Children",
+            "Individuals with pre-existing health conditions"
+          ],
+          "proportionExposedRange": "More than 75%",
+          "impact": "Increased heat-related illnesses and fatalities, higher energy consumption for cooling, and stress on critical infrastructure.",
+          "mostExposedSectors": [
+            "HUMAN_HEALTH_SOCIAL_WORK",
+            "CONSTRUCTION",
+            "ELECTRICITY_GAS_STEAM_AIR",
+            "ACCOMMODATION_FOOD_SERVICE"
+          ]
+        }
+      ]
+    },
+    "governmentActions": {
+      "actions": [
+        {
+          "title": "Expansion of the HeatRelief Network of Cooling Centers and Hydration Stations",
+          "status": {
+            "statusType": "ACTION_IN_OPERATION_MOST_OF_JURISDICTION",
+            "otherStatusDetails": ""
+          },
+          "coBenefits": [
+            "Improved public health outcomes",
+            "Enhanced community resilience",
+            "Reduced burden on emergency services"
+          ],
+          "hazardsAddressed": [
+            "EXTREME_HEAT"
+          ]
+        },
+        {
+          "title": "Cool Pavement Program Implementation",
+          "status": {
+            "statusType": "IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR",
+            "otherStatusDetails": "Program is being rolled out neighborhood by neighborhood based on heat vulnerability index."
+          },
+          "coBenefits": [
+            "Reduced urban heat island effect",
+            "Improved air quality",
+            "Increased pavement longevity"
+          ],
+          "hazardsAddressed": [
+            "EXTREME_HEAT"
+          ]
+        }
+      ],
+      "projects": [
+        {
+          "title": "Tree and Shade Master Plan - Phase 2 Planting Initiative",
+          "status": "IMPLEMENTATION",
+          "fundedPercent": 75,
+          "totalAmount": 15000000
+        }
+      ]
+    },
+    "solutions": {
+      "solutions": {}
+    }
+  },
+  "cases": [
+    {
+      "id": "phoenix-heat-actions",
+      "questionType": "Actions",
+      "question": "What actions are addressing heat-related hazards?",
+      "expectedContains": [
+        "HeatRelief Network",
+        "Cool Pavement Program"
+      ]
+    },
+    {
+      "id": "phoenix-outdoor-workers",
+      "questionType": "Hazards",
+      "question": "Which specific worker group is highlighted as vulnerable to rising temperatures?",
+      "expectedContains": [
+        "Outdoor workers"
+      ]
+    },
+    {
+      "id": "phoenix-heat-hazard",
+      "questionType": "Hazards",
+      "question": "What heat-related hazards are here?",
+      "expectedContains": [
+        "extreme heat",
+        "110"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2562 @@
+ID,Question Type,Question,Question Likelihood,Question Rater Name + Email,Location,Relevant Data,Answer,Answer Review Completed,Comments
+1,Actions,What is the city's 2040 goal regarding public spaces?,1 - Low,andrea.segundo@cdp.net,"Miami, United States","{
+    ""description"": ""Ensure all critical public infrastructure (hospitals, shelters, utilities) is resilient to a Category 4 hurricane storm surge and wind loads by 2040."",
+    ""hazardsAddressed"": [
+        {
+            ""hazardType"": ""TROPICAL_CYCLONE"",
+            ""otherHazardDetails"": """"
+        },
+        {
+            ""hazardType"": ""EXTREME_WIND"",
+            ""otherHazardDetails"": """"
+        }
+    ],
+    ""targetYear"": 2040
+}","By **2040**, the city's goal is to ensure all **critical public infrastructure**, including **hospitals, shelters, and utilities**, is resilient to a **Category 4 hurricane's storm surge and wind loads**.",No,
+2,Actions,Is the city tracking progress on their adaptation goals?,1 - Low,andrea.segundo@cdp.net,"Miami, United States","{
+    ""goals"": [
+        {
+            ""description"": ""Ensure all critical public infrastructure (hospitals, shelters, utilities) is resilient to a Category 4 hurricane storm surge and wind loads by 2040."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""TROPICAL_CYCLONE"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""EXTREME_WIND"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2040
+        },
+        {
+            ""description"": ""Reduce the impact of urban heat islands by increasing tree canopy coverage by 30% and implementing cool pavement standards for 50% of public surfaces by 2035."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""HEAT_STRESS"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2035
+        }
+    ],
+    ""actions"": [
+        {
+            ""title"": ""Miami Forever Bond - Seawall and Stormwater Pump Station Upgrades"",
+            ""status"": {
+                ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                ""otherStatusDetails"": """"
+            },
+            ""coBenefits"": [
+                ""Creation of local engineering and construction jobs"",
+                ""Protection of high-value real estate"",
+                ""Improved water quality in Biscayne Bay""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""HEAVY_PRECIPITATION"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Resilient Neighborhoods Program: Cooling Centers and Green Infrastructure"",
+            ""status"": {
+                ""statusType"": ""ACTION_IN_OPERATION_TARGETED"",
+                ""otherStatusDetails"": ""Currently active in Little Haiti and Allapattah, with plans for city-wide expansion.""
+            },
+            ""coBenefits"": [
+                ""Enhanced public health outcomes for vulnerable groups"",
+                ""Improved neighborhood aesthetics and social cohesion"",
+                ""Reduced stormwater runoff""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""URBAN_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ],
+    ""projects"": [
+        {
+            ""title"": ""Virginia Key Wastewater Treatment Plant Flood Protection and Hardening"",
+            ""status"": ""PROJECT_FEASIBILITY"",
+            ""fundedPercent"": 35.0,
+            ""totalAmount"": 275000000
+        },
+        {
+            ""title"": ""Biscayne Bay Mangrove Restoration and Living Shoreline Project"",
+            ""status"": ""PROJECT_STRUCTURING"",
+            ""fundedPercent"": 60.0,
+            ""totalAmount"": 85000000
+        }
+    ]
+}","Yes, the city is tracking progress on its adaptation efforts.\n\nThe data shows **goals** with specific **target years** (**2035** and **2040**), the **status of actions** (e.g., **'Implementation underway'** or **'Action in operation'**), and the **status and funding percentage** of related projects.",No,
+3,Actions,Are there actions that approach more than one hazard?,1 - Low,andrea.segundo@cdp.net,"Miami, United States","{
+    ""actions"": [
+        {
+            ""title"": ""Miami Forever Bond - Seawall and Stormwater Pump Station Upgrades"",
+            ""status"": {
+                ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                ""otherStatusDetails"": """"
+            },
+            ""coBenefits"": [
+                ""Creation of local engineering and construction jobs"",
+                ""Protection of high-value real estate"",
+                ""Improved water quality in Biscayne Bay""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""HEAVY_PRECIPITATION"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Resilient Neighborhoods Program: Cooling Centers and Green Infrastructure"",
+            ""status"": {
+                ""statusType"": ""ACTION_IN_OPERATION_TARGETED"",
+                ""otherStatusDetails"": ""Currently active in Little Haiti and Allapattah, with plans for city-wide expansion.""
+            },
+            ""coBenefits"": [
+                ""Enhanced public health outcomes for vulnerable groups"",
+                ""Improved neighborhood aesthetics and social cohesion"",
+                ""Reduced stormwater runoff""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""URBAN_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Public Climate Risk Information Campaign"",
+            ""status"": {
+                ""statusType"": ""OTHERS"",
+                ""otherStatusDetails"": ""Phase 2 of the digital and community outreach program is underway.""
+            },
+            ""coBenefits"": [
+                ""Increased citizen preparedness"",
+                ""Greater public support for adaptation investments""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""TROPICAL_CYCLONE"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ]
+}","Yes, several actions address more than one hazard.\n\nThe **'Miami Forever Bond'** addresses **Coastal Flooding** and **Heavy Precipitation**.\n\nThe **'Resilient Neighborhoods Program'** targets **Extreme Heat** and **Urban Flooding**.\n\nThe **'Public Climate Risk Information Campaign'** is designed to address **Tropical Cyclones** and **Coastal Flooding**.",No,
+4,Actions,What hazards does the green cover goal address?,1 - Low,andrea.segundo@cdp.net,"Reykjavik, Iceland",{},"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Reykjavik, Iceland**.",No,
+5,Actions,How is the city attempting to reduce personal exposure to hazards through monitoring?,1 - Low,andrea.segundo@cdp.net,"Helsinki, Finland",{},"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Helsinki, Finland**.",No,
+6,Actions,List the climate hazards addressed by the city's green cover expansion goal.,1 - Low,andrea.segundo@cdp.net,"Phoenix, United States","{
+    ""description"": ""Achieve carbon neutrality by 2060 and ensure 80% of the population lives within a 10-minute walk of a cool public space by 2030."",
+    ""hazardsAddressed"": [
+        {
+            ""hazardType"": ""EXTREME_HEAT"",
+            ""otherHazardDetails"": """"
+        }
+    ]
+}","I can only provide information regarding climate hazards and specific **available data** and **information disclosed** for Phoenix, United States.",Yes,
+7,Actions,Identify actions the city is taking to mitigate heat.,1 - Low,andrea.segundo@cdp.net,"Phoenix, United States","{
+    ""actions"": [
+        {
+            ""title"": ""Expansion of the HeatRelief Network of Cooling Centers and Hydration Stations"",
+            ""status"": {
+                ""statusType"": ""ACTION_IN_OPERATION_MOST_OF_JURISDICTION"",
+                ""otherStatusDetails"": """"
+            },
+            ""coBenefits"": [
+                ""Improved public health outcomes"",
+                ""Enhanced community resilience"",
+                ""Reduced burden on emergency services""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Cool Pavement Program Implementation"",
+            ""status"": {
+                ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                ""otherStatusDetails"": ""Program is being rolled out neighborhood by neighborhood based on heat vulnerability index.""
+            },
+            ""coBenefits"": [
+                ""Reduced urban heat island effect"",
+                ""Improved air quality"",
+                ""Increased pavement longevity""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ],
+    ""projects"": [
+        {
+            ""title"": ""Tree and Shade Master Plan - Phase 2 Planting Initiative"",
+            ""status"": ""IMPLEMENTATION"",
+            ""fundedPercent"": 75.0,
+            ""totalAmount"": 15000000
+        }
+    ]
+}","To mitigate **extreme heat**, **Phoenix** is expanding its **HeatRelief Network** of cooling centers and hydration stations, implementing a **Cool Pavement Program**, and undertaking the **'Tree and Shade Master Plan - Phase 2 Planting Initiative'**.",No,
+8,Actions,Are there any infrastructure rehabilitation planned?,1 - Low,andrea.segundo@cdp.net,"Mumbai, India","{
+    ""projects"": [
+        {
+            ""title"": ""Rehabilitation and Upgrade of the 'Britannia' Stormwater Pumping Station"",
+            ""status"": ""IMPLEMENTATION"",
+            ""fundedPercent"": 85,
+            ""totalAmount"": 4500000000
+        },
+        {
+            ""title"": ""Mithi River Rejuvenation and Floodplain Restoration"",
+            ""status"": ""PROJECT_FEASIBILITY"",
+            ""fundedPercent"": 20,
+            ""totalAmount"": 15000000000
+        }
+    ]
+}","Yes, planned infrastructure projects include the **'Rehabilitation and Upgrade of the Britannia Stormwater Pumping Station'**, which is in **implementation**, and the **'Mithi River Rejuvenation and Floodplain Restoration'**, which is in the **project feasibility stage**.",Yes,
+9,Actions,What is the city's target for meeting water demand through conservation?,1 - Low,andrea.segundo@cdp.net,"Cape Town, South Africa","""governmentActions"": {
+                ""goals"": [
+                    {
+                        ""description"": ""Ensure a safe, reliable, and resilient drinking water supply for all residents by diversifying water sources to include at least 300 million litres per day from non-surface water sources, such as desalination, groundwater, and water reuse, reducing reliance on rain-fed dams."",
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""DROUGHT"",
+                                ""otherHazardDetails"": """"
+                            },
+                            {
+                                ""hazardType"": ""WATER_STRESS"",
+                                ""otherHazardDetails"": """"
+                            },
+                            {
+                                ""hazardType"": ""INCREASED_WATER_DEMAND"",
+                                ""otherHazardDetails"": """"
+                            }
+                        ],
+                        ""targetYear"": 2030
+                    },
+                    {
+                        ""description"": ""Reduce the public health impacts of extreme heat events by establishing a city-wide network of 100 public cooling centers and implementing an early warning system for heatwaves."",
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""EXTREME_HEAT"",
+                                ""otherHazardDetails"": """"
+                            },
+                            {
+                                ""hazardType"": ""HEAT_STRESS"",
+                                ""otherHazardDetails"": """"
+                            }
+                        ],
+                        ""targetYear"": 2028
+                    }
+                ],
+                ""actions"": [
+                    {
+                        ""title"": ""Water Demand Management and Conservation Program"",
+                        ""status"": {
+                            ""statusType"": ""ACTION_IN_OPERATION_JURISDICTION_WIDE"",
+                            ""otherStatusDetails"": ""Program includes tiered water tariffs, leak detection and repair, and public awareness campaigns. Continuously operational since the 2018 drought.""
+                        },
+                        ""coBenefits"": [
+                            ""Reduced energy consumption from water treatment and pumping"",
+                            ""Increased public awareness of resource scarcity"",
+                            ""Deferred need for new, expensive supply infrastructure""
+                        ],
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""DROUGHT"",
+                                ""otherHazardDetails"": """"
+                            },
+                            {
+                                ""hazardType"": ""WATER_STRESS"",
+                                ""otherHazardDetails"": """"
+                            }
+                        ]
+                    },
+                    {
+                        ""title"": ""Urban Greening Initiative for Heat Island Mitigation"",
+                        ""status"": {
+                            ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                            ""otherStatusDetails"": ""Focus on planting indigenous, drought-tolerant trees in priority neighborhoods identified through thermal mapping.""
+                        },
+                        ""coBenefits"": [
+                            ""Improved air quality"",
+                            ""Enhanced biodiversity"",
+                            ""Increased property values"",
+                            ""Improved mental well-being and recreational opportunities""
+                        ],
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""EXTREME_HEAT"",
+                                ""otherHazardDetails"": """"
+                            },
+                            {
+                                ""hazardType"": ""LOSS_OF_GREEN_SPACE"",
+                                ""otherHazardDetails"": """"
+                            },
+                            {
+                                ""hazardType"": ""URBAN_FLOODING"",
+                                ""otherHazardDetails"": ""Green spaces improve stormwater absorption.""
+                            }
+                        ]
+                    }
+                ],
+                ""projects"": [
+                    {
+                        ""title"": ""Cape Flats Aquifer Recharge and Abstraction Project"",
+                        ""status"": ""IMPLEMENTATION"",
+                        ""fundedPercent"": 85,
+                        ""totalAmount"": 2500000000
+                    },
+                    {
+                        ""title"": ""Seawall and Coastal Defence Upgrade for Table Bay"",
+                        ""status"": ""PROJECT_FEASIBILITY"",
+                        ""fundedPercent"": 20,
+                        ""totalAmount"": 4000000000
+                    }
+                ]
+            }","There is no specific target for meeting water demand specifically through conservation.\n\nThe city outlines a goal to diversify water sources to include at least **300 million litres per day** from non-surface water sources by **2030**, and describes a **Water Demand Management and Conservation Program** that is currently in operation.",No,
+10,Actions,Are early warning systems in place for reported hazards?,1 - Low,andrea.segundo@cdp.net,"Miami, United States","{
+    ""actions"": [
+        {
+            ""title"": ""Public Climate Risk Information Campaign"",
+            ""status"": {
+                ""statusType"": ""OTHERS"",
+                ""otherStatusDetails"": ""Phase 2 of the digital and community outreach program is underway.""
+            },
+            ""coBenefits"": [
+                ""Increased citizen preparedness"",
+                ""Greater public support for adaptation investments""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""TROPICAL_CYCLONE"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ]
+}","The available data does not explicitly mention 'early warning systems.'\n\nHowever, **'Public Climate Risk Information Campaign'** is currently underway to increase citizen preparedness for **tropical cyclones** and **coastal flooding**.",Yes,
+11,Actions,Which co-benefits has the city identified for adaptation actions?,1 - Low,andrea.segundo@cdp.net,"Miami, United States","{
+    ""actions"": [
+        {
+            ""title"": ""Miami Forever Bond - Seawall and Stormwater Pump Station Upgrades"",
+            ""coBenefits"": [
+                ""Creation of local engineering and construction jobs"",
+                ""Protection of high-value real estate"",
+                ""Improved water quality in Biscayne Bay""
+            ]
+        },
+        {
+            ""title"": ""Resilient Neighborhoods Program: Cooling Centers and Green Infrastructure"",
+            ""coBenefits"": [
+                ""Enhanced public health outcomes for vulnerable groups"",
+                ""Improved neighborhood aesthetics and social cohesion"",
+                ""Reduced stormwater runoff""
+            ]
+        },
+        {
+            ""title"": ""Public Climate Risk Information Campaign"",
+            ""coBenefits"": [
+                ""Increased citizen preparedness"",
+                ""Greater public support for adaptation investments""
+            ]
+        }
+    ]
+}","The city has identified several co-benefits for its adaptation actions.\n\nThe **'Miami Forever Bond'** upgrades include the **creation of jobs**, **protection of real estate**, and **improved water quality**.\n\nThe **'Resilient Neighborhoods Program'** aims for **enhanced public health**, **improved neighborhood aesthetics**, and **reduced stormwater runoff**.\n\nFinally, the **'Public Climate Risk Information Campaign'** has co-benefits of **increased citizen preparedness** and **greater public support for adaptation investments**.",No,
+12,Actions,How effective are the actions implemented by the city in increasing resilience?,1 - Low,andrea.segundo@cdp.net,"Reykjavik, Iceland","{
+    ""goals"": [
+        {
+            ""description"": ""Protect 90% of critical coastal infrastructure and residential areas from a 1-in-100-year storm surge event through a combination of hard and soft engineering solutions."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2040
+        },
+        {
+            ""description"": ""Enhance the resilience of the city's power grid and building stock to withstand wind speeds up to 45 m/s, ensuring no more than a 4-hour power outage for 95% of the population during severe storms."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_WIND"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2035
+        },
+        {
+            ""description"": ""Improve winter maintenance capacity to ensure all primary and secondary roads are cleared within 12 hours of a major snowfall event, and enhance public safety programs for icy conditions."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""SNOW_AND_ICE"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2030
+        }
+    ],
+    ""actions"": [
+        {
+            ""title"": ""Reykjavik Coastal Resilience Program - Phase 1: Sea Wall & Dune Restoration"",
+            ""status"": {
+                ""statusType"": ""FEASIBILITY_FINALIZED_PARTIAL_FINANCE"",
+                ""otherStatusDetails"": ""Federal co-financing application pending.""
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Grid Hardening and Undergrounding Feasibility Study"",
+            ""status"": {
+                ""statusType"": ""PRE_FEASIBILITY_STUDY"",
+                ""otherStatusDetails"": """"
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_WIND"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Smart Winter Maintenance Fleet Upgrade"",
+            ""status"": {
+                ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_LT_ONE_YEAR"",
+                ""otherStatusDetails"": """"
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""SNOW_AND_ICE"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ]
+}","The available data does not evaluate the effectiveness of the actions but details their status.\n\nTo address **snow and ice**, a **'Smart Winter Maintenance Fleet Upgrade'** is currently underway and expected to be completed in less than a year.\n\nFor **coastal flooding**, the **'Reykjavik Coastal Resilience Program'** has finalized its feasibility study but is awaiting full financing.\n\nFor **extreme wind**, a **'Grid Hardening and Undergrounding Feasibility Study'** is in the pre-feasibility stage.\n\nThe city has set resilience goals for these hazards with target years of 2030, 2035, and 2040.",No,
+13,Actions,What is the rate of action implementation for the city?,1 - Low,andrea.segundo@cdp.net,"Ulaanbaatar, Mongolia","""governmentActions"": {
+                ""goals"": [
+                    {
+                        ""description"": ""To ensure 100% of the urban population has reliable access to heating and electricity during extreme cold events by 2035."",
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""EXTREME_COLD"",
+                                ""otherHazardDetails"": """"
+                            }
+                        ],
+                        ""targetYear"": 2035
+                    },
+                    {
+                        ""description"": ""Reduce winter-related traffic accidents and disruptions by 30% by 2030 through improved municipal response to snow and ice."",
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""SNOW_AND_ICE"",
+                                ""otherHazardDetails"": """"
+                            }
+                        ],
+                        ""targetYear"": 2030
+                    }
+                ],
+                ""actions"": [
+                    {
+                        ""title"": ""Winterization and Insulation Subsidy Program for Ger Households"",
+                        ""status"": {
+                            ""statusType"": ""ACTION_IN_OPERATION_TARGETED"",
+                            ""otherStatusDetails"": ""Program is active and targeting 5,000 households annually in the most vulnerable districts.""
+                        },
+                        ""coBenefits"": [
+                            ""Improved public health outcomes"",
+                            ""Reduced household energy expenditure"",
+                            ""Decreased air pollution from less coal burning""
+                        ],
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""EXTREME_COLD"",
+                                ""otherHazardDetails"": """"
+                            }
+                        ]
+                    },
+                    {
+                        ""title"": ""Modernization of Snow Clearance and Road De-icing Equipment"",
+                        ""status"": {
+                            ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                            ""otherStatusDetails"": """"
+                        },
+                        ""coBenefits"": [
+                            ""Enhanced road safety"",
+                            ""Improved economic continuity"",
+                            ""Faster emergency response times""
+                        ],
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""SNOW_AND_ICE"",
+                                ""otherHazardDetails"": """"
+                            }
+                        ]
+                    }
+                ],
+                ""projects"": [
+                    {
+                        ""title"": ""Heating Plant No. 5 Expansion and Grid Modernization"",
+                        ""status"": ""PROJECT_FEASIBILITY"",
+                        ""fundedPercent"": 35.0,
+                        ""totalAmount"": 210000000000
+                    },
+                    {
+                        ""title"": ""City-wide Early Warning System for Extreme Weather"",
+                        ""status"": ""SCOPING"",
+                        ""fundedPercent"": 10.0,
+                        ""totalAmount"": 15000000000
+                    }
+                ]
+            }",The available data does not contain information on the overall rate of action implementation for the city.\n\nIt details the status of individual government actions and projects.,No,
+14,Actions,Are there hazards identified with no associated goal?,2 - Medium,andrea.segundo@cdp.net,"Miami, United States","{
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""COASTAL_FLOODING"",
+                ""otherHazardDetails"": """"
+            },
+            ""source"": ""NOAA Sea Level Rise Viewer and Miami-Dade County Flood Zone Maps"",
+            ""description"": ""Recurrent 'sunny-day' tidal flooding in low-lying areas, particularly Miami Beach, Downtown, and Shorecrest, driven by sea-level rise. This disrupts transportation networks, damages building foundations, and causes saltwater intrusion into the Biscayne Aquifer."",
+            ""vulnerableGroups"": [
+                ""Residents in low-elevation coastal neighborhoods"",
+                ""Elderly populations with mobility challenges"",
+                ""Small business owners in flood-prone commercial districts""
+            ],
+            ""proportionExposedRange"": ""Approximately 30-40% of the city's land area is highly susceptible."",
+            ""impact"": ""Significant damage to public infrastructure (roads, drainage), devaluation of real estate, and increased costs for flood insurance and property maintenance."",
+            ""mostExposedSectors"": [
+                ""REAL_ESTATE"",
+                ""TRANSPORTATION_STORAGE"",
+                ""ACCOMMODATION_FOOD_SERVICE""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""TROPICAL_CYCLONE"",
+                ""otherHazardDetails"": """"
+            },
+            ""source"": ""National Hurricane Center (NHC) Historical Data and Saffir-Simpson Scale"",
+            ""description"": ""High frequency of exposure to tropical cyclones, including major hurricanes, which bring destructive winds, storm surge, and extreme rainfall. These events threaten lives and can cause catastrophic damage to the built environment and energy grid."",
+            ""vulnerableGroups"": [
+                ""Populations residing in coastal areas exposed to storm surge"",
+                ""Residents of older buildings not built to modern hurricane codes"",
+                ""Individuals dependent on electricity for medical equipment""
+            ],
+            ""proportionExposedRange"": ""100% of the population and assets are at risk during hurricane season."",
+            ""impact"": ""Widespread power outages, severe structural damage to buildings and infrastructure, business interruption, and potential for large-scale displacement."",
+            ""mostExposedSectors"": [
+                ""ELECTRICITY_GAS_STEAM_AIR"",
+                ""CONSTRUCTION"",
+                ""PUBLIC_ADMIN_DEFENCE"",
+                ""FINANCIAL_INSURANCE""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""EXTREME_HEAT"",
+                ""otherHazardDetails"": """"
+            },
+            ""source"": ""National Weather Service (NWS) Heat Index and CDC Climate and Health Data"",
+            ""description"": ""A rising number of days per year with a heat index exceeding 105\u00b0F (40.6\u00b0C), particularly during summer months. This trend increases the incidence of heat-related illnesses and places significant strain on the electrical grid due to high air conditioning demand."",
+            ""vulnerableGroups"": [
+                ""Outdoor workers (e.g., construction, landscaping)"",
+                ""Low-income households without access to or unable to afford air conditioning"",
+                ""The elderly and young children""
+            ],
+            ""proportionExposedRange"": ""Over 90% of the population is regularly exposed to dangerous heat levels during the summer."",
+            ""impact"": ""Increased public health emergencies and hospitalizations, reduced labor productivity, and heightened risk of rolling blackouts during peak demand."",
+            ""mostExposedSectors"": [
+                ""HUMAN_HEALTH_SOCIAL_WORK"",
+                ""CONSTRUCTION"",
+                ""AGRICULTURE"",
+                ""ELECTRICITY_GAS_STEAM_AIR""
+            ]
+        }
+    ],
+    ""goals"": [
+        {
+            ""description"": ""Ensure all critical public infrastructure (hospitals, shelters, utilities) is resilient to a Category 4 hurricane storm surge and wind loads by 2040."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""TROPICAL_CYCLONE"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""EXTREME_WIND"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2040
+        },
+        {
+            ""description"": ""Reduce the impact of urban heat islands by increasing tree canopy coverage by 30% and implementing cool pavement standards for 50% of public surfaces by 2035."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""HEAT_STRESS"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2035
+        }
+    ]
+}","Yes, **Coastal Flooding** is an identified hazard that does not have a corresponding government goal listed.\n\nThe goals provided address **Tropical Cyclone**, **Extreme Wind**, **Extreme Heat**, and **Heat Stress**.",No,
+15,Actions,Show me water-based actions?,2 - Medium,andrea.segundo@cdp.net,"Ho Chi Minh City, Vietnam","{
+    ""goals"": [
+        {
+            ""description"": ""Protect major industrial parks and residential areas from a 1-in-100-year river flood event by 2035 through a comprehensive system of dikes and sluice gates."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""RIVER_FLOODING"",
+                    ""otherHazardDetails"": null
+                }
+            ],
+            ""targetYear"": 2035
+        },
+        {
+            ""description"": ""Reduce urban flood inundation depth by 30% in 13 core districts by 2030 through upgraded drainage capacity and the development of water retention areas."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""URBAN_FLOODING"",
+                    ""otherHazardDetails"": null
+                },
+                {
+                    ""hazardType"": ""HEAVY_PRECIPITATION"",
+                    ""otherHazardDetails"": null
+                }
+            ],
+            ""targetYear"": 2030
+        }
+    ],
+    ""actions"": [
+        {
+            ""title"": ""Integrated Urban Drainage and Flood Management Master Plan"",
+            ""status"": {
+                ""statusType"": ""FEASIBILITY_FINALIZED_PARTIAL_FINANCE"",
+                ""otherStatusDetails"": ""Seeking international development bank co-financing for several key components.""
+            },
+            ""coBenefits"": [
+                ""Improved public health"",
+                ""Enhanced water quality in canals"",
+                ""Increased real estate value in protected areas""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""URBAN_FLOODING"",
+                    ""otherHazardDetails"": null
+                },
+                {
+                    ""hazardType"": ""RIVER_FLOODING"",
+                    ""otherHazardDetails"": null
+                }
+            ]
+        },
+        {
+            ""title"": ""Green Infrastructure Incentive Program for Private Development"",
+            ""status"": {
+                ""statusType"": ""ACTION_IN_OPERATION_TARGETED"",
+                ""otherStatusDetails"": ""Pilot program active in Thu Duc City and District 7, offering density bonuses for incorporating green roofs and permeable surfaces.""
+            },
+            ""coBenefits"": [
+                ""Reduced urban heat island effect"",
+                ""Improved air quality"",
+                ""Increased biodiversity""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""URBAN_FLOODING"",
+                    ""otherHazardDetails"": null
+                },
+                {
+                    ""hazardType"": ""HEAT_STRESS"",
+                    ""otherHazardDetails"": null
+                }
+            ]
+        }
+    ],
+    ""projects"": [
+        {
+            ""title"": ""Thu Duc City Right Bank Anti-Flooding Embankment and Sluice Gate System"",
+            ""status"": ""IMPLEMENTATION"",
+            ""fundedPercent"": 75,
+            ""totalAmount"": 12000000000000
+        },
+        {
+            ""title"": ""Nhieu Loc - Thi Nghe Canal Basin Wastewater and Flood Control - Phase 3"",
+            ""status"": ""PROJECT_FEASIBILITY"",
+            ""fundedPercent"": 20,
+            ""totalAmount"": 8500000000000
+        }
+    ]
+}",**Ho Chi Minh City's water-based actions** include goals to reduce **urban flood depth** by **30%** by **2030** and protect against **major river floods** by **2035**.\n\n**Key initiatives** are an **Integrated Urban Drainage and Flood Management Master Plan** and a **Green Infrastructure Incentive Program**.\n\n**Specific projects** include the **Thu Duc City Anti-Flooding Embankment** and the **Nhieu Loc - Thi Nghe Canal Basin Wastewater and Flood Control project**.,No,
+16,Actions,What is the city's goal regarding drinking water?,2 - Medium,andrea.segundo@cdp.net,"Cape Town, South Africa","{
+    ""description"": ""Ensure a safe, reliable, and resilient drinking water supply for all residents by diversifying water sources to include at least 300 million litres per day from non-surface water sources, such as desalination, groundwater, and water reuse, reducing reliance on rain-fed dams."",
+    ""hazardsAddressed"": [
+        {
+            ""hazardType"": ""DROUGHT"",
+            ""otherHazardDetails"": """"
+        },
+        {
+            ""hazardType"": ""WATER_STRESS"",
+            ""otherHazardDetails"": """"
+        },
+        {
+            ""hazardType"": ""INCREASED_WATER_DEMAND"",
+            ""otherHazardDetails"": """"
+        }
+    ],
+    ""targetYear"": 2030
+}","By **2030**, **Cape Town's goal** is to ensure a safe, reliable, and resilient **drinking water supply** for all residents.\n\nThis will be achieved by **diversifying water sources** to include **at least 300 million litres per day** from **non-surface sources** like **desalination**, **groundwater**, and **water reuse**, thereby reducing reliance on rain-fed dams.",No,
+17,Actions,Are there any goals set for the year 2050?,2 - Medium,andrea.segundo@cdp.net,"Reykjavik, Iceland","{
+    ""goals"": [
+        {
+            ""description"": ""Protect 90% of critical coastal infrastructure and residential areas from a 1-in-100-year storm surge event through a combination of hard and soft engineering solutions."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2040
+        },
+        {
+            ""description"": ""Enhance the resilience of the city's power grid and building stock to withstand wind speeds up to 45 m/s, ensuring no more than a 4-hour power outage for 95% of the population during severe storms."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_WIND"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2035
+        },
+        {
+            ""description"": ""Improve winter maintenance capacity to ensure all primary and secondary roads are cleared within 12 hours of a major snowfall event, and enhance public safety programs for icy conditions."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""SNOW_AND_ICE"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2030
+        }
+    ]
+}","Based on the available data, there are no goals set for the year 2050.\n\nThe listed goals have target years of **2040**, **2035**, and **2030**.",Yes,
+18,Actions,What details are provided about the wastewater treatment plant goal?,2 - Medium,andrea.segundo@cdp.net,"Miami, United States","{
+    ""projects"": [
+        {
+            ""title"": ""Virginia Key Wastewater Treatment Plant Flood Protection and Hardening"",
+            ""status"": ""PROJECT_FEASIBILITY"",
+            ""fundedPercent"": 35,
+            ""totalAmount"": 275000000
+        }
+    ]
+}","The available data does not list a specific goal for the wastewater treatment plant.\n\nHowever, it details a project named **'Virginia Key Wastewater Treatment Plant Flood Protection and Hardening'**.\n\nThis project is currently in the **feasibility stage**, has a total cost of **$275,000,000**, and is **35% funded**.",No,
+19,Actions,What action is being taken regarding mangroves?,2 - Medium,andrea.segundo@cdp.net,"Mumbai, India","""actions"": [
+                    {
+                        ""title"": ""Mumbai Climate Action Plan (MCAP) - Urban Greening and Cool Roofs Initiative"",
+                        ""status"": {
+                            ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                            ""otherStatusDetails"": """"
+                        },
+                        ""coBenefits"": [
+                            ""Improved air quality"",
+                            ""Reduced urban heat island effect"",
+                            ""Enhanced biodiversity"",
+                            ""Improved public health and well-being""
+                        ],
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""HEAT_STRESS"",
+                                ""otherHazardDetails"": """"
+                            },
+                            {
+                                ""hazardType"": ""LOSS_OF_GREEN_SPACE"",
+                                ""otherHazardDetails"": """"
+                            }
+                        ]
+                    },
+                    {
+                        ""title"": ""Establishment of an Integrated Flood Early Warning System (iFLOWS-Mumbai)"",
+                        ""status"": {
+                            ""statusType"": ""ACTION_IN_OPERATION_JURISDICTION_WIDE"",
+                            ""otherStatusDetails"": ""System is fully operational, with ongoing work to improve forecast resolution and public dissemination channels.""
+                        },
+                        ""coBenefits"": [
+                            ""Increased public safety"",
+                            ""Reduced economic disruption"",
+                            ""Improved disaster response coordination""
+                        ],
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""URBAN_FLOODING"",
+                                ""otherHazardDetails"": """"
+                            },
+                            {
+                                ""hazardType"": ""COASTAL_FLOODING"",
+                                ""otherHazardDetails"": """"
+                            },
+                            {
+                                ""hazardType"": ""TROPICAL_CYCLONE"",
+                                ""otherHazardDetails"": """"
+                            }
+                        ]
+                    }
+                ]",There is no information about actions being taken regarding mangroves.,No,
+20,Actions,What ecosystem-based actions address biodiversity loss?,2 - Medium,andrea.segundo@cdp.net,"Cape Town, South Africa","{
+    ""title"": ""Urban Greening Initiative for Heat Island Mitigation"",
+    ""status"": {
+        ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+        ""otherStatusDetails"": ""Focus on planting indigenous, drought-tolerant trees in priority neighborhoods identified through thermal mapping.""
+    },
+    ""coBenefits"": [
+        ""Improved air quality"",
+        ""Enhanced biodiversity"",
+        ""Increased property values"",
+        ""Improved mental well-being and recreational opportunities""
+    ],
+    ""hazardsAddressed"": [
+        {
+            ""hazardType"": ""EXTREME_HEAT"",
+            ""otherHazardDetails"": """"
+        },
+        {
+            ""hazardType"": ""LOSS_OF_GREEN_SPACE"",
+            ""otherHazardDetails"": """"
+        },
+        {
+            ""hazardType"": ""URBAN_FLOODING"",
+            ""otherHazardDetails"": ""Green spaces improve stormwater absorption.""
+        }
+    ]
+}","**Cape Town's** **'Urban Greening Initiative for Heat Island Mitigation'** is an action that addresses **biodiversity**.\n\nOne of its listed co-benefits is **'Enhanced biodiversity'**, and it involves planting **indigenous, drought-tolerant trees**.",No,
+21,Actions,What is the status of the air quality initiatives?,2 - Medium,andrea.segundo@cdp.net,"Los Angeles, United States","{
+    ""actions"": [
+        {
+            ""title"": ""Clean Air Action Plan: Transition to Zero-Emission Drayage Trucks at the Port"",
+            ""status"": {
+                ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                ""otherStatusDetails"": ""Incentive programs and regulations are in place, with phased targets for fleet conversion running through 2035.""
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""OTHERS"",
+                    ""otherHazardDetails"": ""Air Pollution""
+                },
+                {
+                    ""hazardType"": ""HEAT_STRESS"",
+                    ""otherHazardDetails"": ""Reduces ozone precursors which are exacerbated by heat.""
+                }
+            ]
+        }
+    ]
+}","An **air quality initiative**, the **'Clean Air Action Plan: Transition to Zero-Emission Drayage Trucks at the Port'**, is **currently underway** with **completion expected to take more than one year**.\n\n**Incentive programs and regulations** are in place, with **phased targets for fleet conversion running through 2035**.",Yes,
+22,Actions,"Is there a goal related to wastewater treatment, and what is the target year?",2 - Medium,andrea.segundo@cdp.net,"Miami, United States","{
+    ""goals"": [
+        {
+            ""description"": ""Ensure all critical public infrastructure (hospitals, shelters, utilities) is resilient to a Category 4 hurricane storm surge and wind loads by 2040."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""TROPICAL_CYCLONE"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""EXTREME_WIND"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2040
+        }
+    ],
+    ""projects"": [
+        {
+            ""title"": ""Virginia Key Wastewater Treatment Plant Flood Protection and Hardening"",
+            ""status"": ""PROJECT_FEASIBILITY"",
+            ""fundedPercent"": 35,
+            ""totalAmount"": 275000000
+        }
+    ]
+}","While there is no specific goal that mentions **wastewater treatment**, there is a related goal to make all **critical public infrastructure**, including **utilities**, resilient to a **Category 4 hurricane** by the target year of **2040**.\n\nAdditionally, there is a project in the feasibility stage titled **'Virginia Key Wastewater Treatment Plant Flood Protection and Hardening'**.",No,
+23,Actions,What is the implementation status of Zero-Emission?,2 - Medium,andrea.segundo@cdp.net,"Phoenix, United States","""actions"": [
+                    {
+                        ""title"": ""Clean Air Action Plan: Transition to Zero-Emission Drayage Trucks at the Port"",
+                        ""status"": {
+                            ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                            ""otherStatusDetails"": ""Incentive programs and regulations are in place, with phased targets for fleet conversion running through 2035.""
+                        },
+                        ""coBenefits"": [
+                            ""Improved public health in port-adjacent communities"",
+                            ""Reduction in GHG and NOx emissions"",
+                            ""Stimulation of green technology market"",
+                            ""Noise reduction""
+                        ],
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""OTHERS"",
+                                ""otherHazardDetails"": ""Air Pollution""
+                            },
+                            {
+                                ""hazardType"": ""HEAT_STRESS"",
+                                ""otherHazardDetails"": ""Reduces ozone precursors which are exacerbated by heat.""
+                            }
+                        ]
+                    },
+                    {
+                        ""title"": ""Cool Streets LA Program"",
+                        ""status"": {
+                            ""statusType"": ""ACTION_IN_OPERATION_TARGETED"",
+                            ""otherStatusDetails"": ""Program is active and being implemented in targeted, high-heat vulnerability neighborhoods in the San Fernando Valley and East LA.""
+                        },
+                        ""coBenefits"": [
+                            ""Reduced urban heat island effect"",
+                            ""Lowered local ambient temperatures"",
+                            ""Energy savings for adjacent buildings"",
+                            ""Improved pedestrian comfort""
+                        ],
+                        ""hazardsAddressed"": [
+                            {
+                                ""hazardType"": ""EXTREME_HEAT"",
+                                ""otherHazardDetails"": """"
+                            }
+                        ]
+                    }
+                ]","The implementation status of the **Zero-Emission Drayage Trucks at the Port** is **""Implementation Underway, Completion Greater Than One Year""**.\n\n**Incentive programs and regulations** are in place, with **phased targets for fleet conversion running through 2035**.",No,
+24,Actions,Which actions are being implemented to improve air quality?,2 - Medium,andrea.segundo@cdp.net,"Mexico City, Mexico","{
+                    ""title"": ""Clean Air Action Plan: Transition to Zero-Emission Port and Freight Operations"",
+                    ""status"": {
+                        ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                        ""otherStatusDetails"": ""Phased implementation of clean truck programs and vessel electrification infrastructure.""
+                    },
+                    ""coBenefits"": [
+                        ""Improved public health"",
+                        ""Reduced greenhouse gas emissions"",
+                        ""Green job creation"",
+                        ""Improved air quality""
+                    ],
+                    ""hazardsAddressed"": [
+                        {
+                            ""hazardType"": ""OTHERS"",
+                            ""otherHazardDetails"": ""Poor Air Quality (PM2.5, NOx, Ozone)""
+                        }
+                    ]
+                }",Phased implementation of **clean truck programs** and **vessel electrification infrastructure** are being implemented to improve air quality.,No,
+25,Actions,How is the city funding its adaptation plans and action?,2 - Medium,andrea.segundo@cdp.net,"Miami, United States","{
+    ""governmentActions"": {
+        ""actions"": [
+            {
+                ""title"": ""Miami Forever Bond - Seawall and Stormwater Pump Station Upgrades"",
+                ""status"": {
+                    ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                    ""otherStatusDetails"": """"
+                },
+                ""coBenefits"": [
+                    ""Creation of local engineering and construction jobs"",
+                    ""Protection of high-value real estate"",
+                    ""Improved water quality in Biscayne Bay""
+                ],
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""COASTAL_FLOODING"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""HEAVY_PRECIPITATION"",
+                        ""otherHazardDetails"": """"
+                    }
+                ]
+            }
+        ],
+        ""projects"": [
+            {
+                ""title"": ""Virginia Key Wastewater Treatment Plant Flood Protection and Hardening"",
+                ""status"": ""PROJECT_FEASIBILITY"",
+                ""fundedPercent"": 35.0,
+                ""totalAmount"": 275000000
+            },
+            {
+                ""title"": ""Biscayne Bay Mangrove Restoration and Living Shoreline Project"",
+                ""status"": ""PROJECT_STRUCTURING"",
+                ""fundedPercent"": 60.0,
+                ""totalAmount"": 85000000
+            }
+        ]
+    }
+}","The city is funding its adaptation through mechanisms like the **'Miami Forever Bond'** for seawall and stormwater upgrades.\n\nAdditionally, specific projects have secured partial funding: the **Virginia Key Wastewater Treatment Plant project**, with a total cost of **$275 million**, is **35% funded**, and the **Biscayne Bay Mangrove Restoration project**, with a total cost of **$85 million**, is **60% funded**.",No,
+26,Actions,"Which actions are being implemented to improve sewerage, wastewater
+management and remediation?",2 - Medium,andrea.segundo@cdp.net,"Jakarta, Indonesia","{
+    ""actions"": [
+        {
+            ""title"": ""City-wide Wastewater Management System Upgrade Program"",
+            ""status"": {
+                ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                ""otherStatusDetails"": ""Phased roll-out across 14 identified sanitation management zones. Currently active in Zones 1 and 6.""
+            },
+            ""coBenefits"": [
+                ""Improved river and coastal water quality"",
+                ""Reduced public health risks from waterborne pathogens"",
+                ""Enhanced ecosystem health in the Ciliwung River and Jakarta Bay"",
+                ""Green job creation in construction and utility operations""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""URBAN_FLOODING"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""INFECTIOUS_DISEASE"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ],
+    ""projects"": [
+        {
+            ""title"": ""Jakarta Sewerage Development Project (JSDP) - Zone 1 & 6 Expansion"",
+            ""status"": ""IMPLEMENTATION"",
+            ""fundedPercent"": 85,
+            ""totalAmount"": 8100000000000
+        }
+    ]
+}","**Jakarta** is implementing the **""City-wide Wastewater Management System Upgrade Program,""** which is currently active in **Zones 1 and 6**.\n\nAdditionally, the **""Jakarta Sewerage Development Project (JSDP) - Zone 1 & 6 Expansion""** is in implementation.",Yes,
+27,Actions,What engineered actions are being implemented for flood defense?,3 - High,andrea.segundo@cdp.net,"Rotterdam, Netherlands","{
+    ""actions"": [
+        {
+            ""title"": ""Maeslantkering Storm Surge Barrier Operation and Maintenance Program"",
+            ""status"": {
+                ""statusType"": ""ACTION_IN_OPERATION_JURISDICTION_WIDE"",
+                ""otherStatusDetails"": """"
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Strengthening and Heightening of River Dikes and Quay Walls"",
+            ""status"": {
+                ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                ""otherStatusDetails"": ""Ongoing, multi-phase program managed by the regional water board.""
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""RIVER_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""City-wide Green Roof and Water Square Program"",
+            ""status"": {
+                ""statusType"": ""ACTION_IN_OPERATION_MOST_OF_JURISDICTION"",
+                ""otherStatusDetails"": ""Program is established with ongoing projects and subsidies available for private adoption.""
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""HEAVY_PRECIPITATION"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""URBAN_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ]
+}","Engineered actions for flood defense include the **""Maeslantkering Storm Surge Barrier Operation and Maintenance Program""** for **coastal flooding**, the **""Strengthening and Heightening of River Dikes and Quay Walls""** for **river flooding**, and the **""City-wide Green Roof and Water Square Program""** to address **heavy precipitation and urban flooding**.",No,
+28,Actions,Is there a gap between expected hazards and adaptation investment plans?,3 - High,andrea.segundo@cdp.net,"Miami, United States","{
+    ""hazards"": {
+        ""statistics"": {
+            ""populationExposedValue"": 1850000,
+            ""populationExposedPercentage"": 68.5,
+            ""gdpAtRiskValue"": 52700000000,
+            ""gdpAtRiskPercentage"": 13.2,
+            ""gdpAtRiskCurrencyCode"": ""USD"",
+            ""vulnerableSectors"": [
+                ""REAL_ESTATE"",
+                ""ACCOMMODATION_FOOD_SERVICE"",
+                ""TRANSPORTATION_STORAGE"",
+                ""FINANCIAL_INSURANCE"",
+                ""HUMAN_HEALTH_SOCIAL_WORK""
+            ]
+        },
+        ""hazards"": [
+            {
+                ""hazard"": {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                },
+                ""source"": ""NOAA Sea Level Rise Viewer and Miami-Dade County Flood Zone Maps"",
+                ""description"": ""Recurrent 'sunny-day' tidal flooding in low-lying areas, particularly Miami Beach, Downtown, and Shorecrest, driven by sea-level rise. This disrupts transportation networks, damages building foundations, and causes saltwater intrusion into the Biscayne Aquifer."",
+                ""vulnerableGroups"": [
+                    ""Residents in low-elevation coastal neighborhoods"",
+                    ""Elderly populations with mobility challenges"",
+                    ""Small business owners in flood-prone commercial districts""
+                ],
+                ""proportionExposedRange"": ""Approximately 30-40% of the city's land area is highly susceptible."",
+                ""impact"": ""Significant damage to public infrastructure (roads, drainage), devaluation of real estate, and increased costs for flood insurance and property maintenance."",
+                ""mostExposedSectors"": [
+                    ""REAL_ESTATE"",
+                    ""TRANSPORTATION_STORAGE"",
+                    ""ACCOMMODATION_FOOD_SERVICE""
+                ]
+            },
+            {
+                ""hazard"": {
+                    ""hazardType"": ""TROPICAL_CYCLONE"",
+                    ""otherHazardDetails"": """"
+                },
+                ""source"": ""National Hurricane Center (NHC) Historical Data and Saffir-Simpson Scale"",
+                ""description"": ""High frequency of exposure to tropical cyclones, including major hurricanes, which bring destructive winds, storm surge, and extreme rainfall. These events threaten lives and can cause catastrophic damage to the built environment and energy grid."",
+                ""vulnerableGroups"": [
+                    ""Populations residing in coastal areas exposed to storm surge"",
+                    ""Residents of older buildings not built to modern hurricane codes"",
+                    ""Individuals dependent on electricity for medical equipment""
+                ],
+                ""proportionExposedRange"": ""100% of the population and assets are at risk during hurricane season."",
+                ""impact"": ""Widespread power outages, severe structural damage to buildings and infrastructure, business interruption, and potential for large-scale displacement."",
+                ""mostExposedSectors"": [
+                    ""ELECTRICITY_GAS_STEAM_AIR"",
+                    ""CONSTRUCTION"",
+                    ""PUBLIC_ADMIN_DEFENCE"",
+                    ""FINANCIAL_INSURANCE""
+                ]
+            },
+            {
+                ""hazard"": {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                },
+                ""source"": ""National Weather Service (NWS) Heat Index and CDC Climate and Health Data"",
+                ""description"": ""A rising number of days per year with a heat index exceeding 105\u00b0F (40.6\u00b0C), particularly during summer months. This trend increases the incidence of heat-related illnesses and places significant strain on the electrical grid due to high air conditioning demand."",
+                ""vulnerableGroups"": [
+                    ""Outdoor workers (e.g., construction, landscaping)"",
+                    ""Low-income households without access to or unable to afford air conditioning"",
+                    ""The elderly and young children""
+                ],
+                ""proportionExposedRange"": ""Over 90% of the population is regularly exposed to dangerous heat levels during the summer."",
+                ""impact"": ""Increased public health emergencies and hospitalizations, reduced labor productivity, and heightened risk of rolling blackouts during peak demand."",
+                ""mostExposedSectors"": [
+                    ""HUMAN_HEALTH_SOCIAL_WORK"",
+                    ""CONSTRUCTION"",
+                    ""AGRICULTURE"",
+                    ""ELECTRICITY_GAS_STEAM_AIR""
+                ]
+            }
+        ]
+    },
+    ""governmentActions"": {
+        ""goals"": [
+            {
+                ""description"": ""Ensure all critical public infrastructure (hospitals, shelters, utilities) is resilient to a Category 4 hurricane storm surge and wind loads by 2040."",
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""TROPICAL_CYCLONE"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""EXTREME_WIND"",
+                        ""otherHazardDetails"": """"
+                    }
+                ],
+                ""targetYear"": 2040
+            },
+            {
+                ""description"": ""Reduce the impact of urban heat islands by increasing tree canopy coverage by 30% and implementing cool pavement standards for 50% of public surfaces by 2035."",
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""EXTREME_HEAT"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""HEAT_STRESS"",
+                        ""otherHazardDetails"": """"
+                    }
+                ],
+                ""targetYear"": 2035
+            }
+        ],
+        ""actions"": [
+            {
+                ""title"": ""Miami Forever Bond - Seawall and Stormwater Pump Station Upgrades"",
+                ""status"": {
+                    ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                    ""otherStatusDetails"": """"
+                },
+                ""coBenefits"": [
+                    ""Creation of local engineering and construction jobs"",
+                    ""Protection of high-value real estate"",
+                    ""Improved water quality in Biscayne Bay""
+                ],
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""COASTAL_FLOODING"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""HEAVY_PRECIPITATION"",
+                        ""otherHazardDetails"": """"
+                    }
+                ]
+            },
+            {
+                ""title"": ""Resilient Neighborhoods Program: Cooling Centers and Green Infrastructure"",
+                ""status"": {
+                    ""statusType"": ""ACTION_IN_OPERATION_TARGETED"",
+                    ""otherStatusDetails"": ""Currently active in Little Haiti and Allapattah, with plans for city-wide expansion.""
+                },
+                ""coBenefits"": [
+                    ""Enhanced public health outcomes for vulnerable groups"",
+                    ""Improved neighborhood aesthetics and social cohesion"",
+                    ""Reduced stormwater runoff""
+                ],
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""EXTREME_HEAT"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""URBAN_FLOODING"",
+                        ""otherHazardDetails"": """"
+                    }
+                ]
+            }
+        ],
+        ""projects"": [
+            {
+                ""title"": ""Virginia Key Wastewater Treatment Plant Flood Protection and Hardening"",
+                ""status"": ""PROJECT_FEASIBILITY"",
+                ""fundedPercent"": 35,
+                ""totalAmount"": 275000000
+            },
+            {
+                ""title"": ""Biscayne Bay Mangrove Restoration and Living Shoreline Project"",
+                ""status"": ""PROJECT_STRUCTURING"",
+                ""fundedPercent"": 60,
+                ""totalAmount"": 85000000
+            }
+        ]
+    }
+}","Yes, the available data suggests a potential gap between expected hazards and the status of adaptation investments.\n\nWhile plans and actions address the primary hazards of **coastal flooding**, **tropical cyclones**, and **extreme heat**, some key investment projects are in early stages or are not fully funded.\n\nFor example, the **'Virginia Key Wastewater Treatment Plant Flood Protection'** project is in the **feasibility stage** with only **35% funding**, and the **'Biscayne Bay Mangrove Restoration'** project is in the **structuring phase** with **60% funding**.\n\nAdditionally, the **'Resilient Neighborhoods Program'** is currently targeted to specific areas with plans for future expansion.",In Progress,Great question to ask CSTAR folks to rate for us.
+29,Actions,What is the city doing to address its top hazards?,3 - High,andrea.segundo@cdp.net,"Miami, United States","{
+    ""hazards"": {
+        ""hazards"": [
+            {
+                ""hazard"": {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                },
+                ""source"": ""NOAA Sea Level Rise Viewer and Miami-Dade County Flood Zone Maps"",
+                ""description"": ""Recurrent 'sunny-day' tidal flooding in low-lying areas, particularly Miami Beach, Downtown, and Shorecrest, driven by sea-level rise. This disrupts transportation networks, damages building foundations, and causes saltwater intrusion into the Biscayne Aquifer."",
+                ""vulnerableGroups"": [
+                    ""Residents in low-elevation coastal neighborhoods"",
+                    ""Elderly populations with mobility challenges"",
+                    ""Small business owners in flood-prone commercial districts""
+                ],
+                ""proportionExposedRange"": ""Approximately 30-40% of the city's land area is highly susceptible."",
+                ""impact"": ""Significant damage to public infrastructure (roads, drainage), devaluation of real estate, and increased costs for flood insurance and property maintenance."",
+                ""mostExposedSectors"": [
+                    ""REAL_ESTATE"",
+                    ""TRANSPORTATION_STORAGE"",
+                    ""ACCOMMODATION_FOOD_SERVICE""
+                ]
+            },
+            {
+                ""hazard"": {
+                    ""hazardType"": ""TROPICAL_CYCLONE"",
+                    ""otherHazardDetails"": """"
+                },
+                ""source"": ""National Hurricane Center (NHC) Historical Data and Saffir-Simpson Scale"",
+                ""description"": ""High frequency of exposure to tropical cyclones, including major hurricanes, which bring destructive winds, storm surge, and extreme rainfall. These events threaten lives and can cause catastrophic damage to the built environment and energy grid."",
+                ""vulnerableGroups"": [
+                    ""Populations residing in coastal areas exposed to storm surge"",
+                    ""Residents of older buildings not built to modern hurricane codes"",
+                    ""Individuals dependent on electricity for medical equipment""
+                ],
+                ""proportionExposedRange"": ""100% of the population and assets are at risk during hurricane season."",
+                ""impact"": ""Widespread power outages, severe structural damage to buildings and infrastructure, business interruption, and potential for large-scale displacement."",
+                ""mostExposedSectors"": [
+                    ""ELECTRICITY_GAS_STEAM_AIR"",
+                    ""CONSTRUCTION"",
+                    ""PUBLIC_ADMIN_DEFENCE"",
+                    ""FINANCIAL_INSURANCE""
+                ]
+            },
+            {
+                ""hazard"": {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                },
+                ""source"": ""National Weather Service (NWS) Heat Index and CDC Climate and Health Data"",
+                ""description"": ""A rising number of days per year with a heat index exceeding 105\u00b0F (40.6\u00b0C), particularly during summer months. This trend increases the incidence of heat-related illnesses and places significant strain on the electrical grid due to high air conditioning demand."",
+                ""vulnerableGroups"": [
+                    ""Outdoor workers (e.g., construction, landscaping)"",
+                    ""Low-income households without access to or unable to afford air conditioning"",
+                    ""The elderly and young children""
+                ],
+                ""proportionExposedRange"": ""Over 90% of the population is regularly exposed to dangerous heat levels during the summer."",
+                ""impact"": ""Increased public health emergencies and hospitalizations, reduced labor productivity, and heightened risk of rolling blackouts during peak demand."",
+                ""mostExposedSectors"": [
+                    ""HUMAN_HEALTH_SOCIAL_WORK"",
+                    ""CONSTRUCTION"",
+                    ""AGRICULTURE"",
+                    ""ELECTRICITY_GAS_STEAM_AIR""
+                ]
+            }
+        ]
+    },
+    ""governmentActions"": {
+        ""goals"": [
+            {
+                ""description"": ""Ensure all critical public infrastructure (hospitals, shelters, utilities) is resilient to a Category 4 hurricane storm surge and wind loads by 2040."",
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""TROPICAL_CYCLONE"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""EXTREME_WIND"",
+                        ""otherHazardDetails"": """"
+                    }
+                ],
+                ""targetYear"": 2040
+            },
+            {
+                ""description"": ""Reduce the impact of urban heat islands by increasing tree canopy coverage by 30% and implementing cool pavement standards for 50% of public surfaces by 2035."",
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""EXTREME_HEAT"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""HEAT_STRESS"",
+                        ""otherHazardDetails"": """"
+                    }
+                ],
+                ""targetYear"": 2035
+            }
+        ],
+        ""actions"": [
+            {
+                ""title"": ""Miami Forever Bond - Seawall and Stormwater Pump Station Upgrades"",
+                ""status"": {
+                    ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                    ""otherStatusDetails"": """"
+                },
+                ""coBenefits"": [
+                    ""Creation of local engineering and construction jobs"",
+                    ""Protection of high-value real estate"",
+                    ""Improved water quality in Biscayne Bay""
+                ],
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""COASTAL_FLOODING"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""HEAVY_PRECIPITATION"",
+                        ""otherHazardDetails"": """"
+                    }
+                ]
+            },
+            {
+                ""title"": ""Resilient Neighborhoods Program: Cooling Centers and Green Infrastructure"",
+                ""status"": {
+                    ""statusType"": ""ACTION_IN_OPERATION_TARGETED"",
+                    ""otherStatusDetails"": ""Currently active in Little Haiti and Allapattah, with plans for city-wide expansion.""
+                },
+                ""coBenefits"": [
+                    ""Enhanced public health outcomes for vulnerable groups"",
+                    ""Improved neighborhood aesthetics and social cohesion"",
+                    ""Reduced stormwater runoff""
+                ],
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""EXTREME_HEAT"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""URBAN_FLOODING"",
+                        ""otherHazardDetails"": """"
+                    }
+                ]
+            },
+            {
+                ""title"": ""Public Climate Risk Information Campaign"",
+                ""status"": {
+                    ""statusType"": ""OTHERS"",
+                    ""otherStatusDetails"": ""Phase 2 of the digital and community outreach program is underway.""
+                },
+                ""coBenefits"": [
+                    ""Increased citizen preparedness"",
+                    ""Greater public support for adaptation investments""
+                ],
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""TROPICAL_CYCLONE"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""COASTAL_FLOODING"",
+                        ""otherHazardDetails"": """"
+                    }
+                ]
+            }
+        ],
+        ""projects"": [
+            {
+                ""title"": ""Virginia Key Wastewater Treatment Plant Flood Protection and Hardening"",
+                ""status"": ""PROJECT_FEASIBILITY"",
+                ""fundedPercent"": 35,
+                ""totalAmount"": 275000000
+            },
+            {
+                ""title"": ""Biscayne Bay Mangrove Restoration and Living Shoreline Project"",
+                ""status"": ""PROJECT_STRUCTURING"",
+                ""fundedPercent"": 60,
+                ""totalAmount"": 85000000
+            }
+        ]
+    }
+}","To address its top hazards of **coastal flooding**, **tropical cyclones**, and **extreme heat**, Miami has several initiatives.\n\nFor **flooding**, the **'Miami Forever Bond'** is funding **seawall and pump station upgrades**, while a **mangrove restoration project** is being structured.\n\nTo combat **extreme heat**, the **'Resilient Neighborhoods Program'** provides cooling centers and green infrastructure, with a city-wide goal to increase tree canopy by **30%** by **2035**.\n\nFor **tropical cyclones**, the city aims to make critical infrastructure resilient to a **Category 4 hurricane** by **2040** and is running a **public information campaign** to increase citizen preparedness.",No,
+30,Actions,Where is adaptation finance must urgently needed in this city?,3 - High,andrea.segundo@cdp.net,"Dhaka, Bangladesh","{
+    ""actions"": [
+        {
+            ""title"": ""Groundwater Recharge and Surface Water Treatment Program"",
+            ""status"": {
+                ""statusType"": ""FEASIBILITY_FINALIZED_NO_FINANCE"",
+                ""otherStatusDetails"": ""Technical feasibility studies are complete, identifying potential sites for water treatment plants and recharge zones, but no capital has been allocated for project structuring or implementation.""
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""WATER_STRESS"",
+                    ""otherHazardDetails"": null
+                }
+            ]
+        },
+        {
+            ""title"": ""Dhaka Urban Greening and Cool Surfaces Initiative"",
+            ""status"": {
+                ""statusType"": ""FEASIBILITY_FINALIZED_PARTIAL_FINANCE"",
+                ""otherStatusDetails"": ""A city-wide policy has been drafted. Pilot funding secured for a few model parks, but city-wide implementation lacks a dedicated budget.""
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": null
+                },
+                {
+                    ""hazardType"": ""LOSS_OF_GREEN_SPACE"",
+                    ""otherHazardDetails"": null
+                }
+            ]
+        }
+    ],
+    ""projects"": [
+        {
+            ""title"": ""Feasibility and Structuring for a 500 MLD Water Treatment Plant on the Meghna River"",
+            ""status"": ""SCOPING"",
+            ""fundedPercent"": 0
+        },
+        {
+            ""title"": ""Pilot Program for Cool Roofs and Green Walls in Vulnerable Communities"",
+            ""status"": ""PROJECT_FEASIBILITY"",
+            ""fundedPercent"": 10
+        }
+    ]
+}","Based on the available data, adaptation finance is most urgently needed for initiatives addressing water stress and extreme heat.\n\nThe **'Groundwater Recharge and Surface Water Treatment Program'** has completed feasibility studies but has **'no capital has been allocated'**.\n\nA related project for a **water treatment plant** has **0% funding**.\n\nSimilarly, the **'Dhaka Urban Greening and Cool Surfaces Initiative'** has only **partial funding** for pilot projects and **'lacks a dedicated budget'** for city-wide implementation, with a related pilot program only **10% funded**.",No,
+31,Actions,Is the city prioritizing vulnerable populations in their adaptation planning?,3 - High,andrea.segundo@cdp.net,"Ho Chi Minh City, Vietnam","{
+    ""hazards"": {
+        ""hazards"": [
+            {
+                ""hazard"": {
+                    ""hazardType"": ""URBAN_FLOODING"",
+                    ""otherHazardDetails"": null
+                },
+                ""vulnerableGroups"": [
+                    ""Low-income households in informal settlements"",
+                    ""Small business owners"",
+                    ""Commuters and transport workers""
+                ]
+            },
+            {
+                ""hazard"": {
+                    ""hazardType"": ""RIVER_FLOODING"",
+                    ""otherHazardDetails"": null
+                },
+                ""vulnerableGroups"": [
+                    ""Industrial workers in riverside factories"",
+                    ""Farmers"",
+                    ""Residents in riverside communities""
+                ]
+            },
+            {
+                ""hazard"": {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": ""Compounded by storm surge from tropical cyclones and sea level rise.""
+                },
+                ""vulnerableGroups"": [
+                    ""Coastal communities"",
+                    ""Fishermen"",
+                    ""Tourism operators""
+                ]
+            }
+        ]
+    },
+    ""governmentActions"": {
+        ""goals"": [
+            {
+                ""description"": ""Protect major industrial parks and residential areas from a 1-in-100-year river flood event by 2035 through a comprehensive system of dikes and sluice gates."",
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""RIVER_FLOODING"",
+                        ""otherHazardDetails"": null
+                    }
+                ],
+                ""targetYear"": 2035
+            },
+            {
+                ""description"": ""Reduce urban flood inundation depth by 30% in 13 core districts by 2030 through upgraded drainage capacity and the development of water retention areas."",
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""URBAN_FLOODING"",
+                        ""otherHazardDetails"": null
+                    },
+                    {
+                        ""hazardType"": ""HEAVY_PRECIPITATION"",
+                        ""otherHazardDetails"": null
+                    }
+                ],
+                ""targetYear"": 2030
+            }
+        ]
+    }
+}","The available data identifies specific **vulnerable groups** for each flood hazard, including **low-income households**, **industrial workers**, **farmers**, and **coastal communities**.\n\nThe city's **adaptation goals**, such as **protecting industrial parks and residential areas from river flooding** and **reducing urban flood depth in core districts**, are designed to mitigate the hazards that directly impact these identified populations.",No,
+32,Actions,Which actions have the highest positive impact for vulnerable populations?,3 - High,andrea.segundo@cdp.net,"Miami, United States","{
+    ""actions"": [
+        {
+            ""title"": ""Resilient Neighborhoods Program: Cooling Centers and Green Infrastructure"",
+            ""status"": {
+                ""statusType"": ""ACTION_IN_OPERATION_TARGETED"",
+                ""otherStatusDetails"": ""Currently active in Little Haiti and Allapattah, with plans for city-wide expansion.""
+            },
+            ""coBenefits"": [
+                ""Enhanced public health outcomes for vulnerable groups"",
+                ""Improved neighborhood aesthetics and social cohesion"",
+                ""Reduced stormwater runoff""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""URBAN_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ],
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""EXTREME_HEAT"",
+                ""otherHazardDetails"": """"
+            },
+            ""vulnerableGroups"": [
+                ""Outdoor workers (e.g., construction, landscaping)"",
+                ""Low-income households without access to or unable to afford air conditioning"",
+                ""The elderly and young children""
+            ]
+        }
+    ]
+}","The **'Resilient Neighborhoods Program: Cooling Centers and Green Infrastructure'** is identified as having a **high positive impact** on vulnerable populations.\n\nIts co-benefits explicitly include **'Enhanced public health outcomes for vulnerable groups'** by addressing **extreme heat**, which particularly affects **outdoor workers**, **low-income households**, **the elderly**, and **young children**.",Yes,
+33,Actions,Is the city on-track to achieve their adaptation goals?,3 - High,andrea.segundo@cdp.net,"Reykjavik, Iceland","{
+    ""goals"": [
+        {
+            ""description"": ""Protect 90% of critical coastal infrastructure and residential areas from a 1-in-100-year storm surge event through a combination of hard and soft engineering solutions."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2040
+        },
+        {
+            ""description"": ""Enhance the resilience of the city's power grid and building stock to withstand wind speeds up to 45 m/s, ensuring no more than a 4-hour power outage for 95% of the population during severe storms."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_WIND"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2035
+        },
+        {
+            ""description"": ""Improve winter maintenance capacity to ensure all primary and secondary roads are cleared within 12 hours of a major snowfall event, and enhance public safety programs for icy conditions."",
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""SNOW_AND_ICE"",
+                    ""otherHazardDetails"": """"
+                }
+            ],
+            ""targetYear"": 2030
+        }
+    ],
+    ""actions"": [
+        {
+            ""title"": ""Reykjavik Coastal Resilience Program - Phase 1: Sea Wall & Dune Restoration"",
+            ""status"": {
+                ""statusType"": ""FEASIBILITY_FINALIZED_PARTIAL_FINANCE"",
+                ""otherStatusDetails"": ""Federal co-financing application pending.""
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Grid Hardening and Undergrounding Feasibility Study"",
+            ""status"": {
+                ""statusType"": ""PRE_FEASIBILITY_STUDY"",
+                ""otherStatusDetails"": """"
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_WIND"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Smart Winter Maintenance Fleet Upgrade"",
+            ""status"": {
+                ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_LT_ONE_YEAR"",
+                ""otherStatusDetails"": """"
+            },
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""SNOW_AND_ICE"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ]
+}","The available data does not explicitly state whether the city is 'on-track' to meet its goals, but it provides the status of related actions.\n\nThe action for the **2030 snow and ice goal** is **underway** and expected to be completed in **less than a year**.\n\nThe action for the **2040 coastal flooding goal** has a **finalized feasibility study** but is **pending full financing**.\n\nThe action for the **2035 extreme wind goal** is in the **pre-feasibility study phase**.",No,
+34,Actions,What actions are addressing heat-related hazards?,3 - High,andrea.segundo@cdp.net,"Phoenix, United States","{
+    ""actions"": [
+        {
+            ""title"": ""Expansion of the HeatRelief Network of Cooling Centers and Hydration Stations"",
+            ""status"": {
+                ""statusType"": ""ACTION_IN_OPERATION_MOST_OF_JURISDICTION"",
+                ""otherStatusDetails"": """"
+            },
+            ""coBenefits"": [
+                ""Improved public health outcomes"",
+                ""Enhanced community resilience"",
+                ""Reduced burden on emergency services""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Cool Pavement Program Implementation"",
+            ""status"": {
+                ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                ""otherStatusDetails"": ""Program is being rolled out neighborhood by neighborhood based on heat vulnerability index.""
+            },
+            ""coBenefits"": [
+                ""Reduced urban heat island effect"",
+                ""Improved air quality"",
+                ""Increased pavement longevity""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ]
+}",**Phoenix** is addressing **heat-related hazards** through **two primary actions**: the **'Expansion of the HeatRelief Network of Cooling Centers and Hydration Stations'** and the **'Cool Pavement Program Implementation'**.,No,
+35,Actions,Show me actions that address flooding?,3 - High,andrea.segundo@cdp.net,"Riyadh, Saudi Arabia","""actions"": [
+                {
+                    ""title"": ""Upgrade and Expand Stormwater Pump Station Network"",
+                    ""status"": {
+                        ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                        ""otherStatusDetails"": ""Phase 2 of 4 is currently underway in the Brickell and Downtown areas, with new high-capacity pumps being installed.""
+                    },
+                    ""coBenefits"": [
+                        ""Improved water quality in Biscayne Bay"",
+                        ""Reduced traffic disruption post-rainfall"",
+                        ""Enhanced public safety""
+                    ],
+                    ""hazardsAddressed"": [
+                        {
+                            ""hazardType"": ""URBAN_FLOODING"",
+                            ""otherHazardDetails"": """"
+                        },
+                        {
+                            ""hazardType"": ""HEAVY_PRECIPITATION"",
+                            ""otherHazardDetails"": """"
+                        }
+                    ]
+                },
+                {
+                    ""title"": ""Living Shorelines and Mangrove Restoration Program"",
+                    ""status"": {
+                        ""statusType"": ""ACTION_IN_OPERATION_TARGETED"",
+                        ""otherStatusDetails"": ""Pilot projects completed in Virginia Key and Morningside Park. City is seeking federal grants for expansion along 5 miles of coastline.""
+                    },
+                    ""coBenefits"": [
+                        ""Increased biodiversity and habitat creation"",
+                        ""Enhanced public recreation opportunities"",
+                        ""Carbon sequestration""
+                    ],
+                    ""hazardsAddressed"": [
+                        {
+                            ""hazardType"": ""COASTAL_FLOODING"",
+                            ""otherHazardDetails"": """"
+                        },
+                        {
+                            ""hazardType"": ""STORM"",
+                            ""otherHazardDetails"": """"
+                        }
+                    ]
+                },
+                {
+                    ""title"": ""Update Building Codes for Flood Resilience and Sea Level Rise"",
+                    ""status"": {
+                        ""statusType"": ""ACTION_IN_OPERATION_JURISDICTION_WIDE"",
+                        ""otherStatusDetails"": ""New regulations require increased freeboard for new construction and substantial renovations in flood hazard areas.""
+                    },
+                    ""coBenefits"": [
+                        ""Lower insurance premiums for compliant properties"",
+                        ""Increased property value retention"",
+                        ""Improved long-term community resilience""
+                    ],
+                    ""hazardsAddressed"": [
+                        {
+                            ""hazardType"": ""COASTAL_FLOODING"",
+                            ""otherHazardDetails"": """"
+                        },
+                        {
+                            ""hazardType"": ""URBAN_FLOODING"",
+                            ""otherHazardDetails"": """"
+                        },
+                        {
+                            ""hazardType"": ""TROPICAL_CYCLONE"",
+                            ""otherHazardDetails"": """"
+                        }
+                    ]
+                }
+            ]","The following actions address **flooding**: **""Upgrade and Expand Stormwater Pump Station Network""**, **""Living Shorelines and Mangrove Restoration Program""**, and **""Update Building Codes for Flood Resilience and Sea Level Rise""**.",No,
+36,Actions,What actions are happening here?,3 - High,andrea.segundo@cdp.net,"Rotterdam, Netherlands","{
+    ""actions"": [
+        {
+            ""title"": ""Maeslantkering Storm Surge Barrier Operation and Maintenance Program"",
+            ""status"": {
+                ""statusType"": ""ACTION_IN_OPERATION_JURISDICTION_WIDE"",
+                ""otherStatusDetails"": """"
+            },
+            ""coBenefits"": [
+                ""Protection of national economic assets"",
+                ""Enhanced public safety and sense of security"",
+                ""International icon of climate adaptation""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""COASTAL_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Strengthening and Heightening of River Dikes and Quay Walls"",
+            ""status"": {
+                ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                ""otherStatusDetails"": ""Ongoing, multi-phase program managed by the regional water board.""
+            },
+            ""coBenefits"": [
+                ""Improves public space along rivers"",
+                ""Creates new recreational paths and green corridors"",
+                ""Protects vital infrastructure""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""RIVER_FLOODING"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""City-wide Green Roof and Water Square Program"",
+            ""status"": {
+                ""statusType"": ""ACTION_IN_OPERATION_MOST_OF_JURISDICTION"",
+                ""otherStatusDetails"": ""Program is established with ongoing projects and subsidies available for private adoption.""
+            },
+            ""coBenefits"": [
+                ""Reduces urban heat island effect"",
+                ""Improves air quality"",
+                ""Enhances urban aesthetics and biodiversity"",
+                ""Increases social cohesion through shared public spaces""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""HEAVY_PRECIPITATION"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""URBAN_FLOODING"",
+                    ""otherHazardDetails"": """"
+                },
+                {
+                    ""hazardType"": ""HEAT_STRESS"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ]
+}","Rotterdam is undertaking several actions to address climate hazards.\n\nThese include the **'Maeslantkering Storm Surge Barrier Operation and Maintenance Program'** which is **in operation jurisdiction-wide**, the **'Strengthening and Heightening of River Dikes and Quay Walls'** which is **currently underway**, and a **'City-wide Green Roof and Water Square Program'** which is **in operation in most of the jurisdiction**.",No,
+37,Actions,Are there actions that are focused on heat stress?,3 - High,andrea.segundo@cdp.net,"Phoenix, United States","{
+    ""actions"": [
+        {
+            ""title"": ""Expansion of the HeatRelief Network of Cooling Centers and Hydration Stations"",
+            ""status"": {
+                ""statusType"": ""ACTION_IN_OPERATION_MOST_OF_JURISDICTION"",
+                ""otherStatusDetails"": """"
+            },
+            ""coBenefits"": [
+                ""Improved public health outcomes"",
+                ""Enhanced community resilience"",
+                ""Reduced burden on emergency services""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        },
+        {
+            ""title"": ""Cool Pavement Program Implementation"",
+            ""status"": {
+                ""statusType"": ""IMPLEMENTATION_UNDERWAY_COMPLETION_GT_ONE_YEAR"",
+                ""otherStatusDetails"": ""Program is being rolled out neighborhood by neighborhood based on heat vulnerability index.""
+            },
+            ""coBenefits"": [
+                ""Reduced urban heat island effect"",
+                ""Improved air quality"",
+                ""Increased pavement longevity""
+            ],
+            ""hazardsAddressed"": [
+                {
+                    ""hazardType"": ""EXTREME_HEAT"",
+                    ""otherHazardDetails"": """"
+                }
+            ]
+        }
+    ]
+}","Yes, Phoenix has actions focused on addressing **extreme heat**.\n\nThese include the **'Expansion of the HeatRelief Network of Cooling Centers and Hydration Stations'** and the **'Cool Pavement Program Implementation'**.",No,
+38,Actions,What is the total cost of the actions and projects implemented by the city?,3 - High,andrea.segundo@cdp.net,"Reykjavik, Iceland","{
+    ""projects"": [
+        {
+            ""title"": ""S\u00e6braut Coastal Barrier Construction"",
+            ""status"": ""PROJECT_FEASIBILITY"",
+            ""fundedPercent"": 25,
+            ""totalAmount"": 5500000000
+        }
+    ]
+}","The available data only lists the **total cost** for one project, the **'Sæbraut Coastal Barrier Construction'**, which has a **total amount of 5,500,000,000**.\n\nCost information for the city's other actions is not available.",No,
+39,Hazards,Are there any community based hazards?,1 - Low,andrea.segundo@cdp.net,"Mumbai, India","{
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""URBAN_FLOODING""
+            },
+            ""vulnerableGroups"": [
+                ""Residents of informal settlements"",
+                ""Low-income households"",
+                ""Commuters"",
+                ""Elderly and disabled persons""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""HEAT_STRESS""
+            },
+            ""vulnerableGroups"": [
+                ""Outdoor workers (construction, street vendors)"",
+                ""Elderly population"",
+                ""Children"",
+                ""Individuals with pre-existing cardiovascular and respiratory conditions""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""COASTAL_FLOODING""
+            },
+            ""vulnerableGroups"": [
+                ""Coastal communities (e.g., in Colaba, Worli)"",
+                ""Fisherfolk (Koli community)"",
+                ""Residents of southern Mumbai""
+            ]
+        }
+    ]
+}","Yes, the data identifies specific communities and groups that are vulnerable to various hazards.\n\nFor **coastal flooding**, vulnerable groups include coastal communities like the **Fisherfolk (Koli community)**.\n\nFor **urban flooding**, **residents of informal settlements** and **low-income households** are vulnerable.\n\nFor **heat stress**, **outdoor workers**, the **elderly**, and **children** are among the vulnerable groups.",No,
+40,Hazards,How many flooding hazards are there?,1 - Low,andrea.segundo@cdp.net,"Ho Chi Minh City, Vietnam","{
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""URBAN_FLOODING"",
+                ""otherHazardDetails"": null
+            },
+            ""source"": ""Asian Development Bank (ADB) Climate Risk Country Profile: Viet Nam"",
+            ""description"": ""Intense monsoonal rainfall combined with an aging, overloaded drainage system and significant land subsidence frequently causes severe inundation in low-lying districts. This regularly disrupts transportation networks and damages commercial and residential properties."",
+            ""vulnerableGroups"": [
+                ""Low-income households in informal settlements"",
+                ""Small business owners"",
+                ""Commuters and transport workers""
+            ],
+            ""proportionExposedRange"": ""25-35% of the city area during peak events"",
+            ""impact"": ""Significant disruption to economic activity, damage to critical infrastructure, and increased risk of waterborne diseases."",
+            ""mostExposedSectors"": [
+                ""TRANSPORTATION_STORAGE"",
+                ""WHOLESALE_RETAIL_TRADE"",
+                ""MANUFACTURING""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""RIVER_FLOODING"",
+                ""otherHazardDetails"": null
+            },
+            ""source"": ""Vietnam Ministry of Natural Resources and Environment (MONRE) Climate Scenarios"",
+            ""description"": ""Seasonal high tides and upstream discharge from the Saigon and Dong Nai river systems lead to overbank flooding, particularly affecting industrial zones and agricultural areas located along riverbanks in Thu Duc City and Nha Be district."",
+            ""vulnerableGroups"": [
+                ""Industrial workers in riverside factories"",
+                ""Farmers"",
+                ""Residents in riverside communities""
+            ],
+            ""proportionExposedRange"": ""10-20% of the city area, concentrated along river corridors"",
+            ""impact"": ""Direct damage to industrial facilities and equipment, loss of agricultural yields, and contamination of municipal water sources."",
+            ""mostExposedSectors"": [
+                ""MANUFACTURING"",
+                ""AGRICULTURE"",
+                ""WATER_SUPPLY"",
+                ""SEWERAGE_WASTE_REMEDIATION""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""COASTAL_FLOODING"",
+                ""otherHazardDetails"": ""Compounded by storm surge from tropical cyclones and sea level rise.""
+            },
+            ""source"": ""Climate Central Sea Level Rise Projections"",
+            ""description"": ""Accelerating sea level rise poses a long-term threat to coastal districts, especially Can Gio. Projections indicate increased frequency of tidal flooding and greater inundation extent during storm surges, threatening coastal infrastructure and ecosystems."",
+            ""vulnerableGroups"": [
+                ""Coastal communities"",
+                ""Fishermen"",
+                ""Tourism operators""
+            ],
+            ""proportionExposedRange"": ""5-10% of total city area, but nearly 100% of the Can Gio district"",
+            ""impact"": ""Permanent loss of land, salinization of freshwater aquifers and agricultural land, and damage to coastal protection infrastructure."",
+            ""mostExposedSectors"": [
+                ""FISHING"",
+                ""ACCOMMODATION_FOOD_SERVICE"",
+                ""CONSERVATION""
+            ]
+        }
+    ]
+}","The available data lists **three types** of flooding hazards for **Ho Chi Minh City**: **Urban Flooding**, **River Flooding**, and **Coastal Flooding**.",No,
+41,Hazards,What industries are vulnerable to urban flooding?,1 - Low,andrea.segundo@cdp.net,"Houston, United States","{
+    ""hazard"": {
+        ""hazardType"": ""URBAN_FLOODING""
+    },
+    ""mostExposedSectors"": [
+        ""REAL_ESTATE"",
+        ""TRANSPORTATION_STORAGE"",
+        ""MANUFACTURING"",
+        ""HUMAN_HEALTH_SOCIAL_WORK""
+    ]
+}","The sectors most exposed to **urban flooding** in **Houston** are **Real Estate**, **Transportation and Storage**, **Manufacturing**, and **Human Health and Social Work**.",No,
+42,Hazards,What is the source of the hazard data for Extreme Heat?,1 - Low,andrea.segundo@cdp.net,"Miami, United States","{
+    ""hazard"": {
+        ""hazardType"": ""EXTREME_HEAT"",
+        ""otherHazardDetails"": """"
+    },
+    ""source"": ""National Weather Service (NWS) Heat Index and CDC Climate and Health Data""
+}",The source of the hazard data for **Extreme Heat** is the **National Weather Service (NWS) Heat Index** and **CDC Climate and Health Data**.,No,"Comment for the v1 answer: This is not specific enough. CDP generally only has disclosure data, so it needs to indicate the original source of the data if it's not from a dicslosure"
+43,Hazards,Which specific worker group is highlighted as vulnerable to rising temperatures?,1 - Low,andrea.segundo@cdp.net,"Phoenix, United States","{
+    ""vulnerableGroups"": [
+        ""Elderly"",
+        ""Low-income communities"",
+        ""Outdoor workers"",
+        ""Children"",
+        ""Individuals with pre-existing health conditions""
+    ]
+}",**Outdoor workers** are highlighted as a group vulnerable to **rising temperatures** in **Phoenix**.,No,
+44,Hazards,Which hazards are associated with water supply disruption?,1 - Low,andrea.segundo@cdp.net,"Cape Town, South Africa","{
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""WATER_STRESS"",
+                ""otherHazardDetails"": """"
+            },
+            ""source"": ""City of Cape Town Climate Change Strategy, 2021; IPCC AR6"",
+            ""description"": ""Cape Town faces recurring and intensifying periods of water scarcity, driven by reduced winter rainfall and increased evaporative demand. The 2015-2018 drought, which nearly led to 'Day Zero' (the complete shutdown of municipal water supply), highlighted the city's extreme vulnerability to climatic shifts affecting its Western Cape Water Supply System."",
+            ""impact"": ""Severe water rationing, significant economic losses in agriculture and tourism, increased public health risks due to poor sanitation, and social unrest."",
+            ""mostExposedSectors"": [
+                ""WATER_SUPPLY"",
+                ""AGRICULTURE"",
+                ""ACCOMMODATION_FOOD_SERVICE"",
+                ""MANUFACTURING""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""COASTAL_FLOODING"",
+                ""otherHazardDetails"": ""Combined effect of sea-level rise and increased storm surge intensity.""
+            },
+            ""impact"": ""Damage to property and infrastructure, displacement of communities, salinization of coastal aquifers, and loss of valuable coastal habitats and recreational areas.""
+        }
+    ],
+    ""governmentActions"": {
+        ""goals"": [
+            {
+                ""description"": ""Ensure a safe, reliable, and resilient drinking water supply for all residents by diversifying water sources to include at least 300 million litres per day from non-surface water sources, such as desalination, groundwater, and water reuse, reducing reliance on rain-fed dams."",
+                ""hazardsAddressed"": [
+                    {
+                        ""hazardType"": ""DROUGHT"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""WATER_STRESS"",
+                        ""otherHazardDetails"": """"
+                    },
+                    {
+                        ""hazardType"": ""INCREASED_WATER_DEMAND"",
+                        ""otherHazardDetails"": """"
+                    }
+                ]
+            }
+        ]
+    }
+}","**Cape Town's water supply** is threatened by **'WATER_STRESS'**, which involves recurring periods of water scarcity and drought.\n\nThe **2015-2018 drought** nearly led to **'Day Zero,'** a complete shutdown of the municipal water supply.\n\nAdditionally, **'COASTAL_FLOODING'** poses a risk through the potential **'salinization of coastal aquifers'**.\n\nGovernment goals address these hazards, including **'DROUGHT'** and **'INCREASED_WATER_DEMAND'**.",No,
+45,Hazards,What heat-related hazards are here?,2 - Medium,andrea.segundo@cdp.net,"Phoenix, United States","{
+    ""hazard"": {
+        ""hazardType"": ""EXTREME_HEAT"",
+        ""otherHazardDetails"": """"
+    },
+    ""source"": ""City of Phoenix Climate Action Plan, NOAA Climate Data"",
+    ""description"": ""Phoenix is experiencing a significant increase in the frequency and intensity of extreme heat events, with the number of days over 110\u00b0F (43\u00b0C) rising annually. This poses a severe risk to public health and strains critical infrastructure like the electrical grid."",
+    ""vulnerableGroups"": [
+        ""Elderly"",
+        ""Low-income communities"",
+        ""Outdoor workers"",
+        ""Children"",
+        ""Individuals with pre-existing health conditions""
+    ],
+    ""proportionExposedRange"": ""More than 75%"",
+    ""impact"": ""Increased heat-related illnesses and fatalities, higher energy consumption for cooling, reduced labor productivity, and stress on water resources used for power generation."",
+    ""mostExposedSectors"": [
+        ""HUMAN_HEALTH_SOCIAL_WORK"",
+        ""CONSTRUCTION"",
+        ""ELECTRICITY_GAS_STEAM_AIR"",
+        ""ACCOMMODATION_FOOD_SERVICE""
+    ]
+}","**Phoenix** is experiencing a significant increase in the frequency and intensity of **extreme heat events**, with the number of days over **110°F (43°C)** rising **annually**.\n\nThis poses a severe risk to public health and strains critical infrastructure like the electrical grid.",No,
+46,Hazards,What water-related hazards are here?,2 - Medium,andrea.segundo@cdp.net,"Jakarta, Indonesia","{
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""URBAN_FLOODING"",
+                ""otherHazardDetails"": """"
+            },
+            ""description"": ""Intense rainfall events overwhelm the city's aging drainage and sewerage infrastructure, leading to widespread inundation in low-lying residential and commercial areas. This is critically exacerbated by significant land subsidence, which has lowered large parts of North Jakarta below sea level."",
+            ""impact"": ""Severe disruption of public transport and logistics, significant damage to property and infrastructure, increased risk of waterborne diseases like leptospirosis and dengue fever, and widespread business interruption.""
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""HEAVY_PRECIPITATION"",
+                ""otherHazardDetails"": """"
+            },
+            ""description"": ""Climate projections indicate a future increase in the frequency and intensity of extreme precipitation events during the monsoon season (November-March), increasing the likelihood of flash floods and stressing the capacity of the city's 13 rivers and associated water management systems."",
+            ""impact"": ""Causes flash floods and triggers combined sewer overflows, leading to the discharge of untreated wastewater into surface water bodies and contaminating drinking water sources. Also contributes to traffic gridlock and economic losses.""
+        }
+    ]
+}","Jakarta faces hazards of **Urban Flooding** and **Heavy Precipitation**.\n\n**Urban flooding** results from **intense rainfall** overwhelming **drainage systems**, leading to **widespread inundation** and an **increased risk of waterborne diseases**.\n\n**Heavy precipitation** is projected to **increase in frequency and intensity**, causing **flash floods** and the **contamination of drinking water sources**.",No,
+47,Hazards,Show me coastal flooding hazards here.,2 - Medium,andrea.segundo@cdp.net,"Jakarta, Indonesia","""hazards"": [
+                    {
+                        ""hazard"": {
+                            ""hazardType"": ""URBAN_FLOODING"",
+                            ""otherHazardDetails"": """"
+                        },
+                        ""source"": ""Jakarta Climate Change Adaptation Strategy and Action Plan (AP-IK); BMKG (Indonesian Agency for Meteorology, Climatology, and Geophysics)"",
+                        ""description"": ""Intense rainfall events overwhelm the city's aging drainage and sewerage infrastructure, leading to widespread inundation in low-lying residential and commercial areas. This is critically exacerbated by significant land subsidence, which has lowered large parts of North Jakarta below sea level."",
+                        ""vulnerableGroups"": [
+                            ""Low-income communities in informal settlements (kampungs)"",
+                            ""Elderly and children"",
+                            ""Small business owners in flood-prone zones""
+                        ],
+                        ""proportionExposedRange"": ""25-50%"",
+                        ""impact"": ""Severe disruption of public transport and logistics, significant damage to property and infrastructure, increased risk of waterborne diseases like leptospirosis and dengue fever, and widespread business interruption."",
+                        ""mostExposedSectors"": [
+                            ""TRANSPORTATION_STORAGE"",
+                            ""REAL_ESTATE"",
+                            ""SEWERAGE_WASTE_REMEDIATION"",
+                            ""WHOLESALE_RETAIL_TRADE""
+                        ]
+                    },
+                    {
+                        ""hazard"": {
+                            ""hazardType"": ""HEAVY_PRECIPITATION"",
+                            ""otherHazardDetails"": """"
+                        },
+                        ""source"": ""IPCC AR6 WGII Report, Regional Projections for Southeast Asia"",
+                        ""description"": ""Climate projections indicate a future increase in the frequency and intensity of extreme precipitation events during the monsoon season (November-March), increasing the likelihood of flash floods and stressing the capacity of the city's 13 rivers and associated water management systems."",
+                        ""vulnerableGroups"": [
+                            ""Residents in flood-prone river basins (e.g., Ciliwung River)"",
+                            ""Infrastructure operators"",
+                            ""Emergency services and first responders""
+                        ],
+                        ""proportionExposedRange"": ""50-75%"",
+                        ""impact"": ""Causes flash floods and triggers combined sewer overflows, leading to the discharge of untreated wastewater into surface water bodies and contaminating drinking water sources. Also contributes to traffic gridlock and economic losses."",
+                        ""mostExposedSectors"": [
+                            ""WATER_SUPPLY"",
+                            ""SEWERAGE_WASTE_REMEDIATION"",
+                            ""PUBLIC_ADMIN_DEFENCE"",
+                            ""AGRICULTURE""
+                        ]
+                    }
+                ]
+            }","The **available data** and **information disclosed** for **Jakarta, Indonesia** does not contain information on coastal flooding hazards.",No,
+48,Hazards,Who is most vulnerable to extreme heat?,2 - Medium,andrea.segundo@cdp.net,"Phoenix, United States","{
+    ""hazard"": {
+        ""hazardType"": ""EXTREME_HEAT""
+    },
+    ""vulnerableGroups"": [
+        ""Elderly"",
+        ""Low-income communities"",
+        ""Outdoor workers"",
+        ""Children"",
+        ""Individuals with pre-existing health conditions""
+    ]
+}","The groups most vulnerable to **extreme heat in Phoenix** are the **Elderly**, **Low-income communities**, **Outdoor workers**, **Children**, and **Individuals with pre-existing health conditions**.",No,
+49,Hazards,What are the impacts to vulnerable populations and sectors?,2 - Medium,andrea.segundo@cdp.net,"Ho Chi Minh City, Vietnam","{
+    ""statistics"": {
+        ""vulnerableSectors"": [
+            ""MANUFACTURING"",
+            ""TRANSPORTATION_STORAGE"",
+            ""REAL_ESTATE"",
+            ""WATER_SUPPLY"",
+            ""AGRICULTURE""
+        ]
+    },
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""URBAN_FLOODING"",
+                ""otherHazardDetails"": null
+            },
+            ""vulnerableGroups"": [
+                ""Low-income households in informal settlements"",
+                ""Small business owners"",
+                ""Commuters and transport workers""
+            ],
+            ""impact"": ""Significant disruption to economic activity, damage to critical infrastructure, and increased risk of waterborne diseases."",
+            ""mostExposedSectors"": [
+                ""TRANSPORTATION_STORAGE"",
+                ""WHOLESALE_RETAIL_TRADE"",
+                ""MANUFACTURING""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""RIVER_FLOODING"",
+                ""otherHazardDetails"": null
+            },
+            ""vulnerableGroups"": [
+                ""Industrial workers in riverside factories"",
+                ""Farmers"",
+                ""Residents in riverside communities""
+            ],
+            ""impact"": ""Direct damage to industrial facilities and equipment, loss of agricultural yields, and contamination of municipal water sources."",
+            ""mostExposedSectors"": [
+                ""MANUFACTURING"",
+                ""AGRICULTURE"",
+                ""WATER_SUPPLY"",
+                ""SEWERAGE_WASTE_REMEDIATION""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""COASTAL_FLOODING"",
+                ""otherHazardDetails"": ""Compounded by storm surge from tropical cyclones and sea level rise.""
+            },
+            ""vulnerableGroups"": [
+                ""Coastal communities"",
+                ""Fishermen"",
+                ""Tourism operators""
+            ],
+            ""impact"": ""Permanent loss of land, salinization of freshwater aquifers and agricultural land, and damage to coastal protection infrastructure."",
+            ""mostExposedSectors"": [
+                ""FISHING"",
+                ""ACCOMMODATION_FOOD_SERVICE"",
+                ""CONSERVATION""
+            ]
+        }
+    ]
+}","Across **Ho Chi Minh City**, vulnerable sectors include **Manufacturing**, **Transportation**, **Real Estate**, **Water Supply**, and **Agriculture**.\n\nSpecific hazards have the following impacts:\n\n**Urban Flooding:** Affects **low-income households**, **small business owners**, and **commuters**.\n\nImpacts include **significant economic disruption**, **infrastructure damage**, and **increased risk of waterborne diseases**.\n\nThe most exposed sectors are **Transportation**, **Wholesale/Retail Trade**, and **Manufacturing**.\n\n**River Flooding:** Affects **industrial workers**, **farmers**, and **riverside residents**.\n\nImpacts include **direct damage to industrial facilities**, **loss of agricultural yields**, and **contamination of water sources**.\n\nThe most exposed sectors are **Manufacturing**, **Agriculture**, and **Water Supply**.\n\n**Coastal Flooding:** Affects **coastal communities**, **fishermen**, and **tourism operators**.\n\nImpacts include **permanent land loss**, **salinization of freshwater and land**, and **damage to coastal infrastructure**.\n\nThe most exposed sectors are **Fishing**, **Accommodation/Food Service**, and **Conservation**.",No,
+50,Hazards,What hazards are most prevalent?,2 - Medium,andrea.segundo@cdp.net,"Miami, United States","{
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""COASTAL_FLOODING"",
+                ""otherHazardDetails"": """"
+            },
+            ""source"": ""NOAA Sea Level Rise Viewer and Miami-Dade County Flood Zone Maps"",
+            ""description"": ""Recurrent 'sunny-day' tidal flooding in low-lying areas, particularly Miami Beach, Downtown, and Shorecrest, driven by sea-level rise. This disrupts transportation networks, damages building foundations, and causes saltwater intrusion into the Biscayne Aquifer."",
+            ""vulnerableGroups"": [
+                ""Residents in low-elevation coastal neighborhoods"",
+                ""Elderly populations with mobility challenges"",
+                ""Small business owners in flood-prone commercial districts""
+            ],
+            ""proportionExposedRange"": ""Approximately 30-40% of the city's land area is highly susceptible."",
+            ""impact"": ""Significant damage to public infrastructure (roads, drainage), devaluation of real estate, and increased costs for flood insurance and property maintenance."",
+            ""mostExposedSectors"": [
+                ""REAL_ESTATE"",
+                ""TRANSPORTATION_STORAGE"",
+                ""ACCOMMODATION_FOOD_SERVICE""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""TROPICAL_CYCLONE"",
+                ""otherHazardDetails"": """"
+            },
+            ""source"": ""National Hurricane Center (NHC) Historical Data and Saffir-Simpson Scale"",
+            ""description"": ""High frequency of exposure to tropical cyclones, including major hurricanes, which bring destructive winds, storm surge, and extreme rainfall. These events threaten lives and can cause catastrophic damage to the built environment and energy grid."",
+            ""vulnerableGroups"": [
+                ""Populations residing in coastal areas exposed to storm surge"",
+                ""Residents of older buildings not built to modern hurricane codes"",
+                ""Individuals dependent on electricity for medical equipment""
+            ],
+            ""proportionExposedRange"": ""100% of the population and assets are at risk during hurricane season."",
+            ""impact"": ""Widespread power outages, severe structural damage to buildings and infrastructure, business interruption, and potential for large-scale displacement."",
+            ""mostExposedSectors"": [
+                ""ELECTRICITY_GAS_STEAM_AIR"",
+                ""CONSTRUCTION"",
+                ""PUBLIC_ADMIN_DEFENCE"",
+                ""FINANCIAL_INSURANCE""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""EXTREME_HEAT"",
+                ""otherHazardDetails"": """"
+            },
+            ""source"": ""National Weather Service (NWS) Heat Index and CDC Climate and Health Data"",
+            ""description"": ""A rising number of days per year with a heat index exceeding 105\u00b0F (40.6\u00b0C), particularly during summer months. This trend increases the incidence of heat-related illnesses and places significant strain on the electrical grid due to high air conditioning demand."",
+            ""vulnerableGroups"": [
+                ""Outdoor workers (e.g., construction, landscaping)"",
+                ""Low-income households without access to or unable to afford air conditioning"",
+                ""The elderly and young children""
+            ],
+            ""proportionExposedRange"": ""Over 90% of the population is regularly exposed to dangerous heat levels during the summer."",
+            ""impact"": ""Increased public health emergencies and hospitalizations, reduced labor productivity, and heightened risk of rolling blackouts during peak demand."",
+            ""mostExposedSectors"": [
+                ""HUMAN_HEALTH_SOCIAL_WORK"",
+                ""CONSTRUCTION"",
+                ""AGRICULTURE"",
+                ""ELECTRICITY_GAS_STEAM_AIR""
+            ]
+        }
+    ]
+}","The most prevalent hazards in **Miami** are **Tropical Cyclones**, with **100% of the population** at risk during **hurricane season**, and **Extreme Heat**, with **over 90% of the population** regularly exposed to **dangerous heat levels** in the **summer**.\n\nThe city also faces recurrent **Coastal Flooding**, with approximately **30-40% of its land area** being highly susceptible.",No,
+51,Hazards,What hazards have a high level of exposure?,2 - Medium,andrea.segundo@cdp.net,"Ho Chi Minh City, Vietnam","{
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""URBAN_FLOODING"",
+                ""otherHazardDetails"": null
+            },
+            ""proportionExposedRange"": ""25-35% of the city area during peak events""
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""RIVER_FLOODING"",
+                ""otherHazardDetails"": null
+            },
+            ""proportionExposedRange"": ""10-20% of the city area, concentrated along river corridors""
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""COASTAL_FLOODING"",
+                ""otherHazardDetails"": ""Compounded by storm surge from tropical cyclones and sea level rise.""
+            },
+            ""proportionExposedRange"": ""5-10% of total city area, but nearly 100% of the Can Gio district""
+        }
+    ]
+}","Based on the proportion of the city area exposed, **urban flooding** has the **highest level of exposure**, affecting **25-35%** of the city during peak events.\n\n**River flooding** affects **10-20%** of the city area.\n\n**Coastal flooding** affects **5-10%** of the total city area, but it impacts **nearly 100%** of the **Can Gio district**.",No,
+52,Hazards,What percentage of the population is exposed to hazards?,2 - Medium,andrea.segundo@cdp.net,"Reykjavik, Iceland","{
+    ""statistics"": {
+        ""populationExposedValue"": 85000,
+        ""populationExposedPercentage"": 65.4,
+        ""gdpAtRiskValue"": 1200000000,
+        ""gdpAtRiskPercentage"": 5.2,
+        ""gdpAtRiskCurrencyCode"": ""ISK"",
+        ""vulnerableSectors"": [
+            ""TRANSPORTATION_STORAGE"",
+            ""FISHING"",
+            ""ACCOMMODATION_FOOD_SERVICE"",
+            ""ELECTRICITY_GAS_STEAM_AIR"",
+            ""HUMAN_HEALTH_SOCIAL_WORK""
+        ]
+    }
+}","According to the available data statistics, **65.4%** of the **population in Reykjavik** is exposed to **hazards**.",No,
+53,Hazards,What specific sectors are vulnerable?,2 - Medium,andrea.segundo@cdp.net,"Miami, United States","{
+    ""statistics"": {
+        ""vulnerableSectors"": [
+            ""REAL_ESTATE"",
+            ""ACCOMMODATION_FOOD_SERVICE"",
+            ""TRANSPORTATION_STORAGE"",
+            ""FINANCIAL_INSURANCE"",
+            ""HUMAN_HEALTH_SOCIAL_WORK""
+        ]
+    },
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""COASTAL_FLOODING""
+            },
+            ""mostExposedSectors"": [
+                ""REAL_ESTATE"",
+                ""TRANSPORTATION_STORAGE"",
+                ""ACCOMMODATION_FOOD_SERVICE""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""TROPICAL_CYCLONE""
+            },
+            ""mostExposedSectors"": [
+                ""ELECTRICITY_GAS_STEAM_AIR"",
+                ""CONSTRUCTION"",
+                ""PUBLIC_ADMIN_DEFENCE"",
+                ""FINANCIAL_INSURANCE""
+            ]
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""EXTREME_HEAT""
+            },
+            ""mostExposedSectors"": [
+                ""HUMAN_HEALTH_SOCIAL_WORK"",
+                ""CONSTRUCTION"",
+                ""AGRICULTURE"",
+                ""ELECTRICITY_GAS_STEAM_AIR""
+            ]
+        }
+    ]
+}","The specific **vulnerable sectors** in **Miami** are **Real Estate**, **Accommodation Food Service**, **Transportation Storage**, **Financial Insurance**, and **Human Health Social Work**.",In Progress,[Jasmine] This needs a second review. I'm not sure the answer should include the sectors identified under mostExposedSectors or just the sectors identified in vulnerableSectors.
+54,Hazards,How does urban flooding impact the population?,2 - Medium,andrea.segundo@cdp.net,"Bangkok, Thailand","{
+    ""hazard"": {
+        ""hazardType"": ""URBAN_FLOODING"",
+        ""otherHazardDetails"": """"
+    },
+    ""vulnerableGroups"": [
+        ""Residents in low-lying informal settlements"",
+        ""Elderly and mobility-impaired individuals"",
+        ""Small and medium-sized enterprises (SMEs)"",
+        ""Street vendors""
+    ],
+    ""proportionExposedRange"": ""25-50% of the population annually"",
+    ""impact"": ""Direct impacts include significant damage to residential and commercial properties, disruption of transportation networks causing massive economic losses, and business closures. Indirect impacts involve increased risk of waterborne diseases like leptospirosis and dengue fever, and mental health stress from repeated displacement and financial loss. Critical infrastructure, including hospitals and schools, often become inaccessible, severely impacting the population's access to essential services.""
+}","According to the available data, **urban flooding** affects **25-50%** of **Bangkok's population annually**.\n\n**Direct impacts** include **damage to properties** and **transportation disruption**, leading to **economic loss**.\n\n**Indirect impacts** involve increased risk of **waterborne diseases** like **dengue fever** and **leptospirosis**, **mental health stress**, and **reduced access to essential services** like **hospitals** and **schools**.\n\nThe **most vulnerable groups** are **residents in low-lying settlements**, **the elderly**, **mobility-impaired individuals**, **SMEs**, and **street vendors**.",No,
+55,Hazards,What is the projected risk level and trend for urban flooding?,2 - Medium,andrea.segundo@cdp.net,"Houston, United States","{
+    ""description"": ""Projected increase in the frequency and intensity of heavy precipitation events, overwhelming the city's bayou and drainage systems. This is exacerbated by land subsidence and widespread impervious surfaces. The current risk is 'High' and the projected trend is 'Increasing'.""
+}","For **urban flooding**, the current risk is **'High'** and the projected trend is **'Increasing'**.",Yes,
+56,Hazards,What is the anticipated risk level for extreme heat in the medium-term?,2 - Medium,andrea.segundo@cdp.net,"Seville, Spain","{
+    ""hazard"": {
+        ""hazardType"": ""EXTREME_HEAT"",
+        ""otherHazardDetails"": """"
+    },
+    ""description"": ""The city's primary and most severe climate hazard. Projections for the medium-term (2040-2060) indicate a substantial increase in risk, with a high likelihood of more frequent, intense, and prolonged heatwaves. The number of 'tropical nights' (above 20\u00b0C) and days exceeding 40\u00b0C is expected to increase by 50-100% compared to the 1991-2020 baseline, leading to a 'High' to 'Very High' anticipated risk level for public health and critical infrastructure.""
+}","For the **medium-term (2040-2060)**, the anticipated risk level for **extreme heat** is **'High' to 'Very High'** for **public health and critical infrastructure**.",Yes,
+57,Hazards,What hazards are on the rise?,3 - High,andrea.segundo@cdp.net,"Bangkok, Thailand","{
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""HEAVY_PRECIPITATION"",
+                ""otherHazardDetails"": """"
+            },
+            ""source"": ""Thai Meteorological Department (TMD) Climate Projections 2022"",
+            ""description"": ""Climate change is increasing the frequency and intensity of extreme rainfall events. Projections show a 15-20% increase in peak rainfall intensity during the monsoon season by 2050, directly increasing the risk of flash floods.""
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""HEAT_STRESS"",
+                ""otherHazardDetails"": """"
+            },
+            ""source"": ""Ministry of Public Health Report on Climate Impacts"",
+            ""description"": ""Rising average temperatures and more frequent, intense heatwaves are amplified by a strong urban heat island effect from dense construction and lack of green space, posing significant health risks.""
+        }
+    ]
+}","Based on the available data, **heavy precipitation** and **heat stress** are on the rise.\n\n**Climate change** is increasing the frequency and intensity of **extreme rainfall**, with projections showing a **15-20% increase** in **peak rainfall intensity** by **2050**.\n\nAdditionally, **rising average temperatures** and more **frequent, intense heatwaves** are increasing the risk of **heat stress**.",Yes,
+58,Hazards,What hazards does this location face in severity order?,3 - High,andrea.segundo@cdp.net,"Ho Chi Minh City, Vietnam","{
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""URBAN_FLOODING"",
+                ""otherHazardDetails"": null
+            },
+            ""proportionExposedRange"": ""25-35% of the city area during peak events""
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""RIVER_FLOODING"",
+                ""otherHazardDetails"": null
+            },
+            ""proportionExposedRange"": ""10-20% of the city area, concentrated along river corridors""
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""COASTAL_FLOODING"",
+                ""otherHazardDetails"": ""Compounded by storm surge from tropical cyclones and sea level rise.""
+            },
+            ""proportionExposedRange"": ""5-10% of total city area, but nearly 100% of the Can Gio district""
+        }
+    ]
+}","The available data does not explicitly rank the hazards by severity.\n\nHowever, **Ho Chi Minh City** faces **Urban Flooding**, **River Flooding**, and **Coastal Flooding**.\n\nIf ordered by the proportion of the city exposed during events, the order is: 1) **Urban Flooding** (**25-35% exposed**), 2) **River Flooding** (**10-20% exposed**), and 3) **Coastal Flooding** (**5-10% exposed**).",Yes,
+59,Hazards,What percentage of GDP is at risk?,3 - High,andrea.segundo@cdp.net,"Miami, United States","{
+    ""gdpAtRiskPercentage"": 13.2
+}","In **Miami**, **13.2%** of the **GDP** is at risk.",Yes,
+60,Hazards,Is the city expected to experience more hazards over time?,3 - High,andrea.segundo@cdp.net,"Reykjavik, Iceland","{
+    ""hazards"": [
+        {
+            ""hazard"": {
+                ""hazardType"": ""COASTAL_FLOODING"",
+                ""otherHazardDetails"": """"
+            },
+            ""source"": ""Icelandic Meteorological Office & University of Iceland Climate Projections 2023"",
+            ""description"": ""Rising sea levels combined with increased storm surge frequency pose a significant threat to low-lying coastal areas, including the downtown harbor, commercial districts, and residential zones.""
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""EXTREME_WIND"",
+                ""otherHazardDetails"": """"
+            },
+            ""source"": ""National Power Company of Iceland (Landsvirkjun) Grid Resilience Study"",
+            ""description"": ""Climate models predict an increase in the frequency and intensity of severe North Atlantic winter storms, leading to extreme wind events that can damage buildings, disrupt transportation, and cause power outages.""
+        },
+        {
+            ""hazard"": {
+                ""hazardType"": ""SNOW_AND_ICE"",
+                ""otherHazardDetails"": ""Includes increased frequency of ice storm events following precipitation.""
+            },
+            ""source"": ""Reykjavik Public Works Department, Winter Maintenance Report"",
+            ""description"": ""While winters are warming on average, the city is experiencing more frequent intense, heavy snowfall events and 'ice storm' conditions, overwhelming snow clearance capacity and creating hazardous conditions.""
+        }
+    ]
+}","Yes, the available data indicates that Reykjavik is expected to experience an **increase** in the **frequency** and/or **intensity** of **several hazards**.\n\n**Climate models** predict an increase in the frequency and intensity of **severe winter storms** causing **extreme wind**.\n\nAdditionally, **rising sea levels** are combining with **increased storm surge frequency**, and the city is experiencing **more frequent intense snowfall** and **ice storm events**.",No,
+61,Hazards,Which hazards are expected to have the highest financial impact?,3 - High,andrea.segundo@cdp.net,"Jakarta, Indonesia","{
+    ""statistics"": {
+        ""gdpAtRiskValue"": 250000000000000,
+        ""gdpAtRiskPercentage"": 12.5,
+        ""gdpAtRiskCurrencyCode"": ""IDR"",
+        ""vulnerableSectors"": [
+            ""SEWERAGE_WASTE_REMEDIATION"",
+            ""TRANSPORTATION_STORAGE"",
+            ""HUMAN_HEALTH_SOCIAL_WORK"",
+            ""REAL_ESTATE"",
+            ""WATER_SUPPLY""
+        ]
+    }
+}","The available data indicates a **total GDP at risk** from **all hazards** of **250 trillion IDR**, which is **12.5%** of the total GDP.\n\nHowever, it does not break down this financial impact by individual hazard, so it is not possible to determine which specific hazard has the highest financial impact.",Yes,
+62,Solutions,Which peer cities have the highest rate of implemented vs planned actions,1 - Low,andrea.segundo@cdp.net,,,,No,
+63,Solutions,Which cooling center strategies are most popular among cities similar to mine?,2 - Medium,andrea.segundo@cdp.net,,,,No,
+64,Solutions,What kinds of water saving technologies require the least amount of funding to implement?,2 - Medium,andrea.segundo@cdp.net,,,,No,
+65,Solutions,What permitting strategies have other jurisdictions used to accelerate climate adaptation projects?,2 - Medium,andrea.segundo@cdp.net,,,,No,
+66,Solutions,How do cities in similar ecoregions approach public-private partnerships for climate adaptation?,2 - Medium,andrea.segundo@cdp.net,,,,No,
+67,Solutions,Are we implementing fewer actions compared to peer cities?,2 - Medium,andrea.segundo@cdp.net,,,,No,
+68,Solutions,Do peers have measurable goals /targets attached to actions?,2 - Medium,andrea.segundo@cdp.net,,,,No,
+69,Solutions,Which peer cities have mobilized private capital ?,2 - Medium,andrea.segundo@cdp.net,,,,No,
+70,Solutions,What economic co-benefits are other peer cities realizing from adaptation actions?,2 - Medium,andrea.segundo@cdp.net,,,,No,
+71,Solutions,Which actions by peers are addressing all or most of the major reported hazards with just one actions?,2 - Medium,andrea.segundo@cdp.net,,,,No,
+72,Solutions,Which peers have more ambitious adaptation actions plans and projects than us?,2 - Medium,andrea.segundo@cdp.net,,,,No,
+73,Solutions,What are some adaptation actions are other cities in my climate region taking to address extreme heat?,3 - High,andrea.segundo@cdp.net,,,,No,
+74,Solutions,"What types of green infrastructure projects have peer jurisdictions implemented, and what were the specific approaches they used?",3 - High,andrea.segundo@cdp.net,,,,No,
+75,Solutions,How are other cities addressing water scarcity through technology solutions?,3 - High,andrea.segundo@cdp.net,,,,No,
+76,Solutions,Can you show me examples of ecosystem-based adaptation actions that address both drought and wildfire risks?,3 - High,andrea.segundo@cdp.net,,,,No,
+77,Solutions,What are the most common adaptation actions being taken by jurisdictions that share my top four climate hazards?,3 - High,andrea.segundo@cdp.net,,,,No,
+78,Solutions,What are some examples of cities that are implementing similar actions than us and have raised more funding than we have?,3 - High,andrea.segundo@cdp.net,,,,No,
+79,Solutions,What are the main adaptation priorities from other cities in my country?,3 - High,andrea.segundo@cdp.net,,,,No,
+80,Solutions,What are the sources of finance used y peer cities to implement adaptation projects?,3 - High,andrea.segundo@cdp.net,,,,No,
+81,Solutions,"Are peers prioritizing structural, nature-based or policy actions to address their top hazards?",3 - High,andrea.segundo@cdp.net,,,,No,
+82,Unanswerable,"Based on these flooding hazards, is it a bad idea for our manufacturing company to build a new factory in this city?",0 - No Likelihood,jasmineleon@google.com,"Cape Town, South Africa",,"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Cape Town, South Africa**.",Yes,
+83,Unanswerable,Should I buy a new AC unit due to the heat hazards? ,0 - No Likelihood,jasmineleon@google.com,"Phoenix, United States",,"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Phoenix, United States**.",Yes,
+84,Unanswerable,Should I invest in stocks for wastewater treatment companies mentioned in the 2030 goal?,0 - No Likelihood,jasmineleon@google.com,"Jakarta, Indonesia",,"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Jakarta, Indonesia**.",Yes,
+85,Unanswerable,Can you give me the phone number for the 'Air quality initiatives' department?,0 - No Likelihood,jasmineleon@google.com,"Helsinki, Finland",,"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Helsinki, Finland**.",Yes,
+86,Unanswerable,Is Mumbai doing a better job at handling Heat Stress or Water Stress?,0 - No Likelihood,jasmineleon@google.com,"Stockholm, Sweden",,"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Stockholm, Sweden**.",Yes,
+87,Unanswerable,"If the population exposed to flooding increases to 60%, how many more wastewater plants will we need?",0 - No Likelihood,jasmineleon@google.com,"Reykjavik, Iceland",,"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Reykjavik, Iceland**.",Yes,
+88,Unanswerable,Is it safe for me to move my family to a coastal neighborhood in Cape Town given the flooding risk?,0 - No Likelihood,jasmineleon@google.com,"Cape Town, South Africa",,"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Cape Town, South Africa**.",Yes,
+89,Unanswerable,I am an outdoor worker; is it safe for me to work today?,0 - No Likelihood,jasmineleon@google.com,"Miami, United States",,"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Miami, United States**.",Yes,
+90,Unanswerable,What is 1+1?,0 - No Likelihood,jasmineleon@google.com,"Jakarta, Indonesia",,"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Jakarta, Indonesia**.",Yes,
+91,Unanswerable,"Based on these flooding hazards, is it a bad idea for our manufacturing company to build a new factory in this city?",0 - No Likelihood,jasmineleon@google.com,"Ho Chi Minh City, Vietnam",,"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Ho Chi Minh City, Vietnam**.",Yes,
+92,Unanswerable,What are the hazards in New York?,0 - No Likelihood,jasmineleon@google.com,"Helsinki, Finland",,"I can only provide information regarding climate hazards based on the **available data** and **information disclosed** by **Helsinki, Finland**.",Yes,"For now, the question should not be answerable by the AI chatbot. This will change in future iterations."

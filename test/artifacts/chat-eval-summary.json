@@ -1,0 +1,614 @@
+{
+  "generatedAt": "2026-03-27T14:30:30.391Z",
+  "totalCases": 32,
+  "averageRecall": 1,
+  "averagePrecision": null,
+  "results": [
+    {
+      "id": "mumbai-public-spaces-goal",
+      "location": "Mumbai, India",
+      "question": "What is the city's 2040 goal regarding public spaces?",
+      "answer": "The City of Mumbai's 2040 goal regarding public spaces is to achieve \"Equitable distribution of open spaces.\"",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Equitable distribution of open spaces",
+          "2040"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "mumbai-water-demand-goal",
+      "location": "Mumbai, India",
+      "question": "What is the city's target for meeting water demand through conservation?",
+      "answer": "The City of Mumbai aims to meet up to 50% of its water demand through localized water conservation and efficient use initiatives. This target is set for the year 2030.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "50% of the city's water demand",
+          "2030"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "mumbai-heat-actions",
+      "location": "Mumbai, India",
+      "question": "Identify actions the city is taking to mitigate heat.",
+      "answer": "The City of Mumbai is undertaking several actions and has set goals to mitigate heat, as disclosed in its CSTAR data:\n\n**Goals to mitigate heat:**\n*   **Passive design guidelines for buildings:** This goal aims to address heat stress and has a target year of 2030.\n*   **Increasing Green cover:** This goal is intended to address extreme heat and biodiversity loss, with a target year of 2030.\n*   **Equitable distribution of open spaces:** This goal addresses heat stress and has a target year of 2040.\n*   **Reduce heating effect and increase permeable surface:** This goal aims to address water stress and heat stress, with a target year of 2050.\n\n**Adaptation Actions Underway to mitigate heat:**\n*   **Development of targeted plan/program to address hazard(s) selected:** This action is currently underway and addresses both heat stress and extreme heat.\n*   **Mechanical and passive cooling:** This technological action is also underway and addresses heat stress.\n\nThese actions and goals are part of Mumbai's broader resilience planning.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Mechanical and passive cooling",
+          "Passive design guidelines"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "mumbai-mangroves",
+      "location": "Mumbai, India",
+      "question": "What action is being taken regarding mangroves?",
+      "answer": "For the City of Mumbai, an action being taken regarding mangroves is **\"Ecosystem-based actions: Conservation and replanting mangrove forest\"**.\n\nThis action is currently **underway** and is addressing **Urban Flooding**.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Conservation and replanting mangrove forest"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "mumbai-urban-flooding",
+      "location": "Mumbai, India",
+      "question": "What flooding hazard is described for Mumbai?",
+      "answer": "For the City of Mumbai, the described flooding hazard is **Urban Flooding**.\n\nAccording to Mumbai's CDP disclosure, \"Mumbai faces a medium-high and increasing risk of urban flooding, impacting 35% of its population, especially low-income and coastal communities.\"",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "urban flooding",
+          "35%"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "mumbai-wastewater-goal",
+      "location": "Mumbai, India",
+      "question": "What wastewater treatment goal is listed for 2030?",
+      "answer": "For the City of Mumbai, the wastewater treatment goal listed for 2030 is:\n\n**\"2624 MLD Wastewater Treatment Plant (WwTP) with 1234 MLD Tertiary Treatment Capacity for Reuse\"**\n\nThis goal addresses the hazard of Increased Water Demand.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "2624 MLD Wastewater Treatment Plant",
+          "2030"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "mumbai-drainage-goal",
+      "location": "Mumbai, India",
+      "question": "What is the city's goal for improving storm water drainage?",
+      "answer": "The City of Mumbai has a goal to \"To improve the storm water drainage system of the city with rehabilitation and augmentation of underground drains, construction of new drains, training of drains, as well as widening and deepening.\"\n\nThis goal addresses Urban Flooding, River Flooding, and Heavy Precipitation, with a target year of 2050.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "rehabilitation and augmentation of underground drains",
+          "2050"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "jakarta-coastal-flooding-hazard",
+      "location": "Jakarta, Indonesia",
+      "question": "What coastal flooding hazard is described for Jakarta?",
+      "answer": "For DKI Jakarta, the described coastal flooding hazard is: \"Jakarta reports coastal flooding as a high-priority hazard affecting low-lying northern districts and critical infrastructure.\" This information is from Jakarta's CDP disclosure.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "coastal flooding",
+          "northern districts"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "jakarta-heat-goal",
+      "location": "Jakarta, Indonesia",
+      "question": "What is Jakarta's goal related to green open space?",
+      "answer": "Jakarta's goal related to green open space is to \"Expand green open space coverage across the city.\" This goal is aimed at addressing the hazard of extreme heat and has a target year of 2030.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Expand green open space coverage across the city",
+          "2030"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "jakarta-coastal-actions",
+      "location": "Jakarta, Indonesia",
+      "question": "What actions is Jakarta taking for coastal flooding?",
+      "answer": "Jakarta is taking two primary actions to address coastal flooding, according to its CDP/CSTAR disclosure:\n\n1.  **Engineered and built environment actions:** The city is undertaking \"Coastal dikes and sea wall improvements.\"\n2.  **Ecosystem-based actions:** Jakarta is implementing \"Mangrove restoration in northern Jakarta.\"\n\nBoth of these actions are currently \"Implementation underway, completion greater than one year.\"\n\nWould you like to know more about the goals related to coastal flooding, or explore best practices for these types of actions?",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Coastal dikes and sea wall improvements",
+          "Mangrove restoration in northern Jakarta"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "sao-paulo-urban-flooding-hazard",
+      "location": "Sao Paulo, Brazil",
+      "question": "What urban flooding hazard is described for Sao Paulo?",
+      "answer": "For the City of Sao Paulo, the urban flooding hazard is described as: \"Sao Paulo reports urban flooding driven by intense rainfall, with transport corridors and low-lying neighborhoods facing repeated disruption.\" This information is from Sao Paulo's CDP disclosure.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "urban flooding",
+          "intense rainfall"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "sao-paulo-water-goal",
+      "location": "Sao Paulo, Brazil",
+      "question": "What is Sao Paulo's goal for the municipal water distribution network?",
+      "answer": "The City of Sao Paulo's goal for the municipal water distribution network is to \"Reduce water losses across the municipal distribution network\" with a target year of 2030, according to its CDP disclosure. This goal addresses the hazard of water stress.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Reduce water losses across the municipal distribution network",
+          "2030"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "sao-paulo-flood-actions",
+      "location": "Sao Paulo, Brazil",
+      "question": "What actions is Sao Paulo taking for urban flooding?",
+      "answer": "The City of Sao Paulo is taking several actions to address urban flooding, according to its CDP disclosure:\n\n1.  **Engineered and built environment actions:** Expansion of retention basins and drainage works. This action is currently underway, with completion expected in over one year.\n2.  **Technological actions:** Flood monitoring and early warning upgrades. This action is also underway, with completion expected in over one year.\n\nSao Paulo has also set a goal to \"Expand urban drainage capacity in flood-prone districts\" by 2032 to address urban flooding.\n\nWould you like to know more about the status of these actions or explore other hazards Sao Paulo is addressing?",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Expansion of retention basins and drainage works",
+          "Flood monitoring and early warning upgrades"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "miami-multi-hazard-actions",
+      "location": "Miami, United States",
+      "question": "Are there actions that approach more than one hazard?",
+      "answer": "Yes, the City of Miami has several actions that approach more than one hazard, according to its disclosure:\n\n1.  **Miami Forever Bond - Seawall and Stormwater Pump Station Upgrades:** This action addresses both **Coastal Flooding** and **Heavy Precipitation**.\n2.  **Resilient Neighborhoods Program: Cooling Centers and Green Infrastructure:** This program tackles **Extreme Heat** and **Urban Flooding**.\n3.  **Public Climate Risk Information Campaign:** This campaign aims to address both **Tropical Cyclones** and **Coastal Flooding**.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Miami Forever Bond",
+          "Resilient Neighborhoods Program"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "miami-co-benefits",
+      "location": "Miami, United States",
+      "question": "Which co-benefits has the city identified for adaptation actions?",
+      "answer": "The City of Miami has identified the following co-benefits for its adaptation actions:\n\nFor the **\"Miami Forever Bond - Seawall and Stormwater Pump Station Upgrades\"** action:\n*   Creation of local engineering and construction jobs\n*   Protection of high-value real estate\n*   Improved water quality in Biscayne Bay\n\nFor the **\"Resilient Neighborhoods Program: Cooling Centers and Green Infrastructure\"** action:\n*   Enhanced public health outcomes for vulnerable groups\n*   Improved neighborhood aesthetics and social cohesion\n*   Reduced stormwater runoff\n\nFor the **\"Public Climate Risk Information Campaign\"** action:\n*   Increased citizen preparedness\n*   Greater public support for adaptation investments",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Improved water quality in Biscayne Bay",
+          "Enhanced public health outcomes for vulnerable groups",
+          "Increased citizen preparedness"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "miami-heat-source",
+      "location": "Miami, United States",
+      "question": "What is the source of the hazard data for Extreme Heat?",
+      "answer": "For the City of Miami, the source of the hazard data for Extreme Heat is the \"National Weather Service (NWS) Heat Index and CDC Climate and Health Data\".",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "National Weather Service",
+          "CDC Climate and Health Data"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "miami-gdp-risk",
+      "location": "Miami, United States",
+      "question": "What percentage of GDP is at risk?",
+      "answer": "For the City of Miami, **13.2% of GDP is at risk**, amounting to $52.7 billion USD, according to their disclosure.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "13.2%"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "miami-top-hazards",
+      "location": "Miami, United States",
+      "question": "What is the city doing to address its top hazards?",
+      "answer": "The City of Miami is addressing its top hazards through a combination of infrastructure upgrades, community programs, and public information campaigns, as outlined in its disclosures.\n\n**Top Hazards and Corresponding Actions:**\n\n1.  **Coastal Flooding:**\n    *   **Action:** The \"Miami Forever Bond - Seawall and Stormwater Pump Station Upgrades\" is underway to enhance protection against coastal flooding and heavy precipitation.\n    *   **Action:** A \"Public Climate Risk Information Campaign\" is also underway (Phase 2) to increase citizen preparedness for coastal flooding.\n\n2.  **Tropical Cyclone:**\n    *   **Goal:** The city aims to \"Ensure all critical public infrastructure (hospitals, shelters, utilities) is resilient to a Category 4 hurricane storm surge and wind loads by 2040.\"\n    *   **Action:** A \"Public Climate Risk Information Campaign\" is underway (Phase 2) to increase citizen preparedness for tropical cyclones.\n\n3.  **Extreme Heat:**\n    *   **Goal:** The city plans to \"Reduce the impact of urban heat islands by increasing tree canopy coverage by 30% and implementing cool pavement standards for 50% of public surfaces by 2035.\"\n    *   **Action:** The \"Resilient Neighborhoods Program: Cooling Centers and Green Infrastructure\" is in operation, specifically targeting extreme heat and urban flooding, with plans for city-wide expansion.\n\nThese actions and goals are part of the City of Miami's disclosed resilience planning.\n\nWould you like to explore the details of any specific action or goal, or perhaps see how Miami's approach compares to other cities facing similar hazards?",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "coastal flooding",
+          "tropical cyclones",
+          "extreme heat"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "cape-town-drinking-water-goal",
+      "location": "Cape Town, South Africa",
+      "question": "What is the city's goal regarding drinking water?",
+      "answer": "The City of Cape Town's goal regarding drinking water is to \"Ensure a safe, reliable, and resilient drinking water supply for all residents by diversifying water sources to include at least 300 million litres per day from non-surface water sources, such as desalination, groundwater, and water reuse, reducing reliance on rain-fed dams.\" This goal is targeted for completion by **2030**.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "300 million litres per day",
+          "2030"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "cape-town-water-disruption-hazards",
+      "location": "Cape Town, South Africa",
+      "question": "Which hazards are associated with water supply disruption?",
+      "answer": "In the City of Cape Town, the primary hazards associated with water supply disruption are **Water Stress** and **Drought**.\n\nAccording to the City of Cape Town's Climate Change Strategy, 2021, and IPCC AR6, **Water Stress** is ranked as the number one hazard. Its description highlights \"recurring and intensifying periods of water scarcity\" and the 2015-2018 drought that \"nearly led to Day Zero,\" with impacts including \"Severe water rationing, economic losses, public health risks, and social unrest.\" The water supply sector is explicitly listed as one of the most exposed sectors.\n\nAdditionally, the city's goal to \"Ensure a safe, reliable, and resilient drinking water supply for all residents\" specifically addresses **Drought**, **Water Stress**, and **Increased Water Demand** as the hazards it aims to mitigate.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "water stress"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "hcmc-water-based-actions",
+      "location": "Ho Chi Minh City, Vietnam",
+      "question": "Show me water-based actions?",
+      "answer": "In Ho Chi Minh City, several government actions and projects are focused on water management and flood control.\n\nHere are the key water-based actions and projects:\n\n**Actions:**\n*   **Integrated Urban Drainage and Flood Management Master Plan:** This plan addresses both urban and river flooding. Its status is \"Feasibility Finalized, Partial Finance,\" and the city is seeking international development bank co-financing.\n*   **Green Infrastructure Incentive Program for Private Development:** This program addresses urban flooding and heat stress. It is currently in operation as a pilot program in Thu Duc City and District 7.\n\n**Projects:**\n*   **Thu Duc City Right Bank Anti-Flooding Embankment and Sluice Gate System:** This project is currently in the \"Implementation\" phase and is 75% funded, with a total amount of 12,000,000,000,000 VND.\n*   **Nhieu Loc - Thi Nghe Canal Basin Wastewater and Flood Control - Phase 3:** This project is in the \"Project Feasibility\" phase and is 20% funded, with a total amount of 8,500,000,000,000 VND.\n\nWould you like to know more about the specific hazards these actions address, or explore the goals related to water management in Ho Chi Minh City?",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Integrated Urban Drainage and Flood Management Master Plan",
+          "Thu Duc City Right Bank Anti-Flooding Embankment and Sluice Gate System"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "hcmc-flooding-hazard-count",
+      "location": "Ho Chi Minh City, Vietnam",
+      "question": "How many flooding hazards are there?",
+      "answer": "Ho Chi Minh City faces 3 types of flooding hazards: urban flooding, river flooding, and coastal flooding.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "3",
+          "Urban Flooding",
+          "River Flooding",
+          "Coastal Flooding"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "hcmc-highest-exposure-hazard",
+      "location": "Ho Chi Minh City, Vietnam",
+      "question": "What hazards have a high level of exposure?",
+      "answer": "In Ho Chi Minh City, **Urban Flooding** is identified as a hazard with a high level of exposure.\n\nAccording to the Asian Development Bank (ADB) Climate Risk Country Profile for Viet Nam, urban flooding is described as:\n*   **Description:** Intense monsoonal rainfall combined with an aging, overloaded drainage system and land subsidence causes severe inundation in low-lying districts.\n*   **Proportion Exposed:** This affects 25-35% of the city area during peak events.\n*   **Impact:** It leads to significant disruption to economic activity, damage to critical infrastructure, and an increased risk of waterborne diseases.\n\nWould you like to know more about the vulnerable groups or sectors affected by urban flooding, or explore the adaptation actions Ho Chi Minh City is taking to address it?",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "urban flooding"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "phoenix-heat-actions",
+      "location": "Phoenix, United States",
+      "question": "What actions are addressing heat-related hazards?",
+      "answer": "In the City of Phoenix, two key actions are addressing heat-related hazards:\n\n1.  **Expansion of the HeatRelief Network of Cooling Centers and Hydration Stations:** This action is currently in operation across most of the jurisdiction, aiming to improve public health outcomes and enhance community resilience.\n2.  **Cool Pavement Program Implementation:** This program is underway, being rolled out neighborhood by neighborhood based on a heat vulnerability index. It aims to reduce the urban heat island effect, improve air quality, and increase pavement longevity.\n\nAdditionally, the **Tree and Shade Master Plan - Phase 2 Planting Initiative** is an ongoing project with 75% of its $15,000,000 funding secured, which indirectly contributes to mitigating heat by increasing shade cover.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "HeatRelief Network",
+          "Cool Pavement Program"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "phoenix-outdoor-workers",
+      "location": "Phoenix, United States",
+      "question": "Which specific worker group is highlighted as vulnerable to rising temperatures?",
+      "answer": "In the City of Phoenix, **Outdoor workers** are highlighted as a vulnerable group to rising temperatures, according to the hazard assessment for extreme heat.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Outdoor workers"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "phoenix-heat-hazard",
+      "location": "Phoenix, United States",
+      "question": "What heat-related hazards are here?",
+      "answer": "For the City of Phoenix, the primary heat-related hazard is **Extreme Heat**.\n\nAccording to the City of Phoenix Climate Action Plan and NOAA Climate Data, Phoenix is experiencing a significant increase in the frequency and intensity of extreme heat events, with the number of days over 110°F rising annually.\n\n**Key details:**\n*   **Impact:** Increased heat-related illnesses and fatalities, higher energy consumption for cooling, and stress on critical infrastructure.\n*   **Vulnerable Groups:** Elderly, low-income communities, outdoor workers, children, and individuals with pre-existing health conditions.\n*   **Proportion Exposed:** More than 75% of the population is exposed.\n*   **Most Exposed Sectors:** Human health and social work, construction, electricity/gas/steam/air conditioning supply, and accommodation/food service.\n\nWould you like to know what actions the City of Phoenix is taking to address extreme heat?",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "extreme heat",
+          "110"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "reykjavik-population-exposed",
+      "location": "Reykjavik, Iceland",
+      "question": "What percentage of the population is exposed to hazards?",
+      "answer": "In the City of Reykjavik, 65.4% of the population is exposed to hazards, according to the available data.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "65.4%"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "reykjavik-goals-2050",
+      "location": "Reykjavik, Iceland",
+      "question": "Are there any goals set for the year 2050?",
+      "answer": "For the City of Reykjavik, there are no goals explicitly set for the year 2050 in the provided data. The current goals have target years of 2040, 2035, and 2030.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "no",
+          "2050"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "rotterdam-coastal-hazard",
+      "location": "Rotterdam, Netherlands",
+      "question": "What coastal flooding risk is described for Rotterdam?",
+      "answer": "For the City of Rotterdam, the described coastal flooding risk is: \"Rotterdam faces coastal flooding risk from storm surge and sea level rise affecting port operations and low-lying districts.\" This information is from the \"Rotterdam Climate Adaptation Strategy.\"",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "coastal flooding",
+          "storm surge"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "rotterdam-rain-actions",
+      "location": "Rotterdam, Netherlands",
+      "question": "What actions is Rotterdam taking for heavy precipitation and urban flooding?",
+      "answer": "The City of Rotterdam is taking the following actions to address heavy precipitation and urban flooding:\n\n*   **Engineered and built environment actions: Water squares and retention basins expansion**\n    *   **Status:** Implementation underway, completion greater than one year.\n\nThis action is specifically designed to increase urban water storage and stormwater retention capacity in vulnerable districts, as outlined in their goals.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Water squares and retention basins",
+          "heavy precipitation"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "bangkok-flood-hazard",
+      "location": "Bangkok, Thailand",
+      "question": "What urban flooding hazard is described for Bangkok?",
+      "answer": "For Bangkok Metropolitan Administration, the urban flooding hazard is described as: \"Bangkok faces recurring urban flooding from intense rainfall, limited drainage capacity, and land subsidence.\" This information is sourced from the Bangkok Climate Change Master Plan.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "urban flooding",
+          "land subsidence"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    },
+    {
+      "id": "bangkok-heat-actions",
+      "location": "Bangkok, Thailand",
+      "question": "What is Bangkok doing to reduce heat exposure?",
+      "answer": "To reduce heat exposure, Bangkok Metropolitan Administration has a goal to \"Increase urban tree canopy and shaded public spaces\" with a target year of 2035.\n\nThey are currently implementing \"Ecosystem-based actions: Urban greening and shaded corridor program\" to address extreme heat. This action is underway and expected to be completed in more than one year.",
+      "mentionsLocation": true,
+      "refusalHints": [],
+      "score": {
+        "passed": true,
+        "recall": 1,
+        "precision": null,
+        "matched": [
+          "Urban greening and shaded corridor program",
+          "2035"
+        ],
+        "missing": [],
+        "unsupported": []
+      }
+    }
+  ]
+}

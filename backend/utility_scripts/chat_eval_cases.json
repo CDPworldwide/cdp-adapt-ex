@@ -1,0 +1,212 @@
+{
+  "location": "Mumbai, India",
+  "locationData": {
+    "name": "City of Mumbai",
+    "countryName": "India",
+    "lat": 19.076,
+    "lng": 72.8777,
+    "isReportingLeader": false,
+    "hazards": {
+      "statistics": {
+        "populationExposedValue": null,
+        "populationExposedPercentage": 50,
+        "gdpAtRiskValue": null,
+        "gdpAtRiskPercentage": 25,
+        "gdpAtRiskCurrencyCode": null,
+        "vulnerableSectors": [
+          "AGRICULTURE",
+          "WATER_SUPPLY"
+        ]
+      },
+      "hazards": [
+        {
+          "hazardType": "URBAN_FLOODING",
+          "source": "CDP",
+          "description": "Mumbai faces a medium-high and increasing risk of urban flooding, impacting 35% of its population, especially low-income and coastal communities.",
+          "vulnerableGroups": [],
+          "proportionExposedRange": null,
+          "impact": null,
+          "mostExposedSectors": []
+        },
+        {
+          "hazardType": "EXTREME_HEAT",
+          "source": "CDP",
+          "description": "Mumbai faces a medium-high risk from extreme heat, with increasing frequency and intensity projected medium-term.",
+          "vulnerableGroups": [],
+          "proportionExposedRange": null,
+          "impact": null,
+          "mostExposedSectors": []
+        }
+      ]
+    },
+    "governmentActions": {
+      "goals": [
+        {
+          "description": "Access to safe and affordable drinking water for all",
+          "hazardsAddressed": [
+            "WATER_STRESS",
+            "HEAT_STRESS",
+            "INCREASED_WATER_DEMAND"
+          ],
+          "targetYear": 2030
+        },
+        {
+          "description": "Passive design guidelines for buildings",
+          "hazardsAddressed": [
+            "HEAT_STRESS"
+          ],
+          "targetYear": 2030
+        },
+        {
+          "description": "Ensure that up to 50% of the city's water demand is met through localized water conservation and efficient use initiatives",
+          "hazardsAddressed": [
+            "WATER_STRESS",
+            "HEAT_STRESS",
+            "INCREASED_WATER_DEMAND"
+          ],
+          "targetYear": 2030
+        },
+        {
+          "description": "Increasing Green cover",
+          "hazardsAddressed": [
+            "BIODIVERSITY_LOSS",
+            "EXTREME_HEAT"
+          ],
+          "targetYear": 2030
+        },
+        {
+          "description": "Equitable distribution of open spaces",
+          "hazardsAddressed": [
+            "HEAT_STRESS"
+          ],
+          "targetYear": 2040
+        },
+        {
+          "description": "Reduce heating effect and increase permeable surface",
+          "hazardsAddressed": [
+            "WATER_STRESS",
+            "HEAT_STRESS"
+          ],
+          "targetYear": 2050
+        },
+        {
+          "description": "2624 MLD Wastewater Treatment Plant (WwTP) with 1234 MLD Tertiary Treatment Capacity for Reuse",
+          "hazardsAddressed": [
+            "INCREASED_WATER_DEMAND"
+          ],
+          "targetYear": 2030
+        },
+        {
+          "description": "To improve the storm water drainage system of the city with rehabilitation and augmentation of underground drains, construction of new drains, training of drains, as well as widening and deepening.",
+          "hazardsAddressed": [
+            "URBAN_FLOODING",
+            "RIVER_FLOODING",
+            "HEAVY_PRECIPITATION"
+          ],
+          "targetYear": 2050
+        }
+      ],
+      "actions": [
+        {
+          "title": "Government policies and programs actions: Air quality initiatives",
+          "status": "Implementation",
+          "coBenefits": [],
+          "hazardsAddressed": []
+        },
+        {
+          "title": "Ecosystem-based actions: Conservation and replanting mangrove forest",
+          "status": "Implementation",
+          "coBenefits": [],
+          "hazardsAddressed": [
+            "URBAN_FLOODING"
+          ]
+        },
+        {
+          "title": "Engineered and built environment actions: Flood defence, such as flood levees and culverts",
+          "status": "Implementation",
+          "coBenefits": [],
+          "hazardsAddressed": [
+            "URBAN_FLOODING"
+          ]
+        },
+        {
+          "title": "Government policies and programs actions: Development of targeted plan/program to address hazard(s) selected",
+          "status": "Implementation",
+          "coBenefits": [],
+          "hazardsAddressed": [
+            "HEAT_STRESS",
+            "EXTREME_HEAT"
+          ]
+        },
+        {
+          "title": "Ecosystem-based actions: Ecological restoration (including wetland and floodplain conservation and restoration)",
+          "status": "Implementation",
+          "coBenefits": [],
+          "hazardsAddressed": [
+            "BIODIVERSITY_LOSS",
+            "URBAN_FLOODING"
+          ]
+        },
+        {
+          "title": "Technological actions: Mechanical and passive cooling",
+          "status": "Implementation",
+          "coBenefits": [],
+          "hazardsAddressed": [
+            "HEAT_STRESS"
+          ]
+        },
+        {
+          "title": "Engineered and built environment actions: Flood defence, such as flood levees and culverts",
+          "status": "Implementation",
+          "coBenefits": [],
+          "hazardsAddressed": [
+            "URBAN_FLOODING",
+            "RIVER_FLOODING",
+            "HEAVY_PRECIPITATION"
+          ]
+        }
+      ],
+      "projects": []
+    },
+    "solutions": {
+      "solutions": {}
+    }
+  },
+  "cases": [
+    {
+      "id": "mumbai-public-spaces-goal",
+      "questionType": "Actions",
+      "question": "What is the city's 2040 goal regarding public spaces?",
+      "expectedContains": [
+        "Equitable distribution of open spaces",
+        "2040"
+      ]
+    },
+    {
+      "id": "mumbai-water-demand-goal",
+      "questionType": "Actions",
+      "question": "What is the city's target for meeting water demand through conservation?",
+      "expectedContains": [
+        "50% of the city's water demand",
+        "2030"
+      ]
+    },
+    {
+      "id": "mumbai-heat-actions",
+      "questionType": "Actions",
+      "question": "Identify actions the city is taking to mitigate heat.",
+      "expectedContains": [
+        "Mechanical and passive cooling",
+        "Passive design guidelines"
+      ]
+    },
+    {
+      "id": "mumbai-mangroves",
+      "questionType": "Actions",
+      "question": "What action is being taken regarding mangroves?",
+      "expectedContains": [
+        "Conservation and replanting mangrove forest"
+      ]
+    }
+  ]
+}

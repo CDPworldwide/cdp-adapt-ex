@@ -1,0 +1,45 @@
+{
+  "basicChatRequest": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What are the main climate hazards?"
+      }
+    ]
+  },
+  "conversationHistoryRequest": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What are droughts?"
+      },
+      {
+        "role": "assistant",
+        "content": "Droughts are prolonged periods of abnormally low precipitation."
+      },
+      {
+        "role": "user",
+        "content": "Which regions are most affected?"
+      }
+    ]
+  },
+  "simpleTestRequest": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "test message"
+      }
+    ]
+  },
+  "invalidRoleRequest": {
+    "messages": [
+      {
+        "role": "invalid_role",
+        "content": "test"
+      }
+    ]
+  },
+  "emptyMessagesRequest": {
+    "messages": []
+  }
+}

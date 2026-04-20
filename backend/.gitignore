@@ -1,0 +1,10 @@
+# Note: so gcloud builds will upload all files EXCEPT those listed in .gitignore
+# THEN it will respect .dockerignore
+# Backend
+.env
+.env.test
+.venv
+.ipynb_checkpoints
+__pycache__
+logs
+.ruff_cache

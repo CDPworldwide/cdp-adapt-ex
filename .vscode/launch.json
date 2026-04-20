@@ -1,0 +1,31 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "FastAPI UV",
+      "type": "debugpy",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/backend",
+      "python": ".venv/bin/python",
+      "module": "fastapi",
+      "args": ["dev", "./app/main.py"],
+      "justMyCode": false
+    },
+    {
+      "name": "Pytest Debug",
+      "type": "debugpy",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/backend",
+      "python": ".venv/bin/python",
+      "module": "pytest",
+      "args": ["tests"],
+      "env": {
+        "APP_ENV": "test"
+      },
+      "justMyCode": false
+    }
+  ]
+}

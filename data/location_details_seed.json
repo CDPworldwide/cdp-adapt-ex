@@ -1,0 +1,486 @@
+[
+  {
+    "name": "Minas Gerais",
+    "country_name": "Brazil",
+    "lat": -18.5122,
+    "lng": -44.5550,
+    "is_reporting_leader": true,
+    "hazards": {
+      "statistics": {
+        "population_exposed_value": 2450000,
+        "population_exposed_percentage": 11.5,
+        "gdp_at_risk_value": 155000000000,
+        "gdp_at_risk_percentage": 25.0,
+        "gdp_at_risk_currency_code": "BRL",
+        "vulnerable_sectors": [
+          "AGRICULTURE",
+          "FORESTRY",
+          "FISHING",
+          "MINING_QUARRYING",
+          "WATER_SUPPLY"
+        ]
+      },
+      "hazards": [
+        {
+          "hazard_type": "WATER_STRESS",
+          "source": "CDP disclosure",
+          "description": "Severe drought conditions affecting water supply, hydropower generation, and creating competition between agricultural, mining, and urban water demands. Climate change is intensifying water scarcity across the state.",
+          "vulnerable_groups": [
+            "Low-income households",
+            "Rural communities",
+            "Agricultural workers",
+            "Informal settlements"
+          ],
+          "proportion_exposed_range": "21-30%",
+          "adaptation_factors": ["Water infrastructure", "Poverty"],
+          "impact": "Critical impacts on hydropower, agriculture, and mining operations with cascading economic effects.",
+          "most_exposed_sectors": ["AGRICULTURE", "FORESTRY", "FISHING", "MINING_QUARRYING", "WATER_SUPPLY"]
+        },
+        {
+          "hazard_type": "FIRE_WEATHER",
+          "source": "CDP disclosure",
+          "description": "Extreme heat impacting agricultural productivity and increasing wildfire risk. Minas Gerais has experienced record-breaking temperatures affecting crop yields and worker health.",
+          "vulnerable_groups": [
+            "Agricultural workers",
+            "Outdoor workers",
+            "Elderly",
+            "Children and youth",
+            "Low-income households"
+          ],
+          "proportion_exposed_range": "11-20%",
+          "adaptation_factors": ["Poverty", "Agricultural dependence"],
+          "impact": "Reduced agricultural productivity and increased health risks for outdoor workers.",
+          "most_exposed_sectors": ["AGRICULTURE", "FORESTRY", "FISHING", "HUMAN_HEALTH_SOCIAL_WORK"]
+        },
+        {
+          "hazard_type": "FLOODING",
+          "source": "State climate assessment",
+          "description": "Mining tailings dam failure risks heightened by extreme rainfall events. Heavy precipitation can overwhelm infrastructure and trigger catastrophic dam failures with severe environmental and human impacts.",
+          "vulnerable_groups": [
+            "Communities near mining operations",
+            "Downstream populations",
+            "Low-income households"
+          ],
+          "proportion_exposed_range": "1-10%",
+          "adaptation_factors": ["Infrastructure quality", "Mining proximity"],
+          "impact": "Catastrophic risk to communities downstream of mining operations.",
+          "most_exposed_sectors": ["MINING_QUARRYING", "WATER_SUPPLY"]
+        },
+        {
+          "hazard_type": "LANDSLIDE",
+          "source": "State climate assessment",
+          "description": "Landslides and mass movements in hilly terrain exacerbated by extreme rainfall and deforestation. Topography combined with climate change increases slope failure risk.",
+          "vulnerable_groups": [
+            "Hillside communities",
+            "Informal settlements",
+            "Rural populations"
+          ],
+          "proportion_exposed_range": "1-10%",
+          "adaptation_factors": ["Terrain", "Land use"],
+          "impact": "Infrastructure damage and displacement in mountainous regions.",
+          "most_exposed_sectors": ["REAL_ESTATE"]
+        }
+      ]
+    },
+    "government_actions": {
+      "goals": [
+        {
+          "description": "Promote reduction of climate vulnerability and enhance adaptive capacity across the state",
+          "hazards_addressed": ["WATER_STRESS", "FIRE_WEATHER", "FLOODING", "LANDSLIDE"],
+          "target_year": 2030
+        },
+        {
+          "description": "Strengthen water security and sustainable management of water resources",
+          "hazards_addressed": ["WATER_STRESS"],
+          "target_year": 2027
+        }
+      ],
+      "actions": [
+        {
+          "title": "Minas Gerais Water Security Plan",
+          "status": "IMPLEMENTATION",
+          "co_benefits": [
+            "Reduced natural resource depletion",
+            "Improved water quality",
+            "Economic resilience"
+          ],
+          "hazards_addressed": ["WATER_STRESS"]
+        },
+        {
+          "title": "Mining Infrastructure Safety Program",
+          "status": "IMPLEMENTATION",
+          "co_benefits": [
+            "Community safety",
+            "Environmental protection",
+            "Economic stability"
+          ],
+          "hazards_addressed": ["FLOODING"]
+        }
+      ],
+      "projects": [
+        {
+          "title": "Statewide Drought Early Warning System",
+          "hazards_addressed": ["WATER_STRESS"],
+          "funded_percent": 60,
+          "total_amount": 25000000
+        },
+        {
+          "title": "Climate-Resilient Agriculture Support Program",
+          "hazards_addressed": ["FIRE_WEATHER", "WATER_STRESS"],
+          "funded_percent": 30,
+          "total_amount": 45000000
+        }
+      ]
+    },
+    "solutions": {
+      "peer_locations": [
+        {
+          "name": "California",
+          "country_name": "USA"
+        },
+        {
+          "name": "Western Cape",
+          "country_name": "South Africa"
+        },
+        {
+          "name": "New South Wales",
+          "country_name": "Australia"
+        }
+      ],
+      "solutions": [
+        {
+          "title": "Water-efficient irrigation systems",
+          "hazards_addressed": ["WATER_STRESS"]
+        },
+        {
+          "title": "Drought-resistant crop varieties",
+          "hazards_addressed": ["WATER_STRESS", "FIRE_WEATHER"]
+        },
+        {
+          "title": "Early warning systems for extreme weather",
+          "hazards_addressed": ["FLOODING", "FIRE_WEATHER"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Jakarta",
+    "country_name": "Indonesia",
+    "lat": -6.2088,
+    "lng": 106.8456,
+    "is_reporting_leader": false,
+    "hazards": {
+      "statistics": {
+        "population_exposed_value": 8500000,
+        "population_exposed_percentage": 80.2,
+        "gdp_at_risk_value": 144000000000,
+        "gdp_at_risk_percentage": 80.0,
+        "gdp_at_risk_currency_code": "USD",
+        "vulnerable_sectors": [
+          "REAL_ESTATE",
+          "MANUFACTURING",
+          "WHOLESALE_RETAIL_TRADE",
+          "TRANSPORTATION_STORAGE",
+          "WATER_SUPPLY"
+        ]
+      },
+      "hazards": [
+        {
+          "hazard_type": "COASTAL_FLOODING",
+          "source": "World Bank assessment",
+          "description": "Land subsidence causing accelerated coastal flooding risk. Jakarta is sinking up to 25cm per year due to groundwater extraction while sea levels rise, creating one of the world's most urgent urban climate adaptation challenges.",
+          "vulnerable_groups": [
+            "Coastal communities",
+            "Low-income households",
+            "Informal settlements",
+            "Elderly",
+            "Children and youth"
+          ],
+          "proportion_exposed_range": "41-50%",
+          "adaptation_factors": ["Subsidence", "Sea level rise", "Poverty"],
+          "impact": "Permanent inundation risk for northern districts, threatening millions of residents and major economic infrastructure.",
+          "most_exposed_sectors": ["REAL_ESTATE", "TRANSPORTATION_STORAGE", "MANUFACTURING"]
+        },
+        {
+          "hazard_type": "URBAN_FLOODING",
+          "source": "CDP disclosure",
+          "description": "Annual monsoon flooding displacing millions. Inadequate drainage infrastructure is overwhelmed by heavy rainfall, causing widespread flooding during the rainy season.",
+          "vulnerable_groups": [
+            "Informal settlements",
+            "Low-income households",
+            "Marginalized/minority communities",
+            "Children and youth"
+          ],
+          "proportion_exposed_range": "51-60%",
+          "adaptation_factors": ["Infrastructure", "Drainage capacity", "Poverty"],
+          "impact": "Annual displacement of residents, economic disruption, and infrastructure damage during monsoon season.",
+          "most_exposed_sectors": ["REAL_ESTATE", "WHOLESALE_RETAIL_TRADE", "TRANSPORTATION_STORAGE"]
+        },
+        {
+          "hazard_type": "FIRE_WEATHER",
+          "source": "Climate monitoring data",
+          "description": "Urban heat island effect intensifying heat stress. Dense urbanization and limited green space amplify temperature extremes, creating dangerous heat conditions.",
+          "vulnerable_groups": [
+            "Outdoor workers",
+            "Low-income households",
+            "Elderly",
+            "Vulnerable health groups",
+            "Children and youth"
+          ],
+          "proportion_exposed_range": "31-40%",
+          "adaptation_factors": ["Urban density", "Poverty", "Housing quality"],
+          "impact": "Increased heat-related illness and reduced productivity, particularly for outdoor workers and vulnerable populations.",
+          "most_exposed_sectors": ["HUMAN_HEALTH_SOCIAL_WORK", "CONSTRUCTION"]
+        }
+      ]
+    },
+    "government_actions": {
+      "goals": [
+        {
+          "description": "Develop climate-resilient infrastructure and reduce flood vulnerability",
+          "hazards_addressed": ["COASTAL_FLOODING", "URBAN_FLOODING"],
+          "target_year": 2030
+        },
+        {
+          "description": "Implement sustainable groundwater management to reduce subsidence",
+          "hazards_addressed": ["COASTAL_FLOODING"],
+          "target_year": 2025
+        }
+      ],
+      "actions": [
+        {
+          "title": "Giant Sea Wall (NCICD) Construction",
+          "status": "IMPLEMENTATION",
+          "co_benefits": [
+            "Economic protection",
+            "Land reclamation opportunities",
+            "Job creation"
+          ],
+          "hazards_addressed": ["COASTAL_FLOODING"]
+        },
+        {
+          "title": "Flood Early Warning and Evacuation System",
+          "status": "IMPLEMENTATION",
+          "co_benefits": [
+            "Reduced casualties",
+            "Community preparedness",
+            "Emergency response capacity"
+          ],
+          "hazards_addressed": ["URBAN_FLOODING", "COASTAL_FLOODING"]
+        }
+      ],
+      "projects": [
+        {
+          "title": "Green Infrastructure and Urban Forest Expansion",
+          "hazards_addressed": ["FIRE_WEATHER", "URBAN_FLOODING"],
+          "funded_percent": 45,
+          "total_amount": 78000000
+        },
+        {
+          "title": "Upgraded Drainage and Water Management System",
+          "hazards_addressed": ["URBAN_FLOODING"],
+          "funded_percent": 70,
+          "total_amount": 250000000
+        }
+      ]
+    },
+    "solutions": {
+      "peer_locations": [
+        {
+          "name": "Bangkok",
+          "country_name": "Thailand"
+        },
+        {
+          "name": "Venice",
+          "country_name": "Italy"
+        },
+        {
+          "name": "New Orleans",
+          "country_name": "USA"
+        },
+        {
+          "name": "Lagos",
+          "country_name": "Nigeria"
+        }
+      ],
+      "solutions": [
+        {
+          "title": "Nature-based flood control (bioswales, retention ponds)",
+          "hazards_addressed": ["URBAN_FLOODING"]
+        },
+        {
+          "title": "Urban green corridors and parks for heat mitigation",
+          "hazards_addressed": ["FIRE_WEATHER"]
+        },
+        {
+          "title": "Permeable pavement and green infrastructure",
+          "hazards_addressed": ["URBAN_FLOODING"]
+        },
+        {
+          "title": "Coastal mangrove restoration",
+          "hazards_addressed": ["COASTAL_FLOODING"]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Lagos",
+    "country_name": "Nigeria",
+    "lat": 6.5244,
+    "lng": 3.3792,
+    "is_reporting_leader": false,
+    "hazards": {
+      "statistics": {
+        "population_exposed_value": 12300000,
+        "population_exposed_percentage": 79.9,
+        "gdp_at_risk_value": 108000000000,
+        "gdp_at_risk_percentage": 79.4,
+        "gdp_at_risk_currency_code": "USD",
+        "vulnerable_sectors": [
+          "REAL_ESTATE",
+          "WHOLESALE_RETAIL_TRADE",
+          "TRANSPORTATION_STORAGE",
+          "MANUFACTURING",
+          "ACCOMMODATION_FOOD"
+        ]
+      },
+      "hazards": [
+        {
+          "hazard_type": "URBAN_FLOODING",
+          "source": "City climate assessment",
+          "description": "Severe urban flooding during rainy season. Rapid urbanization has outpaced infrastructure development, leaving the city vulnerable to devastating floods that displace thousands annually.",
+          "vulnerable_groups": [
+            "Informal settlements",
+            "Low-income households",
+            "Coastal communities",
+            "Marginalized/minority communities",
+            "Children and youth"
+          ],
+          "proportion_exposed_range": "51-60%",
+          "adaptation_factors": ["Infrastructure deficit", "Informal housing", "Poverty"],
+          "impact": "Annual flooding causes massive displacement, economic losses, and infrastructure damage across the city.",
+          "most_exposed_sectors": ["REAL_ESTATE", "WHOLESALE_RETAIL_TRADE", "TRANSPORTATION_STORAGE"]
+        },
+        {
+          "hazard_type": "COASTAL_FLOODING",
+          "source": "World Bank assessment",
+          "description": "Coastal flooding and erosion threatening key economic zones. Rising sea levels and storm surge combine with coastal erosion to threaten critical port infrastructure and waterfront communities.",
+          "vulnerable_groups": [
+            "Coastal communities",
+            "Fishing communities",
+            "Low-income households",
+            "Informal settlements"
+          ],
+          "proportion_exposed_range": "21-30%",
+          "adaptation_factors": ["Coastal exposure", "Sea level rise", "Poverty"],
+          "impact": "Erosion threatens port operations, waterfront properties, and coastal livelihoods.",
+          "most_exposed_sectors": ["TRANSPORTATION_STORAGE", "REAL_ESTATE", "AGRICULTURE", "FORESTRY", "FISHING"]
+        },
+        {
+          "hazard_type": "FIRE_WEATHER",
+          "source": "Climate monitoring data",
+          "description": "Heat stress affecting outdoor workers and informal settlements. High temperatures combined with humidity create dangerous heat conditions, particularly for the large informal workforce.",
+          "vulnerable_groups": [
+            "Outdoor workers",
+            "Informal settlements",
+            "Low-income households",
+            "Elderly",
+            "Vulnerable health groups"
+          ],
+          "proportion_exposed_range": "41-50%",
+          "adaptation_factors": ["Housing quality", "Poverty", "Informal employment"],
+          "impact": "Heat-related illness and reduced productivity affect millions, particularly in informal settlements and among outdoor workers.",
+          "most_exposed_sectors": ["HUMAN_HEALTH_SOCIAL_WORK", "CONSTRUCTION", "ACCOMMODATION_FOOD"]
+        }
+      ]
+    },
+    "government_actions": {
+      "goals": [
+        {
+          "description": "Build climate-resilient infrastructure to protect against flooding and coastal erosion",
+          "hazards_addressed": ["URBAN_FLOODING", "COASTAL_FLOODING"],
+          "target_year": 2032
+        },
+        {
+          "description": "Improve informal settlement resilience and reduce vulnerability",
+          "hazards_addressed": ["URBAN_FLOODING", "FIRE_WEATHER"],
+          "target_year": 2028
+        }
+      ],
+      "actions": [
+        {
+          "title": "Lagos Drainage Master Plan Implementation",
+          "status": "IMPLEMENTATION",
+          "co_benefits": [
+            "Public health improvement",
+            "Economic protection",
+            "Job creation"
+          ],
+          "hazards_addressed": ["URBAN_FLOODING"]
+        },
+        {
+          "title": "Community-Based Flood Early Warning System",
+          "status": "PRE_FEASIBILITY",
+          "co_benefits": [
+            "Community empowerment",
+            "Reduced casualties",
+            "Social cohesion"
+          ],
+          "hazards_addressed": ["URBAN_FLOODING", "COASTAL_FLOODING"]
+        }
+      ],
+      "projects": [
+        {
+          "title": "Coastal Protection and Mangrove Restoration Program",
+          "hazards_addressed": ["COASTAL_FLOODING"],
+          "funded_percent": 35,
+          "total_amount": 95000000
+        },
+        {
+          "title": "Informal Settlement Upgrading and Climate Adaptation",
+          "hazards_addressed": ["URBAN_FLOODING", "FIRE_WEATHER"],
+          "funded_percent": 20,
+          "total_amount": 180000000
+        }
+      ]
+    },
+    "solutions": {
+      "peer_locations": [
+        {
+          "name": "Mumbai",
+          "country_name": "India"
+        },
+        {
+          "name": "Dhaka",
+          "country_name": "Bangladesh"
+        },
+        {
+          "name": "Manila",
+          "country_name": "Philippines"
+        },
+        {
+          "name": "Jakarta",
+          "country_name": "Indonesia"
+        }
+      ],
+      "solutions": [
+        {
+          "title": "Community-led drainage improvement projects",
+          "hazards_addressed": ["URBAN_FLOODING"]
+        },
+        {
+          "title": "Mangrove and wetland restoration for coastal protection",
+          "hazards_addressed": ["COASTAL_FLOODING"]
+        },
+        {
+          "title": "Heat-resilient informal settlement upgrading",
+          "hazards_addressed": ["FIRE_WEATHER"]
+        },
+        {
+          "title": "Nature-based flood control infrastructure",
+          "hazards_addressed": ["URBAN_FLOODING", "COASTAL_FLOODING"]
+        }
+      ]
+    }
+  }
+]
