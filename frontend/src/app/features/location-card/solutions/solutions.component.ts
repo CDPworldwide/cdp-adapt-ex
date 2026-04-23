@@ -40,9 +40,12 @@ export class SolutionsComponent {
   get hazardFilters() {
     return [
       { type: null },
-      ...(this.data?.hazards?.hazards || []).slice(0, 4).map((h) => ({
-        type: h.hazard.hazardType,
-      })),
+      ...(this.data?.hazards?.hazards || [])
+        .slice(0, 4)
+        .filter((h) => h.hazard.hazardType !== HazardEnum.OTHERS)
+        .map((h) => ({
+          type: h.hazard.hazardType,
+        })),
     ];
   }
 

@@ -77,9 +77,15 @@ describe('GovernmentActionsComponent', () => {
         },
         govActions: {
           adaptationGoals: 'Adaptation goals ({{count}} disclosed)',
+          adaptationGoalsTitle: 'Adaptation goals',
           adaptationActions: 'Adaptation actions ({{count}} disclosed)',
+          adaptationActionsTitle: 'Adaptation actions',
           projectsSeekingFundingWithCount: 'Projects seeking funding ({{count}} disclosed)',
+          projectsSeekingFundingTitle: 'Projects seeking funding',
           projectSeekingFunding: 'Project seeking funding',
+          disclosedCount: '({{count}} disclosed)',
+          filterByHazard: 'Filter by hazard',
+          all: 'All',
           noActionsBanner: {
             title: 'Not all information was disclosed',
           },

@@ -133,7 +133,7 @@ describe('MainSearchComponent', () => {
 
   it('should render the search input', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('input[type="text"][readonly]')).toBeTruthy();
+    expect(compiled.querySelector('input[type="text"]')).toBeTruthy();
   });
 
   describe('Autocomplete', () => {

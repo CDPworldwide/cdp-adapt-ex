@@ -63,6 +63,7 @@
         </h2>
       </div>
 
+      @if (filteredGoals.length > 0) {
       <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
         @for (goal of filteredGoals; track $index) {
           <button
@@ -126,6 +127,12 @@
           </button>
         }
       </div>
+      } @else {
+      <p
+        class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
+        [innerHTML]="'locationCard.govActions.noGoals.description' | translate: { location: locationName || '', year: disclosureYear || '' }"
+      ></p>
+      }
     </section>
 
     <!-- Adaptation Actions Section -->
@@ -147,6 +154,7 @@
         </h2>
       </div>
 
+      @if (filteredActions.length > 0) {
       <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
         @for (action of filteredActions; track $index) {
           <button
@@ -227,6 +235,12 @@
           </button>
         }
       </div>
+      } @else {
+      <p
+        class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
+        [innerHTML]="'locationCard.govActions.noActions.description' | translate: { location: locationName || '', year: disclosureYear || '' }"
+      ></p>
+      }
     </section>
 
     <!-- Projects Seeking Funding Section -->
@@ -248,6 +262,7 @@
         </h2>
       </div>
 
+      @if (filteredProjects.length > 0) {
       <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
         @for (project of filteredProjects; track $index) {
           <button
@@ -311,6 +326,12 @@
           </button>
         }
       </div>
+      } @else {
+      <p
+        class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
+        [innerHTML]="'locationCard.govActions.noProjects.description' | translate: { location: locationName || '', year: disclosureYear || '' }"
+      ></p>
+      }
     </section>
   </div>
 } @else {
