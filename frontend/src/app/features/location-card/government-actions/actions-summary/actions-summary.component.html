@@ -1,22 +1,24 @@
 <section>
   <h2
-    class="py-4 text-base font-semibold font-roboto uppercase leading-6 tracking-wide text-cdp-dark"
+    class="text-[16px] font-medium font-roboto leading-[24px] tracking-[0.5px] text-cdp-dark uppercase pt-6 pb-2 px-4 lg:px-0"
   >
-    {{ 'locationCard.govActions.actionsSummary' | translate }}
+    {{ 'locationCard.govActions.filterByHazard' | translate }}
   </h2>
 
-  <div class="flex gap-px overflow-x-auto" style="-ms-overflow-style: none; scrollbar-width: none">
+  <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap lg:gap-[10px] mt-4 px-4 lg:px-0">
     <!-- All button -->
     <button
       type="button"
       (click)="selectFilter(null)"
-      class="flex flex-col items-center justify-center w-20 h-20 shrink-0 p-2 transition-colors"
-      [ngClass]="{
-        'bg-cdp-dark text-white': isSelected(null),
-        'bg-cdp-neutral-02 text-cdp-dark': !isSelected(null)
-      }"
+      class="aspect-square w-full lg:w-[84px] lg:h-[84px] lg:aspect-auto p-2 flex items-center justify-center cursor-pointer transition-colors"
+      [class.bg-cdp-dark]="isSelected(null)"
+      [class.bg-cdp-neutral-02]="!isSelected(null)"
     >
-      <span class="text-sm font-medium text-center leading-4 tracking-tight">
+      <span
+        class="text-[14px] font-[450] font-roboto leading-[16px] tracking-[0.1px] text-center"
+        [class.text-[#E7E9E8]]="isSelected(null)"
+        [class.text-[#1E1E1E]]="!isSelected(null)"
+      >
         {{ 'locationCard.govActions.all' | translate }}
       </span>
     </button>
@@ -25,20 +27,29 @@
       <button
         type="button"
         (click)="selectFilter(hazardKey(row))"
-        class="flex flex-col items-center justify-center w-20 h-20 shrink-0 p-2 transition-colors"
-        [ngClass]="{
-          'bg-cdp-dark text-white': isSelected(hazardKey(row)),
-          'bg-cdp-neutral-02 text-cdp-dark': !isSelected(hazardKey(row))
-        }"
+        class="aspect-square w-full lg:w-[84px] lg:h-[84px] lg:aspect-auto p-2 flex flex-col items-center justify-center gap-1 cursor-pointer transition-colors overflow-hidden"
+        [class.bg-cdp-dark]="isSelected(hazardKey(row))"
+        [class.bg-cdp-neutral-02]="!isSelected(hazardKey(row))"
+        [matTooltip]="
+          row.hazard.hazardType === 'OTHERS'
+            ? row.hazard.otherHazardDetails || 'Other'
+            : (hazardTranslationKey(row) | translate)
+        "
+        matTooltipPosition="above"
       >
         <app-hazard-icon
           [hazard]="row.hazard.hazardType"
           [otherHazardDetails]="row.hazard.otherHazardDetails"
           size="24"
-          [color]="isSelected(hazardKey(row)) ? 'white' : 'black'"
-          class="mb-1"
+          [color]="isSelected(hazardKey(row)) ? '#E7E9E8' : 'black'"
+          [showTooltip]="false"
+          class="shrink-0"
         ></app-hazard-icon>
-        <span class="text-sm font-medium text-center leading-4 tracking-tight">
+        <span
+          class="text-[14px] font-[450] font-roboto leading-[16px] tracking-[0.1px] text-center line-clamp-2 w-full break-words"
+          [class.text-[#E7E9E8]]="isSelected(hazardKey(row))"
+          [class.text-[#1E1E1E]]="!isSelected(hazardKey(row))"
+        >
           @if (row.hazard.hazardType === 'OTHERS') {
             {{ hazardName(row) }}
           } @else {

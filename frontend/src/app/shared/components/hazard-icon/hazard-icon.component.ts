@@ -68,6 +68,7 @@ export class HazardIconComponent {
 
   // Inherits color by default
   @Input() color: string = 'currentColor';
+  @Input() showTooltip: boolean = true;
 
   iconComponent() {
     return HAZARD_ICON_MAP[this.hazard] || OtherHazardIconComponent; // Default fallback

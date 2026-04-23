@@ -8,8 +8,6 @@ import { GoogleMapsLoaderService } from '../../shared/services/google-maps-loade
 import { Maps } from './maps';
 import { LocationPinsService } from './location-pins.service';
 import { MapSelectionService } from '../main-search/map-selection.service';
-import { SearchService } from '../main-search/search.service';
-import { LocationService } from '../../shared/services/location.service';
 import { LocationPin, OrgTypeEnum } from '@pac-api/client';
 import { NgZone } from '@angular/core';
 
@@ -29,8 +27,6 @@ describe('Maps', () => {
   let googleMapsLoaderService: jasmine.SpyObj<GoogleMapsLoaderService>;
   let locationPinsService: jasmine.SpyObj<LocationPinsService>;
   let mapSelectionService: jasmine.SpyObj<MapSelectionService>;
-  let searchService: jasmine.SpyObj<SearchService>;
-  let locationService: jasmine.SpyObj<LocationService>;
   let mockMapInstance: any;
 
   const mockPins: LocationPin[] = [
@@ -51,16 +47,10 @@ describe('Maps', () => {
     mapSelectionService = jasmine.createSpyObj('MapSelectionService', [
       'selectLocation',
       'clearSelection',
-      'setMapClicked',
+      'getSelectedLocation',
     ]);
     (mapSelectionService as any).selectedMapLocation$ = selectedMapLocation$.asObservable();
-    (mapSelectionService as any).isMapClicked$ = of(false);
-
-    searchService = jasmine.createSpyObj('SearchService', ['searchLocation']);
-    searchService.searchLocation.and.returnValue(of({} as any));
-
-    locationService = jasmine.createSpyObj('LocationService', ['getAllLocationNames']);
-    locationService.getAllLocationNames.and.returnValue(of([]));
+    mapSelectionService.getSelectedLocation.and.returnValue(null);
 
     mockMapInstance = {
       addListener: jasmine.createSpy('addListener'),
@@ -96,8 +86,6 @@ describe('Maps', () => {
         { provide: GoogleMapsLoaderService, useValue: googleMapsLoaderService },
         { provide: LocationPinsService, useValue: locationPinsService },
         { provide: MapSelectionService, useValue: mapSelectionService },
-        { provide: SearchService, useValue: searchService },
-        { provide: LocationService, useValue: locationService },
       ],
     }).compileComponents();
 

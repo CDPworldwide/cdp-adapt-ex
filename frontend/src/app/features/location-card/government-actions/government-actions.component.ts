@@ -184,13 +184,13 @@ export class GovernmentActionsComponent implements OnChanges {
       case s === ActionStatusEnum.SCOPING:
       case s === ActionStatusEnum.PRE_FEASIBILITY_STUDY:
       case s.startsWith('FEASIBILITY'):
-        return 'bg-gray-400 text-white';
+        return 'bg-[#FF4500] text-white';
 
       case s.startsWith('IMPLEMENTATION'):
-        return 'bg-green-500 text-white';
+        return 'bg-blue-400 text-white';
 
       case s.startsWith('ACTION_IN_OPERATION'):
-        return 'bg-blue-400 text-white';
+        return 'bg-green-500 text-white';
 
       default:
         return 'bg-gray-400 text-white';

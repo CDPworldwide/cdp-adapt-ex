@@ -1,16 +1,17 @@
 {
   "homepage": {
     "hero": {
-      "title": "Explore plans around adaptation and resilience",
+      "title": "Explore climate adaptation in",
       "searchPlaceholder": "Search for a location",
+      "searchOrSelect": "Search or select location",
       "notFound": "Sorry, we couldn't find '{{location}}'",
       "notFoundExplanation": "We may not have that location in our database, or it may not yet be connected to our disclosure data. Please try searching again.",
       "trySearchingAgain": "Please try searching again",
       "goBack": "Go back",
       "noDataTitle": "No disclosure data available for '{{location}}'",
       "noDataBody": "We don't yet have data to display for this location. We're continually expanding our coverage with historical disclosures and additional trusted data sources.",
-      "searchSuggestions": "Search suggestions",
-      "disclosesToCdp": "Location reporting to CDP"
+      "searchSuggestions": "Suggestions",
+      "disclosesToCdp": "Disclosure Available"
     },
     "legend": {
       "cities": "Cities",
@@ -19,18 +20,14 @@
     "description": {
       "text": "Browse local climate hazards, actions, and adaptation projects seeking funding from cities, states, and regions worldwide",
       "learnMore": "Learn more"
-    },
-    "nav": {
-      "title": "Adaptation & action explorer",
-      "explore": "Explore",
-      "compare": "Compare",
-      "fund": "Fund"
     }
   },
   "maps": {
     "loading": "Loading hazard data...",
     "totalReportedHazards": "Total reported hazards",
     "topHazards": "Top {{count}} Hazards",
+    "primaryClimateHazards": "Primary Climate Hazards",
+    "topFourHazards": "Top 4 Hazards",
     "implementedActions": "Implemented adaptation actions",
     "projectsSeekingFunding": "Projects seeking funding",
     "learnMore": "Learn more",
@@ -44,16 +41,15 @@
   },
   "shared": {
     "showMore": "Show more",
-    "showLess": "Show less",
-    "showMoreHazards": "Show more hazards",
     "selectLanguage": "Select language",
     "expandMap": "Expand map",
-    "collapseMap": "Collapse map"
+    "collapseMap": "Collapse map",
+    "showLess": "Show less"
   },
   "locationCard": {
     "backToMap": "Back to map",
     "header": {
-      "estimatedPopulation": "Estimated population:",
+      "estimatedPopulation": "Estimated Population:",
       "populationTooltip": "Population estimates from {{location}}'s CDP disclosure",
       "reportingLeader": "CDP Reporting Leader"
     },
@@ -161,6 +157,7 @@
     "hazardDetail": {
       "title": "Extreme Heat",
       "source": "Source CDP disclosure",
+      "noData": "No hazard data available for this location.",
       "mapPlaceholder": "Map placeholder",
       "vulnerablePopTitle": "Vulnerable population groups most exposed",
       "exploreActions": "Explore {{count}} adaptation actions",
@@ -174,11 +171,16 @@
       "impactLabel": "Impact description",
       "challengeLabel": "Challenge / Support justification",
       "topNHazards": "Top {{count}} hazards",
-      "hazardsDisclosedCount": "({{count}} disclosed)",
+      "hazardsDisclosedCount": "({{count}} Hazards disclosed)",
       "topFourHazardsDisclosed": "Top 4 hazards ({{count}} disclosed)",
       "topHazardsDisclosed": "Top hazards disclosed ({{count}} disclosed)",
       "topTwoComputed": "Top 2 computed hazards",
       "topFourComputed": "Top 4 computed hazards",
+      "crvaTitle": "A CRVA (Climate Risk and Vulnerability Assessment) has been undertaken",
+      "crvaRecentYear": "Most recent year of assessment:",
+      "crvaSource": "Source:",
+      "crvaSourceGee": "Source: CDP/GEE data analysis",
+      "crvaVisitPortal": "Visit the CDP Open Data Portal",
       "requestersTitle": "Data disclosure requested by",
       "requestersTooltip": "These are organizations that have requested disclosure from this jurisdiction. This list is not exhaustive and does not indicate government compliance or the specific purpose for which information was disclosed.",
       "unknown": "Unknown",
@@ -193,9 +195,9 @@
       "title": "Hazard overview",
       "source": "Source: ",
       "sourceTemplate": "Source: {{location}} {{year}} CDP disclosure",
-      "topHazards": "Top hazards disclosed",
+      "topHazardsDisclosed": "Top hazards disclosed",
       "topHazardsTooltip": "Hazards are ranked by how likely they are to occur and how severe their impact could be. This shows the top four — there may be other disclosed hazards not included in this list.",
-      "mostExposedSectors": "Most exposed economic sectors",
+      "mostExposedSectors": "most exposed economic sectors",
       "mostExposedSectorsTooltip": "Sectors are derived from disclosures and sorted by number of mentions or alphabetically. This reflects only what has been disclosed and does not indicate relative importance or completeness."
     },
     "geeCard": {
@@ -225,14 +227,19 @@
       }
     },
     "govActions": {
-      "actionsSummary": "Actions summary",
+      "filterByHazard": "Filter by hazard",
       "all": "All",
       "adaptationGoals": "Adaptation goals ({{count}} disclosed)",
+      "adaptationGoalsTitle": "Adaptation goals",
       "adaptationGoal": "Adaptation goal",
       "adaptationActions": "Adaptation actions ({{count}} disclosed)",
+      "adaptationActionsTitle": "Adaptation actions",
       "adaptationAction": "Adaptation action",
+      "projectsSeekingFunding": "Projects seeking funding ({{count}} disclosed)",
+      "projectsSeekingFundingTitle": "Projects seeking funding",
       "projectsSeekingFundingWithCount": "Projects seeking funding ({{count}} disclosed)",
       "projectSeekingFunding": "Project seeking funding",
+      "disclosedCount": "({{count}} disclosed)",
       "goals": "Goals",
       "actions": "Actions",
       "hazardsAddressed": "Hazards addressed",
@@ -262,6 +269,7 @@
         "description": "<strong>{{location}}</strong> didn’t disclose any hazard related <strong>projects seeking funding</strong> in {{year}} in the CDP disclosure. Due to the lack of information we can’t provide any details or insights into funding gaps for {{location}}’s projects or progress in their process to obtain funding or manage these projects."
       },
       "detail": {
+        "dialogLabel": "Detail dialog",
         "climateHazards": "Climate hazards",
         "description": "Description",
         "metricIndicator": "Metric / Indicator and Evidence",
@@ -330,15 +338,16 @@
       "popularSolutionsTitle": "Popular solutions",
       "totalCostOfAction": "Total cost of action (USD)",
       "timeframe": "Timeframe",
-      "hazardFiltersTitle": "Top {{count}} hazard filters",
+      "hazardFiltersTitle": "Hazard filters",
       "description": "Description",
-      "sourceDescription": "Source: CDP aggregation and analysis of {{year}} disclosures from peer cities",
+      "sourceLabel": "Source:",
+      "sourceText": "CDP aggregation and analysis of {{year}} disclosures from peer cities",
       "climateHazards": "Climate hazards",
       "statusOfAction": "Status of action",
       "coBenefits": "Co-benefits",
-      "hazardsAddressed": "Hazards addressed",
-      "jurisdictionsTakingAction": "Jurisdictions taking this action",
-      "exampleActions": "Example actions",
+      "hazardsAddressed": "Hazards Addressed",
+      "jurisdictionsTakingAction": "Jurisdictions Taking this Action",
+      "exampleActions": "example actions",
       "resilienceAttributes": "Resilience attributes enhanced",
       "impactedSectors": "Impacted sectors",
       "noSolutionsBanner": {
