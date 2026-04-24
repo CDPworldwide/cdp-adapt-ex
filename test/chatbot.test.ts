@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import {
   healthCheckApiV1HealthGet,
-  chatCompletionsApiV1ChatCompletionsPost,
+  chatCompletionsApiV1ChatsCompletionsPost,
   type OpenAiChatCompletionRequest,
 } from '@pac-api/client';
 import { createTestUser, type TestUser } from './helpers/auth';
@@ -29,7 +29,7 @@ describe('Chatbot API', () => {
       const requestBody = { ...chatRequests.basicChatRequest };
       delete (requestBody as any).stream;
 
-      const response = await chatCompletionsApiV1ChatCompletionsPost({
+      const response = await chatCompletionsApiV1ChatsCompletionsPost({
         ...getApiOptions(),
         body: requestBody as OpenAiChatCompletionRequest,
       });
@@ -55,7 +55,7 @@ describe('Chatbot API', () => {
       const requestBody = { ...chatRequests.conversationHistoryRequest };
       delete (requestBody as any).stream;
 
-      const response = await chatCompletionsApiV1ChatCompletionsPost({
+      const response = await chatCompletionsApiV1ChatsCompletionsPost({
         ...getApiOptions(),
         body: requestBody as OpenAiChatCompletionRequest,
       });
@@ -79,7 +79,7 @@ describe('Chatbot API', () => {
 
       clearAuthToken();
 
-      const response = await chatCompletionsApiV1ChatCompletionsPost({
+      const response = await chatCompletionsApiV1ChatsCompletionsPost({
         ...getApiOptions(false),
         body: requestBody as OpenAiChatCompletionRequest,
       });
@@ -126,7 +126,7 @@ describe('Chatbot API', () => {
         ],
       };
 
-      const response = await chatCompletionsApiV1ChatCompletionsPost({
+      const response = await chatCompletionsApiV1ChatsCompletionsPost({
         ...getApiOptions(),
         body: longContentRequest,
         throwOnError: false,
@@ -140,7 +140,7 @@ describe('Chatbot API', () => {
       const requestBody = { ...chatRequests.emptyMessagesRequest };
       delete (requestBody as any).stream;
 
-      const response = await chatCompletionsApiV1ChatCompletionsPost({
+      const response = await chatCompletionsApiV1ChatsCompletionsPost({
         ...getApiOptions(),
         body: requestBody as OpenAiChatCompletionRequest,
         throwOnError: false,
@@ -160,7 +160,7 @@ describe('Chatbot API', () => {
         ],
       };
 
-      const response = await chatCompletionsApiV1ChatCompletionsPost({
+      const response = await chatCompletionsApiV1ChatsCompletionsPost({
         ...getApiOptions(),
         body: validRequest,
         throwOnError: false,

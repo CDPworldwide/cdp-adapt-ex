@@ -1,6 +1,7 @@
 import time
 
-from app.api.v1.deps import get_llm_client
+from app.api.v1.chat_request_utils import build_verified_chat_request
+from app.api.v1.deps import get_llm_client, get_location_details_service
 from app.schemas.chatbot import (
     OpenAIChatCompletionChoice,
     OpenAIChatCompletionRequest,
@@ -8,6 +9,7 @@ from app.schemas.chatbot import (
     OpenAIChatMessage,
     OpenAIUsage,
 )
+from app.services.impls.location_details_service import LocationDetailsService
 from app.services.interfaces.llm_client import LLMClient
 from app.shared.config import settings
 from app.shared.limiter import limiter
@@ -17,24 +19,13 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 router = APIRouter()
 
 
-def strip_geometry_from_chat_request(
-    chat_request: OpenAIChatCompletionRequest,
-) -> OpenAIChatCompletionRequest:
-    if chat_request.location_data is None:
-        return chat_request
-
-    sanitized_location_data = chat_request.location_data.model_copy(
-        update={"geometry": {}}
-    )
-    return chat_request.model_copy(update={"location_data": sanitized_location_data})
-
-
 @router.post("/completions", response_model=OpenAIChatCompletionResponse)
 @limiter.limit(settings.RATE_LIMIT_ENDPOINTS["chat"][0])
 async def chat_completions(
     request: Request,
     chat_request: OpenAIChatCompletionRequest,
     llm_client: LLMClient = Depends(get_llm_client),
+    location_service: LocationDetailsService = Depends(get_location_details_service),
 ) -> OpenAIChatCompletionResponse:
     """Non-streaming chat completions endpoint.
 
@@ -45,7 +36,7 @@ async def chat_completions(
     Returns:
         OpenAIChatCompletionResponse: Complete chat response
     """
-    llm_chat_request = strip_geometry_from_chat_request(chat_request)
+    llm_chat_request = await build_verified_chat_request(chat_request, location_service)
     try:
         logger.info(
             "chat_request_received",

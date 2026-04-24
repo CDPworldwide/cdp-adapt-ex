@@ -139,9 +139,11 @@ class Settings:
             "t",
             "yes",
         )
+        self.API_KEY_HEADER_NAME = os.getenv("API_KEY_HEADER_NAME", "X-API-Key")
+        self.API_KEY = os.getenv("API_KEY", "")
 
         # CORS Settings
-        self.ALLOWED_ORIGINS = parse_list_from_env("ALLOWED_ORIGINS", ["*"])
+        self.ALLOWED_ORIGINS = parse_list_from_env("ALLOWED_ORIGINS", [])
 
         # Langfuse Configuration
         self.LANGFUSE_PUBLIC_KEY = os.getenv("LANGFUSE_PUBLIC_KEY", "")
@@ -155,6 +157,11 @@ class Settings:
             os.getenv("DEFAULT_LLM_TEMPERATURE", "0.2")
         )
         self.MAX_TOKENS = int(os.getenv("MAX_TOKENS", "2000"))
+        self.MAX_CHAT_MAX_TOKENS = int(
+            os.getenv("MAX_CHAT_MAX_TOKENS", str(self.MAX_TOKENS))
+        )
+        self.MAX_CHAT_MESSAGES = int(os.getenv("MAX_CHAT_MESSAGES", "50"))
+        self.MAX_CHAT_TOTAL_CHARS = int(os.getenv("MAX_CHAT_TOTAL_CHARS", "50000"))
         self.SUGGEST_FOLLOW_UPS_MAX_TOKENS = int(
             os.getenv("SUGGEST_FOLLOW_UPS_MAX_TOKENS", "256")
         )
@@ -170,7 +177,7 @@ class Settings:
         self.POSTGRES_PORT = int(os.getenv("POSTGRES_PORT", "5432"))
         self.POSTGRES_DB = os.getenv("POSTGRES_DB", "cdp")
         self.POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")
-        self.POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres")
+        self.POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "")
         self.POSTGRES_POOL_SIZE = int(os.getenv("POSTGRES_POOL_SIZE", "20"))
         self.POSTGRES_MAX_OVERFLOW = int(os.getenv("POSTGRES_MAX_OVERFLOW", "10"))
         self.CHECKPOINT_TABLES = [
@@ -188,6 +195,7 @@ class Settings:
         default_endpoints = {
             "chat": ["10 per minute"],
             "suggest_follow_ups": ["10 per minute"],
+            "translate": ["60 per minute"],
         }
 
         # Update rate limit endpoints from environment variables

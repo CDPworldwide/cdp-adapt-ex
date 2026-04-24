@@ -1,12 +1,15 @@
 import pydantic
+from app.api.v1.chat_request_utils import build_verified_chat_request
 from app.api.v1.deps import (
     get_llm_client,
+    get_location_details_service,
 )
 from app.core.suggest_follow_ups import SuggestFollowUps
 from app.schemas.chatbot import OpenAIChatCompletionRequest
 from app.schemas.suggest_follow_ups import (
     SuggestFollowUpsResponse,
 )
+from app.services.impls.location_details_service import LocationDetailsService
 from app.services.interfaces.llm_client import LLMClient
 from app.shared.config import settings
 from app.shared.limiter import limiter
@@ -22,6 +25,7 @@ async def suggest_follow_ups(
     request: Request,
     chat_request: OpenAIChatCompletionRequest,
     llm_client: LLMClient = Depends(get_llm_client),
+    location_service: LocationDetailsService = Depends(get_location_details_service),
 ) -> SuggestFollowUpsResponse:
     """Provide an LLM suggested list of follow-ups to a user question
 
@@ -37,15 +41,19 @@ async def suggest_follow_ups(
         HTTPException: If there's an error processing the request.
     """
     try:
+        verified_chat_request = await build_verified_chat_request(
+            chat_request, location_service
+        )
         logger.info(
             "suggest_follow_ups_request_received",
-            message_count=len(chat_request.messages),
+            message_count=len(verified_chat_request.messages),
         )
 
-        follow_up_request = chat_request.model_copy(
+        follow_up_request = verified_chat_request.model_copy(
             update={
                 "max_tokens": min(
-                    chat_request.max_tokens or settings.SUGGEST_FOLLOW_UPS_MAX_TOKENS,
+                    verified_chat_request.max_tokens
+                    or settings.SUGGEST_FOLLOW_UPS_MAX_TOKENS,
                     settings.SUGGEST_FOLLOW_UPS_MAX_TOKENS,
                 )
             }

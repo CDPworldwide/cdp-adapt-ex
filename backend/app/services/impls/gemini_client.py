@@ -31,7 +31,10 @@ class GeminiLLMClient:
 
         config = types.GenerateContentConfig(
             temperature=self.resolve_temperature(chat_request, system_prompt_name),
-            max_output_tokens=chat_request.max_tokens or settings.MAX_TOKENS,
+            max_output_tokens=min(
+                chat_request.max_tokens or settings.MAX_TOKENS,
+                settings.MAX_CHAT_MAX_TOKENS,
+            ),
             system_instruction=system_prompt,
         )
 

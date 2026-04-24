@@ -22,6 +22,10 @@ RUN apt-get update && apt-get install -y libpq-dev graphviz libgraphviz-dev gcc
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN groupadd --system app && useradd --system --gid app --create-home app && chown -R app:app /app
+
 EXPOSE 8080
+
+USER app
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

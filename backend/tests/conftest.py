@@ -5,19 +5,23 @@ import pytest
 from app.api.v1.deps import (
     get_database_service,
     get_llm_client,
+    get_location_details_service,
     get_location_details_repository,
 )
 from app.main import app
+from app.schemas.location import ActionsTab, HazardsTab, LocationProfile, SolutionsTab
 from app.services.clients.database.base import DatabaseService
 from app.services.clients.database.location_details_repository import (
     LocationDetailsRepository,
 )
 from app.services.impls.gemini_client import GeminiLLMClient
+from app.shared.config import settings
 from httpx import ASGITransport, AsyncClient
 from sqlmodel import SQLModel, create_engine
 
 # Use a test database URL
 TEST_DATABASE_URL = "sqlite:///./test.db"
+TEST_API_KEY = "test-api-key"
 
 
 @pytest.fixture(scope="session")
@@ -51,6 +55,9 @@ def mock_llm_client():
 
 @pytest.fixture
 async def client(db_service, mock_llm_client):
+    original_api_key = settings.API_KEY
+    settings.API_KEY = TEST_API_KEY
+
     def override_get_database_service():
         return db_service
 
@@ -60,19 +67,47 @@ async def client(db_service, mock_llm_client):
     def override_get_location_details_repository():
         return LocationDetailsRepository(db_service.engine)
 
+    mock_location_service = MagicMock()
+
+    async def get_location_details_by_org_id(organization_id: int):
+        return LocationProfile(
+            organization_id=organization_id,
+            name="Verified test location",
+            country_name="Test Country",
+            lat=0,
+            lng=0,
+            geometry={"type": "Point", "coordinates": [0, 0]},
+            hazards=HazardsTab(statistics={}),
+            government_actions=ActionsTab(),
+            solutions=SolutionsTab(),
+        )
+
+    mock_location_service.get_location_details_by_org_id.side_effect = (
+        get_location_details_by_org_id
+    )
+
+    def override_get_location_details_service():
+        return mock_location_service
+
     # Note: this maps to the depends function used in the routes, so we can mock
     # the LLMClient as well
     app.dependency_overrides[get_database_service] = override_get_database_service
     app.dependency_overrides[get_llm_client] = override_get_llm_client
+    app.dependency_overrides[get_location_details_service] = (
+        override_get_location_details_service
+    )
     app.dependency_overrides[get_location_details_repository] = (
         override_get_location_details_repository
     )
 
     async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
+        transport=ASGITransport(app=app),
+        base_url="http://test",
+        headers={settings.API_KEY_HEADER_NAME: TEST_API_KEY},
     ) as ac:
         yield ac
     app.dependency_overrides.clear()
+    settings.API_KEY = original_api_key
 
 
 # Patch the create_engine function from sqlmodel to prevent actual db connections
