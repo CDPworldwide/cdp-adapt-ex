@@ -10,10 +10,10 @@
       @for (filter of hazardFilters; track filter.type) {
         <button
           (click)="selectHazard(filter.type)"
-          class="flex flex-col items-center justify-center aspect-square w-full lg:w-[84px] lg:h-[84px] lg:aspect-auto p-1 gap-1 transition-colors"
+          class="flex flex-col items-center justify-center aspect-square w-full lg:w-[84px] lg:h-[84px] lg:aspect-auto p-1 gap-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
           [ngClass]="{
-            'bg-cdp-dark': isSelected(filter.type),
-            'bg-cdp-neutral-02': !isSelected(filter.type)
+            'bg-cdp-dark hover:bg-black active:bg-cdp-neutral-08': isSelected(filter.type),
+            'bg-cdp-neutral-02 hover:bg-cdp-neutral-01 active:bg-cdp-gray': !isSelected(filter.type)
           }"
           [matTooltip]="filter.type ? ('locationCard.hazardNames.' + filter.type | translate) : ''"
           matTooltipPosition="above"

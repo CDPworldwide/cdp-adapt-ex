@@ -12,10 +12,17 @@
     </div>
   </a>
 
-  <div class="flex items-center gap-1">
+  <div class="flex items-center gap-2">
+    <a
+      routerLink="/methodology"
+      class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
+      [attr.aria-label]="'shared.methodology' | translate"
+    >
+      <mat-icon class="!text-lg !w-[18px] !h-[18px] !leading-[18px] !flex !items-center !justify-center">help_outline</mat-icon>
+    </a>
     <button
       type="button"
-      class="p-2 rounded-full hover:bg-gray-100 transition-colors"
+      class="p-2 rounded-full hover:bg-gray-100 active:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
       [matMenuTriggerFor]="languageMenu"
       [attr.aria-label]="'shared.selectLanguage' | translate"
     >

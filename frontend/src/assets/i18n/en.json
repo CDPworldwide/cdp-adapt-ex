@@ -44,7 +44,8 @@
     "selectLanguage": "Select language",
     "expandMap": "Expand map",
     "collapseMap": "Collapse map",
-    "showLess": "Show less"
+    "showLess": "Show less",
+    "methodology": "Methodology"
   },
   "locationCard": {
     "backToMap": "Back to map",
@@ -251,6 +252,7 @@
       "totalFundingNeeded": "Total funding needed",
       "more": "more",
       "noData": "No government actions data available.",
+      "notDisclosed": "Not disclosed",
       "noActionsBanner": {
         "title": "Not all information was disclosed",
         "description": "This jurisdiction is missing some information on their CDP report.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP open data portal.",

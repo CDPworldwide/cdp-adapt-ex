@@ -8,7 +8,7 @@
   >
     <div class="relative z-10 flex flex-col text-white">
       <!-- Close Button for Mobile -->
-      <button (click)="close()" class="lg:hidden absolute top-3 right-3 p-2">
+      <button (click)="close()" aria-label="Close" class="lg:hidden absolute top-3 right-3 p-2 rounded-full hover:bg-white/20 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors">
         <app-close-icon color="white" size="24"></app-close-icon>
       </button>
 
@@ -99,14 +99,16 @@
             <button
               (click)="prevAction()"
               [disabled]="currentActionIndex === 0"
-              class="w-11 h-11 rounded-full border border-white bg-[rgba(30,30,30,0.40)] flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              aria-label="Previous action"
+              class="w-11 h-11 rounded-full border border-white bg-[rgba(30,30,30,0.40)] flex items-center justify-center enabled:hover:bg-[rgba(30,30,30,0.70)] enabled:active:bg-black disabled:opacity-30 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
             >
               <app-arrow-left-long-icon color="white" size="13"></app-arrow-left-long-icon>
             </button>
             <button
               (click)="nextAction()"
               [disabled]="currentActionIndex === totalActions - 1"
-              class="w-11 h-11 rounded-full border border-white bg-[rgba(30,30,30,0.40)] flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              aria-label="Next action"
+              class="w-11 h-11 rounded-full border border-white bg-[rgba(30,30,30,0.40)] flex items-center justify-center enabled:hover:bg-[rgba(30,30,30,0.70)] enabled:active:bg-black disabled:opacity-30 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
             >
               <app-arrow-right-long-icon color="white" size="16"></app-arrow-right-long-icon>
             </button>

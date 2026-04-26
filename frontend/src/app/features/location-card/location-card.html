@@ -87,7 +87,7 @@
     >
       <button
         (click)="setActiveTab('hazards')"
-        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors"
+        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
         [ngClass]="activeTab === 'hazards' ? 'font-medium leading-8' : 'font-normal leading-5'"
         role="tab"
         [attr.aria-selected]="activeTab === 'hazards'"
@@ -103,7 +103,7 @@
       </button>
       <button
         (click)="setActiveTab('actions')"
-        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors"
+        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
         [ngClass]="activeTab === 'actions' ? 'font-medium leading-8' : 'font-normal leading-5'"
         role="tab"
         [attr.aria-selected]="activeTab === 'actions'"
@@ -119,7 +119,7 @@
       </button>
       <button
         (click)="setActiveTab('solutions')"
-        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors"
+        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
         [ngClass]="activeTab === 'solutions' ? 'font-medium leading-8' : 'font-normal leading-5'"
         role="tab"
         [attr.aria-selected]="activeTab === 'solutions'"

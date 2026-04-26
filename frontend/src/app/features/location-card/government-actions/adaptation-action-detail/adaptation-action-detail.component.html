@@ -97,7 +97,11 @@
             <div
               class="text-[#1E1E1E] font-roboto text-2xl font-normal leading-normal tracking-[1.2px]"
             >
-              {{ (action.totalCostUsd | currency: 'USD' : 'symbol' : '1.0-0') || '—' }}
+              @if (action.totalCostUsd != null && action.totalCostUsd > 0) {
+                {{ action.totalCostUsd | currency: 'USD' : 'symbol' : '1.0-0' }}
+              } @else {
+                {{ 'locationCard.govActions.notDisclosed' | translate }}
+              }
             </div>
           </div>
           <div class="flex-1 inline-flex flex-col justify-start items-start gap-3">

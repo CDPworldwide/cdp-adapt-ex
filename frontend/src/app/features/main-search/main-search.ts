@@ -198,18 +198,38 @@ export class MainSearchComponent implements OnInit {
     ];
   }
 
+  private static readonly MAX_SUGGESTIONS = 5;
+
+  private normalizeForSearch(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/\bst\.?\b/gi, 'saint')
+      .replace(/\bste\.?\b/gi, 'sainte')
+      .replace(/\bmt\.?\b/gi, 'mount')
+      .replace(/\bft\.?\b/gi, 'fort')
+      .toLowerCase();
+  }
+
   private _filter(
     value: string,
     locations: LocationSuggestion[] = this.allLocations,
   ): LocationSuggestion[] {
     if (!value) {
-      return locations.slice(0, 3);
+      return locations.slice(0, MainSearchComponent.MAX_SUGGESTIONS);
     }
-    const results = fuzzysort.go(value, locations, {
-      key: 'name',
-      limit: 3,
+    const prepared = locations.map((loc) => ({
+      ...loc,
+      _normalized: this.normalizeForSearch(loc.name),
+    }));
+    const results = fuzzysort.go(this.normalizeForSearch(value), prepared, {
+      key: '_normalized',
+      limit: MainSearchComponent.MAX_SUGGESTIONS,
     });
-    return results.map((result) => result.obj);
+    return results.map((result) => {
+      const { _normalized, ...rest } = result.obj;
+      return rest;
+    });
   }
 
   onSearch(query?: string) {
