@@ -277,8 +277,8 @@ describe('MainSearchComponent', () => {
       fixture.detectChanges();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      const backButton = Array.from(compiled.querySelectorAll('button')).find(
-        (btn) => btn.textContent?.includes('Go back'),
+      const backButton = Array.from(compiled.querySelectorAll('button')).find((btn) =>
+        btn.textContent?.includes('Go back'),
       );
 
       backButton?.click();
