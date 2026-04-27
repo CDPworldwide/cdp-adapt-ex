@@ -13,7 +13,7 @@
           class="flex flex-col items-center justify-center aspect-square w-full lg:w-[84px] lg:h-[84px] lg:aspect-auto p-1 gap-1 transition-colors"
           [ngClass]="{
             'bg-cdp-dark': isSelected(filter.type),
-            'bg-cdp-neutral-02': !isSelected(filter.type)
+            'bg-cdp-neutral-02': !isSelected(filter.type),
           }"
           [matTooltip]="filter.type ? ('locationCard.hazardNames.' + filter.type | translate) : ''"
           matTooltipPosition="above"
@@ -30,7 +30,7 @@
             class="text-sm font-medium font-roboto leading-4 tracking-[0.1px] text-center line-clamp-2 w-full break-words"
             [ngClass]="{
               'text-cdp-light-text': isSelected(filter.type),
-              'text-cdp-border': !isSelected(filter.type)
+              'text-cdp-border': !isSelected(filter.type),
             }"
           >
             {{
