@@ -1,27 +1,16 @@
-<header class="flex items-center justify-between px-4 py-3 md:px-8">
-  <div class="flex items-center gap-3">
-    @if (showMenuButton) {
-      <button
-        type="button"
-        class="p-1 -ml-1 md:hidden"
-        (click)="onMenuToggle()"
-        aria-label="Open menu"
-        [attr.aria-expanded]="menuExpanded"
-        [attr.aria-controls]="menuControlsId"
-      >
-        <mat-icon class="text-gray-700">menu</mat-icon>
-      </button>
-    }
-
-    <a routerLink="/" class="flex flex-col cursor-pointer hover:opacity-80 transition-opacity">
-      <app-cdp-logo-with-text-icon
-        width="70"
-        height="18"
-        color="black"
-      ></app-cdp-logo-with-text-icon>
-      <span class="text-xs text-cdp-dark">{{ 'homepage.nav.title' | translate }}</span>
-    </a>
-  </div>
+<div class="flex items-center justify-between px-4 py-3 md:px-8">
+  <a
+    routerLink="/"
+    class="flex items-center gap-4 no-underline text-cdp-dark hover:opacity-80 transition-opacity"
+    aria-label="Home"
+  >
+    <app-cdp-logo-with-text-icon width="70" height="18" color="black"></app-cdp-logo-with-text-icon>
+    <div class="w-px h-6 bg-cdp-neutral-02"></div>
+    <div class="flex items-center gap-2">
+      <mat-icon class="text-cdp-dark !text-xl !w-5 !h-5 !leading-5 !flex !items-center !justify-center">grid_view</mat-icon>
+      <span class="text-sm font-medium leading-none">Adapt</span>
+    </div>
+  </a>
 
   <div class="flex items-center gap-1">
     <button
@@ -33,7 +22,7 @@
       <mat-icon class="text-gray-500 !text-xl">language</mat-icon>
     </button>
   </div>
-</header>
+</div>
 
 <mat-menu #languageMenu="matMenu">
   @for (lang of languageService.languages; track lang.code) {

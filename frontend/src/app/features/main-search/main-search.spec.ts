@@ -8,11 +8,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { of, throwError, Observable, Subject, skip, take } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Maps } from '../maps/maps';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { MatAutocompleteHarness } from '@angular/material/autocomplete/testing';
 
 class FakeLoader implements TranslateLoader {
   getTranslation(): Observable<any> {
@@ -45,7 +41,6 @@ describe('MainSearchComponent', () => {
   let mockLocationService: jasmine.SpyObj<LocationService>;
   let mockRouter: jasmine.SpyObj<Router>;
   let translate: TranslateService;
-  let loader: HarnessLoader;
   const MOCK_LOCATION_DATA = {
     name: 'London',
     countryName: 'United Kingdom',
@@ -107,7 +102,6 @@ describe('MainSearchComponent', () => {
           loader: { provide: TranslateLoader, useClass: FakeLoader },
         }),
         HttpClientTestingModule,
-        MatAutocompleteModule,
       ],
       providers: [
         { provide: SearchService, useValue: mockSearchService },
@@ -125,7 +119,6 @@ describe('MainSearchComponent', () => {
     fixture = TestBed.createComponent(MainSearchComponent);
     component = fixture.componentInstance;
     translate = TestBed.inject(TranslateService);
-    loader = TestbedHarnessEnvironment.loader(fixture);
     translate.use('en');
     // mock location names
     mockLocationService.getAllLocationNames.and.returnValue(of(MOCK_SUGGESTIONS));
@@ -140,7 +133,7 @@ describe('MainSearchComponent', () => {
 
   it('should render the search input', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('input[type="search"]')).toBeTruthy();
+    expect(compiled.querySelector('input[type="text"]')).toBeTruthy();
   });
 
   describe('Autocomplete', () => {
@@ -153,18 +146,6 @@ describe('MainSearchComponent', () => {
       component.searchControl.setValue('Lo');
 
       expect(suggestions).toEqual(['London', 'Los Angeles']);
-    });
-
-    it('should display autocomplete options when typing', async () => {
-      const harness = await loader.getHarness(MatAutocompleteHarness);
-      await harness.focus();
-      await harness.enterText('Lo');
-
-      const options = await harness.getOptions();
-      const texts = await Promise.all(options.map((o) => o.getText()));
-
-      expect(texts).toContain('London');
-      expect(texts).toContain('Los Angeles');
     });
 
     it('should return correct result with a typo in search', () => {
@@ -265,27 +246,24 @@ describe('MainSearchComponent', () => {
 
       expect(component.isNotFound).toBeTrue();
       const compiled = fixture.nativeElement as HTMLElement;
-      // Use the red color text class as a selector for the not found heading
-      const errorMessage = compiled.querySelector('.text-cdp-red.text-base.font-medium');
+      // The not-found message renders in the big-text style — pick the
+      // span that carries both .text-cdp-red and .font-light to skip the
+      // (also-red) close icon next to it.
+      const errorMessage = compiled.querySelector('span.text-cdp-red.font-light');
       expect(errorMessage?.textContent).toContain("Sorry, we couldn't find Unknown City");
     });
 
-    it('should show close icon when location is not found', () => {
+    it('should show the not-found close icon when location is not found', () => {
       component.isNotFound = true;
       fixture.detectChanges();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      const icon = compiled.querySelector('button mat-icon');
+      // The not-found state renders a button with a leading mat-icon "close".
+      const button = compiled.querySelector(
+        'button[aria-label^="Sorry"]',
+      ) as HTMLButtonElement | null;
+      const icon = button?.querySelector('mat-icon');
       expect(icon?.textContent).toBe('close');
-    });
-
-    it('should show spinner when loading', () => {
-      component.isLoadingLocation = true;
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement as HTMLElement;
-      const spinner = compiled.querySelector('mat-spinner');
-      expect(spinner).toBeTruthy();
     });
 
     it('should clear error state when typing in the search box', () => {
@@ -327,37 +305,53 @@ describe('MainSearchComponent', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', 102]);
     });
 
-    it('opens autocomplete when the input is focused and suggestions exist', fakeAsync(() => {
-      const openPanel = jasmine.createSpy('openPanel');
-      const trigger = { openPanel, panelOpen: false } as any;
+    it('opens the search overlay when openSearchOverlay is called', () => {
+      expect(component.isOverlayOpen).toBeFalse();
 
-      spyOn(console, 'debug');
+      component.openSearchOverlay();
 
-      component.onSearchInputInteraction('focus', trigger);
-      tick();
+      expect(component.isOverlayOpen).toBeTrue();
+    });
 
-      expect(openPanel).toHaveBeenCalled();
-      expect(console.debug).toHaveBeenCalled();
-    }));
+    it('closes the search overlay when closeSearchOverlay is called', () => {
+      component.openSearchOverlay();
+      expect(component.isOverlayOpen).toBeTrue();
 
-    it('opens autocomplete after locations load if the input was already focused', fakeAsync(() => {
-      const suggestions$ = new Subject<any[]>();
-      const openPanel = jasmine.createSpy('openPanel');
-      const trigger = { openPanel, panelOpen: false } as any;
+      component.closeSearchOverlay();
 
-      mockLocationService.getAllLocationNames.and.returnValue(suggestions$);
-      recreateComponent();
+      expect(component.isOverlayOpen).toBeFalse();
+    });
 
-      component.onSearchInputInteraction('focus', trigger);
-      tick();
+    it('closes the search overlay when Escape is pressed', () => {
+      component.openSearchOverlay();
+      expect(component.isOverlayOpen).toBeTrue();
 
-      expect(openPanel).not.toHaveBeenCalled();
+      component.onEscapeKey();
 
-      suggestions$.next(MOCK_SUGGESTIONS);
-      tick();
+      expect(component.isOverlayOpen).toBeFalse();
+    });
 
-      expect(openPanel).toHaveBeenCalled();
-    }));
+    it('splitMatch highlights the matched query within a name', () => {
+      const parts = component.splitMatch('San Francisco, USA', 'San');
+
+      expect(parts).toEqual([
+        { text: '', bold: false },
+        { text: 'San', bold: true },
+        { text: ' Francisco, USA', bold: false },
+      ]);
+    });
+
+    it('splitMatch returns the whole name when query is empty', () => {
+      const parts = component.splitMatch('London', '');
+
+      expect(parts).toEqual([{ text: 'London', bold: false }]);
+    });
+
+    it('splitMatch returns the whole name when query does not match', () => {
+      const parts = component.splitMatch('London', 'xyz');
+
+      expect(parts).toEqual([{ text: 'London', bold: false }]);
+    });
 
     it('should navigate back to main route when back is clicked', () => {
       component.onBackHome();

@@ -4,11 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
-import {
-  InfoIconComponent,
-  ArrowRightIconComponent,
-  NoHazardsIconComponent,
-} from '../../../shared/icons';
+import { ArrowRightLongIconComponent } from '../../../shared/icons';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   HazardEnum,
@@ -17,7 +13,6 @@ import {
   SolutionCategoryEnum,
 } from '@pac-api/client';
 import { SolutionDetailModalComponent } from './solution-detail-modal.component';
-import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
 
 @Component({
   selector: 'app-solutions',
@@ -26,12 +21,9 @@ import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
     CommonModule,
     TranslateModule,
     HazardIconComponent,
-    InfoIconComponent,
-    ArrowRightIconComponent,
-    NoHazardsIconComponent,
+    ArrowRightLongIconComponent,
     MatTooltipModule,
     MatDialogModule,
-    AutoTranslatePipe,
   ],
   templateUrl: './solutions.component.html',
 })
@@ -45,10 +37,6 @@ export class SolutionsComponent {
 
   constructor() {}
 
-  get isNoHazards(): boolean {
-    return !this.data?.hazards?.hazards?.length;
-  }
-
   get hazardFilters() {
     return [
       { type: null },
@@ -59,10 +47,6 @@ export class SolutionsComponent {
           type: h.hazard.hazardType,
         })),
     ];
-  }
-
-  get hazardFiltersCount() {
-    return this.hazardFilters.length - 1; // Exclude 'All'
   }
 
   get categories() {
@@ -92,6 +76,19 @@ export class SolutionsComponent {
     return this.selectedHazard === hazardType;
   }
 
+  private readonly solutionImages = [
+    'assets/images/solutions.component.images/environmental_bkgs_dew.webp',
+    'assets/images/solutions.component.images/environmental_bkgs_trees.webp',
+    'assets/images/solutions.component.images/environmental_bkgs_windmill.webp',
+    'assets/images/solutions.component.images/environmental_bkgs_pool.webp',
+    'assets/images/solutions.component.images/environmental_bkgs_water_recycling.webp',
+  ];
+
+  getCardBackground(index: number): string {
+    const img = this.solutionImages[index % this.solutionImages.length];
+    return `linear-gradient(180deg, rgba(30, 30, 30, 0.20) 33.22%, rgba(30, 30, 30, 0.30) 70.4%), url('${img}') lightgray 20% / cover no-repeat`;
+  }
+
   openSolutionDetail(solution: SolutionCardOutput): void {
     const isMobile =
       this.breakpointObserver.isMatched(Breakpoints.Handset) ||
@@ -102,12 +99,12 @@ export class SolutionsComponent {
         solution: solution,
         location: this.data,
       },
-      width: isMobile ? '100%' : '75rem',
-      height: isMobile ? '100%' : 'auto',
+      width: isMobile ? '100%' : '80vw',
+      height: isMobile ? '100%' : '80vh',
       maxWidth: '100vw',
       maxHeight: '100vh',
       position: isMobile ? { top: '0', left: '0' } : undefined,
-      panelClass: ['solution-detail-dialog', 'm-0', 'p-0', 'lg:rounded-2xl'],
+      panelClass: ['solution-detail-dialog', 'm-0', 'p-0'],
     });
   }
 }
