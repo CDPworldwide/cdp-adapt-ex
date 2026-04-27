@@ -28,7 +28,9 @@
   <!-- Location Header -->
   <div class="flex items-center gap-4 px-4 lg:px-6 pt-10 pb-4">
     <!-- Map Thumbnail -->
-    <div class="hidden lg:block w-20 h-20 lg:w-[120px] lg:h-[120px] flex-shrink-0 overflow-hidden rounded-[20px]">
+    <div
+      class="hidden lg:block w-20 h-20 lg:w-[120px] lg:h-[120px] flex-shrink-0 overflow-hidden rounded-[20px]"
+    >
       <app-hazard-map
         *ngIf="data.lat != null && data.lng != null"
         [lat]="data.lat"
@@ -49,10 +51,12 @@
         <h1
           class="text-4xl lg:text-[60px] text-[#1B232C] font-roboto font-normal leading-tight lg:leading-normal tracking-[-1.8px]"
         >
-          {{ data.name }}, {{ data.countryName }}
+          {{ data.name }}
+          <span class="text-3xl lg:text-[40px] block">{{ data.countryName }}</span>
         </h1>
+
         <!-- Population -->
-        <div class="flex items-center gap-1 mt-2 lg:mt-[-12px]" *ngIf="data.population">
+        <div class="flex items-center gap-1 mt-4" *ngIf="data.population">
           <div class="text-black font-roboto text-xs font-medium leading-4 tracking-[0.4px]">
             {{ 'locationCard.header.estimatedPopulation' | translate }}
           </div>
@@ -154,6 +158,7 @@
         [locationName]="data.name"
         [countryName]="data.countryName"
         [selectedFilter]="selectedHazardFilter"
+        [disclosureYear]="data.disclosureYear"
       ></app-government-actions>
     </div>
 

@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { AdaptationGoal } from '@pac-api/client';
 import { CloseIconComponent } from '../../../../shared/icons/close-icon.component';
-import { ImagePlaceholderIconComponent } from '../../../../shared/icons/image-placeholder-icon.component';
 import { HazardIconComponent } from '../../../../shared/components/hazard-icon/hazard-icon.component';
 import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
+import { DETAIL_HERO_BACKGROUND } from '../adaptation-action-detail/adaptation-action-detail.component';
 
 @Component({
   selector: 'app-adaptation-goal-detail',
@@ -15,7 +15,6 @@ import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe'
     TranslateModule,
     HazardIconComponent,
     CloseIconComponent,
-    ImagePlaceholderIconComponent,
     AutoTranslatePipe,
   ],
   templateUrl: './adaptation-goal-detail.component.html',
@@ -23,6 +22,8 @@ import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe'
 export class AdaptationGoalDetailComponent {
   @Input() goal!: AdaptationGoal;
   @Output() closed = new EventEmitter<void>();
+
+  readonly heroBackground = DETAIL_HERO_BACKGROUND;
 
   close(): void {
     this.closed.emit();

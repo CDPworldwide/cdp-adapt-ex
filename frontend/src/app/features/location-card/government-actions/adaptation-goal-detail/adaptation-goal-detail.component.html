@@ -1,15 +1,16 @@
 <div class="bg-white pb-6">
   <!-- Hero image with close button -->
-  <div class="relative w-full h-52 bg-cdp-peach overflow-hidden flex items-start justify-end p-6">
-    <!-- Image placeholder (replace with real image when available) -->
-    <app-image-placeholder-icon class="opacity-40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></app-image-placeholder-icon>
+  <div
+    class="relative w-full h-52 overflow-hidden flex items-start justify-end p-6"
+    [style.background]="heroBackground"
+  >
     <button
       type="button"
       (click)="close()"
       aria-label="Close"
-      class="relative cursor-pointer p-1 rounded-full hover:bg-black/10 active:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-dark transition-colors"
+      class="relative cursor-pointer p-1 rounded-full hover:bg-white/20 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
     >
-      <app-close-icon></app-close-icon>
+      <app-close-icon color="white"></app-close-icon>
     </button>
   </div>
 
@@ -45,7 +46,9 @@
                   [otherHazardDetails]="hazard.otherHazardDetails"
                   size="14"
                 ></app-hazard-icon>
-                <span class="text-sm font-normal font-roboto text-black leading-5 tracking-[0.25px]">
+                <span
+                  class="text-sm font-normal font-roboto text-black leading-5 tracking-[0.25px]"
+                >
                   {{
                     hazard.hazardType === 'OTHERS'
                       ? hazard.otherHazardDetails

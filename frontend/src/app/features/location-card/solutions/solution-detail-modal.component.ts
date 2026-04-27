@@ -13,7 +13,10 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AdaptationAction, LocationProfile, SolutionCardOutput } from '@pac-api/client';
-import { AdaptationActionDetailComponent } from '../government-actions/adaptation-action-detail/adaptation-action-detail.component';
+import {
+  AdaptationActionDetailComponent,
+  DETAIL_HERO_BACKGROUND,
+} from '../government-actions/adaptation-action-detail/adaptation-action-detail.component';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import {
   ArrowRightIconComponent,
@@ -58,14 +61,8 @@ export class SolutionDetailModalComponent implements OnInit, OnDestroy {
   slideClass = '';
   private destroy$ = new Subject<void>();
 
-  private readonly backgroundImages = [
-    'assets/images/solutions-detail-modal.component.images/enviornmental_bkgs_shading.webp',
-  ];
-
-  getBackgroundStyle(solution: SolutionCardOutput): string {
-    // TODO: map solution to specific image when logic is defined
-    const image = this.backgroundImages[0 % this.backgroundImages.length];
-    return `linear-gradient(270deg, rgba(30, 30, 30, 0.20) 0%, rgba(30, 30, 30, 0.50) 54.96%), url(${image}) #1B232C center / cover no-repeat`;
+  getBackgroundStyle(_solution: SolutionCardOutput): string {
+    return DETAIL_HERO_BACKGROUND;
   }
 
   constructor() {}

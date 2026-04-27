@@ -1,4 +1,4 @@
-<div class="flex flex-1 flex-col min-h-0 text-cdp-dark bg-cdp-bg relative">
+<div class="flex flex-col text-cdp-dark bg-cdp-bg relative pb-20">
   <div
     class="fixed inset-0 z-40 bg-black/90 transition-opacity duration-300"
     [ngClass]="isOverlayOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'"
@@ -63,7 +63,7 @@
     </div>
   </div>
 
-  <div class="flex flex-1 flex-col min-h-0">
+  <div class="flex flex-col min-h-screen">
     <nav class="bg-cdp-bg flex-shrink-0">
       <app-header></app-header>
     </nav>
@@ -89,7 +89,9 @@
             "
           >
             <mat-icon class="text-cdp-red !text-[28px] !w-7 !h-7 flex-shrink-0">close</mat-icon>
-            <span class="text-xl sm:text-3xl md:text-5xl lg:text-[60px] font-light text-cdp-red leading-tight lg:leading-none break-words lg:truncate max-w-[80vw] text-left">
+            <span
+              class="text-xl sm:text-3xl md:text-5xl lg:text-[60px] font-light text-cdp-red leading-tight lg:leading-none break-words lg:truncate max-w-[80vw] text-left"
+            >
               {{ 'homepage.hero.notFound' | translate: { location: searchControl.value } }}
             </span>
           </button>
@@ -112,7 +114,9 @@
           [attr.aria-label]="'homepage.hero.searchOrSelect' | translate"
         >
           <mat-icon class="text-cdp-dark !text-[28px] !w-7 !h-7 flex-shrink-0">search</mat-icon>
-          <span class="text-xl sm:text-3xl md:text-5xl lg:text-[60px] font-light text-cdp-neutral-02 leading-tight lg:leading-none text-left lg:whitespace-nowrap">
+          <span
+            class="text-xl sm:text-3xl md:text-5xl lg:text-[60px] font-light text-cdp-neutral-02 leading-tight lg:leading-none text-left lg:whitespace-nowrap"
+          >
             {{ 'homepage.hero.searchOrSelect' | translate }}
           </span>
         </button>
@@ -120,7 +124,7 @@
     </div>
 
     <div
-      class="flex-1 min-h-0 flex flex-col md:flex-row md:items-start gap-8 md:gap-16 px-4 md:px-16 pb-6 w-full max-w-7xl mx-auto"
+      class="flex-1 flex flex-col md:flex-row md:items-start gap-8 md:gap-16 px-4 md:px-16 pb-6 w-full max-w-7xl mx-auto min-h-[300px]"
     >
       <div class="flex flex-col md:flex-shrink-0 w-full max-w-[560px] mx-auto md:mx-0">
         <div class="relative aspect-[624/567]">
@@ -175,4 +179,12 @@
       </div>
     </div>
   </div>
+
+  <!-- Disclosure Trends — visible by scrolling down; only shown when a location is selected -->
+  @if (selectedLocationData) {
+    <app-disclosure-trends
+      [data]="selectedLocationData"
+      [year]="resolvedYear"
+    ></app-disclosure-trends>
+  }
 </div>

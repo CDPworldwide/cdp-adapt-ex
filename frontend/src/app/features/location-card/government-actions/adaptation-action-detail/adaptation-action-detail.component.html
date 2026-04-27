@@ -2,11 +2,9 @@
   <!-- Top/Left Side: Image Placeholder -->
   @if (showHeroImage) {
     <div
-      class="relative w-full h-52 lg:w-96 lg:min-h-200 lg:h-auto self-stretch bg-cdp-peach flex-shrink-0 flex items-center justify-center p-6 lg:p-10"
+      class="relative w-full h-52 lg:w-96 lg:min-h-200 lg:h-auto self-stretch flex-shrink-0 p-6 lg:p-10"
+      [style.background]="heroBackground"
     >
-      <app-image-placeholder-icon
-        class="opacity-40 w-24 h-24 lg:w-32 lg:h-32"
-      ></app-image-placeholder-icon>
       <!-- Close Button for Mobile (on the image) -->
       <button
         type="button"
@@ -14,13 +12,15 @@
         aria-label="Close"
         class="lg:hidden absolute top-4 right-4 p-2 flex justify-center items-center rounded-full bg-white/50 backdrop-blur-sm hover:bg-white/80 transition-colors"
       >
-        <app-close-icon color="black" size="18"></app-close-icon>
+        <app-close-icon color="white" size="18"></app-close-icon>
       </button>
     </div>
   }
 
   <!-- Content Side -->
-  <div class="flex-1 flex flex-col items-start min-w-0 relative pl-4 pt-6 lg:pl-[46px] lg:pt-[46px]">
+  <div
+    class="flex-1 flex flex-col items-start min-w-0 relative pl-4 pt-6 lg:pl-[46px] lg:pt-[46px]"
+  >
     <!-- Close Button for Desktop -->
     <button
       type="button"
@@ -66,7 +66,9 @@
             </div>
           }
           <div class="self-stretch inline-flex justify-start items-start mt-2">
-            <h2 class="text-black text-2xl lg:text-[31px] font-normal font-roboto leading-tight lg:leading-normal break-words">
+            <h2
+              class="text-black text-2xl lg:text-[31px] font-normal font-roboto leading-tight lg:leading-normal break-words"
+            >
               {{ action.title | autoTranslate }}
             </h2>
           </div>
@@ -89,7 +91,9 @@
         </div>
 
         <!-- Cost and Timeframe -->
-        <div class="self-stretch h-auto inline-flex flex-wrap lg:flex-nowrap justify-start items-start gap-6 lg:gap-[70px]">
+        <div
+          class="self-stretch h-auto inline-flex flex-wrap lg:flex-nowrap justify-start items-start gap-6 lg:gap-[70px]"
+        >
           <div class="inline-flex flex-col justify-start items-start gap-3">
             <div class="text-[#1E1E1E] font-inter text-xs font-bold leading-normal">
               {{ 'locationCard.govActions.detail.totalCostOfAction' | translate }}
@@ -162,7 +166,9 @@
     </div>
 
     <!-- Body Content -->
-    <div class="self-stretch pr-4 lg:pr-[120px] pb-6 bg-white flex flex-col justify-start items-start">
+    <div
+      class="self-stretch pr-4 lg:pr-[120px] pb-6 bg-white flex flex-col justify-start items-start"
+    >
       <!-- Description -->
       <div class="self-stretch pt-[34px] flex flex-col justify-start items-start gap-3">
         <div class="self-stretch text-[#1E1E1E] font-inter text-xs font-bold leading-normal">

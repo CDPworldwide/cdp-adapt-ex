@@ -398,5 +398,13 @@
       "backToSearch": "Back to search",
       "tryAnotherOrganization": "Try another organization"
     }
+  },
+  "disclosureTrends": {
+    "title": "Disclosure Trends",
+    "adaptationPlan": "Cities, states and regions that have an adaptation plan",
+    "waterSecurityRisks": "Jurisdictions that report facing water security risks",
+    "topHazards": "Top Reported Hazards",
+    "projectsSeekingFinance": "Climate adaptation projects seeking finance",
+    "populationExposed": "Jurisdictions already facing significant climate hazards"
   }
 }

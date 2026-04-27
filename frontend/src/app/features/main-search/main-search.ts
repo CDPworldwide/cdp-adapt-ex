@@ -27,13 +27,14 @@ import { ActionStatusEnum } from '@pac-api/client';
 import type { AdaptationAction, Hazard, HazardProfile, LocationPin } from '@pac-api/client';
 import { CdpLogoIconComponent } from '../../shared/icons';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
+import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
 
 @Component({
   selector: 'app-main-search',
   templateUrl: './main-search.html',
   styleUrls: ['./main-search.css'],
   encapsulation: ViewEncapsulation.None,
-  host: { class: 'flex flex-col flex-1 min-h-0' },
+  host: { class: 'flex flex-col flex-1 min-h-0 overflow-y-auto' },
   imports: [
     CommonModule,
     FormsModule,
@@ -44,6 +45,7 @@ import { AppHeaderComponent } from '../../shared/app-header/app-header';
     LocationSummaryComponent,
     CdpLogoIconComponent,
     AppHeaderComponent,
+    DisclosureTrendsComponent,
   ],
 })
 export class MainSearchComponent implements OnInit {
@@ -55,6 +57,7 @@ export class MainSearchComponent implements OnInit {
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
 
   selectedLocation: LocationPin | null = null;
+  selectedLocationData: LocationData | null = null;
   isLoadingHazardData = false;
   totalHazardsCount = 0;
   implementedActionsCount = 0;
@@ -123,7 +126,12 @@ export class MainSearchComponent implements OnInit {
       });
   }
 
+  get resolvedYear(): number {
+    return this.selectedLocationData?.disclosureYear ?? new Date().getFullYear();
+  }
+
   private processLocationData(data: LocationData): void {
+    this.selectedLocationData = data;
     this.totalHazardsCount = data.hazards?.hazards?.length || 0;
     this.implementedActionsCount =
       data.governmentActions?.actions?.filter(
@@ -140,15 +148,14 @@ export class MainSearchComponent implements OnInit {
 
   closeCard(): void {
     this.mapSelectionService.clearSelection();
+    this.selectedLocationData = null;
   }
 
   goToLocationDetails(): void {
     if (!this.selectedLocation) {
       return;
     }
-    const suggestion = this.allLocations.find(
-      (loc) => loc.name === this.selectedLocation?.name,
-    );
+    const suggestion = this.allLocations.find((loc) => loc.name === this.selectedLocation?.name);
     if (suggestion) {
       this.mapSelectionService.clearSelection();
       this.router.navigate(['/org', suggestion.organizationId]);
