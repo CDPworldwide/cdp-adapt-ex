@@ -23,7 +23,7 @@
   <!-- Hazard Legend for expanded view -->
   <div
     *ngIf="isExpanded && isHazardSupported(hazardType)"
-    class="pointer-events-auto box-border p-0 z-10 w-full fixed inset-x-0 bottom-0 md:absolute md:top-[24px] md:left-[24px] md:bottom-auto md:max-w-sm"
+    class="pointer-events-auto box-border p-0 z-10 w-full fixed inset-x-0 bottom-0 md:absolute md:top-6 md:left-6 md:bottom-auto md:max-w-sm"
   >
     <mat-card
       class="flex flex-col w-full shadow-[0_-6px_24px_rgba(0,0,0,0.12)] rounded-none md:rounded-lg"
@@ -76,7 +76,7 @@
               'text-cdp-red border-cdp-red ring-1 ring-cdp-red':
                 scenarios.length > 1 && selectedScenario === scenario,
               'text-cdp-dark border-gray-300 hover:border-cdp-dark':
-                scenarios.length > 1 && selectedScenario !== scenario
+                scenarios.length > 1 && selectedScenario !== scenario,
             }"
           >
             <span>{{ formatScenarioLabel(scenario) }}</span>
@@ -104,7 +104,7 @@
               'text-cdp-dark border-gray-300 hover:border-cdp-dark':
                 yearRanges.length > 1 &&
                 (selectedYearRange.start !== yearRange.start ||
-                  selectedYearRange.end !== yearRange.end)
+                  selectedYearRange.end !== yearRange.end),
             }"
           >
             <span>{{ formatYearRangeLabel(yearRange) }}</span>

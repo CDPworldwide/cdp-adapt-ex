@@ -8,12 +8,18 @@
   >
     <div class="relative z-10 flex flex-col text-white">
       <!-- Close Button for Mobile -->
-      <button (click)="close()" aria-label="Close" class="lg:hidden absolute top-3 right-3 p-2 rounded-full hover:bg-white/20 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors">
+      <button
+        (click)="close()"
+        aria-label="Close"
+        class="lg:hidden absolute top-3 right-3 p-2 rounded-full hover:bg-white/20 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
+      >
         <app-close-icon color="white" size="24"></app-close-icon>
       </button>
 
       <!-- Title -->
-      <h2 class="text-2xl lg:text-[31px] font-roboto font-normal leading-normal text-white pr-10 lg:pr-0">
+      <h2
+        class="text-2xl lg:text-[31px] font-roboto font-normal leading-normal text-white pr-10 lg:pr-0"
+      >
         {{ data.solution.solution | autoTranslate }}
       </h2>
       @if (data.solution.hasLocalAction) {

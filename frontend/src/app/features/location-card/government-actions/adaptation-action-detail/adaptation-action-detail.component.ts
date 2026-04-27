@@ -85,7 +85,7 @@ export class AdaptationActionDetailComponent {
     if (!status) return 'bg-cdp-neutral-05 text-white';
     const s = status.statusType;
     if (s.startsWith('ACTION_IN_OPERATION')) return 'bg-cdp-blue text-white';
-    if (s.startsWith('IMPLEMENTATION')) return 'bg-[#4CAF50] text-white';
+    if (s.startsWith('IMPLEMENTATION')) return 'bg-cdp-green-implementation text-white';
     return 'bg-cdp-neutral-05 text-white';
   }
 

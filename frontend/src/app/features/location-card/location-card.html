@@ -49,7 +49,7 @@
       <!-- Name Container -->
       <div class="flex flex-col">
         <h1
-          class="text-4xl lg:text-[60px] text-[#1B232C] font-roboto font-normal leading-tight lg:leading-normal tracking-[-1.8px]"
+          class="text-4xl lg:text-[60px] text-cdp-dark font-roboto font-normal leading-tight lg:leading-normal tracking-[-1.8px]"
         >
           {{ data.name }}
           <span class="text-3xl lg:text-[40px] block">{{ data.countryName }}</span>
@@ -91,7 +91,7 @@
     >
       <button
         (click)="setActiveTab('hazards')"
-        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
+        class="text-cdp-border text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
         [ngClass]="activeTab === 'hazards' ? 'font-medium leading-8' : 'font-normal leading-5'"
         role="tab"
         [attr.aria-selected]="activeTab === 'hazards'"
@@ -100,14 +100,14 @@
         <span
           class="inline-block pb-[15px] whitespace-nowrap"
           [class.border-b]="activeTab === 'hazards'"
-          [class.border-[#1e1e1e]]="activeTab === 'hazards'"
+          [class.border-cdp-border]="activeTab === 'hazards'"
         >
           {{ 'locationCard.tabs.hazards' | translate }}
         </span>
       </button>
       <button
         (click)="setActiveTab('actions')"
-        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
+        class="text-cdp-border text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
         [ngClass]="activeTab === 'actions' ? 'font-medium leading-8' : 'font-normal leading-5'"
         role="tab"
         [attr.aria-selected]="activeTab === 'actions'"
@@ -116,14 +116,14 @@
         <span
           class="inline-block pb-[15px] whitespace-nowrap"
           [class.border-b]="activeTab === 'actions'"
-          [class.border-[#1e1e1e]]="activeTab === 'actions'"
+          [class.border-cdp-border]="activeTab === 'actions'"
         >
           {{ 'locationCard.tabs.governmentActions' | translate }}
         </span>
       </button>
       <button
         (click)="setActiveTab('solutions')"
-        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
+        class="text-cdp-border text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
         [ngClass]="activeTab === 'solutions' ? 'font-medium leading-8' : 'font-normal leading-5'"
         role="tab"
         [attr.aria-selected]="activeTab === 'solutions'"
@@ -132,7 +132,7 @@
         <span
           class="inline-block pb-[15px] whitespace-nowrap"
           [class.border-b]="activeTab === 'solutions'"
-          [class.border-[#1e1e1e]]="activeTab === 'solutions'"
+          [class.border-cdp-border]="activeTab === 'solutions'"
         >
           {{ 'locationCard.tabs.solutions' | translate }}
         </span>

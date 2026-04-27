@@ -2,7 +2,9 @@
   <!-- Hero image with close button -->
   <div class="relative w-full h-52 bg-cdp-peach overflow-hidden flex items-start justify-end p-6">
     <!-- Image placeholder (replace with real image when available) -->
-    <app-image-placeholder-icon class="opacity-40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></app-image-placeholder-icon>
+    <app-image-placeholder-icon
+      class="opacity-40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+    ></app-image-placeholder-icon>
     <button
       type="button"
       (click)="close()"
@@ -36,8 +38,11 @@
             {{ project.fundedPercent }}% {{ 'locationCard.govActions.funded' | translate }}
           </span>
           @if (project.totalAmount) {
-            <span class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-              ${{ (remainingAmount / 1000000) | number:'1.0-1' }}M {{ 'locationCard.govActions.remaining' | translate }}
+            <span
+              class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]"
+            >
+              ${{ remainingAmount / 1000000 | number: '1.0-1' }}M
+              {{ 'locationCard.govActions.remaining' | translate }}
             </span>
           }
         </div>
@@ -148,9 +153,11 @@
             <p class="text-sm font-medium font-roboto text-cdp-border leading-5 tracking-[0.25px]">
               {{ 'locationCard.govActions.detail.totalFunded' | translate }}
             </p>
-            <p class="text-sm font-medium font-roboto text-cdp-border leading-5 tracking-[0.25px] mt-1">
+            <p
+              class="text-sm font-medium font-roboto text-cdp-border leading-5 tracking-[0.25px] mt-1"
+            >
               @if (fundedAmount) {
-                ${{ fundedAmount | number:'1.0-0' }}
+                ${{ fundedAmount | number: '1.0-0' }}
               } @else {
                 —
               }
@@ -160,9 +167,11 @@
             <p class="text-sm font-medium font-roboto text-cdp-border leading-5 tracking-[0.25px]">
               {{ 'locationCard.govActions.detail.totalNeeded' | translate }}
             </p>
-            <p class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px] mt-1">
+            <p
+              class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px] mt-1"
+            >
               @if (project.totalNeeded != null) {
-                ${{ project.totalNeeded | number:'1.0-0' }}
+                ${{ project.totalNeeded | number: '1.0-0' }}
               } @else {
                 —
               }
