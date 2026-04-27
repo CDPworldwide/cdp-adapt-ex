@@ -50,11 +50,11 @@
       <div class="flex items-center gap-2 mb-6 mt-6 px-4 lg:px-0">
         <h2>
           <span
-            class="text-[16px] font-medium font-roboto leading-[24px] tracking-[0.5px] text-[#1B232C] uppercase"
+            class="text-base font-medium font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
             >{{ 'locationCard.govActions.adaptationGoalsTitle' | translate }}</span
           >
           <span
-            class="text-[16px] font-[380] font-roboto leading-[24px] tracking-[0.5px] text-[#1B232C] uppercase"
+            class="text-base font-[380] font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
           >
             {{
               'locationCard.govActions.disclosedCount' | translate: { count: filteredGoals.length }
@@ -69,11 +69,11 @@
           <button
             type="button"
             (click)="selectItem('goal', goal)"
-            class="text-left bg-white p-6 border border-gray-100 shadow-sm flex flex-col justify-between w-[320px] min-w-[320px] h-[360px] flex-shrink-0 cursor-pointer hover:border-gray-300 hover:shadow-md transition-all rounded overflow-hidden"
+            class="text-left bg-white p-6 border border-gray-100 shadow-sm flex flex-col justify-between w-80 min-w-80 h-[360px] flex-shrink-0 cursor-pointer hover:border-gray-300 hover:shadow-md transition-all rounded overflow-hidden"
           >
             <div class="flex flex-col gap-2.5 min-h-0 shrink">
               <h3
-                class="text-[22px] font-normal font-roboto leading-[28px] tracking-[0] text-[#1E1E1E] line-clamp-3 overflow-hidden text-ellipsis"
+                class="text-[22px] font-normal font-roboto leading-7 tracking-normal text-cdp-border line-clamp-3 overflow-hidden text-ellipsis"
               >
                 {{ goal.title | autoTranslate }}
               </h3>
@@ -82,13 +82,13 @@
             <div class="flex flex-col gap-4 min-h-0 shrink-0">
               <div class="flex flex-col gap-4">
                 <p
-                  class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-[#1E1E1E] shrink-0"
+                  class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border shrink-0"
                 >
                   {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                 </p>
                 <div class="hazard-chips-scroll flex flex-row gap-2 overflow-x-auto">
                   @for (hazard of goal.hazardsAddressed; track hazard) {
-                    <div class="flex items-center gap-2 p-[4px] h-[20px] shrink-0">
+                    <div class="flex items-center gap-2 p-1 h-5 shrink-0">
                       <app-hazard-icon
                         [hazard]="hazard.hazardType"
                         [otherHazardDetails]="hazard.otherHazardDetails"
@@ -112,12 +112,12 @@
               @if (goal.targetYear) {
                 <div class="flex flex-col gap-2 shrink-0">
                   <p
-                    class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-[#1E1E1E]"
+                    class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border"
                   >
                     {{ 'locationCard.govActions.targetYear' | translate }}
                   </p>
                   <p
-                    class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-[#1E1E1E]"
+                    class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-cdp-border"
                   >
                     {{ goal.targetYear }}
                   </p>
@@ -140,11 +140,11 @@
       <div class="flex items-center gap-2 mb-6 px-4 lg:px-0">
         <h2>
           <span
-            class="text-[16px] font-medium font-roboto leading-[24px] tracking-[0.5px] text-[#1B232C] uppercase"
+            class="text-base font-medium font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
             >{{ 'locationCard.govActions.adaptationActionsTitle' | translate }}</span
           >
           <span
-            class="text-[16px] font-[380] font-roboto leading-[24px] tracking-[0.5px] text-[#1B232C] uppercase"
+            class="text-base font-[380] font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
           >
             {{
               'locationCard.govActions.disclosedCount'
@@ -161,15 +161,15 @@
             type="button"
             data-testid="action-card"
             (click)="selectItem('action', action)"
-            class="text-left bg-white p-6 border border-gray-100 shadow-sm flex flex-col justify-between w-[320px] min-w-[320px] h-[360px] items-start flex-shrink-0 cursor-pointer hover:border-gray-300 hover:shadow-md transition-all rounded overflow-hidden"
+            class="text-left bg-white p-6 border border-gray-100 shadow-sm flex flex-col justify-between w-80 min-w-80 h-[360px] items-start flex-shrink-0 cursor-pointer hover:border-gray-300 hover:shadow-md transition-all rounded overflow-hidden"
           >
             <div class="flex flex-col gap-2 self-stretch min-h-0">
               @if (action.status) {
                 <div
                   [ngClass]="getStatusClass(action.status)"
-                  class="h-[25px] px-2 rounded-[2px] inline-flex justify-center items-center self-start overflow-hidden"
+                  class="h-[25px] px-2 rounded-sm inline-flex justify-center items-center self-start overflow-hidden"
                 >
-                  <span class="text-[#FFF] text-[13px] font-normal font-roboto truncate">
+                  <span class="text-white text-[13px] font-normal font-roboto truncate">
                     {{
                       action.status.statusType === 'OTHERS' && action.status.otherStatusDetails
                         ? action.status.otherStatusDetails
@@ -179,7 +179,7 @@
                 </div>
               }
               <h3
-                class="text-[22px] font-normal font-roboto leading-[28px] tracking-[0] text-[#1E1E1E] self-stretch line-clamp-2 overflow-hidden text-ellipsis"
+                class="text-[22px] font-normal font-roboto leading-7 tracking-normal text-cdp-border self-stretch line-clamp-2 overflow-hidden text-ellipsis"
               >
                 {{ action.title | autoTranslate }}
               </h3>
@@ -189,12 +189,12 @@
               @if (action.coBenefits?.length) {
                 <div class="flex flex-col gap-2 self-stretch min-h-0 overflow-hidden">
                   <p
-                    class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-[#1E1E1E] self-stretch shrink-0"
+                    class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border self-stretch shrink-0"
                   >
                     {{ 'locationCard.govActions.coBenefits' | translate }}
                   </p>
                   <div
-                    class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-[#1E1E1E] self-stretch overflow-hidden line-clamp-4"
+                    class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-cdp-border self-stretch overflow-hidden line-clamp-4"
                   >
                     @for (benefit of action.coBenefits; track benefit; let last = $last) {
                       <div>{{ benefit | autoTranslate }}</div>
@@ -205,13 +205,13 @@
 
               <div class="flex flex-col gap-2 self-stretch">
                 <p
-                  class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-[#1E1E1E] self-stretch"
+                  class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border self-stretch"
                 >
                   {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                 </p>
                 <div class="hazard-chips-scroll flex flex-row gap-2 overflow-x-auto">
                   @for (hazard of action.hazardsAddressed; track hazard) {
-                    <div class="flex items-center gap-2 p-[4px] h-[20px] shrink-0">
+                    <div class="flex items-center gap-2 p-1 h-5 shrink-0">
                       <app-hazard-icon
                         [hazard]="hazard.hazardType"
                         [otherHazardDetails]="hazard.otherHazardDetails"
@@ -248,11 +248,11 @@
       <div class="flex items-center gap-2 mb-6 px-4 lg:px-0">
         <h2>
           <span
-            class="text-[16px] font-medium font-roboto leading-[24px] tracking-[0.5px] text-[#1B232C] uppercase"
+            class="text-base font-medium font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
             >{{ 'locationCard.govActions.projectsSeekingFundingTitle' | translate }}</span
           >
           <span
-            class="text-[16px] font-[380] font-roboto leading-[24px] tracking-[0.5px] text-[#1B232C] uppercase"
+            class="text-base font-[380] font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
           >
             {{
               'locationCard.govActions.disclosedCount'
@@ -268,13 +268,13 @@
           <button
             type="button"
             (click)="selectItem('project', project)"
-            class="text-left bg-white p-6 border border-gray-100 border-l-2 border-l-[#00B233] shadow-sm flex flex-col justify-start items-start gap-6 w-[320px] min-w-[320px] h-[360px] flex-shrink-0 cursor-pointer hover:border-gray-300 hover:border-l-[#00B233] hover:shadow-md transition-all rounded overflow-hidden"
+            class="text-left bg-white p-6 border border-gray-100 border-l-2 border-l-[#00B233] shadow-sm flex flex-col justify-start items-start gap-6 w-80 min-w-80 h-[360px] flex-shrink-0 cursor-pointer hover:border-gray-300 hover:border-l-[#00B233] hover:shadow-md transition-all rounded overflow-hidden"
           >
             <div
               class="self-stretch flex-1 flex flex-col justify-start items-start gap-2.5 min-h-0"
             >
               <h3
-                class="self-stretch justify-start text-[22px] font-normal font-roboto leading-[28px] tracking-[0] text-[#1E1E1E] line-clamp-3 overflow-hidden text-ellipsis"
+                class="self-stretch justify-start text-[22px] font-normal font-roboto leading-7 tracking-normal text-cdp-border line-clamp-3 overflow-hidden text-ellipsis"
               >
                 {{ project.title | autoTranslate }}
               </h3>
@@ -282,12 +282,12 @@
 
             <div class="self-stretch flex flex-col">
               <!-- Status -->
-              <p class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-[#1E1E1E]">
+              <p class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border">
                 {{ 'locationCard.govActions.status' | translate }}
               </p>
               <div class="mt-1">
                 <p
-                  class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-[#1E1E1E]"
+                  class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-cdp-border"
                 >
                   {{
                     project.status
@@ -297,16 +297,16 @@
                 </p>
               </div>
               <!-- Divider -->
-              <div class="mt-6 border-t border-[#E8E8E8]"></div>
+              <div class="mt-6 border-t border-cdp-neutral-01"></div>
               <!-- Total Funding -->
               <div class="mt-6 flex flex-col gap-1">
                 <p
-                  class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-[#1E1E1E]"
+                  class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border"
                 >
                   {{ 'locationCard.govActions.totalFundingNeeded' | translate }}
                 </p>
                 <p
-                  class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-[#1E1E1E]"
+                  class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-cdp-border"
                 >
                   {{
                     project.totalNeeded != null
@@ -316,7 +316,7 @@
                 </p>
                 @if (project.financeModel) {
                   <p
-                    class="mt-2 text-[10px] font-normal italic font-roboto text-[#999] leading-normal"
+                    class="mt-2 text-xxs font-normal italic font-roboto text-cdp-neutral-05 leading-normal"
                   >
                     {{ project.financeModel }}
                   </p>

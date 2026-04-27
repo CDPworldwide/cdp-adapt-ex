@@ -2,7 +2,7 @@
   <!-- Hazard Filters -->
   <section class="mb-6">
     <h2
-      class="pt-4 pb-6 text-[16px] font-medium font-roboto leading-6 tracking-[0.5px] uppercase text-cdp-dark px-4 lg:px-0"
+      class="pt-4 pb-6 text-base font-medium font-roboto leading-6 tracking-[0.5px] uppercase text-cdp-dark px-4 lg:px-0"
     >
       {{ 'locationCard.solutions.hazardFiltersTitle' | translate }}
     </h2>
@@ -27,10 +27,10 @@
             ></app-hazard-icon>
           }
           <span
-            class="text-[14px] font-medium font-roboto leading-4 tracking-[0.1px] text-center line-clamp-2 w-full break-words"
+            class="text-sm font-medium font-roboto leading-4 tracking-[0.1px] text-center line-clamp-2 w-full break-words"
             [ngClass]="{
-              'text-[#E7E9E8]': isSelected(filter.type),
-              'text-[#1E1E1E]': !isSelected(filter.type)
+              'text-cdp-light-text': isSelected(filter.type),
+              'text-cdp-border': !isSelected(filter.type)
             }"
           >
             {{
@@ -47,18 +47,18 @@
   <!-- Popular Solutions Header -->
   <section class="pb-2 flex flex-col items-start px-4 lg:px-0">
     <h2
-      class="text-[16px] font-semibold font-roboto uppercase leading-6 tracking-[0.5px] text-cdp-dark"
+      class="text-base font-semibold font-roboto uppercase leading-6 tracking-[0.5px] text-cdp-dark"
     >
       {{ 'locationCard.solutions.popularSolutionsTitle' | translate }}
     </h2>
     <div class="flex flex-wrap items-baseline gap-x-1 mt-1 w-full text-left">
       <span
-        class="text-cdp-text-secondary text-[14px] font-medium font-roboto leading-5 tracking-[0.25px]"
+        class="text-cdp-text-secondary text-sm font-medium font-roboto leading-5 tracking-[0.25px]"
       >
         {{ 'locationCard.solutions.sourceLabel' | translate }}
       </span>
       <span
-        class="text-cdp-text-secondary text-[14px] font-normal font-roboto leading-5 tracking-[0.25px]"
+        class="text-cdp-text-secondary text-sm font-normal font-roboto leading-5 tracking-[0.25px]"
       >
         {{
           'locationCard.solutions.sourceText'
@@ -74,12 +74,12 @@
     <div class="flex flex-col">
       <header class="pb-4 flex justify-start items-center gap-2 px-4 lg:px-0">
         <h3
-          class="text-[14px] font-normal font-roboto uppercase leading-6 tracking-[0.5px] text-cdp-dark"
+          class="text-sm font-normal font-roboto uppercase leading-6 tracking-[0.5px] text-cdp-dark"
         >
           {{ 'locationCard.solutionCategoryNames.' + category.category | translate }}
         </h3>
         <div
-          class="flex items-center text-cdp-dark text-[14px] font-normal font-roboto leading-6 tracking-[0.5px]"
+          class="flex items-center text-cdp-dark text-sm font-normal font-roboto leading-6 tracking-[0.5px]"
         >
           <span>(</span>
           <span>{{ category.solutions.length }}</span>
@@ -100,18 +100,18 @@
               <!-- Top Section: ID, Title, Local Action -->
               <div class="w-full flex flex-col gap-2 min-h-0">
                 <span
-                  class="text-white text-[24px] font-bold font-roboto leading-normal tracking-[1.2px]"
+                  class="text-white text-2xl font-bold font-roboto leading-normal tracking-[1.2px]"
                 >
                   {{ i + 1 }}
                 </span>
                 <h4
-                  class="text-white text-[24px] font-light font-roboto leading-normal tracking-[1.2px] line-clamp-2 break-words"
+                  class="text-white text-2xl font-light font-roboto leading-normal tracking-[1.2px] line-clamp-2 break-words"
                 >
                   {{ solution.solution }}
                 </h4>
                 @if (solution.hasLocalAction) {
                   <div
-                    class="mt-px text-white text-[12px] italic font-normal font-roboto leading-normal tracking-[0.6px] line-clamp-1 break-words"
+                    class="mt-px text-white text-xs italic font-normal font-roboto leading-normal tracking-[0.6px] line-clamp-1 break-words"
                   >
                     {{ data?.name }} {{ 'locationCard.solutions.alsoHasLocalAction' | translate }}
                   </div>
@@ -125,7 +125,7 @@
                   @if (solution.solutionHazardsAddressed; as hazards) {
                     <div class="flex flex-col gap-2">
                       <span
-                        class="text-white text-[14px] font-medium font-roboto leading-5 tracking-[0.25px]"
+                        class="text-white text-sm font-medium font-roboto leading-5 tracking-[0.25px]"
                       >
                         {{ 'locationCard.solutions.hazardsAddressed' | translate }}
                       </span>
@@ -139,7 +139,7 @@
                             color="white"
                           ></app-hazard-icon>
                           <span
-                            class="text-white text-[14px] font-normal font-roboto leading-5 tracking-[0.25px]"
+                            class="text-white text-sm font-normal font-roboto leading-5 tracking-[0.25px]"
                           >
                             {{ 'locationCard.hazardNames.' + hazards[0].hazardType | translate }}
                           </span>
@@ -172,7 +172,7 @@
                           <div
                             class="w-6 h-6 bg-white rounded-full flex justify-center items-center"
                           >
-                            <span class="text-black text-[10px] font-bold leading-none"
+                            <span class="text-black text-xxs font-bold leading-none"
                               >+{{ hazards.length - 3 }}</span
                             >
                           </div>
@@ -187,7 +187,7 @@
                   <!-- Jurisdictions Taking this Action -->
                   <div class="flex flex-col gap-2">
                     <span
-                      class="text-white text-[14px] font-medium font-roboto leading-5 tracking-[0.25px]"
+                      class="text-white text-sm font-medium font-roboto leading-5 tracking-[0.25px]"
                     >
                       {{ 'locationCard.solutions.jurisdictionsTakingAction' | translate }}
                     </span>
@@ -206,11 +206,11 @@
                       ></div>
                       <div class="flex items-baseline">
                         <span
-                          class="text-white text-[24px] font-normal font-roboto leading-normal tracking-[1.2px]"
+                          class="text-white text-2xl font-normal font-roboto leading-normal tracking-[1.2px]"
                           >{{ solution.pctPeerTakingAction || 0 | number: '1.0-2' }}</span
                         >
                         <span
-                          class="text-white text-[24px] font-normal font-roboto leading-normal tracking-[1.2px]"
+                          class="text-white text-2xl font-normal font-roboto leading-normal tracking-[1.2px]"
                           >%</span
                         >
                       </div>
@@ -222,11 +222,11 @@
                 <footer class="flex items-center gap-2.5 group/footer">
                   <div class="flex items-center gap-1">
                     <span
-                      class="text-white text-[16px] font-normal font-roboto leading-6 tracking-[0.5px]"
+                      class="text-white text-base font-normal font-roboto leading-6 tracking-[0.5px]"
                       >{{ solution.peerActions?.length || 0 }}</span
                     >
                     <span
-                      class="text-white text-[16px] font-normal font-roboto leading-6 tracking-[0.5px]"
+                      class="text-white text-base font-normal font-roboto leading-6 tracking-[0.5px]"
                     >
                       {{ 'locationCard.solutions.exampleActions' | translate }}
                     </span>

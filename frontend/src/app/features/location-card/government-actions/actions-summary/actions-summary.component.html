@@ -1,11 +1,11 @@
 <section>
   <h2
-    class="text-[16px] font-medium font-roboto leading-[24px] tracking-[0.5px] text-cdp-dark uppercase pt-6 pb-2 px-4 lg:px-0"
+    class="text-base font-medium font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase pt-6 pb-2 px-4 lg:px-0"
   >
     {{ 'locationCard.govActions.filterByHazard' | translate }}
   </h2>
 
-  <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap lg:gap-[10px] mt-4 px-4 lg:px-0">
+  <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap lg:gap-2.5 mt-4 px-4 lg:px-0">
     <!-- All button -->
     <button
       type="button"
@@ -15,9 +15,9 @@
       [class.bg-cdp-neutral-02]="!isSelected(null)"
     >
       <span
-        class="text-[14px] font-[450] font-roboto leading-[16px] tracking-[0.1px] text-center"
-        [class.text-[#E7E9E8]]="isSelected(null)"
-        [class.text-[#1E1E1E]]="!isSelected(null)"
+        class="text-sm font-[450] font-roboto leading-4 tracking-[0.1px] text-center"
+        [class.text-cdp-light-text]="isSelected(null)"
+        [class.text-cdp-border]="!isSelected(null)"
       >
         {{ 'locationCard.govActions.all' | translate }}
       </span>
@@ -46,9 +46,9 @@
           class="shrink-0"
         ></app-hazard-icon>
         <span
-          class="text-[14px] font-[450] font-roboto leading-[16px] tracking-[0.1px] text-center line-clamp-2 w-full break-words"
-          [class.text-[#E7E9E8]]="isSelected(hazardKey(row))"
-          [class.text-[#1E1E1E]]="!isSelected(hazardKey(row))"
+          class="text-sm font-[450] font-roboto leading-4 tracking-[0.1px] text-center line-clamp-2 w-full break-words"
+          [class.text-cdp-light-text]="isSelected(hazardKey(row))"
+          [class.text-cdp-border]="!isSelected(hazardKey(row))"
         >
           @if (row.hazard.hazardType === 'OTHERS') {
             {{ hazardName(row) }}
