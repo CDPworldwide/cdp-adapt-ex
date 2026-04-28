@@ -1,5 +1,7 @@
 import type { HazardEnum, LocationProfile } from '@pac-api/client';
 
+// Scarcity-side water hazards only; commented entries are intentionally excluded but
+// kept as a reference for which related hazard types have been considered.
 const WATER_HAZARD_TYPES: HazardEnum[] = [
   'WATER_STRESS',
   'DROUGHT',

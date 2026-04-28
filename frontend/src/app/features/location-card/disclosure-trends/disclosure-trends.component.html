@@ -1,9 +1,9 @@
-<section class="bg-[#1E1E1E] py-[88px] px-[58px]">
+<section class="bg-cdp-border py-[88px] px-[58px]">
   <!-- Mobile Title Section (hidden on lg and up) -->
   <div class="lg:hidden mb-7">
     <div>
       <span
-        class="block font-roboto font-normal leading-none text-[#E81847] text-[60px] tracking-[-1.8px]"
+        class="block font-roboto font-normal leading-none text-cdp-red text-[60px] tracking-[-1.8px]"
       >
         {{ year }}
       </span>
@@ -36,7 +36,7 @@
     <div class="hidden lg:flex flex-col">
       <div>
         <span
-          class="block font-roboto font-normal leading-none text-[#E81847] text-[60px] tracking-[-1.8px]"
+          class="block font-roboto font-normal leading-none text-cdp-red text-[60px] tracking-[-1.8px]"
         >
           {{ year }}
         </span>
@@ -67,7 +67,7 @@
     <!-- Col 2: Adaptation plan + water security (two stacked boxes) -->
     <div class="flex flex-col gap-[14px]">
       <!-- Box 1: Adaptation Plan count -->
-      <div class="aspect-square bg-[#303030] px-[22px] py-[28px] flex flex-col justify-between">
+      <div class="aspect-square bg-cdp-neutral-09 px-[22px] py-[28px] flex flex-col justify-between">
         <app-check-circle-icon size="30"></app-check-circle-icon>
         <div class="flex flex-col">
           <span class="block font-roboto font-normal text-white leading-none text-[44px]">
@@ -79,7 +79,7 @@
         </div>
       </div>
 
-      <div class="aspect-square bg-[#303030] px-[22px] py-[28px] flex flex-col justify-between">
+      <div class="aspect-square bg-cdp-neutral-09 px-[22px] py-[28px] flex flex-col justify-between">
         <app-water-security-icon size="32"></app-water-security-icon>
         <div class="flex flex-col">
           <span class="block font-roboto font-normal text-white leading-none text-[44px]">
@@ -94,7 +94,7 @@
 
     <!-- Cols 3+4: Top hazards (spans two columns on lg+) -->
     <div
-      class="lg:col-span-2 aspect-square lg:aspect-auto lg:h-full bg-[#303030] px-[22px] py-[28px] flex flex-col"
+      class="lg:col-span-2 aspect-square lg:aspect-auto lg:h-full bg-cdp-neutral-09 px-[22px] py-[28px] flex flex-col"
     >
       <span
         class="block text-white font-roboto text-[12px] font-normal uppercase leading-none tracking-[3.36px] mb-4"
@@ -107,7 +107,7 @@
             <!-- Rank 1: Large -->
             @if (topHazards[0]) {
               <div
-                class="absolute w-[65%] aspect-square rounded-full bg-[#E81847] top-[8%] left-[12.8%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
+                class="absolute w-[65%] aspect-square rounded-full bg-cdp-red top-[8%] left-[12.8%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
               >
                 <app-hazard-icon
                   [hazard]="topHazards[0].type"
@@ -136,7 +136,7 @@
             <!-- Rank 2: Medium -->
             @if (topHazards[1]) {
               <div
-                class="absolute w-[45%] aspect-square rounded-full bg-[#E7E9E8] top-[55%] left-0 flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
+                class="absolute w-[45%] aspect-square rounded-full bg-cdp-light-text top-[55%] left-0 flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
               >
                 <app-hazard-icon
                   [hazard]="topHazards[1].type"
@@ -145,17 +145,17 @@
                   [showTooltip]="false"
                 ></app-hazard-icon>
                 <span
-                  class="mt-[4.5cqw] text-[#1E1E1E] font-inter text-[6cqw] font-medium leading-normal text-center px-[4.5cqw]"
+                  class="mt-[4.5cqw] text-cdp-border font-inter text-[6cqw] font-medium leading-normal text-center px-[4.5cqw]"
                 >
                   {{ formatHazardType(topHazards[1].type) }}
                 </span>
                 @if (topHazards[1].range) {
                   <div class="mt-[7.5cqw] flex items-baseline">
                     <span
-                      class="text-[#1E1E1E] font-roboto text-[17cqw] font-normal leading-none"
+                      class="text-cdp-border font-roboto text-[17cqw] font-normal leading-none"
                       >{{ getHazardNumber(topHazards[1].range) }}</span
                     >
-                    <span class="text-[#1E1E1E] font-roboto text-[11cqw] font-normal leading-none"
+                    <span class="text-cdp-border font-roboto text-[11cqw] font-normal leading-none"
                       >%</span
                     >
                   </div>
@@ -166,7 +166,7 @@
             <!-- Rank 3: Small -->
             @if (topHazards[2]) {
               <div
-                class="absolute w-[31.7%] aspect-square rounded-full bg-[#AFAFAF] top-[57%] right-[19%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
+                class="absolute w-[31.7%] aspect-square rounded-full bg-cdp-neutral-04 top-[57%] right-[19%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
               >
                 <app-hazard-icon
                   [hazard]="topHazards[2].type"
@@ -175,17 +175,17 @@
                   [showTooltip]="false"
                 ></app-hazard-icon>
                 <span
-                  class="mt-[4.5cqw] text-[#1E1E1E] font-inter text-[6cqw] font-medium leading-normal text-center px-[4.5cqw]"
+                  class="mt-[4.5cqw] text-cdp-border font-inter text-[6cqw] font-medium leading-normal text-center px-[4.5cqw]"
                 >
                   {{ formatHazardType(topHazards[2].type) }}
                 </span>
                 @if (topHazards[2].range) {
                   <div class="mt-[7.5cqw] flex items-baseline">
                     <span
-                      class="text-[#1E1E1E] font-roboto text-[17cqw] font-normal leading-none"
+                      class="text-cdp-border font-roboto text-[17cqw] font-normal leading-none"
                       >{{ getHazardNumber(topHazards[2].range) }}</span
                     >
-                    <span class="text-[#1E1E1E] font-roboto text-[11cqw] font-normal leading-none"
+                    <span class="text-cdp-border font-roboto text-[11cqw] font-normal leading-none"
                       >%</span
                     >
                   </div>
@@ -202,7 +202,7 @@
     <!-- Col 5: Projects seeking finance + population exposed (two stacked boxes) -->
     <div class="flex flex-col gap-[14px]">
       <!-- Box 1: Projects seeking finance -->
-      <div class="aspect-square bg-[#303030] px-[22px] py-[28px] flex flex-col justify-between">
+      <div class="aspect-square bg-cdp-neutral-09 px-[22px] py-[28px] flex flex-col justify-between">
         <app-money-circle-icon size="30"></app-money-circle-icon>
         <div class="flex flex-col">
           <span class="block font-roboto font-normal text-white leading-none text-[44px]">
@@ -215,7 +215,7 @@
       </div>
 
       <!-- Box 2: Population exposed -->
-      <div class="aspect-square bg-[#303030] px-[22px] py-[28px] flex flex-col justify-between">
+      <div class="aspect-square bg-cdp-neutral-09 px-[22px] py-[28px] flex flex-col justify-between">
         <app-earth-icon size="30"></app-earth-icon>
         <div class="flex flex-col">
           <span class="block font-roboto font-normal text-white leading-none text-[44px]">
