@@ -438,15 +438,6 @@
                     >
                       @if (parseImpact(hazard.impact); as parsed) {
                         <span class="whitespace-pre-line">{{ parsed.text }}</span>
-                        @if (parsed.url) {
-                          <a
-                            [href]="parsed.url"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="font-roboto text-sm font-normal text-cdp-red leading-5 ml-1 no-underline hover:underline"
-                            >{{ 'locationCard.hazardDetail.linkLabel' | translate }}</a
-                          >
-                        }
                       }
                     </div>
                   </div>

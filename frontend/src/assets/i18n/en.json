@@ -187,7 +187,7 @@
       "requestersTitle": "Data disclosure requested by",
       "requestersTooltip": "These are organizations that have requested disclosure from this jurisdiction. This list is not exhaustive and does not indicate government compliance or the specific purpose for which information was disclosed.",
       "unknown": "Unknown",
-      "mostExposedSectors": "Most exposed sectors",
+      "mostExposedSectors": "Exposed sectors",
       "showMoreHazards": "Show more hazards",
       "aiSummary": "AI summary",
       "noGeeData": "External hazard data is not available for this hazard",
@@ -201,7 +201,7 @@
       "disclosureLine": "{{location}}, {{country}} {{year}} disclosure",
       "topHazardsDisclosed": "Top hazards disclosed",
       "topHazardsTooltip": "Hazards are ranked by how likely they are to occur and how severe their impact could be. This shows the top four — there may be other disclosed hazards not included in this list.",
-      "mostExposedSectors": "most exposed economic sectors",
+      "mostExposedSectors": "exposed economic sectors",
       "mostExposedSectorsTooltip": "Sectors are derived from disclosures and sorted by number of mentions or alphabetically. This reflects only what has been disclosed and does not indicate relative importance or completeness."
     },
     "geeCard": {
@@ -258,7 +258,7 @@
       "notDisclosed": "Not disclosed",
       "noActionsBanner": {
         "title": "Not all information was disclosed",
-        "description": "This jurisdiction is missing some information on their CDP report.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP open data portal.",
+        "description": "This jurisdiction is missing some categories of disclosure in their CDP report. Download the full questionnaire and disclosure from the CDP open data portal.",
         "button": "Visit the CDP Open Data Portal"
       },
       "noGoals": {
