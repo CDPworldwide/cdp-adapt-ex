@@ -1,0 +1,258 @@
+<div class="flex flex-1 flex-col min-h-0 min-w-0 bg-cdp-bg text-cdp-dark">
+  <nav class="bg-cdp-bg flex-shrink-0">
+    <app-header></app-header>
+  </nav>
+
+  <div class="flex-1 overflow-y-auto">
+    <div class="mx-auto flex max-w-4xl flex-col gap-6 px-4 py-8 md:gap-8 md:px-6 md:py-12">
+      <!-- Hero -->
+      <header class="flex flex-col gap-3">
+        <span
+          class="text-xs font-medium uppercase tracking-[0.28em] text-cdp-text-secondary font-roboto-mono"
+        >
+          {{
+            'methodology.lastUpdated'
+              | translate: { date: 'methodology.lastUpdatedDate' | translate }
+          }}
+        </span>
+        <h1 class="text-4xl md:text-5xl font-light leading-tight text-cdp-dark font-roboto">
+          {{ 'methodology.title' | translate }}
+        </h1>
+        <div class="w-12 h-[3px] bg-cdp-red mt-2"></div>
+        <p
+          class="text-base md:text-lg leading-relaxed text-cdp-text-secondary max-w-3xl mt-2 font-inter"
+        >
+          {{ 'methodology.intro' | translate }}
+        </p>
+      </header>
+
+      <!-- CDP Questionnaire -->
+      <section class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0">
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto mb-3 md:mb-4">
+          {{ 'methodology.questionnaire.title' | translate }}
+        </h2>
+        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+          {{ 'methodology.questionnaire.body' | translate }}
+        </p>
+      </section>
+
+      <!-- Hazards -->
+      <section
+        class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0 flex flex-col gap-5 md:gap-6"
+      >
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto">
+          {{ 'methodology.hazards.title' | translate }}
+        </h2>
+        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+          {{ 'methodology.hazards.intro' | translate }}
+        </p>
+
+        <div class="flex flex-col gap-3">
+          <h3 class="text-base md:text-lg font-medium text-cdp-dark font-roboto">
+            {{ 'methodology.hazards.questionnaireData.title' | translate }}
+          </h3>
+          <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+            {{ 'methodology.hazards.questionnaireData.p1' | translate }}
+          </p>
+          <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+            {{ 'methodology.hazards.questionnaireData.p2' | translate }}
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <h3 class="text-base md:text-lg font-medium text-cdp-dark font-roboto">
+            {{ 'methodology.hazards.geeData.title' | translate }}
+          </h3>
+          <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+            {{ 'methodology.hazards.geeData.p1' | translate }}
+          </p>
+          <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+            {{ 'methodology.hazards.geeData.p2' | translate }}
+          </p>
+          <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+            {{ 'methodology.hazards.geeData.p3' | translate }}
+          </p>
+          <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+            {{ 'methodology.hazards.geeData.p4' | translate }}
+          </p>
+        </div>
+
+        <!-- Hazard layers accordion -->
+        <div class="flex flex-col gap-2 mt-1">
+          <h3 class="text-base md:text-lg font-medium text-cdp-dark font-roboto mb-2">
+            {{ 'methodology.hazards.layers.title' | translate }}
+          </h3>
+          <ul class="flex flex-col divide-y divide-stone-200 border-t border-b border-stone-200">
+            @for (layer of hazardLayers; track layer.id) {
+              <li>
+                <button
+                  type="button"
+                  (click)="toggle(layer.id)"
+                  [attr.aria-expanded]="isOpen(layer.id)"
+                  [attr.aria-controls]="'panel-' + layer.id"
+                  class="w-full flex items-center justify-between gap-4 py-4 px-2 text-left rounded-md transition-colors hover:bg-stone-50 active:bg-stone-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+                >
+                  <span class="text-sm md:text-base font-medium text-cdp-dark font-roboto">
+                    {{ 'methodology.hazardLayers.' + layer.id + '.title' | translate }}
+                  </span>
+                  <span
+                    class="flex-shrink-0 text-cdp-text-secondary text-2xl leading-none transition-transform duration-200"
+                    [class.rotate-45]="isOpen(layer.id)"
+                    aria-hidden="true"
+                    >+</span
+                  >
+                </button>
+                <div
+                  [id]="'panel-' + layer.id"
+                  class="accordion-panel"
+                  [class.is-open]="isOpen(layer.id)"
+                >
+                  <div class="accordion-panel-inner">
+                    <p
+                      class="px-2 pb-4 text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+                    >
+                      {{ 'methodology.hazardLayers.' + layer.id + '.description' | translate }}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            }
+          </ul>
+          <p class="text-xs text-cdp-text-tertiary italic mt-3 font-inter">
+            {{ 'methodology.hazards.layers.footnote' | translate }}
+          </p>
+        </div>
+
+        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+          {{ 'methodology.hazards.outro' | translate }}
+        </p>
+      </section>
+
+      <!-- Government Actions -->
+      <section
+        class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0 flex flex-col gap-4"
+      >
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto">
+          {{ 'methodology.governmentActions.title' | translate }}
+        </h2>
+        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+          {{ 'methodology.governmentActions.intro' | translate }}
+        </p>
+        <ul
+          class="list-disc pl-6 flex flex-col gap-1 text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+        >
+          <li>{{ 'methodology.governmentActions.listGoals' | translate }}</li>
+          <li>{{ 'methodology.governmentActions.listActions' | translate }}</li>
+          <li>{{ 'methodology.governmentActions.listProjects' | translate }}</li>
+        </ul>
+        <p
+          class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+          [innerHTML]="'methodology.governmentActions.goals' | translate"
+        ></p>
+        <p
+          class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+          [innerHTML]="'methodology.governmentActions.actions' | translate"
+        ></p>
+        <p
+          class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+          [innerHTML]="'methodology.governmentActions.projects' | translate"
+        ></p>
+        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+          {{ 'methodology.governmentActions.outro' | translate }}
+        </p>
+      </section>
+
+      <!-- Solutions -->
+      <section
+        class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0 flex flex-col gap-4"
+      >
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto">
+          {{ 'methodology.solutions.title' | translate }}
+        </h2>
+        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+          {{ 'methodology.solutions.p1' | translate }}
+        </p>
+        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+          {{ 'methodology.solutions.p2' | translate }}
+        </p>
+      </section>
+
+      <!-- Minimum criteria -->
+      <section
+        class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0 flex flex-col gap-4"
+      >
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto">
+          {{ 'methodology.minimumCriteria.title' | translate }}
+        </h2>
+        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+          {{ 'methodology.minimumCriteria.intro' | translate }}
+        </p>
+
+        <div class="overflow-x-auto -mx-5 md:-mx-8 px-5 md:px-8 mt-2">
+          <table class="w-full text-left border-collapse min-w-[640px]">
+            <thead>
+              <tr class="border-b-2 border-cdp-dark">
+                <th
+                  class="py-3 pr-4 text-xs font-bold uppercase tracking-[0.14em] text-cdp-dark font-roboto-mono"
+                >
+                  {{ 'methodology.minimumCriteria.headers.topic' | translate }}
+                </th>
+                <th
+                  class="py-3 pr-4 text-xs font-bold uppercase tracking-[0.14em] text-cdp-dark font-roboto-mono whitespace-nowrap"
+                >
+                  {{ 'methodology.minimumCriteria.headers.questionNumber' | translate }}
+                </th>
+                <th
+                  class="py-3 pr-4 text-xs font-bold uppercase tracking-[0.14em] text-cdp-dark font-roboto-mono"
+                >
+                  {{ 'methodology.minimumCriteria.headers.rawData' | translate }}
+                </th>
+                <th
+                  class="py-3 text-xs font-bold uppercase tracking-[0.14em] text-cdp-dark font-roboto-mono"
+                >
+                  {{ 'methodology.minimumCriteria.headers.criteria' | translate }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of minimumCriteria; track row.id) {
+                <tr class="border-b border-stone-200 align-top">
+                  <td class="py-4 pr-4 text-sm font-medium text-cdp-dark font-inter">
+                    {{ 'methodology.minimumCriteria.rows.' + row.id + '.topic' | translate }}
+                  </td>
+                  <td
+                    class="py-4 pr-4 text-sm text-cdp-text-secondary font-roboto-mono whitespace-nowrap"
+                  >
+                    {{ row.questionNumber }}
+                  </td>
+                  <td class="py-4 pr-4 text-sm font-inter">
+                    @if (row.rawDataLinks && row.rawDataLinks.length > 0) {
+                      <ul class="flex flex-col gap-1">
+                        @for (link of row.rawDataLinks; track link.url) {
+                          <li>
+                            <a
+                              [href]="link.url"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors"
+                              >{{ link.labelKey | translate }}</a
+                            >
+                          </li>
+                        }
+                      </ul>
+                    } @else {
+                      <span class="text-cdp-text-tertiary">—</span>
+                    }
+                  </td>
+                  <td class="py-4 text-sm leading-relaxed text-cdp-text-secondary font-inter">
+                    {{ 'methodology.minimumCriteria.rows.' + row.id + '.criteria' | translate }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

@@ -209,15 +209,15 @@ describe('MainSearchComponent', () => {
       expect(suggestions).toEqual([]);
     });
 
-    it('should limit the number of suggestions to 3', fakeAsync(() => {
-      // Provide more than 3 suggestions
+    it('should limit the number of suggestions to 5', fakeAsync(() => {
       const manySuggestions = [
         { organizationId: 201, name: 'Paris', disclosesToCDP: true },
         { organizationId: 202, name: 'Perth', disclosesToCDP: false },
         { organizationId: 203, name: 'Porto', disclosesToCDP: true },
         { organizationId: 204, name: 'Prague', disclosesToCDP: false },
+        { organizationId: 205, name: 'Phoenix', disclosesToCDP: true },
+        { organizationId: 206, name: 'Portland', disclosesToCDP: true },
       ];
-      // Mock the location service to return the many suggestions
       mockLocationService.getAllLocationNames.and.returnValue(of(manySuggestions));
 
       recreateComponent();
@@ -230,9 +230,7 @@ describe('MainSearchComponent', () => {
       component.searchControl.setValue('p');
       tick();
 
-      // The first emission from startWith('') will set suggestions,
-      // then the emission from setValue('p') will update it.
-      expect(suggestions.length).toBe(3);
+      expect(suggestions.length).toBe(5);
     }));
   });
 
@@ -279,8 +277,8 @@ describe('MainSearchComponent', () => {
       fixture.detectChanges();
 
       const compiled = fixture.nativeElement as HTMLElement;
-      const backButton = Array.from(compiled.querySelectorAll('button')).find(
-        (btn) => btn.textContent?.includes('Go back'),
+      const backButton = Array.from(compiled.querySelectorAll('button')).find((btn) =>
+        btn.textContent?.includes('Go back'),
       );
 
       backButton?.click();

@@ -82,13 +82,12 @@ export class HazardsComponent implements AfterViewInit {
   getActionsCountForHazard(hazard: Hazard): number {
     if (!this.data?.governmentActions?.actions) return 0;
 
-    return this.data.governmentActions.actions.filter(
-      (action: AdaptationAction) =>
-        action.hazardsAddressed?.some(
-          (h: Hazard) =>
-            h.hazardType === hazard.hazardType &&
-            (h.otherHazardDetails || '') === (hazard.otherHazardDetails || ''),
-        ),
+    return this.data.governmentActions.actions.filter((action: AdaptationAction) =>
+      action.hazardsAddressed?.some(
+        (h: Hazard) =>
+          h.hazardType === hazard.hazardType &&
+          (h.otherHazardDetails || '') === (hazard.otherHazardDetails || ''),
+      ),
     ).length;
   }
 

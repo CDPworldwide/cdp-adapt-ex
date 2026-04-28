@@ -36,7 +36,7 @@ export class ActionsSummaryComponent {
   }
 
   hazardName(row: HazardSummaryRow): string {
-    return row.hazard.hazardType === 'OTHERS' ? row.hazard.otherHazardDetails ?? '' : '';
+    return row.hazard.hazardType === 'OTHERS' ? (row.hazard.otherHazardDetails ?? '') : '';
   }
 
   hazardTranslationKey(row: HazardSummaryRow): string {

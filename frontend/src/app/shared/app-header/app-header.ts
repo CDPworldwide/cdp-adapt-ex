@@ -10,7 +10,14 @@ import { LanguageService } from '../services/language.service';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatMenuModule, RouterLink, TranslateModule, CdpLogoWithTextIconComponent],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatMenuModule,
+    RouterLink,
+    TranslateModule,
+    CdpLogoWithTextIconComponent,
+  ],
   templateUrl: './app-header.html',
 })
 export class AppHeaderComponent {

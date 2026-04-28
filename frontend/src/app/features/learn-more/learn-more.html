@@ -1,0 +1,107 @@
+<div class="flex flex-1 flex-col min-h-0 min-w-0 bg-cdp-bg text-cdp-dark">
+  <nav class="bg-cdp-bg flex-shrink-0">
+    <app-header></app-header>
+  </nav>
+
+  <div class="flex-1 overflow-y-auto">
+    <div class="mx-auto flex max-w-4xl flex-col gap-6 px-4 py-8 md:gap-8 md:px-6 md:py-12">
+      <!-- Hero -->
+      <header class="flex flex-col gap-3">
+        <span
+          class="text-xs font-medium uppercase tracking-[0.28em] text-cdp-text-secondary font-roboto-mono"
+        >
+          {{
+            'learnMore.lastUpdated' | translate: { date: 'learnMore.lastUpdatedDate' | translate }
+          }}
+        </span>
+        <h1 class="text-4xl md:text-5xl font-light leading-tight text-cdp-dark font-roboto">
+          {{ 'learnMore.title' | translate }}
+        </h1>
+        <div class="w-12 h-[3px] bg-cdp-red mt-2"></div>
+        <p
+          class="text-base md:text-lg leading-relaxed text-cdp-text-secondary max-w-3xl mt-2 font-inter"
+        >
+          {{ 'learnMore.intro' | translate }}
+        </p>
+      </header>
+
+      <!-- Static info: What you'll find here -->
+      <section class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0">
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto mb-3 md:mb-4">
+          {{ 'learnMore.what.title' | translate }}
+        </h2>
+        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+          {{ 'learnMore.what.body' | translate }}
+        </p>
+      </section>
+
+      <!-- Static info: Who it's for -->
+      <section class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0">
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto mb-3 md:mb-4">
+          {{ 'learnMore.audience.title' | translate }}
+        </h2>
+        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+          {{ 'learnMore.audience.body' | translate }}
+        </p>
+      </section>
+
+      <!-- Static info: How to use it -->
+      <section class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0">
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto mb-3 md:mb-4">
+          {{ 'learnMore.howToUse.title' | translate }}
+        </h2>
+        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
+          {{ 'learnMore.howToUse.body' | translate }}
+        </p>
+      </section>
+
+      <!-- FAQ -->
+      <section
+        class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0 flex flex-col gap-3"
+      >
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto mb-1">
+          {{ 'learnMore.faq.title' | translate }}
+        </h2>
+        <ul class="flex flex-col divide-y divide-stone-200 border-t border-b border-stone-200">
+          @for (item of faqItems; track item.id) {
+            <li>
+              <button
+                type="button"
+                (click)="toggle(item.id)"
+                [attr.aria-expanded]="isOpen(item.id)"
+                [attr.aria-controls]="'faq-panel-' + item.id"
+                class="w-full flex items-center justify-between gap-4 py-4 px-2 text-left rounded-md transition-colors hover:bg-stone-50 active:bg-stone-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+              >
+                <span class="text-sm md:text-base font-medium text-cdp-dark font-roboto">
+                  {{ 'learnMore.faq.items.' + item.id + '.question' | translate }}
+                </span>
+                <span
+                  class="flex-shrink-0 text-cdp-text-secondary text-2xl leading-none transition-transform duration-200"
+                  [class.rotate-45]="isOpen(item.id)"
+                  aria-hidden="true"
+                  >+</span
+                >
+              </button>
+              <div
+                [id]="'faq-panel-' + item.id"
+                class="accordion-panel"
+                [class.is-open]="isOpen(item.id)"
+              >
+                <div class="accordion-panel-inner">
+                  <p
+                    class="px-2 pb-4 text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+                  >
+                    {{ 'learnMore.faq.items.' + item.id + '.answer' | translate }}
+                  </p>
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+        <p class="text-xs text-cdp-text-tertiary italic mt-2 font-inter">
+          {{ 'learnMore.faq.footnote' | translate }}
+        </p>
+      </section>
+    </div>
+  </div>
+</div>

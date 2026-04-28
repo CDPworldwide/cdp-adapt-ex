@@ -97,6 +97,30 @@
   align-items: center;
   gap: 6px;
   color: #000000;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.header-button:hover {
+  background-color: #f3f4f6;
+}
+
+.header-button:active {
+  background-color: #e5e7eb;
+}
+
+.header-button:focus-visible {
+  outline: 2px solid #e81647;
+  outline-offset: 2px;
+}
+
+.nav-links a:active {
+  background-color: #e5e7eb;
+  color: #111827;
+}
+
+.nav-links a:focus-visible {
+  outline: 2px solid #e81647;
+  outline-offset: 2px;
 }
 
 .header-button mat-icon {

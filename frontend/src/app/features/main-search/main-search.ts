@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, combineLatest, map, of, startWith } from 'rxjs';
 import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import fuzzysort from 'fuzzysort';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
@@ -27,23 +27,26 @@ import { ActionStatusEnum } from '@pac-api/client';
 import type { AdaptationAction, Hazard, HazardProfile, LocationPin } from '@pac-api/client';
 import { CdpLogoIconComponent } from '../../shared/icons';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
+import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
 
 @Component({
   selector: 'app-main-search',
   templateUrl: './main-search.html',
   styleUrls: ['./main-search.css'],
   encapsulation: ViewEncapsulation.None,
-  host: { class: 'flex flex-col flex-1 min-h-0' },
+  host: { class: 'flex flex-col flex-1 min-h-0 overflow-y-auto' },
   imports: [
     CommonModule,
     FormsModule,
     MatIconModule,
     ReactiveFormsModule,
     TranslateModule,
+    RouterLink,
     Maps,
     LocationSummaryComponent,
     CdpLogoIconComponent,
     AppHeaderComponent,
+    DisclosureTrendsComponent,
   ],
 })
 export class MainSearchComponent implements OnInit {
@@ -55,6 +58,7 @@ export class MainSearchComponent implements OnInit {
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
 
   selectedLocation: LocationPin | null = null;
+  selectedLocationData: LocationData | null = null;
   isLoadingHazardData = false;
   totalHazardsCount = 0;
   implementedActionsCount = 0;
@@ -123,7 +127,12 @@ export class MainSearchComponent implements OnInit {
       });
   }
 
+  get resolvedYear(): number {
+    return this.selectedLocationData?.disclosureYear ?? new Date().getFullYear();
+  }
+
   private processLocationData(data: LocationData): void {
+    this.selectedLocationData = data;
     this.totalHazardsCount = data.hazards?.hazards?.length || 0;
     this.implementedActionsCount =
       data.governmentActions?.actions?.filter(
@@ -140,15 +149,14 @@ export class MainSearchComponent implements OnInit {
 
   closeCard(): void {
     this.mapSelectionService.clearSelection();
+    this.selectedLocationData = null;
   }
 
   goToLocationDetails(): void {
     if (!this.selectedLocation) {
       return;
     }
-    const suggestion = this.allLocations.find(
-      (loc) => loc.name === this.selectedLocation?.name,
-    );
+    const suggestion = this.allLocations.find((loc) => loc.name === this.selectedLocation?.name);
     if (suggestion) {
       this.mapSelectionService.clearSelection();
       this.router.navigate(['/org', suggestion.organizationId]);
@@ -198,18 +206,38 @@ export class MainSearchComponent implements OnInit {
     ];
   }
 
+  private static readonly MAX_SUGGESTIONS = 5;
+
+  private normalizeForSearch(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/\bst\.?\b/gi, 'saint')
+      .replace(/\bste\.?\b/gi, 'sainte')
+      .replace(/\bmt\.?\b/gi, 'mount')
+      .replace(/\bft\.?\b/gi, 'fort')
+      .toLowerCase();
+  }
+
   private _filter(
     value: string,
     locations: LocationSuggestion[] = this.allLocations,
   ): LocationSuggestion[] {
     if (!value) {
-      return locations.slice(0, 3);
+      return locations.slice(0, MainSearchComponent.MAX_SUGGESTIONS);
     }
-    const results = fuzzysort.go(value, locations, {
-      key: 'name',
-      limit: 3,
+    const prepared = locations.map((loc) => ({
+      ...loc,
+      _normalized: this.normalizeForSearch(loc.name),
+    }));
+    const results = fuzzysort.go(this.normalizeForSearch(value), prepared, {
+      key: '_normalized',
+      limit: MainSearchComponent.MAX_SUGGESTIONS,
     });
-    return results.map((result) => result.obj);
+    return results.map((result) => {
+      const { _normalized, ...rest } = result.obj;
+      return rest;
+    });
   }
 
   onSearch(query?: string) {
