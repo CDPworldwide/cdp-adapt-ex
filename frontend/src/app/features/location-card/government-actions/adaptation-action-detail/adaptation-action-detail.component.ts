@@ -17,10 +17,10 @@ import { AdaptationAction, ActionStatus } from '@pac-api/client';
 import { CloseIconComponent } from '../../../../shared/icons/close-icon.component';
 import { ImagePlaceholderIconComponent } from '../../../../shared/icons/image-placeholder-icon.component';
 import { InfoIconComponent } from '../../../../shared/icons/info-icon.component';
+import { LocationPinIconComponent } from '../../../../shared/icons/location-pin-icon.component';
 import { HazardIconComponent } from '../../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../../shared/components/sector-icon/sector-icon.component';
 import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
-import { ShowMoreButtonComponent } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-adaptation-action-detail',
@@ -36,7 +36,7 @@ import { ShowMoreButtonComponent } from 'src/app/shared/components';
     MatTooltipModule,
     MatIconModule,
     AutoTranslatePipe,
-    ShowMoreButtonComponent,
+    LocationPinIconComponent,
   ],
   templateUrl: './adaptation-action-detail.component.html',
 })
@@ -83,7 +83,7 @@ export class AdaptationActionDetailComponent {
     if (!status) return 'bg-cdp-neutral-05 text-white';
     const s = status.statusType;
     if (s.startsWith('ACTION_IN_OPERATION')) return 'bg-cdp-blue text-white';
-    if (s.startsWith('IMPLEMENTATION')) return 'bg-cdp-green text-cdp-dark';
+    if (s.startsWith('IMPLEMENTATION')) return '!bg-cdp-green-implementation text-white';
     return 'bg-cdp-neutral-05 text-white';
   }
 

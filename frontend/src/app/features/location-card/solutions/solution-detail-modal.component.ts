@@ -1,4 +1,11 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+  ChangeDetectorRef,
+  ViewEncapsulation,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
@@ -11,6 +18,8 @@ import { HazardIconComponent } from '../../../shared/components/hazard-icon/haza
 import {
   ArrowRightIconComponent,
   ArrowLeftIconComponent,
+  ArrowRightLongIconComponent,
+  ArrowLeftLongIconComponent,
   CloseIconComponent,
 } from '../../../shared/icons';
 import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
@@ -26,10 +35,14 @@ import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
     HazardIconComponent,
     ArrowRightIconComponent,
     ArrowLeftIconComponent,
+    ArrowRightLongIconComponent,
+    ArrowLeftLongIconComponent,
     CloseIconComponent,
     AutoTranslatePipe,
   ],
   templateUrl: './solution-detail-modal.component.html',
+  styleUrl: './solution-detail-modal.component.css',
+  encapsulation: ViewEncapsulation.None,
 })
 export class SolutionDetailModalComponent implements OnInit, OnDestroy {
   public data = inject<{
@@ -39,9 +52,21 @@ export class SolutionDetailModalComponent implements OnInit, OnDestroy {
 
   private dialogRef = inject(MatDialogRef<SolutionDetailModalComponent>);
   private breakpointObserver = inject(BreakpointObserver);
+  private cdr = inject(ChangeDetectorRef);
 
   currentActionIndex = 0;
+  slideClass = '';
   private destroy$ = new Subject<void>();
+
+  private readonly backgroundImages = [
+    'assets/images/solutions-detail-modal.component.images/enviornmental_bkgs_shading.webp',
+  ];
+
+  getBackgroundStyle(solution: SolutionCardOutput): string {
+    // TODO: map solution to specific image when logic is defined
+    const image = this.backgroundImages[0 % this.backgroundImages.length];
+    return `linear-gradient(270deg, rgba(30, 30, 30, 0.20) 0%, rgba(30, 30, 30, 0.50) 54.96%), url(${image}) #1B232C center / cover no-repeat`;
+  }
 
   constructor() {}
 
@@ -64,7 +89,7 @@ export class SolutionDetailModalComponent implements OnInit, OnDestroy {
       this.dialogRef.updateSize('100%', '100%');
       this.dialogRef.updatePosition({ top: '0', left: '0' });
     } else {
-      this.dialogRef.updateSize('75rem', 'auto');
+      this.dialogRef.updateSize('80vw', '80vh');
       // For desktop, we want it centered. updatePosition({}) resets it to default (center).
       this.dialogRef.updatePosition({ top: '', left: '' });
     }
@@ -85,13 +110,23 @@ export class SolutionDetailModalComponent implements OnInit, OnDestroy {
   nextAction(): void {
     if (this.currentActionIndex < this.totalActions - 1) {
       this.currentActionIndex++;
+      this.slide('right');
     }
   }
 
   prevAction(): void {
     if (this.currentActionIndex > 0) {
       this.currentActionIndex--;
+      this.slide('left');
     }
+  }
+
+  private slide(dir: 'right' | 'left'): void {
+    this.slideClass = '';
+    this.cdr.detectChanges();
+    requestAnimationFrame(() => {
+      this.slideClass = dir === 'right' ? 'slide-from-right' : 'slide-from-left';
+    });
   }
 
   close(): void {

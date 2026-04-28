@@ -41,3 +41,7 @@ test/.env
 backend/.env.local
 docs/analytics_tracking_plan.md
 data/overture/geometry.json
+/.playwright-mcp
+**/.playwright-mcp/
+.playwright-mcp/
+/*.png

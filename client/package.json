@@ -29,7 +29,7 @@
     "prebuild": "npm run clean"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.92.3",
+    "@hey-api/openapi-ts": "^0.92.4",
     "rimraf": "^6.1.2",
     "typescript": "^5.7.2"
   },

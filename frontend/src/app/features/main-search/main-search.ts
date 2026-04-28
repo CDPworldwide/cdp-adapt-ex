@@ -1,14 +1,20 @@
-import { Component, DestroyRef, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  HostListener,
+  inject,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, Observable, combineLatest, map, startWith } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map, of, startWith } from 'rxjs';
+import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import fuzzysort from 'fuzzysort';
 import { Router } from '@angular/router';
 import { SearchService, LocationData } from './search.service';
@@ -16,8 +22,10 @@ import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { MapSelectionService } from './map-selection.service';
 import { Maps } from '../maps/maps';
-import { CdpLogoIconComponent, CdpLogoWithTextIconComponent } from '../../shared/icons';
-import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
+import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
+import { ActionStatusEnum } from '@pac-api/client';
+import type { AdaptationAction, Hazard, HazardProfile, LocationPin } from '@pac-api/client';
+import { CdpLogoIconComponent } from '../../shared/icons';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
 
 @Component({
@@ -29,54 +37,33 @@ import { AppHeaderComponent } from '../../shared/app-header/app-header';
   imports: [
     CommonModule,
     FormsModule,
-    MatAutocompleteModule,
     MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
     ReactiveFormsModule,
     TranslateModule,
     Maps,
+    LocationSummaryComponent,
     CdpLogoIconComponent,
-    CdpLogoWithTextIconComponent,
-    LoadingSpinner,
     AppHeaderComponent,
   ],
 })
 export class MainSearchComponent implements OnInit {
   searchControl = new FormControl('');
   isNotFound = false;
-  isAutocompleteOpen = false;
-  isLoadingLocation = false;
-  menuOpen = false;
+  isOverlayOpen = false;
   allLocations: LocationSuggestion[] = [];
   filteredLocations!: Observable<LocationSuggestion[]>;
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
-  private searchInputHasFocus = false;
-  private pendingAutocompleteOpen = false;
-  private autocompleteTrigger?: MatAutocompleteTrigger;
 
-  hasMapPinSelected = false;
-  isMapClicked = false;
-  pinFilter: 'all' | 'city' | 'region' = 'all';
+  selectedLocation: LocationPin | null = null;
+  isLoadingHazardData = false;
+  totalHazardsCount = 0;
+  implementedActionsCount = 0;
+  projectsRequiringFundingCount = 0;
+  topFourHazards: Hazard[] = [];
 
-  get isMapFocused(): boolean {
-    return this.hasMapPinSelected || this.isMapClicked;
-  }
+  @ViewChild('overlayInput') private overlayInputRef?: ElementRef<HTMLInputElement>;
 
   private destroyRef = inject(DestroyRef);
-
-  togglePinFilter(type: 'city' | 'region') {
-    this.pinFilter = this.pinFilter === type ? 'all' : type;
-  }
-
-  toggleMenu() {
-    this.menuOpen = !this.menuOpen;
-  }
-
-  closeMenu() {
-    this.menuOpen = false;
-  }
 
   constructor(
     private searchService: SearchService,
@@ -101,40 +88,92 @@ export class MainSearchComponent implements OnInit {
         next: (names) => {
           this.allLocations = names;
           this.allLocations$.next(names);
-          this.openAutocompleteIfPending();
         },
       });
 
-    combineLatest({
-      location: this.mapSelectionService.selectedMapLocation$,
-      isMapClicked: this.mapSelectionService.isMapClicked$,
-    })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(({ location, isMapClicked }) => {
-        this.hasMapPinSelected = location !== null;
-        this.isMapClicked = isMapClicked;
+    this.mapSelectionService.selectedMapLocation$
+      .pipe(
+        tap((location) => {
+          this.selectedLocation = location;
+          if (location) {
+            this.totalHazardsCount = 0;
+            this.implementedActionsCount = 0;
+            this.projectsRequiringFundingCount = 0;
+            this.topFourHazards = [];
+            this.isLoadingHazardData = true;
+          }
+        }),
+        filter((location): location is LocationPin => location !== null),
+        switchMap((location) =>
+          this.searchService.searchLocation(location.name).pipe(
+            tap(() => (this.isLoadingHazardData = false)),
+            catchError((err) => {
+              console.error('Error fetching location details:', err);
+              this.isLoadingHazardData = false;
+              return of(null);
+            }),
+          ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((data) => {
+        if (data) {
+          this.processLocationData(data);
+        }
       });
   }
 
-  onSearchInputInteraction(source: 'focus' | 'click', trigger: MatAutocompleteTrigger): void {
-    this.searchInputHasFocus = true;
-    this.autocompleteTrigger = trigger;
-
-    this.logAutocompleteDebug('input_interaction', {
-      source,
-      hasMapPinSelected: this.hasMapPinSelected,
-      isAutocompleteOpen: this.isAutocompleteOpen,
-      currentValue: this.searchControl.value || '',
-      suggestionCount: this._filter(this.searchControl.value || '').length,
-      panelOpen: trigger.panelOpen,
-    });
-
-    this.openAutocomplete(trigger, source);
+  private processLocationData(data: LocationData): void {
+    this.totalHazardsCount = data.hazards?.hazards?.length || 0;
+    this.implementedActionsCount =
+      data.governmentActions?.actions?.filter(
+        (action: AdaptationAction) =>
+          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_JURISDICTION_WIDE ||
+          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_MOST_OF_JURISDICTION ||
+          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_TARGETED,
+      ).length || 0;
+    this.projectsRequiringFundingCount = data.governmentActions?.projects?.length || 0;
+    this.topFourHazards = (data.hazards?.hazards || [])
+      .map((hazardProfile: HazardProfile) => hazardProfile.hazard)
+      .slice(0, 4);
   }
 
-  onSearchInputBlur(): void {
-    this.searchInputHasFocus = false;
-    this.pendingAutocompleteOpen = false;
+  closeCard(): void {
+    this.mapSelectionService.clearSelection();
+  }
+
+  goToLocationDetails(): void {
+    if (!this.selectedLocation) {
+      return;
+    }
+    const suggestion = this.allLocations.find(
+      (loc) => loc.name === this.selectedLocation?.name,
+    );
+    if (suggestion) {
+      this.mapSelectionService.clearSelection();
+      this.router.navigate(['/org', suggestion.organizationId]);
+    }
+  }
+
+  openSearchOverlay(): void {
+    if (this.isOverlayOpen) {
+      return;
+    }
+    this.isOverlayOpen = true;
+    requestAnimationFrame(() => {
+      this.overlayInputRef?.nativeElement.focus();
+    });
+  }
+
+  closeSearchOverlay(): void {
+    this.isOverlayOpen = false;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.isOverlayOpen) {
+      this.closeSearchOverlay();
+    }
   }
 
   onInput(): void {
@@ -143,25 +182,22 @@ export class MainSearchComponent implements OnInit {
     }
   }
 
-  onAutocompleteOpened(): void {
-    this.isAutocompleteOpen = true;
-    this.logAutocompleteDebug('panel_opened', {
-      currentValue: this.searchControl.value || '',
-    });
+  splitMatch(name: string, query: string): Array<{ text: string; bold: boolean }> {
+    const trimmed = (query || '').trim();
+    if (!trimmed) {
+      return [{ text: name, bold: false }];
+    }
+    const idx = name.toLowerCase().indexOf(trimmed.toLowerCase());
+    if (idx === -1) {
+      return [{ text: name, bold: false }];
+    }
+    return [
+      { text: name.substring(0, idx), bold: false },
+      { text: name.substring(idx, idx + trimmed.length), bold: true },
+      { text: name.substring(idx + trimmed.length), bold: false },
+    ];
   }
 
-  onAutocompleteClosed(): void {
-    this.isAutocompleteOpen = false;
-    this.logAutocompleteDebug('panel_closed', {
-      currentValue: this.searchControl.value || '',
-    });
-  }
-
-  /*
-   * Filters the location suggestions based on the user's input.
-   * When the input is empty, it returns the first 3 locations from the full list.
-   * When there is input, it performs a fuzzy search and returns the top 3 matches.
-   */
   private _filter(
     value: string,
     locations: LocationSuggestion[] = this.allLocations,
@@ -187,7 +223,6 @@ export class MainSearchComponent implements OnInit {
       (location) => location.name.toLowerCase() === trimmedQuery.toLowerCase(),
     );
 
-    // Directly open the location if there's a match. Otherwise, perform the search which may lead to a "not found" state.
     if (selectedLocation) {
       this.openLocation(selectedLocation.organizationId);
     } else {
@@ -199,87 +234,27 @@ export class MainSearchComponent implements OnInit {
     this.searchControl.setValue('');
     this.isNotFound = false;
     this.mapSelectionService.clearSelection();
-    this.mapSelectionService.setMapClicked(false);
     this.router.navigate(['/']);
   }
 
   private openLocation(organizationId: number) {
+    this.closeSearchOverlay();
     this.router.navigate(['/org', organizationId]);
-  }
-
-  private openAutocomplete(trigger: MatAutocompleteTrigger, source: 'focus' | 'click'): void {
-    if (this.isAutocompleteOpen) {
-      this.logAutocompleteDebug('skip_open_already_open', {
-        source,
-        panelOpen: trigger.panelOpen,
-      });
-      return;
-    }
-
-    const suggestionCount = this._filter(this.searchControl.value || '').length;
-    if (suggestionCount === 0) {
-      this.pendingAutocompleteOpen = this.searchInputHasFocus;
-      this.logAutocompleteDebug('skip_open_no_suggestions', {
-        source,
-        currentValue: this.searchControl.value || '',
-      });
-      return;
-    }
-
-    this.pendingAutocompleteOpen = false;
-
-    this.logAutocompleteDebug('schedule_open', {
-      source,
-      currentValue: this.searchControl.value || '',
-      suggestionCount,
-      panelOpen: trigger.panelOpen,
-    });
-
-    setTimeout(() => {
-      this.logAutocompleteDebug('attempt_open', {
-        source,
-        currentValue: this.searchControl.value || '',
-        suggestionCount: this._filter(this.searchControl.value || '').length,
-        panelOpenBefore: trigger.panelOpen,
-      });
-      trigger.openPanel();
-      this.logAutocompleteDebug('open_called', {
-        source,
-        panelOpenAfter: trigger.panelOpen,
-      });
-    });
-  }
-
-  private openAutocompleteIfPending(): void {
-    if (!this.pendingAutocompleteOpen || !this.searchInputHasFocus || !this.autocompleteTrigger) {
-      return;
-    }
-
-    this.openAutocomplete(this.autocompleteTrigger, 'focus');
-  }
-
-  private logAutocompleteDebug(event: string, details: Record<string, unknown>): void {
-    console.debug('[MainSearch autocomplete]', {
-      event,
-      ...details,
-    });
   }
 
   private loadLocation(locationName: string) {
     this.mapSelectionService.clearSelection();
-    this.isLoadingLocation = true;
     this.isNotFound = false;
     this.searchService
       .searchLocation(locationName)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
-          this.isLoadingLocation = false;
           this.openLocation(data.organizationId);
         },
         error: () => {
-          this.isLoadingLocation = false;
           this.isNotFound = true;
+          this.closeSearchOverlay();
         },
       });
   }

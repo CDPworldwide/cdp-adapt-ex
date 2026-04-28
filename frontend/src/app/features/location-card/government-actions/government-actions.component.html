@@ -1,9 +1,8 @@
 @if (data) {
   <!-- List View -->
-  <div class="px-4 lg:px-0 pb-6 space-y-6 bg-gray-50/30">
+  <div class="space-y-6">
     @if (isAnyEmpty) {
-      <div class="mb-8">
-        <!-- Banner -->
+      <div class="mb-8 px-4 lg:px-0">
         <div class="w-full px-6 py-4 bg-cdp-red flex justify-start items-center gap-6 rounded-lg">
           <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
             <app-no-hazards-icon size="44" color="white"></app-no-hazards-icon>
@@ -38,62 +37,88 @@
       </div>
     }
 
-    @if (!isAllEmpty) {
-      <app-actions-summary
-        [summaryRows]="summaryRows"
-        [totalGoals]="totalGoals"
-        [totalActions]="totalActions"
-        [selectedFilter]="selectedFilter"
-        (filterChanged)="onFilterChanged($event)"
-      ></app-actions-summary>
-    }
+    <app-actions-summary
+      [summaryRows]="summaryRows"
+      [totalGoals]="totalGoals"
+      [totalActions]="totalActions"
+      [selectedFilter]="selectedFilter"
+      (filterChanged)="onFilterChanged($event)"
+    ></app-actions-summary>
 
     <!-- Adaptation Goals Section -->
     <section>
-      <div class="flex items-center gap-2 mb-4">
-        <h2 class="text-base font-semibold font-roboto tracking-wide text-cdp-dark uppercase">
-          {{
-            'locationCard.govActions.adaptationGoals' | translate: { count: filteredGoals.length }
-          }}
+      <div class="flex items-center gap-2 mb-6 mt-6 px-4 lg:px-0">
+        <h2>
+          <span
+            class="text-base font-medium font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
+            >{{ 'locationCard.govActions.adaptationGoalsTitle' | translate }}</span
+          >
+          <span
+            class="text-base font-[380] font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
+          >
+            {{
+              'locationCard.govActions.disclosedCount' | translate: { count: filteredGoals.length }
+            }}</span
+          >
         </h2>
       </div>
 
       @if (filteredGoals.length > 0) {
-        <div class="space-y-4 lg:space-y-0 lg:flex lg:flex-row lg:gap-4 lg:overflow-x-auto lg:pb-2">
+        <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
           @for (goal of filteredGoals; track $index) {
             <button
               type="button"
               (click)="selectItem('goal', goal)"
-              class="w-full text-left bg-white p-6 border border-gray-100 shadow-sm flex flex-col justify-between h-80 cursor-pointer hover:border-gray-300 hover:shadow-md transition-all lg:w-80 lg:min-w-80 lg:h-96 lg:rounded lg:flex-shrink-0 overflow-hidden"
+              class="text-left bg-white p-6 border border-gray-100 shadow-sm flex flex-col justify-between w-80 min-w-80 h-[360px] flex-shrink-0 cursor-pointer hover:border-gray-300 hover:shadow-md transition-all rounded overflow-hidden"
             >
               <div class="flex flex-col gap-2.5 min-h-0 shrink">
-                <h3 class="text-xl font-normal font-roboto text-stone-900 line-clamp-3">
+                <h3
+                  class="text-[22px] font-normal font-roboto leading-7 tracking-normal text-cdp-border line-clamp-3 overflow-hidden text-ellipsis"
+                >
                   {{ goal.title | autoTranslate }}
                 </h3>
               </div>
 
-              <div class="flex flex-col gap-6 min-h-0 shrink-0">
-                <div class="flex flex-col gap-3">
-                  <p class="text-xs font-bold font-inter text-stone-900 shrink-0">
+              <div class="flex flex-col gap-4 min-h-0 shrink-0">
+                <div class="flex flex-col gap-4">
+                  <p
+                    class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border shrink-0"
+                  >
                     {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                   </p>
-                  <div class="flex gap-4 flex-wrap overflow-hidden max-h-16">
+                  <div class="hazard-chips-scroll flex flex-row gap-2 overflow-x-auto">
                     @for (hazard of goal.hazardsAddressed; track hazard) {
-                      <app-hazard-icon
-                        [hazard]="hazard.hazardType"
-                        [otherHazardDetails]="hazard.otherHazardDetails"
-                        size="24"
-                      ></app-hazard-icon>
+                      <div class="flex items-center gap-2 p-1 h-5 shrink-0">
+                        <app-hazard-icon
+                          [hazard]="hazard.hazardType"
+                          [otherHazardDetails]="hazard.otherHazardDetails"
+                          size="16"
+                          class="shrink-0"
+                        ></app-hazard-icon>
+                        <span
+                          class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-black whitespace-nowrap"
+                        >
+                          @if (hazard.hazardType === 'OTHERS' && hazard.otherHazardDetails) {
+                            {{ hazard.otherHazardDetails }}
+                          } @else {
+                            {{ 'locationCard.hazardNames.' + hazard.hazardType | translate }}
+                          }
+                        </span>
+                      </div>
                     }
                   </div>
                 </div>
 
                 @if (goal.targetYear) {
                   <div class="flex flex-col gap-2 shrink-0">
-                    <p class="text-xs font-bold font-inter text-stone-900">
+                    <p
+                      class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border"
+                    >
                       {{ 'locationCard.govActions.targetYear' | translate }}
                     </p>
-                    <p class="text-xs font-normal font-inter text-stone-900">
+                    <p
+                      class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-cdp-border"
+                    >
                       {{ goal.targetYear }}
                     </p>
                   </div>
@@ -102,60 +127,62 @@
             </button>
           }
         </div>
-      } @else if (totalGoals === 0) {
-        <div
-          class="text-zinc-800 text-sm font-normal font-roboto leading-5 tracking-tight max-w-3xl"
+      } @else {
+        <p
+          class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
           [innerHTML]="
             'locationCard.govActions.noGoals.description'
-              | translate
-                : {
-                    location: locationName + ', ' + countryName,
-                    year: disclosureYear || ('locationCard.hazardDetail.unknown' | translate)
-                  }
+              | translate: { location: locationName || '', year: disclosureYear || '' }
           "
-        ></div>
+        ></p>
       }
     </section>
 
     <!-- Adaptation Actions Section -->
     <section>
-      <div class="flex items-center gap-2 mb-4">
-        <h2 class="text-base font-semibold font-roboto tracking-wide text-cdp-dark uppercase">
-          {{
-            'locationCard.govActions.adaptationActions'
-              | translate: { count: filteredActions.length }
-          }}
+      <div class="flex items-center gap-2 mb-6 px-4 lg:px-0">
+        <h2>
+          <span
+            class="text-base font-medium font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
+            >{{ 'locationCard.govActions.adaptationActionsTitle' | translate }}</span
+          >
+          <span
+            class="text-base font-[380] font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
+          >
+            {{
+              'locationCard.govActions.disclosedCount'
+                | translate: { count: filteredActions.length }
+            }}</span
+          >
         </h2>
       </div>
 
       @if (filteredActions.length > 0) {
-        <div class="space-y-4 lg:space-y-0 lg:flex lg:flex-row lg:gap-4 lg:overflow-x-auto lg:pb-2">
+        <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
           @for (action of filteredActions; track $index) {
             <button
               type="button"
               data-testid="action-card"
               (click)="selectItem('action', action)"
-              class="w-full text-left bg-white p-6 border border-gray-100 shadow-sm flex flex-col justify-between h-80 items-start cursor-pointer hover:border-gray-300 hover:shadow-md transition-all lg:w-80 lg:min-w-80 lg:h-96 rounded lg:flex-shrink-0 overflow-hidden"
+              class="text-left bg-white p-6 border border-gray-100 shadow-sm flex flex-col justify-between w-80 min-w-80 h-[360px] items-start flex-shrink-0 cursor-pointer hover:border-gray-300 hover:shadow-md transition-all rounded overflow-hidden"
             >
-              <div class="flex flex-col gap-4 self-stretch min-h-0">
+              <div class="flex flex-col gap-2 self-stretch min-h-0">
                 @if (action.status) {
                   <div
                     [ngClass]="getStatusClass(action.status)"
-                    class="h-4 px-1 py-[3px] rounded-sm inline-flex justify-center items-center self-start overflow-hidden max-w-full"
+                    class="h-[25px] px-2 rounded-sm inline-flex justify-center items-center self-start overflow-hidden"
                   >
-                    <div
-                      class="text-white text-xs font-medium font-roboto leading-6 tracking-wide truncate"
-                    >
+                    <span class="text-white text-[13px] font-normal font-roboto truncate">
                       {{
                         action.status.statusType === 'OTHERS' && action.status.otherStatusDetails
                           ? action.status.otherStatusDetails
                           : ('locationCard.actionStatuses.' + action.status.statusType | translate)
                       }}
-                    </div>
+                    </span>
                   </div>
                 }
                 <h3
-                  class="text-xl font-normal font-roboto text-stone-900 self-stretch line-clamp-2"
+                  class="text-[22px] font-normal font-roboto leading-7 tracking-normal text-cdp-border self-stretch line-clamp-2 overflow-hidden text-ellipsis"
                 >
                   {{ action.title | autoTranslate }}
                 </h3>
@@ -164,11 +191,13 @@
               <div class="flex flex-col gap-6 self-stretch min-h-0 overflow-hidden">
                 @if (action.coBenefits?.length) {
                   <div class="flex flex-col gap-2 self-stretch min-h-0 overflow-hidden">
-                    <p class="text-xs font-bold font-inter text-stone-900 self-stretch shrink-0">
+                    <p
+                      class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border self-stretch shrink-0"
+                    >
                       {{ 'locationCard.govActions.coBenefits' | translate }}
                     </p>
                     <div
-                      class="text-black text-xs font-normal font-inter self-stretch leading-normal overflow-hidden line-clamp-4"
+                      class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-cdp-border self-stretch overflow-hidden line-clamp-4"
                     >
                       @for (benefit of action.coBenefits; track benefit; let last = $last) {
                         <div>{{ benefit | autoTranslate }}</div>
@@ -177,17 +206,31 @@
                   </div>
                 }
 
-                <div class="flex flex-col gap-3 self-stretch">
-                  <p class="text-xs font-bold font-inter text-stone-900 self-stretch">
+                <div class="flex flex-col gap-2 self-stretch">
+                  <p
+                    class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border self-stretch"
+                  >
                     {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                   </p>
-                  <div class="flex gap-4 flex-wrap overflow-hidden max-h-16">
+                  <div class="hazard-chips-scroll flex flex-row gap-2 overflow-x-auto">
                     @for (hazard of action.hazardsAddressed; track hazard) {
-                      <app-hazard-icon
-                        [hazard]="hazard.hazardType"
-                        [otherHazardDetails]="hazard.otherHazardDetails"
-                        size="24"
-                      ></app-hazard-icon>
+                      <div class="flex items-center gap-2 p-1 h-5 shrink-0">
+                        <app-hazard-icon
+                          [hazard]="hazard.hazardType"
+                          [otherHazardDetails]="hazard.otherHazardDetails"
+                          size="16"
+                          class="shrink-0"
+                        ></app-hazard-icon>
+                        <span
+                          class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-black whitespace-nowrap"
+                        >
+                          @if (hazard.hazardType === 'OTHERS' && hazard.otherHazardDetails) {
+                            {{ hazard.otherHazardDetails }}
+                          } @else {
+                            {{ 'locationCard.hazardNames.' + hazard.hazardType | translate }}
+                          }
+                        </span>
+                      </div>
                     }
                   </div>
                 </div>
@@ -195,103 +238,110 @@
             </button>
           }
         </div>
-      } @else if (totalActions === 0) {
-        <div
-          class="text-zinc-800 text-sm font-normal font-roboto leading-5 tracking-tight max-w-3xl"
+      } @else {
+        <p
+          class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
           [innerHTML]="
             'locationCard.govActions.noActions.description'
-              | translate
-                : {
-                    location: locationName + ', ' + countryName,
-                    year: disclosureYear || ('locationCard.hazardDetail.unknown' | translate)
-                  }
+              | translate: { location: locationName || '', year: disclosureYear || '' }
           "
-        ></div>
+        ></p>
       }
     </section>
 
     <!-- Projects Seeking Funding Section -->
     <section>
-      <div class="flex items-center gap-2 mb-4">
-        <h2 class="text-base font-semibold font-roboto tracking-wide text-cdp-dark uppercase">
-          {{
-            'locationCard.govActions.projectsSeekingFundingWithCount'
-              | translate: { count: filteredProjects.length }
-          }}
+      <div class="flex items-center gap-2 mb-6 px-4 lg:px-0">
+        <h2>
+          <span
+            class="text-base font-medium font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
+            >{{ 'locationCard.govActions.projectsSeekingFundingTitle' | translate }}</span
+          >
+          <span
+            class="text-base font-[380] font-roboto leading-6 tracking-[0.5px] text-cdp-dark uppercase"
+          >
+            {{
+              'locationCard.govActions.disclosedCount'
+                | translate: { count: filteredProjects.length }
+            }}</span
+          >
         </h2>
       </div>
 
       @if (filteredProjects.length > 0) {
-        <div class="space-y-4 lg:space-y-0 lg:flex lg:flex-row lg:gap-4 lg:overflow-x-auto lg:pb-2">
+        <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
           @for (project of filteredProjects; track $index) {
             <button
               type="button"
               (click)="selectItem('project', project)"
-              class="w-full text-left bg-white p-6 border border-gray-100 border-l-2 border-l-cdp-green shadow-sm flex flex-col justify-start items-start gap-6 h-96 cursor-pointer hover:border-gray-300 hover:border-l-cdp-green hover:shadow-md transition-all lg:w-80 lg:min-w-80 lg:h-96 rounded lg:flex-shrink-0 overflow-hidden"
+              class="text-left bg-white p-6 border border-gray-100 border-l-2 border-l-[#00B233] shadow-sm flex flex-col justify-start items-start gap-6 w-80 min-w-80 h-[360px] flex-shrink-0 cursor-pointer hover:border-gray-300 hover:border-l-[#00B233] hover:shadow-md transition-all rounded overflow-hidden"
             >
               <div
                 class="self-stretch flex-1 flex flex-col justify-start items-start gap-2.5 min-h-0"
               >
                 <h3
-                  class="self-stretch justify-start text-stone-900 text-xl font-normal font-roboto line-clamp-3"
+                  class="self-stretch justify-start text-[22px] font-normal font-roboto leading-7 tracking-normal text-cdp-border line-clamp-3 overflow-hidden text-ellipsis"
                 >
                   {{ project.title | autoTranslate }}
                 </h3>
               </div>
 
-              <div class="self-stretch flex flex-col justify-start items-start gap-4">
-                <div class="self-stretch inline-flex justify-between items-center">
-                  <div
-                    class="w-12 justify-end text-stone-900 text-sm font-bold font-roboto leading-5"
-                  >
-                    {{ 'locationCard.govActions.status' | translate }}
-                  </div>
-                  <div
-                    class="text-right justify-end text-stone-900 text-xs font-normal font-roboto leading-5"
+              <div class="self-stretch flex flex-col">
+                <!-- Status -->
+                <p
+                  class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border"
+                >
+                  {{ 'locationCard.govActions.status' | translate }}
+                </p>
+                <div class="mt-1">
+                  <p
+                    class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-cdp-border"
                   >
                     {{
                       project.status
                         ? ('locationCard.govActions.projectStatuses.' + project.status | translate)
                         : '—'
                     }}
-                  </div>
+                  </p>
                 </div>
-              </div>
-
-              <div class="self-stretch border-t border-gray-200 pt-6 flex flex-col gap-1">
-                <p class="text-sm font-medium font-roboto leading-5 tracking-wide text-stone-900">
-                  {{ 'locationCard.govActions.totalFundingNeeded' | translate }}
-                </p>
-                @if (project.totalNeeded != null) {
-                  <p class="text-sm font-normal font-roboto leading-5 tracking-wide text-stone-900">
-                    {{ project.totalNeeded | currency: 'USD' : 'symbol' : '1.0-0' }}
+                <!-- Divider -->
+                <div class="mt-6 border-t border-cdp-neutral-01"></div>
+                <!-- Total Funding -->
+                <div class="mt-6 flex flex-col gap-1">
+                  <p
+                    class="text-sm font-medium font-roboto leading-5 tracking-[0.25px] text-cdp-border"
+                  >
+                    {{ 'locationCard.govActions.totalFundingNeeded' | translate }}
                   </p>
-                } @else {
-                  <p class="text-sm font-normal font-roboto leading-5 tracking-wide text-stone-900">
-                    —
+                  <p
+                    class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-cdp-border"
+                  >
+                    {{
+                      project.totalNeeded != null
+                        ? (project.totalNeeded | currency: 'USD' : 'symbol' : '1.0-0')
+                        : '—'
+                    }}
                   </p>
-                }
-                @if (project.financeModel?.length) {
-                  <p class="text-xs font-normal italic font-roboto text-gray-400">
-                    {{ formatFinanceModel(project.financeModel) }}
-                  </p>
-                }
+                  @if (project.financeModel) {
+                    <p
+                      class="mt-2 text-xxs font-normal italic font-roboto text-cdp-neutral-05 leading-normal"
+                    >
+                      {{ project.financeModel }}
+                    </p>
+                  }
+                </div>
               </div>
             </button>
           }
         </div>
-      } @else if (totalProjects === 0) {
-        <div
-          class="text-zinc-800 text-sm font-normal font-roboto leading-5 tracking-tight max-w-3xl"
+      } @else {
+        <p
+          class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
           [innerHTML]="
             'locationCard.govActions.noProjects.description'
-              | translate
-                : {
-                    location: locationName + ', ' + countryName,
-                    year: disclosureYear || ('locationCard.hazardDetail.unknown' | translate)
-                  }
+              | translate: { location: locationName || '', year: disclosureYear || '' }
           "
-        ></div>
+        ></p>
       }
     </section>
   </div>
@@ -306,24 +356,15 @@
   <div
     class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center"
     (click)="closeDetail()"
-    (keydown.escape)="closeDetail()"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'locationCard.govActions.detail.dialogLabel' | translate"
   >
     <div
-      role="dialog"
-      aria-modal="true"
-      [attr.aria-label]="
-        selectedType === 'action'
-          ? 'Action details'
-          : selectedType === 'goal'
-            ? 'Goal details'
-            : selectedType === 'project'
-              ? 'Project details'
-              : 'Details'
-      "
-      cdkTrapFocus
-      cdkTrapFocusAutoCapture
       class="w-full h-full lg:w-300 lg:h-auto lg:max-w-[95vw] lg:max-h-[90vh] lg:rounded-2xl overflow-y-auto shadow-lg bg-white"
       (click)="$event.stopPropagation()"
+      cdkTrapFocus
+      cdkTrapFocusAutoCapture
     >
       @if (selectedType === 'action') {
         <app-adaptation-action-detail

@@ -1,37 +1,34 @@
 <!-- Location Card - Mobile First Design -->
-<div class="w-full max-w-7xl mx-auto bg-cdp-bg relative" *ngIf="data">
+<div class="w-full bg-cdp-bg relative" *ngIf="data">
   <!-- Back to Map Button -->
-  <div class="flex items-center p-4">
+  <div class="flex items-center pt-4 pb-0 px-0 lg:p-4 lg:pb-0">
     <button
       type="button"
       (click)="goBackToMap()"
-      class="flex flex-row justify-center items-center px-3 py-1.5 gap-1 min-w-32 w-auto h-8 rounded-xl hover:bg-gray-100 active:bg-gray-200 cursor-pointer transition-colors"
+      class="flex flex-row justify-center items-center px-3 lg:px-4 py-[10px] gap-2 rounded-xl hover:bg-gray-100 active:bg-gray-200 cursor-pointer transition-colors"
     >
       <svg
         width="20"
         height="20"
-        viewBox="0 0 24 24"
+        viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
-          d="M19 12H5M5 12L12 19M5 12L12 5"
-          stroke="#000000"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          d="M6.52051 10.8333L11.1872 15.5L9.99967 16.6667L3.33301 10L9.99967 3.33334L11.1872 4.5L6.52051 9.16667H16.6663V10.8333H6.52051Z"
+          fill="black"
         />
       </svg>
-      <span class="font-medium text-sm leading-5 tracking-[0.1px] text-black whitespace-nowrap">{{
+      <span class="text-black font-roboto text-sm font-medium leading-5 tracking-[0.1px]">{{
         'locationCard.backToMap' | translate
       }}</span>
     </button>
   </div>
 
   <!-- Location Header -->
-  <div class="flex items-center p-4 gap-4">
+  <div class="flex items-center gap-4 px-4 lg:px-6 pt-10 pb-4">
     <!-- Map Thumbnail -->
-    <div class="w-20 h-20 lg:w-36 lg:h-36 flex-shrink-0 overflow-hidden rounded">
+    <div class="hidden lg:block w-20 h-20 lg:w-[120px] lg:h-[120px] flex-shrink-0 overflow-hidden rounded-[20px]">
       <app-hazard-map
         *ngIf="data.lat != null && data.lng != null"
         [lat]="data.lat"
@@ -46,38 +43,33 @@
       ></app-hazard-map>
     </div>
     <!-- Left Container -->
-    <div class="flex-1 flex flex-col gap-2">
+    <div class="flex-1 flex flex-col gap-2 -translate-y-1">
       <!-- Name Container -->
       <div class="flex flex-col">
         <h1
-          class="text-4xl lg:text-6xl self-stretch justify-start text-zinc-800 font-normal lg:leading-tight"
+          class="text-4xl lg:text-[60px] text-[#1B232C] font-roboto font-normal leading-tight lg:leading-normal tracking-[-1.8px]"
         >
           {{ data.name }}, {{ data.countryName }}
         </h1>
         <!-- Population -->
-        <div class="flex items-center gap-1 mt-1" *ngIf="data.population">
-          <div class="text-black text-xs font-medium font-roboto leading-4 tracking-wide">
+        <div class="flex items-center gap-1 mt-2 lg:mt-[-12px]" *ngIf="data.population">
+          <div class="text-black font-roboto text-xs font-medium leading-4 tracking-[0.4px]">
             {{ 'locationCard.header.estimatedPopulation' | translate }}
           </div>
-          <div class="flex items-center">
-            <div class="text-black text-xs font-normal font-roboto leading-4 tracking-wide">~</div>
-            <div class="text-black text-xs font-normal font-roboto leading-4 tracking-wide">
-              {{ formatPopulation(data.population) }}
-            </div>
+          <div class="text-black font-roboto text-xs font-normal leading-4 tracking-[0.4px]">
+            ~{{ formatPopulation(data.population) }}
           </div>
-          <button
-            type="button"
+          <div
             matTooltip="{{
               'locationCard.header.populationTooltip' | translate: { location: data.name }
             }}"
-            aria-label="Population information"
             class="flex items-center justify-center cursor-pointer group"
           >
             <app-info-icon
-              size="14"
+              size="10"
               class="text-cdp-neutral-05 group-hover:text-cdp-dark transition-colors"
             ></app-info-icon>
-          </button>
+          </div>
         </div>
       </div>
     </div>
@@ -86,80 +78,81 @@
   </div>
 
   <!-- Tab Navigation -->
-  <div class="flex border-b border-gray-200 px-0 lg:px-6" role="tablist">
-    <button
-      (click)="setActiveTab('hazards')"
-      class="flex-1 py-3 px-2 text-sm font-medium text-center transition-colors"
-      [ngClass]="{
-        'text-gray-900 border-b-2 border-gray-900': activeTab === 'hazards',
-        'text-cdp-dark hover:text-cdp-dark': activeTab !== 'hazards'
-      }"
-      id="tab-hazards"
-      role="tab"
-      [attr.aria-selected]="activeTab === 'hazards'"
-      aria-controls="hazards-panel"
+  <div
+    class="flex flex-col items-start self-stretch h-[90px] pt-10 pb-4 px-4 lg:px-6"
+    role="tablist"
+  >
+    <div
+      class="flex items-end gap-2 lg:gap-20 flex-1 border-b border-[#bfbfbf] -mx-4 lg:mx-0 px-4 lg:px-0 justify-between lg:justify-start self-stretch"
     >
-      {{ 'locationCard.tabs.hazards' | translate }}
-    </button>
-    <button
-      (click)="setActiveTab('actions')"
-      class="flex-1 py-3 px-2 text-sm font-medium text-center transition-colors"
-      [ngClass]="{
-        'text-gray-900 border-b-2 border-gray-900': activeTab === 'actions',
-        'text-cdp-dark hover:text-cdp-dark': activeTab !== 'actions'
-      }"
-      id="tab-actions"
-      role="tab"
-      [attr.aria-selected]="activeTab === 'actions'"
-      aria-controls="government-actions-panel"
-    >
-      {{ 'locationCard.tabs.governmentActions' | translate }}
-    </button>
-    <button
-      (click)="setActiveTab('solutions')"
-      class="flex-1 py-3 px-2 text-sm font-medium text-center transition-colors"
-      [ngClass]="{
-        'text-gray-900 border-b-2 border-gray-900': activeTab === 'solutions',
-        'text-cdp-dark hover:text-cdp-dark': activeTab !== 'solutions'
-      }"
-      id="tab-solutions"
-      role="tab"
-      [attr.aria-selected]="activeTab === 'solutions'"
-      aria-controls="solutions-panel"
-    >
-      {{ 'locationCard.tabs.solutions' | translate }}
-    </button>
+      <button
+        (click)="setActiveTab('hazards')"
+        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors"
+        [ngClass]="activeTab === 'hazards' ? 'font-medium leading-8' : 'font-normal leading-5'"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'hazards'"
+        aria-controls="hazards-panel"
+      >
+        <span
+          class="inline-block pb-[15px] whitespace-nowrap"
+          [class.border-b]="activeTab === 'hazards'"
+          [class.border-[#1e1e1e]]="activeTab === 'hazards'"
+        >
+          {{ 'locationCard.tabs.hazards' | translate }}
+        </span>
+      </button>
+      <button
+        (click)="setActiveTab('actions')"
+        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors"
+        [ngClass]="activeTab === 'actions' ? 'font-medium leading-8' : 'font-normal leading-5'"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'actions'"
+        aria-controls="government-actions-panel"
+      >
+        <span
+          class="inline-block pb-[15px] whitespace-nowrap"
+          [class.border-b]="activeTab === 'actions'"
+          [class.border-[#1e1e1e]]="activeTab === 'actions'"
+        >
+          {{ 'locationCard.tabs.governmentActions' | translate }}
+        </span>
+      </button>
+      <button
+        (click)="setActiveTab('solutions')"
+        class="text-[#1e1e1e] text-center font-roboto text-sm tracking-[0.25px] transition-colors"
+        [ngClass]="activeTab === 'solutions' ? 'font-medium leading-8' : 'font-normal leading-5'"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'solutions'"
+        aria-controls="solutions-panel"
+      >
+        <span
+          class="inline-block pb-[15px] whitespace-nowrap"
+          [class.border-b]="activeTab === 'solutions'"
+          [class.border-[#1e1e1e]]="activeTab === 'solutions'"
+        >
+          {{ 'locationCard.tabs.solutions' | translate }}
+        </span>
+      </button>
+    </div>
   </div>
 
   <!-- Tab Content -->
-  <div class="py-6 px-0 lg:px-6">
+  <div class="pt-4 pb-6 px-0 lg:px-6">
     <!-- Hazards Tab -->
-    <div
-      *ngIf="activeTab === 'hazards'"
-      id="hazards-panel"
-      role="tabpanel"
-      aria-labelledby="tab-hazards"
-    >
+    <div *ngIf="activeTab === 'hazards'" id="hazards-panel" role="tabpanel">
       <app-hazards
         [data]="data"
         [jurisdictionBounds]="jurisdictionBounds"
         (exploreActions)="exploreHazardActions($event)"
-        (tabChange)="setActiveTab($event)"
       ></app-hazards>
     </div>
 
     <!-- Government actions Tab -->
-    <div
-      *ngIf="activeTab === 'actions'"
-      id="government-actions-panel"
-      role="tabpanel"
-      aria-labelledby="tab-actions"
-    >
+    <div *ngIf="activeTab === 'actions'" id="government-actions-panel" role="tabpanel">
       <app-government-actions
         [data]="data.governmentActions"
         [locationName]="data.name"
         [countryName]="data.countryName"
-        [disclosureYear]="data.disclosureYear"
         [selectedFilter]="selectedHazardFilter"
       ></app-government-actions>
     </div>
@@ -170,7 +163,6 @@
       class="min-h-[200px]"
       id="solutions-panel"
       role="tabpanel"
-      aria-labelledby="tab-solutions"
     >
       <app-solutions [data]="data"></app-solutions>
     </div>

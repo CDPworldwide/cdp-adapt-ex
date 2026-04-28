@@ -1,3 +1,14 @@
 :host {
   display: block;
 }
+
+.cards-scroll,
+.hazard-chips-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.cards-scroll::-webkit-scrollbar,
+.hazard-chips-scroll::-webkit-scrollbar {
+  display: none;
+}

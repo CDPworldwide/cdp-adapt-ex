@@ -21,6 +21,7 @@ module.exports = {
         'cdp-light-text': '#E7E9E8',
         'cdp-blue': '#00A6FF',
         'cdp-violet': '#8B5CF6',
+        'cdp-green-implementation': '#4CAF50',
       },
       fontFamily: {
         'roboto-mono': ['Roboto Mono', 'monospace'],

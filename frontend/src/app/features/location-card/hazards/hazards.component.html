@@ -1,455 +1,566 @@
-@if (data && data.hazards) {
-  <div class="px-4 lg:px-0">
-    @if (!data.hazards.hazards?.length) {
-      <div class="mb-8">
-        <!-- Banner -->
-        <div class="w-full px-6 py-4 bg-cdp-red flex justify-start items-center gap-6 rounded-lg">
-          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
-            <app-no-hazards-icon size="44" color="white"></app-no-hazards-icon>
-          </div>
-          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
-            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
-              <div
-                class="self-stretch justify-start text-white text-base font-semibold font-roboto leading-6 tracking-tight"
-              >
-                {{ 'locationCard.hazards.noHazardsBanner.title' | translate }}
-              </div>
-              <div
-                class="self-stretch text-white text-sm font-normal font-roboto leading-5 tracking-tight"
-                [innerHTML]="'locationCard.hazards.noHazardsBanner.description' | translate"
-              ></div>
-            </div>
-            <div class="h-12 flex justify-center items-center shrink-0">
-              <a
-                href="https://data.cdp.net/"
-                target="_blank"
-                class="bg-white rounded inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-gray-100 transition-colors"
-              >
-                <div
-                  class="justify-center text-cdp-red text-sm font-medium font-roboto leading-5 tracking-tight"
-                >
-                  {{ 'locationCard.hazards.noHazardsBanner.button' | translate }}
-                </div>
-              </a>
-            </div>
+<div *ngIf="data && data.hazards">
+  <!-- Hazard Overview Section -->
+  <div *ngIf="data.hazards.hazards?.length">
+    <div class="flex flex-col items-start gap-1 w-full mt-4 px-4 lg:px-0">
+      <h2
+        class="text-cdp-dark font-roboto text-base font-medium leading-6 tracking-[0.5px] uppercase"
+      >
+        {{ 'locationCard.hazardOverview.title' | translate }}
+      </h2>
+      <p>
+        <span
+          class="text-cdp-text-secondary font-roboto text-sm font-medium leading-5 tracking-[0.25px]"
+          >{{ 'locationCard.hazardOverview.source' | translate }}</span
+        >
+        <span
+          class="text-cdp-text-secondary font-roboto text-sm font-normal leading-5 tracking-[0.25px]"
+        >
+          {{
+            'locationCard.hazardOverview.disclosureLine'
+              | translate
+                : {
+                    location: data.name,
+                    country: data.countryName,
+                    year: data.disclosureYear || ('locationCard.hazardDetail.unknown' | translate),
+                  }
+          }}
+        </span>
+      </p>
+    </div>
+
+    <div class="mt-4 flex flex-col lg:flex-row gap-2">
+      <!-- Top Hazards Card -->
+      <div
+        class="lg:w-1/2 bg-cdp-dark p-4 lg:p-6 lg:rounded-sm h-40 lg:h-[200px] flex flex-col justify-between lg:justify-start gap-3 lg:gap-0"
+      >
+        <div class="flex justify-between items-center">
+          <h3
+            class="text-cdp-neutral-01 font-roboto text-sm font-normal leading-5 tracking-[0.1px] uppercase"
+          >
+            {{ 'locationCard.hazardOverview.topHazardsDisclosed' | translate }}
+          </h3>
+          <div
+            matTooltip="{{ 'locationCard.hazardOverview.topHazardsTooltip' | translate }}"
+            class="flex items-center justify-center cursor-pointer group shrink-0"
+          >
+            <app-info-icon
+              variant="filled"
+              size="20"
+              class="text-cdp-light-text group-hover:text-white transition-colors"
+            ></app-info-icon>
           </div>
         </div>
-
-        <!-- Content below banner -->
-        <div class="mt-12 max-w-3xl mx-auto">
-          <h2 class="text-cdp-dark text-2xl font-normal font-roboto leading-8 mb-6">
-            {{
-              'locationCard.hazards.noHazardsContent.title'
-                | translate
-                  : {
-                      location: data.name,
-                      year: data.disclosureYear || ('locationCard.hazardDetail.unknown' | translate)
-                    }
-            }}
-          </h2>
+        <div class="grid grid-cols-2 gap-3 lg:gap-4 lg:gap-y-6 lg:mt-auto">
           <div
-            (click)="onDescriptionClick($event)"
-            class="text-zinc-800 text-sm font-normal font-roboto leading-5 tracking-tight"
-            [innerHTML]="
-              'locationCard.hazards.noHazardsContent.description'
-                | translate
-                  : {
-                      location: data.name,
-                      year: data.disclosureYear || ('locationCard.hazardDetail.unknown' | translate)
-                    }
-            "
-          ></div>
+            *ngFor="let hazard of data.hazards.hazards | slice: 0 : 4"
+            class="flex items-center gap-2"
+          >
+            <app-hazard-icon
+              [hazard]="hazard.hazard.hazardType"
+              [otherHazardDetails]="hazard.hazard.otherHazardDetails"
+              size="24"
+              color="white"
+            ></app-hazard-icon>
+            <span class="text-white font-roboto text-xs font-normal leading-4 tracking-[0.5px]">{{
+              hazard.hazard.hazardType === 'OTHERS'
+                ? hazard.hazard.otherHazardDetails
+                : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
+            }}</span>
+          </div>
         </div>
       </div>
-    }
+      <!-- Most Exposed Economic Sectors Card -->
+      <div
+        *ngIf="data.hazards.statistics?.vulnerableSectors as vulnerableSectors"
+        class="lg:w-1/2 bg-cdp-dark p-4 lg:p-6 lg:rounded-sm h-40 lg:h-[200px] flex flex-col overflow-hidden justify-between lg:justify-start gap-3 lg:gap-0"
+      >
+        <!-- Title row -->
+        <div class="flex justify-between items-center lg:items-start shrink-0">
+          <h3
+            class="text-cdp-neutral-01 font-roboto text-sm lg:text-base font-normal leading-5 lg:leading-6 tracking-[0.15px] uppercase"
+          >
+            {{ 'locationCard.hazardOverview.mostExposedSectors' | translate }}
+          </h3>
+          <div
+            matTooltip="{{ 'locationCard.hazardOverview.mostExposedSectorsTooltip' | translate }}"
+            class="flex items-center justify-center cursor-pointer group shrink-0"
+          >
+            <app-info-icon
+              variant="filled"
+              size="20"
+              class="text-cdp-light-text group-hover:text-white transition-colors"
+            ></app-info-icon>
+          </div>
+        </div>
 
-    <!-- Hazard Overview Section -->
-    @if (data.hazards.hazards?.length) {
-      <div>
-        <h2
-          class="text-cdp-dark text-base font-semibold font-roboto uppercase leading-6 tracking-wide"
-        >
-          {{ 'locationCard.hazardOverview.title' | translate }}
-        </h2>
-        <p
-          class="self-stretch justify-start text-zinc-600 text-sm font-roboto leading-5 tracking-tight"
-        >
-          <span class="font-medium">{{ 'locationCard.hazardOverview.source' | translate }}</span>
+        <!-- Mobile: icons row only -->
+        <div class="lg:hidden flex flex-wrap gap-3">
+          <app-sector-icon
+            *ngFor="let sector of vulnerableSectors | slice: 0 : 6"
+            [sector]="sector.sectorType"
+            [otherSectorDetails]="sector.otherSectorDetails"
+            size="24"
+            color="white"
+            class="shrink-0"
+          ></app-sector-icon>
           <span
-            >{{ data.name }}, {{ data.countryName }}
-            {{ data.disclosureYear || ('locationCard.hazardDetail.unknown' | translate) }}
-            {{ 'locationCard.hazardDetail.disclosure' | translate }}
-          </span>
+            *ngIf="vulnerableSectors.length > 6"
+            class="text-white font-roboto text-xs font-normal leading-6 tracking-[0.5px]"
+            >+{{ vulnerableSectors.length - 6 }}</span
+          >
+        </div>
+
+        <!-- Desktop: Number + Scroll list -->
+        <div class="hidden lg:flex items-start mt-4 flex-1 min-h-0">
+          <div
+            class="text-cdp-neutral-01 font-roboto text-[90px] font-light leading-[90px] tracking-[-0.25px] shrink-0 self-end pb-3"
+          >
+            {{ vulnerableSectors.length }}
+          </div>
+          <div class="w-[120px] ml-auto h-full relative -translate-x-6">
+            <div class="flex flex-col gap-2 overflow-y-auto custom-scrollbar h-full pb-10">
+              <div *ngFor="let sector of vulnerableSectors" class="flex items-center gap-2">
+                <app-sector-icon
+                  [sector]="sector.sectorType"
+                  [otherSectorDetails]="sector.otherSectorDetails"
+                  size="24"
+                  color="white"
+                  class="shrink-0"
+                ></app-sector-icon>
+                <span
+                  class="text-white font-roboto text-xs font-normal leading-4 tracking-[0.5px]"
+                  >{{
+                    sector.sectorType === 'OTHERS'
+                      ? sector.otherSectorDetails
+                      : ('locationCard.sectorNames.' + sector.sectorType | translate)
+                  }}</span
+                >
+              </div>
+            </div>
+            <!-- Fading effect at the bottom -->
+            <div
+              class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-cdp-dark to-transparent pointer-events-none"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCLOSED HAZARDS Header -->
+  <div
+    class="flex flex-wrap items-center pt-6 pb-6 gap-2 px-4 lg:px-0"
+    *ngIf="data.hazards.hazards && data.hazards.hazards.length > 0"
+  >
+    <div class="flex items-center gap-2">
+      <h2
+        class="text-cdp-dark font-roboto text-base font-medium leading-6 tracking-[0.5px] uppercase"
+      >
+        {{
+          'locationCard.hazardDetail.topNHazards'
+            | translate
+              : { count: data.hazards.hazards.length < 4 ? data.hazards.hazards.length : 4 }
+        }}
+      </h2>
+      <span
+        class="text-cdp-dark font-roboto text-base font-normal leading-6 tracking-[0.5px] uppercase"
+      >
+        {{
+          'locationCard.hazardDetail.hazardsDisclosedCount'
+            | translate: { count: data.hazards.hazards.length }
+        }}
+      </span>
+    </div>
+  </div>
+
+  <!-- CRVA Banner -->
+  <div
+    class="mb-4 bg-white flex flex-col lg:flex-row items-stretch lg:items-center lg:h-[104px] px-4 lg:px-6 py-4 gap-3 lg:gap-6"
+  >
+    <div class="flex-1 flex flex-col gap-1 min-w-0">
+      <span
+        class="text-cdp-dark font-roboto text-sm lg:text-base font-semibold leading-5 lg:leading-6 tracking-[0.15px]"
+        >{{ 'locationCard.hazardDetail.crvaTitle' | translate }}</span
+      >
+      <p class="break-words">
+        <span class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-[0.25px]">{{
+          'locationCard.hazardDetail.crvaSource' | translate
+        }}</span>
+        <span class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-[0.25px]">
+          {{
+            'locationCard.hazardOverview.disclosureLine'
+              | translate
+                : {
+                    location: data.name,
+                    country: data.countryName,
+                    year: data.disclosureYear || ('locationCard.hazardDetail.unknown' | translate),
+                  }
+          }}
+        </span>
+      </p>
+    </div>
+    <div class="shrink-0 flex items-center">
+      <a
+        href="https://data.cdp.net/"
+        target="_blank"
+        class="bg-zinc-100 rounded border border-cdp-neutral-05 px-4 py-2.5 flex justify-center items-center hover:bg-zinc-200 transition-colors cursor-pointer no-underline w-full lg:w-auto"
+      >
+        <span
+          class="justify-center text-cdp-dark text-sm font-medium font-roboto leading-5 tracking-tight text-center"
+        >
+          {{ 'locationCard.hazardDetail.crvaVisitPortal' | translate }}
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Hazard Detail Section (Loop) -->
+  <div
+    *ngFor="
+      let hazard of showAllHazards ? data.hazards.hazards : (data.hazards.hazards | slice: 0 : 4);
+      let last = last
+    "
+    class="mb-6 bg-white overflow-hidden lg:rounded-lg"
+  >
+    <!-- Content: stacked on mobile, 2-column on desktop -->
+    <div
+      class="lg:flex lg:items-stretch"
+      [ngClass]="isHazardExpanded(hazard.hazard) ? 'lg:h-auto' : 'lg:h-[556px]'"
+    >
+      <!-- RIGHT column (desktop) / TOP (mobile): Map + source caption -->
+      <div class="lg:w-1/3 lg:order-2 lg:flex lg:flex-col">
+        <div
+          class="h-48 lg:relative lg:h-auto lg:flex-1 overflow-hidden lg:rounded-tr-lg lg:rounded-br-lg"
+        >
+          <app-hazard-map
+            *ngIf="data.lat != null && data.lng != null"
+            class="block h-full lg:absolute lg:inset-0"
+            [lat]="data.lat"
+            [lng]="data.lng"
+            [geometry]="data.geometry"
+            [calculatedBounds]="jurisdictionBounds"
+            [locationName]="data.name"
+            [zoom]="10"
+            [hazardType]="hazard.hazard.hazardType"
+          ></app-hazard-map>
+        </div>
+        <p class="text-xs text-gray-400 px-4 pt-1.5 pb-2" *ngIf="hazard.source">
+          {{ 'locationCard.hazardDetail.hazardDataSource' | translate }} {{ hazard.source }}
         </p>
       </div>
 
-      <div class="mt-4 flex flex-col lg:flex-row gap-4">
-        <!-- Top Hazards Card -->
-        <div class="lg:w-1/2 bg-cdp-dark p-6 rounded h-48 flex flex-col justify-between">
-          <div class="flex justify-between items-center">
-            <h3
-              class="text-cdp-neutral-01 text-sm font-semibold font-roboto uppercase leading-5 tracking-tight"
-            >
-              {{ 'locationCard.hazardOverview.topHazards' | translate }}
-            </h3>
-            <button
-              type="button"
-              matTooltip="{{ 'locationCard.hazardOverview.topHazardsTooltip' | translate }}"
-              aria-label="Top hazards information"
-              class="flex items-center justify-center cursor-pointer group"
-            >
-              <app-info-icon
-                variant="filled"
-                size="20"
-                class="text-cdp-bg group-hover:text-white transition-colors"
-              ></app-info-icon>
-            </button>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            @for (hazard of data.hazards.hazards | slice: 0 : 4; track hazard.hazard.hazardType) {
-              <div class="flex items-center gap-2">
-                <app-hazard-icon
-                  [hazard]="hazard.hazard.hazardType"
-                  [otherHazardDetails]="hazard.hazard.otherHazardDetails"
-                  size="24"
-                  color="white"
-                ></app-hazard-icon>
-                <span class="text-white text-xs font-medium leading-4 tracking-wide">{{
-                  hazard.hazard.hazardType === 'OTHERS'
-                    ? hazard.hazard.otherHazardDetails
-                    : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
-                }}</span>
-              </div>
-            }
-          </div>
-        </div>
-        <!-- Most Exposed Economic Sectors Card -->
-        @if (data.hazards.statistics?.vulnerableSectors; as vulnerableSectors) {
-          <div
-            class="lg:w-1/2 bg-cdp-dark p-6 rounded h-48 flex justify-between overflow-hidden gap-4"
-          >
-            <div class="flex flex-col justify-between h-full">
-              <h3
-                class="text-cdp-neutral-01 text-sm font-semibold font-roboto uppercase leading-5 tracking-tight shrink-0"
-              >
-                {{ 'locationCard.hazardOverview.mostExposedSectors' | translate }}
-              </h3>
-              <div class="font-roboto text-white text-8xl font-light leading-[90px]">
-                {{ vulnerableSectors.length }}
-              </div>
-            </div>
-
-            <div class="flex flex-col h-full gap-4 flex-grow relative">
-              <button
-                type="button"
-                class="self-end cursor-pointer group shrink-0"
-                matTooltip="{{
-                  'locationCard.hazardOverview.mostExposedSectorsTooltip' | translate
-                }}"
-                aria-label="Most exposed sectors information"
-              >
-                <app-info-icon
-                  variant="filled"
-                  size="20"
-                  class="text-cdp-bg group-hover:text-white transition-colors"
-                ></app-info-icon>
-              </button>
-
-              <!-- Scrollable Sectors List -->
-              <div class="flex flex-col gap-6 overflow-y-auto pr-2 custom-scrollbar pb-1">
-                @for (sector of vulnerableSectors; track sector.sectorType) {
-                  <div class="flex items-center gap-3">
-                    <app-sector-icon
-                      [sector]="sector.sectorType"
-                      [otherSectorDetails]="sector.otherSectorDetails"
-                      size="24"
-                      color="white"
-                      class="shrink-0"
-                    ></app-sector-icon>
-                    <span class="text-white text-xs font-medium leading-4 tracking-wide">
-                      {{
-                        sector.sectorType === 'OTHERS'
-                          ? sector.otherSectorDetails
-                          : ('locationCard.sectorNames.' + sector.sectorType | translate)
-                      }}</span
-                    >
-                  </div>
-                }
-              </div>
-
-              <!-- Fading effect at the bottom -->
-              <div
-                class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-cdp-dark to-transparent pointer-events-none"
-              ></div>
-            </div>
-          </div>
-        }
-      </div>
-    }
-
-    <!-- DISCLOSED HAZARDS Header -->
-    @if (data.hazards.hazards && data.hazards.hazards.length > 0) {
-      <div class="flex flex-wrap items-center pt-6 pb-6 gap-2">
-        <div class="flex items-center gap-2">
-          <h2
-            class="text-cdp-dark text-base font-semibold font-roboto uppercase leading-6 tracking-wide"
-          >
+      <!-- LEFT column (desktop) / BOTTOM (mobile): Description + Data fields -->
+      <div
+        class="lg:w-2/3 lg:order-1 lg:flex lg:flex-col lg:min-h-0"
+        [ngClass]="isHazardExpanded(hazard.hazard) ? 'lg:overflow-visible' : 'lg:overflow-hidden'"
+      >
+        <!-- Hazard Header -->
+        <div class="flex items-center gap-3 px-6 pt-6 pb-6">
+          <app-hazard-icon
+            [hazard]="hazard.hazard.hazardType"
+            [otherHazardDetails]="hazard.hazard.otherHazardDetails"
+            size="24"
+          ></app-hazard-icon>
+          <h3 class="text-cdp-dark font-roboto text-[28px] font-normal leading-9 tracking-normal">
             {{
-              'locationCard.hazardDetail.topNHazards'
-                | translate
-                  : { count: data.hazards.hazards.length < 4 ? data.hazards.hazards.length : 4 }
+              hazard.hazard.hazardType === 'OTHERS'
+                ? hazard.hazard.otherHazardDetails
+                : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
             }}
-          </h2>
-          <span class="text-cdp-dark text-base font-normal font-roboto uppercase leading-6">
-            {{
-              'locationCard.hazardDetail.hazardsDisclosedCount'
-                | translate: { count: data.hazards.hazards.length }
-            }}
-          </span>
-        </div>
-        <button
-          type="button"
-          matTooltip="{{ 'locationCard.hazardOverview.topHazardsTooltip' | translate }}"
-          aria-label="Top hazards information"
-          class="flex items-center justify-center cursor-pointer group"
-        >
-          <app-info-icon
-            size="20"
-            class="text-gray-500 group-hover:text-gray-800 transition-colors"
-          ></app-info-icon>
-        </button>
-      </div>
-    }
-
-    <!-- Hazard Detail Section (Loop) -->
-    @for (
-      hazard of showAllHazards
-        ? data.hazards.hazards ?? []
-        : (data.hazards.hazards ?? [] | slice: 0 : 4);
-      track hazard.hazard.hazardType;
-      let last = $last
-    ) {
-      <div class="mb-4 bg-white overflow-hidden rounded-lg border border-cdp-neutral-02 shadow-sm">
-        <!-- Content: stacked on mobile, 2-column on desktop -->
-        <div class="lg:flex lg:items-stretch lg:min-h-[500px]">
-          <!-- RIGHT column (desktop) / TOP (mobile): Map + source caption -->
-          <div class="lg:w-1/3 lg:order-2 lg:flex lg:flex-col">
-            <div class="h-48 lg:relative lg:h-auto lg:flex-1">
-              @if (data.lat != null && data.lng != null) {
-                <app-hazard-map
-                  class="block h-full lg:absolute lg:inset-0"
-                  [lat]="data.lat"
-                  [lng]="data.lng"
-                  [geometry]="data.geometry"
-                  [calculatedBounds]="jurisdictionBounds"
-                  [locationName]="data.name"
-                  [zoom]="10"
-                  [hazardType]="hazard.hazard.hazardType"
-                ></app-hazard-map>
-              }
-            </div>
-            @if (hazard.source) {
-              <p class="text-xs text-gray-400 px-4 pt-1.5 pb-2">
-                {{ 'locationCard.hazardDetail.hazardDataSource' | translate }} {{ hazard.source }}
-              </p>
-            }
-          </div>
-
-          <!-- LEFT column (desktop) / BOTTOM (mobile): Description + Data fields -->
-          <div class="lg:w-2/3 lg:order-1 lg:flex lg:flex-col">
-            <!-- Hazard Header -->
-            <div class="flex items-center gap-3 px-4 py-4">
-              <app-hazard-icon
-                [hazard]="hazard.hazard.hazardType"
-                [otherHazardDetails]="hazard.hazard.otherHazardDetails"
-                size="24"
-              ></app-hazard-icon>
-              <h3 class="text-base font-medium text-gray-900">
+          </h3>
+          <div class="ml-auto flex items-center gap-[29px]">
+            <p>
+              <span class="text-black font-roboto text-sm font-semibold leading-5 tracking-[0.1px]"
+                >{{ 'locationCard.hazardDetail.crvaSource' | translate }}
+              </span>
+              <span class="text-black font-roboto text-sm font-normal leading-5 tracking-[0.1px]">
                 {{
-                  hazard.hazard.hazardType === 'OTHERS'
-                    ? hazard.hazard.otherHazardDetails
-                    : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
+                  'locationCard.hazardDetail.cdpDisclosureLine'
+                    | translate
+                      : {
+                          location: data.name,
+                          year:
+                            data.disclosureYear ||
+                            ('locationCard.hazardDetail.unknown' | translate),
+                        }
                 }}
-              </h3>
-              @if (hazard.source) {
-                <span class="text-xs text-gray-500">{{ hazard.source }}</span>
-              }
-            </div>
-            <!-- Description -->
-            @if (hazard.description) {
-              <p class="text-sm text-gray-700 leading-relaxed px-4 pt-4 pb-2">
-                {{ hazard.description | autoTranslate }}
-              </p>
-            }
-
-            <!-- Data Fields (Collapsible) -->
-            <div class="relative mt-3 transition-all duration-300 mb-20">
-              <div
-                class="divide-y divide-gray-100 border-t border-gray-200"
-                [ngClass]="{
-                  'h-48 overflow-hidden': !isHazardExpanded(hazard.hazard),
-                  'h-auto': isHazardExpanded(hazard.hazard)
-                }"
-              >
-                <!-- Vulnerable Groups -->
-                @if (hazard.vulnerableGroups?.length) {
-                  <div class="flex px-4 py-3">
-                    <p class="text-sm text-gray-500 w-1/2 pr-3">
-                      {{ 'locationCard.hazardDetail.vulnerablePopTitle' | translate }}
-                    </p>
-                    <ul class="text-sm text-gray-900 w-1/2 space-y-1">
-                      @for (group of hazard.vulnerableGroups; track group) {
-                        <li>{{ group | autoTranslate }}</li>
-                      }
-                    </ul>
-                  </div>
-                }
-
-                <!-- Proportion -->
-                @if (hazard.proportionExposedRange) {
-                  <div class="flex px-4 py-3">
-                    <p class="text-sm text-gray-500 w-1/2 pr-3">
-                      {{ 'locationCard.hazardDetail.proportionLabel' | translate }}
-                    </p>
-                    <p class="text-sm text-gray-900 w-1/2">
-                      {{ hazard.proportionExposedRange | autoTranslate }}
-                    </p>
-                  </div>
-                }
-
-                <!-- Impact Description -->
-                @if (hazard.impact) {
-                  <div class="flex px-4 py-3">
-                    <p class="text-sm text-gray-500 w-1/2 pr-3">
-                      {{ 'locationCard.hazardDetail.impactLabel' | translate }}
-                    </p>
-                    <p class="text-sm text-gray-900 w-1/2">{{ hazard.impact | autoTranslate }}</p>
-                  </div>
-                }
-
-                <!-- Most Exposed Sectors -->
-                @if (hazard.mostExposedSectors?.length) {
-                  <div class="flex px-4 py-3">
-                    <p class="text-sm text-gray-500 w-1/2 pr-3">
-                      {{ 'locationCard.hazardDetail.mostExposedSectors' | translate }}
-                    </p>
-                    <ul class="text-sm text-gray-900 w-1/2 space-y-1">
-                      @for (sector of hazard.mostExposedSectors; track sector.sectorType) {
-                        <li>
-                          {{
-                            sector.sectorType === 'OTHERS'
-                              ? sector.otherSectorDetails
-                              : ('locationCard.sectorNames.' + sector.sectorType | translate)
-                          }}
-                        </li>
-                      }
-                    </ul>
-                  </div>
-                }
-              </div>
-
-              <!-- Overlay Fade (Pinned to bottom of text) -->
-              @if (!isHazardExpanded(hazard.hazard)) {
-                <div
-                  class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none"
-                ></div>
-              }
-
-              <!-- Show More/Less Button -->
-              <div class="absolute -bottom-16 left-0 right-0 flex justify-center">
-                <app-show-more-button
-                  [isExpanded]="isHazardExpanded(hazard.hazard)"
-                  (clicked)="toggleHazard(hazard.hazard)"
-                ></app-show-more-button>
-              </div>
-            </div>
-
-            <!-- Explore Adaptation Actions Banner -->
-            <div class="mt-auto">
-              @if (getActionsCountForHazard(hazard.hazard); as actionCount) {
-                <button
-                  (click)="onExploreActions(hazard.hazard)"
-                  class="w-full bg-cdp-red p-6 inline-flex justify-start items-center gap-6 hover:bg-opacity-90 transition-opacity mt-4"
-                >
-                  <div class="flex justify-start items-center gap-4">
-                    <div class="flex justify-center items-center gap-1">
-                      <span class="text-white text-xl font-medium font-roboto leading-7">
-                        {{
-                          'locationCard.hazardDetail.exploreActions'
-                            | translate: { count: actionCount }
-                        }}
-                      </span>
-                    </div>
-                    <app-arrow-right-icon
-                      size="24"
-                      color="white"
-                      class="w-6 h-6 inline-flex flex-col justify-center items-center gap-2.5"
-                    ></app-arrow-right-icon>
-                  </div>
-                </button>
-              } @else {
-                <div
-                  class="w-full bg-cdp-neutral-01 text-cdp-neutral-08 px-6 py-5 italic text-sm font-roboto mt-4"
-                >
-                  {{ 'locationCard.hazardDetail.noActionsDisclosed' | translate }}
-                </div>
-              }
-            </div>
+              </span>
+            </p>
           </div>
         </div>
-      </div>
-    }
-
-    <!-- Overall Show More Hazards Button -->
-    @if (!showAllHazards && (data.hazards.hazards?.length ?? 0) > 4) {
-      <div class="flex justify-center py-8">
-        <button
-          type="button"
-          (click)="showAllHazards = true"
-          class="px-6 py-3 bg-gray-200 rounded-3xl shadow-[0px_1px_3px_1px_rgba(0,0,0,0.15)] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.30)] outline outline-1 outline-offset-[-1px] outline-zinc-100 inline-flex justify-center items-center gap-2.5 hover:bg-gray-300 transition-colors cursor-pointer"
+        <!-- Description -->
+        <p
+          class="text-black font-roboto text-base font-normal leading-6 tracking-[0.5px] px-6 pb-4"
+          *ngIf="hazard.description"
         >
-          <span class="text-cdp-dark text-base font-medium font-roboto leading-6 tracking-wide">
-            {{ 'shared.showMoreHazards' | translate }}
-          </span>
-        </button>
-      </div>
-    }
+          {{ hazard.description }}
+        </p>
 
-    <!-- Data Disclosure Requesters -->
-    @if (data.requesters?.length) {
-      <div class="self-stretch px-6 pb-6 flex flex-col justify-start items-start gap-2">
-        <div class="self-stretch py-6 flex justify-start items-center gap-2">
-          <div class="flex justify-start items-center gap-2">
-            <h2
-              class="justify-center text-cdp-dark text-base font-semibold font-roboto uppercase leading-6 tracking-wide"
-            >
-              {{ 'locationCard.hazardDetail.requestersTitle' | translate }}
-            </h2>
-          </div>
+        <!-- AI Callout -->
+        <div class="h-12 w-full flex items-center gap-4 px-6 mb-4">
+          <span
+            class="text-cdp-neutral-05 font-roboto text-xs font-normal leading-4 tracking-[0.4px]"
+            >{{ 'locationCard.hazardDetail.aiSummary' | translate }}</span
+          >
           <button
             type="button"
-            matTooltip="{{ 'locationCard.hazardDetail.requestersTooltip' | translate }}"
-            aria-label="Requesters information"
-            class="flex items-center justify-center cursor-pointer group"
+            class="flex items-center cursor-pointer bg-transparent border-none p-0"
           >
-            <app-info-icon
-              size="20"
-              class="text-gray-500 group-hover:text-gray-800 transition-colors"
-            ></app-info-icon>
+            <svg
+              width="11"
+              height="10"
+              viewBox="0 0 11 10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.8999 3.2998C10.1249 3.2998 10.3291 3.39564 10.5124 3.5873C10.7041 3.77064 10.7999 3.9748 10.7999 4.1998V4.9123C10.7999 4.97897 10.7916 5.04147 10.7749 5.0998C10.7666 5.15814 10.7499 5.2123 10.7249 5.2623L9.2374 8.7498C9.1624 8.9248 9.02074 9.0623 8.8124 9.1623C8.6124 9.2623 8.41657 9.3123 8.2249 9.3123L2.6999 9.2998V3.2998L5.6249 0.374804C5.78324 0.216471 5.9624 0.116471 6.1624 0.0748043C6.37074 0.0248041 6.55824 0.0456374 6.7249 0.137304C6.88324 0.228971 6.98324 0.378971 7.0249 0.587304C7.0749 0.787304 7.0749 1.00814 7.0249 1.2498L6.5999 3.2998H9.8999ZM3.5999 3.6748V8.3998H8.3999L9.8999 4.9123V4.1998H5.4999L6.1124 1.1748L3.5999 3.6748ZM0.899902 9.2998C0.641569 9.2998 0.424902 9.2123 0.249902 9.0373C0.0832357 8.8623 -9.76026e-05 8.6498 -9.76026e-05 8.3998V4.1998C-9.76026e-05 3.9498 0.0832357 3.7373 0.249902 3.5623C0.424902 3.3873 0.641569 3.2998 0.899902 3.2998H2.6999V4.1998H0.899902V8.3998H2.6999V9.2998H0.899902ZM3.5999 8.3998V3.6748V4.1998V4.8498V8.3998Z"
+                fill="#999999"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="flex items-center cursor-pointer bg-transparent border-none p-0"
+          >
+            <svg
+              width="11"
+              height="10"
+              viewBox="0 0 11 10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0.899902 6.0124C0.674902 6.0124 0.466569 5.92074 0.274902 5.7374C0.0915691 5.54574 -9.76026e-05 5.3374 -9.76026e-05 5.1124V4.3999C-9.76026e-05 4.33324 0.00406906 4.27074 0.0124024 4.2124C0.029069 4.15407 0.0499024 4.0999 0.0749024 4.0499L1.5624 0.562402C1.6374 0.387402 1.7749 0.249902 1.9749 0.149902C2.18324 0.0499017 2.38324 -9.84669e-05 2.5749 -9.84669e-05L8.0999 0.0124021V6.0124L5.1749 8.9374C5.01657 9.09574 4.83324 9.1999 4.6249 9.2499C4.4249 9.29157 4.24574 9.26657 4.0874 9.1749C3.92074 9.08324 3.8124 8.9374 3.7624 8.7374C3.72074 8.52907 3.7249 8.30407 3.7749 8.0624L4.1999 6.0124H0.899902ZM7.1999 5.6374V0.912402H2.3999L0.899902 4.3999V5.1124H5.2999L4.6874 8.1374L7.1999 5.6374ZM9.8999 0.0124021C10.1582 0.0124021 10.3707 0.0999019 10.5374 0.274902C10.7124 0.449902 10.7999 0.662402 10.7999 0.912402V5.1124C10.7999 5.3624 10.7124 5.5749 10.5374 5.7499C10.3707 5.9249 10.1582 6.0124 9.8999 6.0124H8.0999V5.1124H9.8999V0.912402H8.0999V0.0124021H9.8999ZM7.1999 0.912402V5.6374V5.1124V4.4624V0.912402Z"
+                fill="#999999"
+              />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="flex items-center cursor-pointer bg-transparent border-none p-0"
+          >
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 10 10"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4.80005 6.2998C4.92505 6.2998 5.02922 6.25814 5.11255 6.1748C5.20422 6.08314 5.25005 5.9748 5.25005 5.8498C5.25005 5.7248 5.20422 5.62064 5.11255 5.5373C5.02922 5.44564 4.92505 5.3998 4.80005 5.3998C4.67505 5.3998 4.56672 5.44564 4.47505 5.5373C4.39172 5.62064 4.35005 5.7248 4.35005 5.8498C4.35005 5.9748 4.39172 6.08314 4.47505 6.1748C4.56672 6.25814 4.67505 6.2998 4.80005 6.2998ZM4.80005 4.7998C4.92505 4.7998 5.02922 4.75814 5.11255 4.6748C5.20422 4.58314 5.25005 4.4748 5.25005 4.3498V1.9498C5.25005 1.8248 5.20422 1.72064 5.11255 1.6373C5.02922 1.54564 4.92505 1.4998 4.80005 1.4998C4.67505 1.4998 4.56672 1.54564 4.47505 1.6373C4.39172 1.72064 4.35005 1.8248 4.35005 1.9498V4.3498C4.35005 4.4748 4.39172 4.58314 4.47505 4.6748C4.56672 4.75814 4.67505 4.7998 4.80005 4.7998ZM1.80005 7.7998L0.762549 8.8373C0.620882 8.97897 0.458382 9.0123 0.275049 8.9373C0.0917156 8.85397 4.89354e-05 8.7123 4.89354e-05 8.5123V0.899804C4.89354e-05 0.649804 0.0875489 0.437304 0.262549 0.262304C0.437549 0.0873041 0.650049 -0.000195742 0.900049 -0.000195742H8.70005C8.95005 -0.000195742 9.16255 0.0873041 9.33755 0.262304C9.51255 0.437304 9.60005 0.649804 9.60005 0.899804V6.8998C9.60005 7.1498 9.51255 7.3623 9.33755 7.5373C9.16255 7.7123 8.95005 7.7998 8.70005 7.7998H1.80005ZM1.42505 6.8998H8.70005V0.899804H0.900049V7.4248L1.42505 6.8998ZM0.900049 6.8998V0.899804V6.8998Z"
+                fill="#999999"
+              />
+            </svg>
           </button>
         </div>
-        <div class="self-stretch flex justify-start items-start gap-2 flex-wrap content-start">
-          @for (requester of data.requesters ?? []; track requester) {
-            <div class="px-2 py-1 bg-cdp-dark rounded-sm flex justify-center items-center gap-2.5">
-              <span
-                class="text-cdp-neutral-01 text-sm font-medium font-roboto leading-5 tracking-tight"
-              >
-                {{ requester }}
-              </span>
+
+        <!-- Data Fields (Collapsible) -->
+        <div class="relative flex-1 min-h-0 transition-all duration-300">
+          <div
+            #dataFieldContent
+            [ngClass]="{
+              'h-full overflow-hidden': !isHazardExpanded(hazard.hazard),
+              'h-auto': isHazardExpanded(hazard.hazard),
+            }"
+          >
+            <!-- Proportion -->
+            <div *ngIf="hazard.proportionExposedRange">
+              <div class="border-t border-[#C4C4C4] mx-6"></div>
+              <div class="flex px-6 py-[21px]">
+                <p
+                  class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-[0.25px] w-1/2 pr-3"
+                >
+                  {{ 'locationCard.hazardDetail.proportionLabel' | translate }}
+                </p>
+                <p
+                  class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-[0.25px] w-1/2"
+                >
+                  {{ hazard.proportionExposedRange }}
+                </p>
+              </div>
             </div>
-          }
+
+            <!-- Vulnerable Groups -->
+            <div *ngIf="hazard.vulnerableGroups?.length">
+              <div class="border-t border-[#C4C4C4] mx-6"></div>
+              <div class="flex px-6 py-[21px]">
+                <p
+                  class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-[0.25px] w-1/2 pr-3"
+                >
+                  {{ 'locationCard.hazardDetail.vulnerablePopTitle' | translate }}
+                </p>
+                <ul
+                  class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-[0.25px] w-1/2 space-y-1"
+                >
+                  <li *ngFor="let group of hazard.vulnerableGroups">{{ group }}</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Impact Description -->
+            <div *ngIf="hazard.impact">
+              <div class="border-t border-[#C4C4C4] mx-6"></div>
+              <div class="flex px-6 py-[21px]">
+                <p
+                  class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-[0.25px] w-1/2 pr-3"
+                >
+                  {{ 'locationCard.hazardDetail.impactLabel' | translate }}
+                </p>
+                <div
+                  class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-[0.25px] w-1/2"
+                >
+                  <ng-container *ngIf="parseImpact(hazard.impact) as parsed">
+                    <span class="whitespace-pre-line">{{ parsed.text }}</span>
+                    <a
+                      *ngIf="parsed.url"
+                      [href]="parsed.url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="font-roboto text-sm font-normal text-cdp-red leading-5 ml-1 no-underline hover:underline"
+                      >{{ 'locationCard.hazardDetail.linkLabel' | translate }}</a
+                    >
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+            <!-- Most Exposed Sectors -->
+            <div *ngIf="hazard.mostExposedSectors?.length">
+              <div class="border-t border-[#C4C4C4] mx-6"></div>
+              <div class="flex px-6 py-[21px]">
+                <p
+                  class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-[0.25px] w-1/2 pr-3"
+                >
+                  {{ 'locationCard.hazardDetail.mostExposedSectors' | translate }}
+                </p>
+                <ul
+                  class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-[0.25px] w-1/2 space-y-1"
+                >
+                  <li *ngFor="let sector of hazard.mostExposedSectors">
+                    {{
+                      sector.sectorType === 'OTHERS'
+                        ? sector.otherSectorDetails
+                        : ('locationCard.sectorNames.' + sector.sectorType | translate)
+                    }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Overlay Fade (Pinned to bottom of text) -->
+          <div
+            *ngIf="!isHazardExpanded(hazard.hazard) && hazardOverflows(hazard.hazard)"
+            class="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white/70 via-white/30 to-transparent pointer-events-none"
+          ></div>
+
+          <!-- See More Button (collapsed only, absolutely positioned) -->
+          <div
+            *ngIf="!isHazardExpanded(hazard.hazard) && hazardOverflows(hazard.hazard)"
+            class="absolute bottom-4 left-0 right-0 flex justify-center"
+          >
+            <app-show-more-button
+              [expanded]="false"
+              (clicked)="toggleHazard(hazard.hazard)"
+            ></app-show-more-button>
+          </div>
+        </div>
+
+        <!-- See Less Button (expanded only, normal flow) -->
+        <div *ngIf="isHazardExpanded(hazard.hazard)" class="flex justify-center py-3 mb-6">
+          <app-show-more-button
+            [expanded]="true"
+            (clicked)="toggleHazard(hazard.hazard)"
+          ></app-show-more-button>
+        </div>
+
+        <!-- Explore Adaptation Actions Banner -->
+        <div>
+          <button
+            *ngIf="getActionsCountForHazard(hazard.hazard) as actionCount; else noActions"
+            (click)="onExploreActions(hazard.hazard)"
+            class="w-full bg-cdp-red p-6 inline-flex justify-start items-center gap-6 hover:bg-opacity-90 transition-opacity"
+          >
+            <div class="flex justify-start items-center gap-4">
+              <div class="flex justify-center items-center gap-1">
+                <span class="text-white text-xl font-medium font-roboto leading-7">
+                  {{
+                    'locationCard.hazardDetail.exploreActions' | translate: { count: actionCount }
+                  }}
+                </span>
+              </div>
+              <app-arrow-right-icon
+                size="24"
+                color="white"
+                class="w-6 h-6 inline-flex flex-col justify-center items-center gap-2.5"
+              ></app-arrow-right-icon>
+            </div>
+          </button>
+          <ng-template #noActions>
+            <div
+              class="w-full bg-cdp-neutral-01 text-cdp-neutral-08 px-6 py-5 italic text-sm font-roboto mt-4"
+            >
+              {{ 'locationCard.hazardDetail.noActionsDisclosed' | translate }}
+            </div>
+          </ng-template>
         </div>
       </div>
-    }
+    </div>
   </div>
-}
+
+  <!-- Show All / Collapse Hazards Button -->
+  <div
+    *ngIf="data.hazards.hazards && data.hazards.hazards.length > 4"
+    class="flex justify-center pt-2 pb-0"
+  >
+    <button
+      type="button"
+      (click)="showAllHazards = !showAllHazards"
+      class="w-[202px] h-12 bg-cdp-light-text rounded-3xl border border-cdp-bg shadow-cdp-card inline-flex justify-center items-center px-6 py-3 hover:bg-[#dcdedd] transition-colors cursor-pointer"
+    >
+      <span class="text-cdp-dark font-roboto text-base font-medium leading-6 tracking-[0.5px]">
+        {{
+          showAllHazards
+            ? ('shared.showLess' | translate)
+            : ('locationCard.hazardDetail.showMoreHazards' | translate)
+        }}
+      </span>
+    </button>
+  </div>
+
+  <!-- Empty state -->
+  <div class="px-4 py-8 text-center" *ngIf="!data.hazards.hazards?.length">
+    <p class="text-sm text-gray-500">{{ 'locationCard.hazardDetail.noData' | translate }}</p>
+  </div>
+
+  <!-- Data Disclosure Requesters -->
+  <div
+    class="self-stretch px-4 lg:pl-1 lg:pr-6 flex flex-col justify-start items-start gap-2"
+    *ngIf="requesters.length"
+  >
+    <div class="self-stretch pt-6 pb-5 flex justify-start items-center">
+      <h2
+        class="text-cdp-dark font-roboto text-base font-semibold leading-6 tracking-[0.5px] uppercase"
+      >
+        {{ 'locationCard.hazardDetail.requestersTitle' | translate }}
+      </h2>
+      <div
+        matTooltip="{{ 'locationCard.hazardDetail.requestersTooltip' | translate }}"
+        class="flex items-center justify-center cursor-pointer ml-2"
+      >
+        <app-info-icon size="16" class="text-cdp-dark"></app-info-icon>
+      </div>
+    </div>
+    <div class="self-stretch flex justify-start items-start gap-2 flex-wrap content-start">
+      <div
+        *ngFor="let requester of requesters"
+        class="px-2 py-1 bg-cdp-dark rounded-sm flex justify-center items-center gap-2"
+      >
+        <span class="text-cdp-neutral-01 text-sm font-medium font-roboto leading-5 tracking-tight">
+          {{ requester }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
