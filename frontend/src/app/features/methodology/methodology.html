@@ -1,124 +1,86 @@
-<div class="flex flex-1 flex-col min-h-0 bg-cdp-bg text-cdp-dark">
+<div class="flex flex-1 flex-col min-h-0 min-w-0 bg-cdp-bg text-cdp-dark">
   <nav class="bg-cdp-bg flex-shrink-0">
     <app-header></app-header>
   </nav>
 
   <div class="flex-1 overflow-y-auto">
-    <div class="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
+    <div class="mx-auto flex max-w-4xl flex-col gap-6 px-4 py-8 md:gap-8 md:px-6 md:py-12">
       <!-- Hero -->
       <header class="flex flex-col gap-3">
         <span
           class="text-xs font-medium uppercase tracking-[0.28em] text-cdp-text-secondary font-roboto-mono"
         >
-          Last updated: {{ lastUpdated }}
+          {{
+            'methodology.lastUpdated'
+              | translate: { date: 'methodology.lastUpdatedDate' | translate }
+          }}
         </span>
         <h1 class="text-4xl md:text-5xl font-light leading-tight text-cdp-dark font-roboto">
-          Methodology
+          {{ 'methodology.title' | translate }}
         </h1>
         <div class="w-12 h-[3px] bg-cdp-red mt-2"></div>
         <p
           class="text-base md:text-lg leading-relaxed text-cdp-text-secondary max-w-3xl mt-2 font-inter"
         >
-          This platform draws from both CDP's annual questionnaire for reporting by governments and
-          supplemental hazard data to cover the climate hazards that cities, states, and regions
-          face and how they are addressing them. It also surfaces insights from around the globe by
-          identifying relevant solutions and actions across cities with similar characteristics.
+          {{ 'methodology.intro' | translate }}
         </p>
       </header>
 
       <!-- CDP Questionnaire -->
-      <section
-        class="rounded-[28px] border border-stone-200 bg-white px-6 py-6 md:px-8 md:py-8 shadow-cdp-card"
-      >
-        <h2 class="text-2xl font-normal text-cdp-dark font-roboto mb-4">
-          CDP's annual questionnaire
+      <section class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0">
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto mb-3 md:mb-4">
+          {{ 'methodology.questionnaire.title' | translate }}
         </h2>
         <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          Cities, states, and regions are invited to complete CDP's annual questionnaire through the
-          CDP-ICLEI Track disclosure portal. The questionnaire captures qualitative and quantitative
-          information on topics including governance, climate risk and vulnerability assessments,
-          greenhouse gas emissions inventories, energy consumption, sectoral data, adaptation and
-          mitigation goals, and climate planning and actions. Jurisdictions can update their
-          disclosures through questionnaires released yearly. The Explorer currently displays data
-          from 2025 public disclosures.
+          {{ 'methodology.questionnaire.body' | translate }}
         </p>
       </section>
 
       <!-- Hazards -->
       <section
-        class="rounded-[28px] border border-stone-200 bg-white px-6 py-6 md:px-8 md:py-8 shadow-cdp-card flex flex-col gap-6"
+        class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0 flex flex-col gap-5 md:gap-6"
       >
-        <h2 class="text-2xl font-normal text-cdp-dark font-roboto">Hazards</h2>
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto">
+          {{ 'methodology.hazards.title' | translate }}
+        </h2>
         <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          For jurisdictions that have disclosed information through the questionnaire, hazard data
-          is primarily drawn from this disclosure. Additional hazard information and data for
-          visualization is sourced from remote sensing and model-derived data accessed through
-          Google Earth Engine.
+          {{ 'methodology.hazards.intro' | translate }}
         </p>
 
         <div class="flex flex-col gap-3">
-          <h3 class="text-lg font-medium text-cdp-dark font-roboto">
-            Cities, states, and regions questionnaire data
+          <h3 class="text-base md:text-lg font-medium text-cdp-dark font-roboto">
+            {{ 'methodology.hazards.questionnaireData.title' | translate }}
           </h3>
           <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-            Cities, states, and regions are asked to share details on the most significant climate
-            hazards facing their jurisdiction (Question 2.2 in the 2025 questionnaire). The
-            self-disclosed hazard data may contain information about vulnerable population and
-            sectoral exposure, hazard probability, magnitude of impact, expected hazard changes in
-            intensity or frequency, and the timeframe of expected change. Probability and magnitude
-            responses are given along a five-category scale: low, medium-low, medium, medium-high,
-            and high.
+            {{ 'methodology.hazards.questionnaireData.p1' | translate }}
           </p>
           <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-            For each jurisdiction, up to four top hazards are displayed on the platform, primarily
-            ranked based on the average value of their reported probability and magnitude.
-            Proportion of the population exposed to the hazard is used where data is incomplete.
+            {{ 'methodology.hazards.questionnaireData.p2' | translate }}
           </p>
         </div>
 
         <div class="flex flex-col gap-3">
-          <h3 class="text-lg font-medium text-cdp-dark font-roboto">
-            Google Earth Engine and external data
+          <h3 class="text-base md:text-lg font-medium text-cdp-dark font-roboto">
+            {{ 'methodology.hazards.geeData.title' | translate }}
           </h3>
           <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-            To provide additional context and better understand the dynamics of a hazard in a given
-            jurisdiction, geospatial hazard data layers were developed from datasets available on
-            Google Earth Engine and other data portals, including from specific risk indices or
-            hazard forecasting models, as well as directly from downscaled climate projections.
+            {{ 'methodology.hazards.geeData.p1' | translate }}
           </p>
           <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-            Earth Engine and other external hazard data were rescaled to values ranging from 0 to 5,
-            aligning it for easier comparison with the five-category, low-to-high questionnaire
-            response format scale. A value of 0 represents when a hazard is not expected to impact
-            the jurisdiction within the next 5 years. Jurisdictions without any exposure to the
-            given hazard were omitted in this calculation, allowing the analysis to better reflect
-            comparisons across areas actually experiencing the hazard.
+            {{ 'methodology.hazards.geeData.p2' | translate }}
           </p>
           <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-            Many hazard layers are available for both historical baseline conditions as well as
-            future projections. Projected values are provided for two-decade ranges, centered on
-            three milestone years: 2030, 2050, and 2080. Hazard projections are provided under four
-            combined, widely used socioeconomic-climate scenarios. These scenarios represent
-            increasingly extreme warming pathways: SSP1–RCP2.6, SSP2–4.5, SSP3–RCP7.0, and
-            SSP5–RCP8.5. There are a few exceptions: soil erosion is only available for historical
-            conditions, and flooding hazards are available for historical conditions, SSP2–4.5, and
-            SSP5–RCP8.5 scenarios. Water stress includes three of the four scenarios, omitting
-            SSP2–4.5.
+            {{ 'methodology.hazards.geeData.p3' | translate }}
           </p>
           <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-            For fire weather, extreme heat/heat stress, extreme cold, and extreme precipitation,
-            downscaled climate projections from NEX-GDDP-CMIP6 were used. Hazard values were
-            calculated for ~28-km grid cells for each year under the various scenarios. A
-            multi-model ensemble (MME) median value was calculated for each cell using all available
-            climate models. This provides a central, representative value across diverse climate
-            model projections and reduces the effects of variation between models.
+            {{ 'methodology.hazards.geeData.p4' | translate }}
           </p>
         </div>
 
         <!-- Hazard layers accordion -->
-        <div class="flex flex-col gap-2 mt-2">
-          <h3 class="text-lg font-medium text-cdp-dark font-roboto mb-2">
-            Data used for each hazard layer
+        <div class="flex flex-col gap-2 mt-1">
+          <h3 class="text-base md:text-lg font-medium text-cdp-dark font-roboto mb-2">
+            {{ 'methodology.hazards.layers.title' | translate }}
           </h3>
           <ul class="flex flex-col divide-y divide-stone-200 border-t border-b border-stone-200">
             @for (layer of hazardLayers; track layer.id) {
@@ -128,11 +90,11 @@
                   (click)="toggle(layer.id)"
                   [attr.aria-expanded]="isOpen(layer.id)"
                   [attr.aria-controls]="'panel-' + layer.id"
-                  class="w-full flex items-center justify-between gap-4 py-4 text-left hover:bg-stone-50 active:bg-stone-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm px-2"
+                  class="w-full flex items-center justify-between gap-4 py-4 px-2 text-left rounded-md transition-colors hover:bg-stone-50 active:bg-stone-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
                 >
-                  <span class="text-base md:text-lg font-medium text-cdp-dark font-roboto">{{
-                    layer.title
-                  }}</span>
+                  <span class="text-sm md:text-base font-medium text-cdp-dark font-roboto">
+                    {{ 'methodology.hazardLayers.' + layer.id + '.title' | translate }}
+                  </span>
                   <span
                     class="flex-shrink-0 text-cdp-text-secondary text-2xl leading-none transition-transform duration-200"
                     [class.rotate-45]="isOpen(layer.id)"
@@ -140,147 +102,123 @@
                     >+</span
                   >
                 </button>
-                @if (isOpen(layer.id)) {
-                  <div [id]="'panel-' + layer.id" class="px-2 pb-4 -mt-1">
+                <div
+                  [id]="'panel-' + layer.id"
+                  class="accordion-panel"
+                  [class.is-open]="isOpen(layer.id)"
+                >
+                  <div class="accordion-panel-inner">
                     <p
-                      class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+                      class="px-2 pb-4 text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
                     >
-                      {{ layer.description }}
+                      {{ 'methodology.hazardLayers.' + layer.id + '.description' | translate }}
                     </p>
                   </div>
-                }
+                </div>
               </li>
             }
           </ul>
-          <p class="text-xs text-cdp-text-tertiary italic mt-4 font-inter">
-            Additional hazard layers may be added over time.
+          <p class="text-xs text-cdp-text-tertiary italic mt-3 font-inter">
+            {{ 'methodology.hazards.layers.footnote' | translate }}
           </p>
         </div>
 
         <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          Hazard maps and scores for each jurisdiction were computed by spatially filtering and
-          averaging global hazard layers within the jurisdiction's administrative boundaries.
-          Administrative boundaries were obtained primarily through data from Overture Maps
-          Foundation. When unavailable, boundaries were obtained from OpenStreetMap or datasets
-          available on the UN OCHA Humanitarian Data Exchange. When no appropriate jurisdiction
-          boundary was found, pseudo-boundaries were created using the jurisdiction's geographic
-          center (sourced from the above or manually in Google Maps) and their reported land area.
+          {{ 'methodology.hazards.outro' | translate }}
         </p>
       </section>
 
       <!-- Government Actions -->
       <section
-        class="rounded-[28px] border border-stone-200 bg-white px-6 py-6 md:px-8 md:py-8 shadow-cdp-card flex flex-col gap-4"
+        class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0 flex flex-col gap-4"
       >
-        <h2 class="text-2xl font-normal text-cdp-dark font-roboto">Government actions</h2>
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto">
+          {{ 'methodology.governmentActions.title' | translate }}
+        </h2>
         <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          This tab contains three categories of information from the disclosure:
+          {{ 'methodology.governmentActions.intro' | translate }}
         </p>
         <ul
           class="list-disc pl-6 flex flex-col gap-1 text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
         >
-          <li>Adaptation goals (Question 5.1 in the questionnaire)</li>
-          <li>Actions (Question 9.1)</li>
-          <li>Projects (Question 9.3)</li>
+          <li>{{ 'methodology.governmentActions.listGoals' | translate }}</li>
+          <li>{{ 'methodology.governmentActions.listActions' | translate }}</li>
+          <li>{{ 'methodology.governmentActions.listProjects' | translate }}</li>
         </ul>
+        <p
+          class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+          [innerHTML]="'methodology.governmentActions.goals' | translate"
+        ></p>
+        <p
+          class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+          [innerHTML]="'methodology.governmentActions.actions' | translate"
+        ></p>
+        <p
+          class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+          [innerHTML]="'methodology.governmentActions.projects' | translate"
+        ></p>
         <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          <strong class="font-medium text-cdp-dark">Adaptation goals</strong> are adaptation targets
-          based on climate hazards and are typically qualitatively defined.
-        </p>
-        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          <strong class="font-medium text-cdp-dark">Actions</strong> are defined here as the
-          interventions taken to achieve adaptation goals and carry out a given strategy, which can
-          include policies, projects, programs, partnerships, and more. Adaptation action data may
-          include information on the sectors it impacts, attributes of resilience it enhances,
-          co-benefits of the project, population affected, expectations for enhanced resilience
-          timeframe, and funding sources and costs.
-        </p>
-        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          <strong class="font-medium text-cdp-dark">Projects</strong> are specific climate-related
-          initiatives for which jurisdictions are seeking funding, as reported via the
-          questionnaire. Information about projects may include funding needs, project description,
-          financing models, and more.
-        </p>
-        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          In addition, the Government Actions tab indicates whether the jurisdiction has completed a
-          Climate Risk and Vulnerability Assessment, or has disclosed that they plan to do so.
+          {{ 'methodology.governmentActions.outro' | translate }}
         </p>
       </section>
 
       <!-- Solutions -->
       <section
-        class="rounded-[28px] border border-stone-200 bg-white px-6 py-6 md:px-8 md:py-8 shadow-cdp-card flex flex-col gap-4"
+        class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0 flex flex-col gap-4"
       >
-        <h2 class="text-2xl font-normal text-cdp-dark font-roboto">Solutions</h2>
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto">
+          {{ 'methodology.solutions.title' | translate }}
+        </h2>
         <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          This tab presents information on relevant actions being taken by other peer jurisdictions,
-          derived from actions reported in the questionnaire. Jurisdictions highlighted here are
-          those in the same biome as a given city, state, or region, with actions that address one
-          or more of the top 4 hazards of the given city, state, or region. Solutions highlight the
-          types of actions that jurisdictions are taking to adapt to climate hazards. Cities,
-          states, and regions choose from an extensive list of solutions that represents a given
-          action when reporting the actions they are taking.
+          {{ 'methodology.solutions.p1' | translate }}
         </p>
         <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          These relevant actions from other jurisdictions in the same ecoregion are surfaced to help
-          users explore what others are doing to adapt to climate hazards. Actions from these
-          jurisdictions are collated and then grouped by solution category (e.g. engineered and
-          built environment actions, behavioural actions) and solution type (e.g. sea walls and
-          coastal protection structures, genetic techniques). The full list of solution types can be
-          found under section 9.1 in the CDP questionnaire guide. From this list, the top 25
-          solutions are chosen based on those with the highest number of associated actions
-          reported. A maximum of 5 solutions are chosen from a given solution category to highlight
-          a diversity of efforts. For each solution, a subset of actions are selected to display as
-          examples.
+          {{ 'methodology.solutions.p2' | translate }}
         </p>
       </section>
 
       <!-- Minimum criteria -->
       <section
-        class="rounded-[28px] border border-stone-200 bg-white px-6 py-6 md:px-8 md:py-8 shadow-cdp-card flex flex-col gap-4"
+        class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0 flex flex-col gap-4"
       >
-        <h2 class="text-2xl font-normal text-cdp-dark font-roboto">
-          Minimum criteria: data cleaning
+        <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto">
+          {{ 'methodology.minimumCriteria.title' | translate }}
         </h2>
         <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          As part of the data cleaning process, minimum criteria were defined for self-reported data
-          displayed in the CDP Adaptation and Action Explorer to ensure usability, credibility, and
-          comparability. These criteria establish a baseline level of data quality, allowing
-          incomplete, inconsistent, or otherwise unreliable responses to be filtered out prior to
-          analysis.
+          {{ 'methodology.minimumCriteria.intro' | translate }}
         </p>
 
-        <div class="overflow-x-auto -mx-6 md:-mx-8 px-6 md:px-8 mt-2">
+        <div class="overflow-x-auto -mx-5 md:-mx-8 px-5 md:px-8 mt-2">
           <table class="w-full text-left border-collapse min-w-[640px]">
             <thead>
               <tr class="border-b-2 border-cdp-dark">
                 <th
                   class="py-3 pr-4 text-xs font-bold uppercase tracking-[0.14em] text-cdp-dark font-roboto-mono"
                 >
-                  Topic
+                  {{ 'methodology.minimumCriteria.headers.topic' | translate }}
                 </th>
                 <th
                   class="py-3 pr-4 text-xs font-bold uppercase tracking-[0.14em] text-cdp-dark font-roboto-mono whitespace-nowrap"
                 >
-                  2025 question #
+                  {{ 'methodology.minimumCriteria.headers.questionNumber' | translate }}
                 </th>
                 <th
                   class="py-3 pr-4 text-xs font-bold uppercase tracking-[0.14em] text-cdp-dark font-roboto-mono"
                 >
-                  Raw data
+                  {{ 'methodology.minimumCriteria.headers.rawData' | translate }}
                 </th>
                 <th
                   class="py-3 text-xs font-bold uppercase tracking-[0.14em] text-cdp-dark font-roboto-mono"
                 >
-                  Minimum criteria
+                  {{ 'methodology.minimumCriteria.headers.criteria' | translate }}
                 </th>
               </tr>
             </thead>
             <tbody>
-              @for (row of minimumCriteria; track row.topic) {
+              @for (row of minimumCriteria; track row.id) {
                 <tr class="border-b border-stone-200 align-top">
                   <td class="py-4 pr-4 text-sm font-medium text-cdp-dark font-inter">
-                    {{ row.topic }}
+                    {{ 'methodology.minimumCriteria.rows.' + row.id + '.topic' | translate }}
                   </td>
                   <td
                     class="py-4 pr-4 text-sm text-cdp-text-secondary font-roboto-mono whitespace-nowrap"
@@ -297,7 +235,7 @@
                               target="_blank"
                               rel="noopener noreferrer"
                               class="text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors"
-                              >{{ link.label }}</a
+                              >{{ link.labelKey | translate }}</a
                             >
                           </li>
                         }
@@ -307,7 +245,7 @@
                     }
                   </td>
                   <td class="py-4 text-sm leading-relaxed text-cdp-text-secondary font-inter">
-                    {{ row.criteria }}
+                    {{ 'methodology.minimumCriteria.rows.' + row.id + '.criteria' | translate }}
                   </td>
                 </tr>
               }

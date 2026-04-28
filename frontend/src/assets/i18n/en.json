@@ -409,5 +409,162 @@
     "topHazards": "Top Reported Hazards",
     "projectsSeekingFinance": "Climate adaptation projects seeking finance",
     "populationExposed": "Jurisdictions already facing significant climate hazards"
+  },
+  "methodology": {
+    "lastUpdated": "Last updated: {{date}}",
+    "lastUpdatedDate": "April 2026",
+    "title": "Methodology",
+    "intro": "This platform draws from both CDP's annual questionnaire for reporting by governments and supplemental hazard data to cover the climate hazards that cities, states, and regions face and how they are addressing them. It also surfaces insights from around the globe by identifying relevant solutions and actions across cities with similar characteristics.",
+    "questionnaire": {
+      "title": "CDP's annual questionnaire",
+      "body": "Cities, states, and regions are invited to complete CDP's annual questionnaire through the CDP-ICLEI Track disclosure portal. The questionnaire captures qualitative and quantitative information on topics including governance, climate risk and vulnerability assessments, greenhouse gas emissions inventories, energy consumption, sectoral data, adaptation and mitigation goals, and climate planning and actions. Jurisdictions can update their disclosures through questionnaires released yearly. The Explorer currently displays data from 2025 public disclosures."
+    },
+    "hazards": {
+      "title": "Hazards",
+      "intro": "For jurisdictions that have disclosed information through the questionnaire, hazard data is primarily drawn from this disclosure. Additional hazard information and data for visualization is sourced from remote sensing and model-derived data accessed through Google Earth Engine.",
+      "questionnaireData": {
+        "title": "Cities, states, and regions questionnaire data",
+        "p1": "Cities, states, and regions are asked to share details on the most significant climate hazards facing their jurisdiction (Question 2.2 in the 2025 questionnaire). The self-disclosed hazard data may contain information about vulnerable population and sectoral exposure, hazard probability, magnitude of impact, expected hazard changes in intensity or frequency, and the timeframe of expected change. Probability and magnitude responses are given along a five-category scale: low, medium-low, medium, medium-high, and high.",
+        "p2": "For each jurisdiction, up to four top hazards are displayed on the platform, primarily ranked based on the average value of their reported probability and magnitude. Proportion of the population exposed to the hazard is used where data is incomplete."
+      },
+      "geeData": {
+        "title": "Google Earth Engine and external data",
+        "p1": "To provide additional context and better understand the dynamics of a hazard in a given jurisdiction, geospatial hazard data layers were developed from datasets available on Google Earth Engine and other data portals, including from specific risk indices or hazard forecasting models, as well as directly from downscaled climate projections.",
+        "p2": "Earth Engine and other external hazard data were rescaled to values ranging from 0 to 5, aligning it for easier comparison with the five-category, low-to-high questionnaire response format scale. A value of 0 represents when a hazard is not expected to impact the jurisdiction within the next 5 years. Jurisdictions without any exposure to the given hazard were omitted in this calculation, allowing the analysis to better reflect comparisons across areas actually experiencing the hazard.",
+        "p3": "Many hazard layers are available for both historical baseline conditions as well as future projections. Projected values are provided for two-decade ranges, centered on three milestone years: 2030, 2050, and 2080. Hazard projections are provided under four combined, widely used socioeconomic-climate scenarios. These scenarios represent increasingly extreme warming pathways: SSP1–RCP2.6, SSP2–4.5, SSP3–RCP7.0, and SSP5–RCP8.5. There are a few exceptions: soil erosion is only available for historical conditions, and flooding hazards are available for historical conditions, SSP2–4.5, and SSP5–RCP8.5 scenarios. Water stress includes three of the four scenarios, omitting SSP2–4.5.",
+        "p4": "For fire weather, extreme heat/heat stress, extreme cold, and extreme precipitation, downscaled climate projections from NEX-GDDP-CMIP6 were used. Hazard values were calculated for ~28-km grid cells for each year under the various scenarios. A multi-model ensemble (MME) median value was calculated for each cell using all available climate models. This provides a central, representative value across diverse climate model projections and reduces the effects of variation between models."
+      },
+      "layers": {
+        "title": "Data used for each hazard layer",
+        "footnote": "Additional hazard layers may be added over time."
+      },
+      "outro": "Hazard maps and scores for each jurisdiction were computed by spatially filtering and averaging global hazard layers within the jurisdiction's administrative boundaries. Administrative boundaries were obtained primarily through data from Overture Maps Foundation. When unavailable, boundaries were obtained from OpenStreetMap or datasets available on the UN OCHA Humanitarian Data Exchange. When no appropriate jurisdiction boundary was found, pseudo-boundaries were created using the jurisdiction's geographic center (sourced from the above or manually in Google Maps) and their reported land area."
+    },
+    "hazardLayers": {
+      "waterStress": {
+        "title": "Water stress",
+        "description": "Global water risk data was sourced from the World Resources Institute (WRI) Aqueduct Water Risk Atlas 4.0 framework and aggregated to the HydroBASINS Level 6 unit. The values are provided from WRI in the scale of 0–5."
+      },
+      "flooding": {
+        "title": "Fluvial (riverine) and coastal flooding",
+        "description": "Fluvial and coastal flood depth was sourced from the World Resources Institute Aqueduct Flood Hazard Map dataset. Data is provided at a 1-km resolution for 100-year (i.e. 1 in 100 probability of occurring in a given year) floods."
+      },
+      "fireWeather": {
+        "title": "Fire weather",
+        "description": "This draws from NASA's Fire Weather Index (FWI) dataset, which is based on NEX-GDDP-CMIP6 projections. FWI represents the relationship between weather conditions and elevated fire risk. The number of days per year in which the FWI exceeds a threshold of 45 is used, representing days with high fire danger."
+      },
+      "extremeHeat": {
+        "title": "Extreme heat / heat stress",
+        "description": "This is calculated as the number of days on which the near surface air temperature (the temperature felt at 2 meters above the ground) exceeds 35 °C, representing extreme heat-day frequency."
+      },
+      "extremeCold": {
+        "title": "Extreme cold",
+        "description": "This is calculated as the number of days on which the minimum near surface air temperature (the temperature felt at 2 meters above the ground) falls below 0 °C, representing extreme cold-day frequency."
+      },
+      "extremePrecipitation": {
+        "title": "Extreme precipitation",
+        "description": "This is calculated as the maximum 5-day precipitation total in a given year, representing extreme precipitation events."
+      },
+      "soilDegradation": {
+        "title": "Soil degradation / erosion",
+        "description": "To represent one aspect of soil erosion, global landslide hazard maps were accessed from the World Bank's Global Landslide Hazard Map. This is available at 1-km resolution."
+      }
+    },
+    "governmentActions": {
+      "title": "Government actions",
+      "intro": "This tab contains three categories of information from the disclosure:",
+      "listGoals": "Adaptation goals (Question 5.1 in the questionnaire)",
+      "listActions": "Actions (Question 9.1)",
+      "listProjects": "Projects (Question 9.3)",
+      "goals": "<strong class=\"font-medium text-cdp-dark\">Adaptation goals</strong> are adaptation targets based on climate hazards and are typically qualitatively defined.",
+      "actions": "<strong class=\"font-medium text-cdp-dark\">Actions</strong> are defined here as the interventions taken to achieve adaptation goals and carry out a given strategy, which can include policies, projects, programs, partnerships, and more. Adaptation action data may include information on the sectors it impacts, attributes of resilience it enhances, co-benefits of the project, population affected, expectations for enhanced resilience timeframe, and funding sources and costs.",
+      "projects": "<strong class=\"font-medium text-cdp-dark\">Projects</strong> are specific climate-related initiatives for which jurisdictions are seeking funding, as reported via the questionnaire. Information about projects may include funding needs, project description, financing models, and more.",
+      "outro": "In addition, the Government Actions tab indicates whether the jurisdiction has completed a Climate Risk and Vulnerability Assessment, or has disclosed that they plan to do so."
+    },
+    "solutions": {
+      "title": "Solutions",
+      "p1": "This tab presents information on relevant actions being taken by other peer jurisdictions, derived from actions reported in the questionnaire. Jurisdictions highlighted here are those in the same biome as a given city, state, or region, with actions that address one or more of the top 4 hazards of the given city, state, or region. Solutions highlight the types of actions that jurisdictions are taking to adapt to climate hazards. Cities, states, and regions choose from an extensive list of solutions that represents a given action when reporting the actions they are taking.",
+      "p2": "These relevant actions from other jurisdictions in the same ecoregion are surfaced to help users explore what others are doing to adapt to climate hazards. Actions from these jurisdictions are collated and then grouped by solution category (e.g. engineered and built environment actions, behavioural actions) and solution type (e.g. sea walls and coastal protection structures, genetic techniques). The full list of solution types can be found under section 9.1 in the CDP questionnaire guide. From this list, the top 25 solutions are chosen based on those with the highest number of associated actions reported. A maximum of 5 solutions are chosen from a given solution category to highlight a diversity of efforts. For each solution, a subset of actions are selected to display as examples."
+    },
+    "minimumCriteria": {
+      "title": "Minimum criteria: data cleaning",
+      "intro": "As part of the data cleaning process, minimum criteria were defined for self-reported data displayed in the CDP Adaptation and Action Explorer to ensure usability, credibility, and comparability. These criteria establish a baseline level of data quality, allowing incomplete, inconsistent, or otherwise unreliable responses to be filtered out prior to analysis.",
+      "headers": {
+        "topic": "Topic",
+        "questionNumber": "2025 question #",
+        "rawData": "Raw data",
+        "criteria": "Minimum criteria"
+      },
+      "rows": {
+        "rva": {
+          "topic": "Risk and vulnerability assessments",
+          "criteria": "The assessment report includes information on the boundary, the year of publication or approval, the factors considered in the assessment, and a link or attachment to the assessment."
+        },
+        "climateHazards": {
+          "topic": "Climate hazards",
+          "criteria": "The climate hazard reported includes information on the type of hazard, the sectors most exposed by the hazard, and a description of the impacts on vulnerable populations and sectors."
+        },
+        "adaptationGoals": {
+          "topic": "Adaptation goals",
+          "criteria": "The adaptation goal has a title or description, a base year, and a target year greater than or equal to the reporting year (2025)."
+        },
+        "adaptationActions": {
+          "topic": "Adaptation actions",
+          "criteria": "The action reported includes information on the type and category of action, the climate hazards that the action addresses, a description of the action, and the sectors the action applies to."
+        },
+        "projects": {
+          "topic": "Projects",
+          "criteria": "The project reported includes information on the project area and at least one more datapoint: project title, project stage, financing status, financing model, project description, total cost, or investment needed."
+        }
+      },
+      "rawDataLabels": {
+        "cities": "Cities",
+        "statesAndRegions": "States and regions"
+      }
+    }
+  },
+  "learnMore": {
+    "lastUpdated": "Last updated: {{date}}",
+    "lastUpdatedDate": "April 2026",
+    "title": "About the Explorer",
+    "intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. The CDP Adaptation & Action Explorer brings together fragmented climate disclosure, hazard, and resilience information into a single workspace so subnational governments can find what matters fastest.",
+    "what": {
+      "title": "What you'll find here",
+      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+    },
+    "audience": {
+      "title": "Who it's for",
+      "body": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt."
+    },
+    "howToUse": {
+      "title": "How to use it",
+      "body": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "footnote": "Have another question? Reach out to the CDP team for guidance.",
+      "items": {
+        "data": {
+          "question": "Where does the data come from?",
+          "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam. Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt."
+        },
+        "updates": {
+          "question": "How often is the Explorer updated?",
+          "answer": "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur."
+        },
+        "coverage": {
+          "question": "Why doesn't my city or region appear?",
+          "answer": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi."
+        },
+        "contribute": {
+          "question": "Can I contribute data or feedback?",
+          "answer": "Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus."
+        },
+        "use": {
+          "question": "Can I cite or reuse what's in the Explorer?",
+          "answer": "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur."
+        }
+      }
+    }
   }
 }

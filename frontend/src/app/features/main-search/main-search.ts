@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, combineLatest, map, of, startWith } from 'rxjs';
 import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import fuzzysort from 'fuzzysort';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
@@ -41,6 +41,7 @@ import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/di
     MatIconModule,
     ReactiveFormsModule,
     TranslateModule,
+    RouterLink,
     Maps,
     LocationSummaryComponent,
     CdpLogoIconComponent,

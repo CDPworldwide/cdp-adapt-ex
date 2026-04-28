@@ -26,6 +26,11 @@ export const routes: Routes = [
       import('./features/methodology/methodology').then((m) => m.MethodologyComponent),
   },
   {
+    path: 'learn-more',
+    loadComponent: () =>
+      import('./features/learn-more/learn-more').then((m) => m.LearnMoreComponent),
+  },
+  {
     path: '**',
     component: NotFound,
   },
