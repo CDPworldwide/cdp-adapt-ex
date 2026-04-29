@@ -151,14 +151,13 @@ jobs:
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
           secrets: |-
-            API_KEY:${{ secrets.GCP_PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
             GOOGLE_MAPS_API_KEY:${{ secrets.GCP_PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
 
       - name: Create environment.ts
         working-directory: frontend
         run: |
           FRONTEND_BASE_URL='${{ steps.backend-url.outputs.url }}' \
-          FRONTEND_API_KEY='${{ steps.frontend-secrets.outputs.API_KEY }}' \
+          FRONTEND_API_KEY='${{ secrets.FRONTEND_API_KEY }}' \
           FRONTEND_AUTH_DISABLED='false' \
           FRONTEND_DEBUG_MODE='${{ env.ENVIRONMENT == 'development' }}' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \

@@ -99,7 +99,6 @@ jobs:
             commit-sha=${{ github.sha }}
           secrets: |
             POSTGRES_PASSWORD=${{ env.ENVIRONMENT }}-POSTGRES_PASSWORD:latest
-            API_KEY=${{ env.ENVIRONMENT }}-API_KEY:latest
             LLM_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
             GOOGLE_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
             ALLOWED_ORIGINS=${{ env.ENVIRONMENT }}-ALLOWED_ORIGINS:latest
@@ -110,6 +109,7 @@ jobs:
             PROJECT_ID=${{ env.PROJECT_ID }}
             LOCATION=${{ env.REGION }}
             APP_ENV=${{ env.ENVIRONMENT }}
+            API_KEY=${{ secrets.PRODUCTION_FRONTEND_API_KEY }}
             DEBUG=${{ env.ENVIRONMENT == 'development' && 'true' || 'false' }}
             LOG_FORMAT=json
             POSTGRES_PORT=5432
@@ -228,14 +228,13 @@ jobs:
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
           secrets: |-
-            API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
             GOOGLE_MAPS_API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
 
       - name: Create production environment.ts
         working-directory: frontend
         run: |
           FRONTEND_BASE_URL='${{ steps.decode-url.outputs.url }}' \
-          FRONTEND_API_KEY='${{ steps.frontend-secrets.outputs.API_KEY }}' \
+          FRONTEND_API_KEY='${{ secrets.PRODUCTION_FRONTEND_API_KEY }}' \
           FRONTEND_DEBUG_MODE='${{ env.ENVIRONMENT == 'development' }}' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
           bash scripts/write-environment.sh
