@@ -36,7 +36,12 @@ export class ActionsSummaryComponent {
   }
 
   hazardName(row: HazardSummaryRow): string {
-    return row.hazard.hazardType === 'OTHERS' ? (row.hazard.otherHazardDetails ?? '') : '';
+    if (row.hazard.hazardType !== 'OTHERS') return '';
+    return this.toTitleCase(row.hazard.otherHazardDetails ?? '');
+  }
+
+  private toTitleCase(value: string): string {
+    return value.replace(/\b\w/g, (c) => c.toUpperCase());
   }
 
   hazardTranslationKey(row: HazardSummaryRow): string {

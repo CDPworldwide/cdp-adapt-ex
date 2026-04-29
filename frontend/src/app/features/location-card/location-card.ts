@@ -141,6 +141,8 @@ export class LocationCardComponent implements OnChanges, OnInit {
   exploreHazardActions(hazard: Hazard): void {
     this.selectedHazardFilter = buildHazardActionFilter(hazard);
     this.updateActiveTab('actions');
+    const scrollable = document.getElementById('page-content')?.parentElement;
+    scrollable?.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   formatPopulation(value: number | null | undefined): string {

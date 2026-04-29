@@ -12,8 +12,8 @@ export const routes: Routes = [
   },
   {
     path: 'org/:organizationId',
-    loadComponent: () =>
-      import('./features/city-detail/city-detail').then((m) => m.CityDetailPageComponent),
+    redirectTo: 'org/:organizationId/hazards',
+    pathMatch: 'full',
   },
   {
     path: 'org/:organizationId/:tab',

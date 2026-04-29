@@ -64,7 +64,7 @@
     "tabs": {
       "hazards": "Hazards",
       "governmentActions": "Government actions",
-      "solutions": "Solutions"
+      "solutions": "Popular Solutions"
     },
     "hazards": {
       "sectionTitle": "Regional Vulnerabilities",
@@ -162,6 +162,7 @@
       "mapPlaceholder": "Map placeholder",
       "vulnerablePopTitle": "Vulnerable population groups most exposed",
       "exploreActions": "Explore {{count}} adaptation actions",
+      "exploreAction": "Explore one adaptation action",
       "noActionsDisclosed": "No adaptation actions disclosed for this hazard",
       "hazardDataSource": "Hazard data source:",
       "proportionLabel": "Proportion of population most exposed",
@@ -173,6 +174,7 @@
       "challengeLabel": "Challenge / Support justification",
       "topNHazards": "Top {{count}} hazards",
       "hazardsDisclosedCount": "({{count}} Hazards disclosed)",
+      "nHazardsDisclosed": "{{count}} Hazards disclosed",
       "topFourHazardsDisclosed": "Top 4 hazards ({{count}} disclosed)",
       "topHazardsDisclosed": "Top hazards disclosed ({{count}} disclosed)",
       "topTwoComputed": "Top 2 computed hazards",

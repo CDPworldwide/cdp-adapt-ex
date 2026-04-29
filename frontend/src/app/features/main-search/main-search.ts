@@ -63,7 +63,7 @@ export class MainSearchComponent implements OnInit {
   selectedLocationData: LocationData | null = null;
   isLoadingHazardData = false;
 
-  readonly disclosureTrendsYear = new Date().getFullYear();
+  readonly disclosureTrendsYear = 2025;
   disclosureTrendsSummary!: Observable<DisclosureTrendsSummary>;
   totalHazardsCount = 0;
   implementedActionsCount = 0;

@@ -165,23 +165,34 @@
     @if (data.hazards.hazards && data.hazards.hazards.length > 0) {
       <div class="flex flex-wrap items-center pt-6 pb-6 gap-2 px-4 lg:px-0">
         <div class="flex items-center gap-2">
-          <h2
-            class="text-cdp-dark font-roboto text-base font-medium leading-6 tracking-[0.5px] uppercase"
-          >
-            {{
-              'locationCard.hazardDetail.topNHazards'
-                | translate
-                  : { count: data.hazards.hazards.length < 4 ? data.hazards.hazards.length : 4 }
-            }}
-          </h2>
-          <span
-            class="text-cdp-dark font-roboto text-base font-normal leading-6 tracking-[0.5px] uppercase"
-          >
-            {{
-              'locationCard.hazardDetail.hazardsDisclosedCount'
-                | translate: { count: data.hazards.hazards.length }
-            }}
-          </span>
+          @if (showAllHazards && data.hazards.hazards.length > 4) {
+            <h2
+              class="text-cdp-dark font-roboto text-base font-medium leading-6 tracking-[0.5px] uppercase"
+            >
+              {{
+                'locationCard.hazardDetail.nHazardsDisclosed'
+                  | translate: { count: data.hazards.hazards.length }
+              }}
+            </h2>
+          } @else {
+            <h2
+              class="text-cdp-dark font-roboto text-base font-medium leading-6 tracking-[0.5px] uppercase"
+            >
+              {{
+                'locationCard.hazardDetail.topNHazards'
+                  | translate
+                    : { count: data.hazards.hazards.length < 4 ? data.hazards.hazards.length : 4 }
+              }}
+            </h2>
+            <span
+              class="text-cdp-dark font-roboto text-base font-normal leading-6 tracking-[0.5px] uppercase"
+            >
+              {{
+                'locationCard.hazardDetail.hazardsDisclosedCount'
+                  | translate: { count: data.hazards.hazards.length }
+              }}
+            </span>
+          }
         </div>
       </div>
     }
@@ -513,21 +524,23 @@
             @if (getActionsCountForHazard(hazard.hazard); as actionCount) {
               <button
                 (click)="onExploreActions(hazard.hazard)"
-                class="w-full bg-cdp-red p-6 inline-flex justify-start items-center gap-6 hover:bg-opacity-90 transition-opacity"
+                class="w-full bg-cdp-red px-6 py-2.5 inline-flex justify-start items-center gap-4 hover:bg-opacity-90 transition-opacity"
               >
-                <div class="flex justify-start items-center gap-4">
+                <div class="flex justify-start items-center gap-3">
                   <div class="flex justify-center items-center gap-1">
-                    <span class="text-white text-xl font-medium font-roboto leading-7">
+                    <span class="text-white text-sm font-medium font-roboto leading-5">
                       {{
-                        'locationCard.hazardDetail.exploreActions'
-                          | translate: { count: actionCount }
+                        (actionCount === 1
+                          ? 'locationCard.hazardDetail.exploreAction'
+                          : 'locationCard.hazardDetail.exploreActions'
+                        ) | translate: { count: actionCount }
                       }}
                     </span>
                   </div>
                   <app-arrow-right-icon
-                    size="24"
+                    size="16"
                     color="white"
-                    class="w-6 h-6 inline-flex flex-col justify-center items-center gap-2.5"
+                    class="w-4 h-4 inline-flex flex-col justify-center items-center"
                   ></app-arrow-right-icon>
                 </div>
               </button>
@@ -549,9 +562,9 @@
         <button
           type="button"
           (click)="showAllHazards = !showAllHazards"
-          class="w-[202px] h-12 bg-cdp-light-text rounded-3xl border border-cdp-bg shadow-cdp-card inline-flex justify-center items-center px-6 py-3 hover:bg-[#dcdedd] transition-colors cursor-pointer"
+          class="bg-cdp-light-text rounded-full border border-cdp-bg shadow-cdp-card inline-flex justify-center items-center px-4 py-1.5 hover:bg-[#dcdedd] transition-colors cursor-pointer"
         >
-          <span class="text-cdp-dark font-roboto text-base font-medium leading-6 tracking-[0.5px]">
+          <span class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-[0.25px]">
             {{
               showAllHazards
                 ? ('shared.showLess' | translate)

@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { ArrowLeftLongIconComponent, ArrowRightLongIconComponent } from '../../../shared/icons';
 import {
   CheckCircleIconComponent,
   WaterSecurityIconComponent,
@@ -17,8 +16,6 @@ import type { DisclosureTrendsSummary } from './disclosure-trends.stats';
   imports: [
     DecimalPipe,
     TranslateModule,
-    ArrowLeftLongIconComponent,
-    ArrowRightLongIconComponent,
     CheckCircleIconComponent,
     WaterSecurityIconComponent,
     MoneyCircleIconComponent,
