@@ -1,7 +1,13 @@
+import asyncio
 import time
 
 from app.api.v1.chat_request_utils import build_verified_chat_request
 from app.api.v1.deps import get_llm_client, get_location_details_service
+from app.api.v1.llm_endpoint_utils import (
+    await_llm_response,
+    clamp_chat_response_text,
+    raise_llm_http_exception,
+)
 from app.schemas.chatbot import (
     OpenAIChatCompletionChoice,
     OpenAIChatCompletionRequest,
@@ -44,10 +50,12 @@ async def chat_completions(
             stream=False,
         )
 
-        response = await llm_client.llm_chat_completion_response_async(
-            llm_chat_request,
-            "system_prompt.md",
-            None,
+        response = await await_llm_response(
+            llm_client.llm_chat_completion_response_async(
+                llm_chat_request,
+                "system_prompt.md",
+                None,
+            )
         )
 
         completion_id = f"chatcmpl-{int(time.time())}"
@@ -60,7 +68,7 @@ async def chat_completions(
             completion_tokens = (
                 getattr(response.usage_metadata, "candidates_token_count", 0) or 0
             )
-        response_text = response.text or ""
+        response_text = clamp_chat_response_text(response.text or "")
         return OpenAIChatCompletionResponse(
             id=completion_id,
             created=int(time.time()),
@@ -88,26 +96,16 @@ async def chat_completions(
             error=str(e),
         )
         raise HTTPException(status_code=400, detail=str(e))
+    except asyncio.CancelledError:
+        raise
     except Exception as e:
-        error_msg = str(e).lower()
-        if "api key" in error_msg or "authentication" in error_msg:
-            logger.error(
-                "chat_request_auth_failed",
-                error=str(e),
-            )
-            raise HTTPException(
-                status_code=500, detail="LLM service authentication failed"
-            )
-        elif "rate limit" in error_msg or "quota" in error_msg:
-            logger.error(
-                "chat_request_rate_limited",
-                error=str(e),
-            )
-            raise HTTPException(status_code=429, detail="Rate limit exceeded")
-        else:
-            logger.error(
-                "chat_request_failed",
-                error=str(e),
-                exc_info=True,
-            )
-            raise HTTPException(status_code=500, detail="An unexpected error occurred")
+        try:
+            raise_llm_http_exception(e, "chat_request")
+        except HTTPException:
+            raise
+        logger.error(
+            "chat_request_failed",
+            error=str(e),
+            exc_info=True,
+        )
+        raise HTTPException(status_code=500, detail="An unexpected error occurred")

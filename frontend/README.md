@@ -22,6 +22,7 @@ It is built with **Angular 20**, **Tailwind CSS**, and **Angular Material**.
    ```
    **CRITICAL**: Open `src/environments/environment.development.ts` and set the `baseUrl` to match your running backend.
    - If running via `uv run fastapi dev`, the default is usually `http://localhost:8000`.
+   - If your backend has `API_KEY` configured, also set `apiKey` and `apiKeyHeaderName` so frontend requests include the required header.
 
 ### 3. Build the API Client (CRITICAL)
 If you haven't built the client yet, or if the backend API has changed:

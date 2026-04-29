@@ -33,6 +33,8 @@ class OpenAIChatCompletionRequest(BaseModel):
             raise ValueError(
                 "Combined message content exceeds the configured chat request limit"
             )
+        if any(message.role == "system" for message in self.messages):
+            raise ValueError("Client-supplied system messages are not allowed")
         return self
 
 

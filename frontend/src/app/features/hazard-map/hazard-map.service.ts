@@ -12,9 +12,8 @@ import {
   HazardLayerResponse,
   HazardLayerConfigResponse,
 } from '@pac-api/client';
-import { environment } from '@env/environment';
-import { createClient, createConfig } from '@pac-api/client/client';
 import { GoogleMapsLoaderService } from '../../shared/services/google-maps-loader.service';
+import { createApiClient } from '../../shared/services/api-client';
 import { SUPPORTED_HAZARD_TYPES } from './hazard-map';
 
 @Injectable({
@@ -27,11 +26,7 @@ export class HazardMapService {
     Partial<Record<HazardEnum, HazardLayerOptions>>
   > | null = null;
 
-  private client = createClient(
-    createConfig({
-      baseUrl: environment.baseUrl,
-    }),
-  );
+  private client = createApiClient();
 
   constructor(
     private http: HttpClient,

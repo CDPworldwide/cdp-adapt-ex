@@ -144,6 +144,13 @@ class Settings:
 
         # CORS Settings
         self.ALLOWED_ORIGINS = parse_list_from_env("ALLOWED_ORIGINS", [])
+        self.CORS_ALLOW_METHODS = parse_list_from_env(
+            "CORS_ALLOW_METHODS", ["GET", "POST", "OPTIONS"]
+        )
+        self.CORS_ALLOW_HEADERS = parse_list_from_env(
+            "CORS_ALLOW_HEADERS",
+            ["Authorization", "Content-Type", self.API_KEY_HEADER_NAME],
+        )
 
         # Langfuse Configuration
         self.LANGFUSE_PUBLIC_KEY = os.getenv("LANGFUSE_PUBLIC_KEY", "")
@@ -162,6 +169,12 @@ class Settings:
         )
         self.MAX_CHAT_MESSAGES = int(os.getenv("MAX_CHAT_MESSAGES", "50"))
         self.MAX_CHAT_TOTAL_CHARS = int(os.getenv("MAX_CHAT_TOTAL_CHARS", "50000"))
+        self.MAX_CHAT_RESPONSE_CHARS = int(
+            os.getenv("MAX_CHAT_RESPONSE_CHARS", "20000")
+        )
+        self.LLM_REQUEST_TIMEOUT_SECONDS = float(
+            os.getenv("LLM_REQUEST_TIMEOUT_SECONDS", "30")
+        )
         self.SUGGEST_FOLLOW_UPS_MAX_TOKENS = int(
             os.getenv("SUGGEST_FOLLOW_UPS_MAX_TOKENS", "256")
         )

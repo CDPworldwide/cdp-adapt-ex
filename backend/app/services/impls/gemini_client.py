@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 from app.schemas.chatbot import OpenAIChatCompletionRequest
 from app.shared.config import settings
+from app.shared.exceptions import LLMAuthError, LLMRateLimitError, LLMServiceError
 from app.utils.prepare_contents import prepare_contents
 from app.utils.prompts import build_system_prompt
 
@@ -58,6 +59,16 @@ class GeminiLLMClient:
             return 0.0
         return settings.DEFAULT_LLM_TEMPERATURE
 
+    def _raise_typed_llm_error(self, exc: Exception) -> None:
+        if isinstance(exc, LLMServiceError):
+            raise exc
+        error_msg = str(exc).lower()
+        if "api key" in error_msg or "authentication" in error_msg:
+            raise LLMAuthError(str(exc)) from exc
+        if "rate limit" in error_msg or "quota" in error_msg:
+            raise LLMRateLimitError(str(exc)) from exc
+        raise LLMServiceError(str(exc)) from exc
+
     def llm_chat_completion_response_sync(
         self,
         chat_request: OpenAIChatCompletionRequest,
@@ -69,15 +80,18 @@ class GeminiLLMClient:
         contents, _ = prepare_contents(chat_request.messages)
         client = self.client
 
-        return client.models.generate_content(
-            model=settings.LLM_MODEL,
-            contents=contents,
-            config=self.build_generation_config(
-                chat_request,
-                system_prompt_name,
-                response_schema,
-            ),
-        )
+        try:
+            return client.models.generate_content(
+                model=settings.LLM_MODEL,
+                contents=contents,
+                config=self.build_generation_config(
+                    chat_request,
+                    system_prompt_name,
+                    response_schema,
+                ),
+            )
+        except Exception as exc:
+            self._raise_typed_llm_error(exc)
 
     async def llm_chat_completion_response_async(
         self,
@@ -91,25 +105,31 @@ class GeminiLLMClient:
         client = self.client
 
         if hasattr(client, "aio"):
-            return await client.aio.models.generate_content(
-                model=settings.LLM_MODEL,
-                contents=contents,
-                config=self.build_generation_config(
-                    chat_request,
-                    system_prompt_name,
-                    response_schema,
-                ),
-            )
+            try:
+                return await client.aio.models.generate_content(
+                    model=settings.LLM_MODEL,
+                    contents=contents,
+                    config=self.build_generation_config(
+                        chat_request,
+                        system_prompt_name,
+                        response_schema,
+                    ),
+                )
+            except Exception as exc:
+                self._raise_typed_llm_error(exc)
 
         from starlette.concurrency import run_in_threadpool
 
-        return await run_in_threadpool(
-            self.llm_chat_completion_response_sync,
-            chat_request,
-            system_prompt_name,
-            response_schema,
-            analytics_context,
-        )
+        try:
+            return await run_in_threadpool(
+                self.llm_chat_completion_response_sync,
+                chat_request,
+                system_prompt_name,
+                response_schema,
+                analytics_context,
+            )
+        except Exception as exc:
+            self._raise_typed_llm_error(exc)
 
 
 gemini_service = GeminiLLMClient()

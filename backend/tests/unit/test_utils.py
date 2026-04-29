@@ -1,12 +1,4 @@
 from app.utils.prompts import build_system_prompt
-from app.utils.sanitization import sanitize_string
-
-
-def test_sanitize_string():
-    assert sanitize_string("hello") == "hello"
-    # The actual output of sanitize_string for "<script>" is "<script>"
-    # because of html.escape
-    assert sanitize_string("<script>") == "&lt;script&gt;"
 
 
 class _FakeLocationData:

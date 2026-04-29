@@ -8,22 +8,17 @@ import {
   type OpenAiChatCompletionRequest,
   type OpenAiChatCompletionResponse,
 } from '@pac-api/client';
-import { createClient, createConfig } from '@pac-api/client/client';
-import { environment } from '@env/environment';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { TranslateService } from '@ngx-translate/core';
+import { createApiClient } from '../../shared/services/api-client';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AskCdpAiService {
   private translateService = inject(TranslateService);
-  private client = createClient(
-    createConfig({
-      baseUrl: environment.baseUrl,
-    }),
-  );
+  private client = createApiClient();
 
   readonly disclosure = signal<string | null>(null);
   readonly followUpQuestions = signal<string[]>([]);

@@ -4,6 +4,7 @@ from app.api.v1.deps import (
     get_llm_client,
     get_location_details_service,
 )
+from app.api.v1.llm_endpoint_utils import await_llm_response, raise_llm_http_exception
 from app.core.suggest_follow_ups import SuggestFollowUps
 from app.schemas.chatbot import OpenAIChatCompletionRequest
 from app.schemas.suggest_follow_ups import (
@@ -60,8 +61,10 @@ async def suggest_follow_ups(
         )
 
         suggest_follow_ups_service = SuggestFollowUps(llm_client)
-        response = await suggest_follow_ups_service.suggest_follow_ups_async(
-            follow_up_request,
+        response = await await_llm_response(
+            suggest_follow_ups_service.suggest_follow_ups_async(
+                follow_up_request,
+            )
         )
         parsed_response = suggest_follow_ups_service.parse_response(response)
         return parsed_response
@@ -79,25 +82,13 @@ async def suggest_follow_ups(
         )
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        error_msg = str(e).lower()
-        if "api key" in error_msg or "authentication" in error_msg:
-            logger.error(
-                "chat_request_auth_failed",
-                error=str(e),
-            )
-            raise HTTPException(
-                status_code=500, detail="LLM service authentication failed"
-            )
-        elif "rate limit" in error_msg or "quota" in error_msg:
-            logger.error(
-                "chat_request_rate_limited",
-                error=str(e),
-            )
-            raise HTTPException(status_code=429, detail="Rate limit exceeded")
-        else:
-            logger.error(
-                "chat_request_failed",
-                error=str(e),
-                exc_info=True,
-            )
-            raise HTTPException(status_code=500, detail="An unexpected error occurred")
+        try:
+            raise_llm_http_exception(e, "chat_request")
+        except HTTPException:
+            raise
+        logger.error(
+            "chat_request_failed",
+            error=str(e),
+            exc_info=True,
+        )
+        raise HTTPException(status_code=500, detail="An unexpected error occurred")
