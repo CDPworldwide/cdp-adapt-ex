@@ -73,6 +73,72 @@ describe('Chatbot API', () => {
       console.log(content);
     });
 
+    it('should handle the George Local Municipality follow-up conversation (requires LLM)', async () => {
+      const firstTurnRequest: OpenAiChatCompletionRequest = {
+        messages: [
+          {
+            role: 'user',
+            content:
+              'What actions are being taken in George Local Municipality to address Coastal Flooding?',
+          },
+        ],
+      };
+
+      const firstResponse = await chatCompletionsApiV1ChatsCompletionsPost({
+        ...getApiOptions(),
+        body: firstTurnRequest,
+      });
+
+      expect(firstResponse.error).toBeUndefined();
+      expect(firstResponse.response.status).toBe(200);
+      expect(firstResponse.data?.choices[0].message.role).toBe('assistant');
+
+      const firstContent = firstResponse.data?.choices[0].message.content || '';
+      expect(firstContent).toBeTruthy();
+
+      const secondTurnRequest: OpenAiChatCompletionRequest = {
+        messages: [
+          {
+            role: 'user',
+            content:
+              'What actions are being taken in George Local Municipality to address Coastal Flooding?',
+          },
+          {
+            role: 'assistant',
+            content: firstContent,
+          },
+          {
+            role: 'user',
+            content: 'What hazards does this location face in severity order?',
+          },
+        ],
+      };
+
+      const secondResponse = await chatCompletionsApiV1ChatsCompletionsPost({
+        ...getApiOptions(),
+        body: secondTurnRequest,
+        throwOnError: false,
+      });
+
+      console.log('✅ LLM Response (George Local Municipality first turn):');
+      console.log(firstContent);
+
+      if (secondResponse.error) {
+        console.error('Follow-up response error:', secondResponse.error);
+      }
+
+      expect(secondResponse.error).toBeUndefined();
+      expect(secondResponse.response.status).toBe(200);
+      expect(secondResponse.data?.choices[0].message.role).toBe('assistant');
+
+      const secondContent = secondResponse.data?.choices[0].message.content || '';
+      expect(secondContent).toBeTruthy();
+      expect(secondContent.toLowerCase()).toMatch(/hazard|flood|storm|wind|rain|erosion/);
+
+      console.log('✅ LLM Response (George Local Municipality follow-up):');
+      console.log(secondContent);
+    });
+
     it('should accept requests without an auth header', async () => {
       const requestBody = { ...chatRequests.simpleTestRequest };
       delete (requestBody as any).stream;
