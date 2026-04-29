@@ -2,12 +2,16 @@ import { environment } from '@env/environment';
 import { createClient, createConfig } from '@pac-api/client/client';
 
 function buildApiHeaders(): Record<string, string> | undefined {
-  if (!environment.apiKey) {
+  const apiKey = 'apiKey' in environment ? environment.apiKey : '';
+  if (!apiKey) {
     return undefined;
   }
 
+  const apiKeyHeaderName =
+    'apiKeyHeaderName' in environment ? environment.apiKeyHeaderName : 'X-API-Key';
+
   return {
-    [environment.apiKeyHeaderName]: environment.apiKey,
+    [apiKeyHeaderName]: apiKey,
   };
 }
 

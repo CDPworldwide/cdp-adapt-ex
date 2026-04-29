@@ -160,6 +160,8 @@ jobs:
           export const environment = {
             production: true,
             baseUrl: '${{ steps.backend-url.outputs.url }}',
+            apiKey: '',
+            apiKeyHeaderName: 'X-API-Key',
             authDisabled: false,
             isDebugMode: ${{ env.ENVIRONMENT == 'development' }},
             mapsConfig: {
