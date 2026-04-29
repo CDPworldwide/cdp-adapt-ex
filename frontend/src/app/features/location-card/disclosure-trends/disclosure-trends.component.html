@@ -1,229 +1,254 @@
-<section class="bg-cdp-border py-[88px] px-[58px]">
-  <!-- Mobile Title Section (hidden on lg and up) -->
-  <div class="lg:hidden mb-7">
-    <div>
-      <span
-        class="block font-roboto font-normal leading-none text-cdp-red text-[60px] tracking-[-1.8px]"
-      >
-        {{ year }}
-      </span>
-      <span
-        class="block font-roboto font-normal leading-none text-white text-[60px] tracking-[-1.8px]"
-      >
-        {{ 'disclosureTrends.title' | translate }}
-      </span>
-    </div>
-    <div class="mt-7 flex flex-col items-start gap-3">
-      <button
-        disabled
-        aria-label="Previous year"
-        class="w-9 h-9 rounded-full border border-white flex items-center justify-center opacity-30 cursor-not-allowed"
-      >
-        <app-arrow-left-long-icon color="white" size="13"></app-arrow-left-long-icon>
-      </button>
-      <button
-        disabled
-        aria-label="Next year"
-        class="w-9 h-9 rounded-full border border-white flex items-center justify-center opacity-30 cursor-not-allowed"
-      >
-        <app-arrow-right-long-icon color="white" size="16"></app-arrow-right-long-icon>
-      </button>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-5 gap-[14px]">
-    <!-- Col 1: Title + year navigation arrows (hidden on mobile, visible on lg+) -->
-    <div class="hidden lg:flex flex-col">
+<section
+  class="bg-cdp-border w-full py-10 px-6 md:py-12 md:px-12 lg:py-14 lg:px-16 xl:py-16 xl:px-24 2xl:py-20 2xl:px-32"
+>
+  <div class="w-full">
+    <!-- Mobile/tablet title (visible below lg) -->
+    <div class="lg:hidden mb-8">
       <div>
         <span
-          class="block font-roboto font-normal leading-none text-cdp-red text-[60px] tracking-[-1.8px]"
+          class="block font-roboto font-normal leading-none text-cdp-red text-4xl sm:text-5xl tracking-tight"
         >
           {{ year }}
         </span>
         <span
-          class="block font-roboto font-normal leading-none text-white text-[60px] tracking-[-1.8px]"
+          class="block font-roboto font-normal leading-none text-white text-4xl sm:text-5xl tracking-tight mt-1"
         >
           {{ 'disclosureTrends.title' | translate }}
         </span>
       </div>
-      <div class="mt-7 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+      <div class="mt-6 flex flex-row items-center gap-3">
         <button
           disabled
           aria-label="Previous year"
-          class="w-9 h-9 sm:w-11 sm:h-11 rounded-full border border-white flex items-center justify-center opacity-30 cursor-not-allowed"
+          class="w-9 h-9 rounded-full border border-white flex items-center justify-center opacity-30 cursor-not-allowed"
         >
           <app-arrow-left-long-icon color="white" size="13"></app-arrow-left-long-icon>
         </button>
         <button
           disabled
           aria-label="Next year"
-          class="w-9 h-9 sm:w-11 sm:h-11 rounded-full border border-white flex items-center justify-center opacity-30 cursor-not-allowed"
+          class="w-9 h-9 rounded-full border border-white flex items-center justify-center opacity-30 cursor-not-allowed"
         >
           <app-arrow-right-long-icon color="white" size="16"></app-arrow-right-long-icon>
         </button>
       </div>
     </div>
 
-    <!-- Col 2: Adaptation plan + water security (two stacked boxes) -->
-    <div class="flex flex-col gap-[14px]">
-      <!-- Box 1: Adaptation Plan count -->
-      <div class="aspect-square bg-cdp-neutral-09 px-[22px] py-[28px] flex flex-col justify-between">
-        <app-check-circle-icon size="30"></app-check-circle-icon>
-        <div class="flex flex-col">
-          <span class="block font-roboto font-normal text-white leading-none text-[44px]">
-            {{ adaptationPlanCount }}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-3.5">
+      <!-- Title + arrows: visible only at lg+, occupies col 1 spanning both rows -->
+      <div
+        class="hidden lg:flex flex-col justify-start lg:col-start-1 lg:row-start-1 lg:row-span-2"
+      >
+        <div class="min-w-0">
+          <span
+            class="block font-roboto font-normal leading-none text-cdp-red text-3xl xl:text-4xl 2xl:text-5xl tracking-tight"
+          >
+            {{ year }}
           </span>
-          <span class="block mt-5 text-white font-inter text-sm font-medium leading-normal">
+          <span
+            class="block font-roboto font-normal leading-tight text-white text-3xl xl:text-4xl 2xl:text-5xl tracking-tight mt-1 break-words"
+          >
+            {{ 'disclosureTrends.title' | translate }}
+          </span>
+        </div>
+        <div class="mt-6 flex flex-row items-center gap-3">
+          <button
+            disabled
+            aria-label="Previous year"
+            class="w-10 h-10 xl:w-11 xl:h-11 rounded-full border border-white flex items-center justify-center opacity-30 cursor-not-allowed"
+          >
+            <app-arrow-left-long-icon color="white" size="13"></app-arrow-left-long-icon>
+          </button>
+          <button
+            disabled
+            aria-label="Next year"
+            class="w-10 h-10 xl:w-11 xl:h-11 rounded-full border border-white flex items-center justify-center opacity-30 cursor-not-allowed"
+          >
+            <app-arrow-right-long-icon color="white" size="16"></app-arrow-right-long-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Adaptation plan -->
+      <div
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-2 lg:row-start-1"
+      >
+        <app-check-circle-icon size="28"></app-check-circle-icon>
+        <div class="flex flex-col">
+          <span
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl"
+          >
+            {{ summary.adaptationPlanCount }}
+          </span>
+          <span
+            class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
+          >
             {{ 'disclosureTrends.adaptationPlan' | translate }}
           </span>
         </div>
       </div>
 
-      <div class="aspect-square bg-cdp-neutral-09 px-[22px] py-[28px] flex flex-col justify-between">
-        <app-water-security-icon size="32"></app-water-security-icon>
+      <!-- Water security -->
+      <div
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-2 lg:row-start-2"
+      >
+        <app-water-security-icon size="30"></app-water-security-icon>
         <div class="flex flex-col">
-          <span class="block font-roboto font-normal text-white leading-none text-[44px]">
-            {{ waterSecurityRisksCount }}
+          <span
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl"
+          >
+            {{ summary.waterSecurityRisksCount }}
           </span>
-          <span class="block mt-5 text-white font-inter text-sm font-medium leading-normal">
+          <span
+            class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
+          >
             {{ 'disclosureTrends.waterSecurityRisks' | translate }}
           </span>
         </div>
       </div>
-    </div>
 
-    <!-- Cols 3+4: Top hazards (spans two columns on lg+) -->
-    <div
-      class="lg:col-span-2 aspect-square lg:aspect-auto lg:h-full bg-cdp-neutral-09 px-[22px] py-[28px] flex flex-col"
-    >
-      <span
-        class="block text-white font-roboto text-[12px] font-normal uppercase leading-none tracking-[3.36px] mb-4"
+      <!-- Top hazards (sm: full row; lg: cols 3-4 spanning both rows) -->
+      <div
+        class="sm:col-span-2 lg:col-start-3 lg:col-span-2 lg:row-start-1 lg:row-span-2 bg-cdp-neutral-09 px-5 py-6 md:px-6 md:py-7 flex flex-col min-h-[320px] md:min-h-[400px] lg:min-h-0"
       >
-        {{ 'disclosureTrends.topHazards' | translate }}
-      </span>
-      @if (topHazards.length > 0) {
-        <div class="flex justify-center items-center flex-1">
-          <div class="relative h-full w-auto aspect-[29/39]">
-            <!-- Rank 1: Large -->
-            @if (topHazards[0]) {
-              <div
-                class="absolute w-[65%] aspect-square rounded-full bg-cdp-red top-[8%] left-[12.8%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
-              >
-                <app-hazard-icon
-                  [hazard]="topHazards[0].type"
-                  size="30"
-                  color="white"
-                  [showTooltip]="false"
-                ></app-hazard-icon>
-                <span
-                  class="mt-[4.5cqw] text-white font-inter text-[6cqw] font-medium leading-normal text-center px-[4.5cqw]"
+        <span
+          class="block text-white font-roboto text-[11px] md:text-xs font-normal uppercase leading-none tracking-[0.28em] mb-4"
+        >
+          {{ 'disclosureTrends.topHazards' | translate }}
+        </span>
+        @if (summary.topHazards.length > 0) {
+          <div class="flex justify-center items-center flex-1">
+            <div class="relative h-full w-auto aspect-[29/39] max-w-full">
+              <!-- Rank 1: Large -->
+              @if (summary.topHazards[0]) {
+                <div
+                  class="absolute w-[65%] aspect-square rounded-full bg-cdp-red top-[8%] left-[12.8%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
                 >
-                  {{ formatHazardType(topHazards[0].type) }}
-                </span>
-                @if (topHazards[0].range) {
-                  <div class="mt-[7.5cqw] flex items-baseline">
-                    <span class="text-white font-roboto text-[17cqw] font-normal leading-none">{{
-                      getHazardNumber(topHazards[0].range)
-                    }}</span>
-                    <span class="text-white font-roboto text-[11cqw] font-normal leading-none"
-                      >%</span
-                    >
-                  </div>
-                }
-              </div>
-            }
+                  <app-hazard-icon
+                    [hazard]="summary.topHazards[0].type"
+                    size="30"
+                    color="white"
+                    [showTooltip]="false"
+                  ></app-hazard-icon>
+                  <span
+                    class="mt-[4.5cqw] text-white font-inter text-[6cqw] font-medium leading-tight text-center px-[4.5cqw]"
+                  >
+                    {{ formatHazardType(summary.topHazards[0].type) }}
+                  </span>
+                  @if (summary.topHazards[0].range) {
+                    <div class="mt-[5cqw] flex items-baseline">
+                      <span class="text-white font-roboto text-[15cqw] font-normal leading-none">{{
+                        getHazardNumber(summary.topHazards[0].range)
+                      }}</span>
+                      <span class="text-white font-roboto text-[10cqw] font-normal leading-none"
+                        >%</span
+                      >
+                    </div>
+                  }
+                </div>
+              }
 
-            <!-- Rank 2: Medium -->
-            @if (topHazards[1]) {
-              <div
-                class="absolute w-[45%] aspect-square rounded-full bg-cdp-light-text top-[55%] left-0 flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
-              >
-                <app-hazard-icon
-                  [hazard]="topHazards[1].type"
-                  size="30"
-                  color="#1E1E1E"
-                  [showTooltip]="false"
-                ></app-hazard-icon>
-                <span
-                  class="mt-[4.5cqw] text-cdp-border font-inter text-[6cqw] font-medium leading-normal text-center px-[4.5cqw]"
+              <!-- Rank 2: Medium -->
+              @if (summary.topHazards[1]) {
+                <div
+                  class="absolute w-[45%] aspect-square rounded-full bg-cdp-light-text top-[55%] left-0 flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
                 >
-                  {{ formatHazardType(topHazards[1].type) }}
-                </span>
-                @if (topHazards[1].range) {
-                  <div class="mt-[7.5cqw] flex items-baseline">
-                    <span
-                      class="text-cdp-border font-roboto text-[17cqw] font-normal leading-none"
-                      >{{ getHazardNumber(topHazards[1].range) }}</span
-                    >
-                    <span class="text-cdp-border font-roboto text-[11cqw] font-normal leading-none"
-                      >%</span
-                    >
-                  </div>
-                }
-              </div>
-            }
+                  <app-hazard-icon
+                    [hazard]="summary.topHazards[1].type"
+                    size="30"
+                    color="#1E1E1E"
+                    [showTooltip]="false"
+                  ></app-hazard-icon>
+                  <span
+                    class="mt-[4.5cqw] text-cdp-border font-inter text-[6cqw] font-medium leading-tight text-center px-[4.5cqw]"
+                  >
+                    {{ formatHazardType(summary.topHazards[1].type) }}
+                  </span>
+                  @if (summary.topHazards[1].range) {
+                    <div class="mt-[5cqw] flex items-baseline">
+                      <span class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none"
+                        >{{ getHazardNumber(summary.topHazards[1].range) }}</span
+                      >
+                      <span class="text-cdp-border font-roboto text-[10cqw] font-normal leading-none"
+                        >%</span
+                      >
+                    </div>
+                  }
+                </div>
+              }
 
-            <!-- Rank 3: Small -->
-            @if (topHazards[2]) {
-              <div
-                class="absolute w-[31.7%] aspect-square rounded-full bg-cdp-neutral-04 top-[57%] right-[19%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
-              >
-                <app-hazard-icon
-                  [hazard]="topHazards[2].type"
-                  size="30"
-                  color="#1E1E1E"
-                  [showTooltip]="false"
-                ></app-hazard-icon>
-                <span
-                  class="mt-[4.5cqw] text-cdp-border font-inter text-[6cqw] font-medium leading-normal text-center px-[4.5cqw]"
+              <!-- Rank 3: Small -->
+              @if (summary.topHazards[2]) {
+                <div
+                  class="absolute w-[31.7%] aspect-square rounded-full bg-cdp-neutral-04 top-[57%] right-[19%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
                 >
-                  {{ formatHazardType(topHazards[2].type) }}
-                </span>
-                @if (topHazards[2].range) {
-                  <div class="mt-[7.5cqw] flex items-baseline">
-                    <span
-                      class="text-cdp-border font-roboto text-[17cqw] font-normal leading-none"
-                      >{{ getHazardNumber(topHazards[2].range) }}</span
-                    >
-                    <span class="text-cdp-border font-roboto text-[11cqw] font-normal leading-none"
-                      >%</span
-                    >
-                  </div>
-                }
-              </div>
-            }
+                  <app-hazard-icon
+                    [hazard]="summary.topHazards[2].type"
+                    size="30"
+                    color="#1E1E1E"
+                    [showTooltip]="false"
+                  ></app-hazard-icon>
+                  <span
+                    class="mt-[4.5cqw] text-cdp-border font-inter text-[6cqw] font-medium leading-tight text-center px-[4.5cqw]"
+                  >
+                    {{ formatHazardType(summary.topHazards[2].type) }}
+                  </span>
+                  @if (summary.topHazards[2].range) {
+                    <div class="mt-[5cqw] flex items-baseline">
+                      <span class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none"
+                        >{{ getHazardNumber(summary.topHazards[2].range) }}</span
+                      >
+                      <span class="text-cdp-border font-roboto text-[10cqw] font-normal leading-none"
+                        >%</span
+                      >
+                    </div>
+                  }
+                </div>
+              }
+            </div>
           </div>
-        </div>
-      } @else {
-        <span class="text-white/50 text-sm">No hazards reported</span>
-      }
-    </div>
+        } @else {
+          <span class="text-white/50 text-sm">No hazards reported</span>
+        }
+      </div>
 
-    <!-- Col 5: Projects seeking finance + population exposed (two stacked boxes) -->
-    <div class="flex flex-col gap-[14px]">
-      <!-- Box 1: Projects seeking finance -->
-      <div class="aspect-square bg-cdp-neutral-09 px-[22px] py-[28px] flex flex-col justify-between">
-        <app-money-circle-icon size="30"></app-money-circle-icon>
+      <!-- Projects seeking finance -->
+      <div
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-5 lg:row-start-1"
+      >
+        <app-money-circle-icon size="28"></app-money-circle-icon>
         <div class="flex flex-col">
-          <span class="block font-roboto font-normal text-white leading-none text-[44px]">
-            {{ projectsSeekingFinance.count }}
+          <span
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl"
+          >
+            {{ summary.projectsSeekingFinanceCount }}
           </span>
-          <span class="block mt-5 text-white font-inter text-sm font-medium leading-normal">
+          <span
+            class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
+          >
             {{ 'disclosureTrends.projectsSeekingFinance' | translate }}
           </span>
         </div>
       </div>
 
-      <!-- Box 2: Population exposed -->
-      <div class="aspect-square bg-cdp-neutral-09 px-[22px] py-[28px] flex flex-col justify-between">
-        <app-earth-icon size="30"></app-earth-icon>
+      <!-- Jurisdictions exposed -->
+      <div
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-5 lg:row-start-2"
+      >
+        <app-earth-icon size="28"></app-earth-icon>
         <div class="flex flex-col">
-          <span class="block font-roboto font-normal text-white leading-none text-[44px]">
+          <span
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl"
+          >
             {{
-              populationExposedPct != null ? (populationExposedPct | number: '1.0-1') + '%' : '—'
+              summary.jurisdictionsExposedPct != null
+                ? (summary.jurisdictionsExposedPct | number: '1.0-1') + '%'
+                : '—'
             }}
           </span>
-          <span class="block mt-5 text-white font-inter text-sm font-medium leading-normal">
+          <span
+            class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
+          >
             {{ 'disclosureTrends.populationExposed' | translate }}
           </span>
         </div>

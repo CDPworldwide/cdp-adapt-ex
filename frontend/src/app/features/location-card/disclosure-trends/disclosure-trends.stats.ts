@@ -1,7 +1,8 @@
-import type { HazardEnum, LocationProfile } from '@pac-api/client';
+import type { HazardEnum } from '@pac-api/client';
 
 // Scarcity-side water hazards only; commented entries are intentionally excluded but
 // kept as a reference for which related hazard types have been considered.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const WATER_HAZARD_TYPES: HazardEnum[] = [
   'WATER_STRESS',
   'DROUGHT',
@@ -15,50 +16,34 @@ const WATER_HAZARD_TYPES: HazardEnum[] = [
   // 'HEAVY_PRECIPITATION',
 ];
 
-export function adaptationPlanCount(profile: LocationProfile): number {
-  const actions = profile.governmentActions?.actions ?? [];
-  const goals = profile.governmentActions?.goals ?? [];
-  return actions.length + goals.length;
-}
-
-export function waterSecurityRisksCount(profile: LocationProfile): number {
-  return (profile.hazards?.hazards ?? []).filter((h) =>
-    WATER_HAZARD_TYPES.includes(h.hazard.hazardType),
-  ).length;
-}
-
 export interface TopHazard {
   rank: number;
   type: HazardEnum;
+  /**
+   * Share of jurisdictions reporting this hazard among the top reported,
+   * formatted as a label range (e.g. "21-30%").
+   */
   range: string | null;
 }
 
-export function topHazards(profile: LocationProfile): TopHazard[] {
-  return (profile.hazards?.hazards ?? [])
-    .slice()
-    .sort((a, b) => a.hazardRank - b.hazardRank)
-    .map((h) => ({
-      rank: h.hazardRank,
-      type: h.hazard.hazardType,
-      range: h.proportionExposedRange ?? null,
-    }));
-}
-
-export interface ProjectsFinanceSummary {
-  count: number;
-  totalNeededUsd: number | null;
-}
-
-export function projectsSeekingFinance(profile: LocationProfile): ProjectsFinanceSummary {
-  const projects = profile.governmentActions?.projects ?? [];
-  const hasAnyTotal = projects.some((p) => p.totalNeeded != null);
-  const total = projects.reduce((sum, p) => sum + (p.totalNeeded ?? 0), 0);
-  return {
-    count: projects.length,
-    totalNeededUsd: hasAnyTotal ? total : null,
-  };
-}
-
-export function populationExposedPct(profile: LocationProfile): number | null {
-  return profile.hazards?.statistics?.populationExposedPercentage ?? null;
+/**
+ * Dataset-wide disclosure trends for a given disclosure year.
+ *
+ * All counts and percentages are aggregated across every jurisdiction included
+ * in the disclosure year — they are not scoped to a selected location.
+ */
+export interface DisclosureTrendsSummary {
+  /** Jurisdictions that disclosed at least one adaptation goal or action. */
+  adaptationPlanCount: number;
+  /** Jurisdictions reporting at least one scarcity-side water hazard. */
+  waterSecurityRisksCount: number;
+  /** Most-reported hazards across the dataset (top 3). */
+  topHazards: TopHazard[];
+  /** Climate adaptation projects across all jurisdictions seeking finance. */
+  projectsSeekingFinanceCount: number;
+  /**
+   * Share of jurisdictions facing significant climate hazards, expressed as a
+   * percentage 0–100. `null` if not yet computable.
+   */
+  jurisdictionsExposedPct: number | null;
 }

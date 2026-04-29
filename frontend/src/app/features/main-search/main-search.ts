@@ -28,6 +28,8 @@ import type { AdaptationAction, Hazard, HazardProfile, LocationPin } from '@pac-
 import { CdpLogoIconComponent } from '../../shared/icons';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
+import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
+import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
 
 @Component({
   selector: 'app-main-search',
@@ -60,6 +62,9 @@ export class MainSearchComponent implements OnInit {
   selectedLocation: LocationPin | null = null;
   selectedLocationData: LocationData | null = null;
   isLoadingHazardData = false;
+
+  readonly disclosureTrendsYear = new Date().getFullYear();
+  disclosureTrendsSummary!: Observable<DisclosureTrendsSummary>;
   totalHazardsCount = 0;
   implementedActionsCount = 0;
   projectsRequiringFundingCount = 0;
@@ -74,9 +79,14 @@ export class MainSearchComponent implements OnInit {
     private locationService: LocationService,
     private mapSelectionService: MapSelectionService,
     private router: Router,
+    private disclosureTrendsStatsService: DisclosureTrendsStatsService,
   ) {}
 
   ngOnInit() {
+    this.disclosureTrendsSummary = this.disclosureTrendsStatsService.getSummary(
+      this.disclosureTrendsYear,
+    );
+
     this.filteredLocations = combineLatest([
       this.searchControl.valueChanges.pipe(startWith(this.searchControl.value || '')),
       this.allLocations$,

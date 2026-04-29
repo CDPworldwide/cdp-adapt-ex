@@ -124,9 +124,11 @@
     </div>
 
     <div
-      class="flex-1 flex flex-col md:flex-row md:items-start gap-8 md:gap-16 px-4 md:px-16 pb-6 w-full max-w-7xl mx-auto min-h-[300px]"
+      class="flex-1 flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-16 px-4 md:px-8 lg:px-16 xl:px-24 2xl:px-32 pb-6 w-full min-h-[300px]"
     >
-      <div class="flex flex-col md:flex-shrink-0 w-full max-w-[560px] mx-auto md:mx-0">
+      <div
+        class="flex flex-col lg:flex-shrink-0 w-full max-w-[560px] xl:max-w-[680px] 2xl:max-w-[900px] mx-auto lg:mx-0"
+      >
         <div class="relative aspect-[624/567]">
           <div
             class="absolute inset-0 rounded-3xl overflow-hidden bg-cdp-neutral-01 border border-cdp-neutral-02 shadow-sm"
@@ -150,7 +152,7 @@
         </div>
       </div>
 
-      <div class="md:flex-1 md:max-w-md flex flex-col md:pt-[20px]">
+      <div class="lg:flex-1 flex flex-col lg:pt-[20px]">
         @if (selectedLocation) {
           <app-location-summary
             [location]="selectedLocation"
@@ -163,14 +165,16 @@
             (learnMore)="goToLocationDetails()"
           ></app-location-summary>
         } @else {
-          <div class="flex flex-col items-start gap-4 md:pt-[200px]">
+          <div class="flex flex-col items-start gap-4 lg:pt-[200px] xl:ml-auto">
             <div class="w-12 h-[3px] bg-cdp-red"></div>
-            <p class="text-base md:text-lg leading-relaxed text-cdp-dark max-w-sm">
+            <p
+              class="text-base md:text-lg lg:text-xl 2xl:text-2xl leading-relaxed text-cdp-dark max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl"
+            >
               {{ 'homepage.description.text' | translate }}
             </p>
             <a
               routerLink="/learn-more"
-              class="mt-2 px-4 py-3 bg-cdp-dark inline-flex justify-center items-center no-underline hover:bg-black active:bg-cdp-neutral-08 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors text-white text-base font-inter leading-4"
+              class="mt-2 px-4 py-3 lg:px-6 lg:py-4 2xl:px-8 2xl:py-5 bg-cdp-dark inline-flex justify-center items-center no-underline hover:bg-black active:bg-cdp-neutral-08 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors text-white text-base lg:text-lg 2xl:text-xl font-inter leading-4"
             >
               {{ 'homepage.description.learnMore' | translate }}
             </a>
@@ -180,11 +184,11 @@
     </div>
   </div>
 
-  <!-- Disclosure Trends — visible by scrolling down; only shown when a location is selected -->
-  @if (selectedLocationData) {
+  <!-- Disclosure Trends — dataset-wide aggregate, visible by scrolling down. -->
+  @if (disclosureTrendsSummary | async; as summary) {
     <app-disclosure-trends
-      [data]="selectedLocationData"
-      [year]="resolvedYear"
+      [summary]="summary"
+      [year]="disclosureTrendsYear"
     ></app-disclosure-trends>
   }
 </div>

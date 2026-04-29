@@ -246,7 +246,7 @@
           <div
             class="h-48 lg:relative lg:h-auto lg:flex-1 overflow-hidden lg:rounded-tr-lg lg:rounded-br-lg"
           >
-            @if (data.lat != null && data.lng != null) {
+            @if (data.lat != null && data.lng != null && hasMapData(hazard.hazard)) {
               <app-hazard-map
                 class="block h-full lg:absolute lg:inset-0"
                 [lat]="data.lat"
@@ -257,6 +257,16 @@
                 [zoom]="10"
                 [hazardType]="hazard.hazard.hazardType"
               ></app-hazard-map>
+            } @else {
+              <div
+                class="h-full lg:absolute lg:inset-0 bg-cdp-neutral-01 flex items-center justify-center px-6 grayscale"
+              >
+                <p
+                  class="text-sm font-roboto text-cdp-text-secondary text-center leading-5 tracking-[0.25px]"
+                >
+                  {{ 'locationCard.hazardDetail.noMapData' | translate }}
+                </p>
+              </div>
             }
           </div>
           @if (hazard.source) {

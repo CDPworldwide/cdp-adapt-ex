@@ -12,7 +12,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { HazardMapComponent } from '../../hazard-map/hazard-map';
+import { HazardMapComponent, SUPPORTED_HAZARD_TYPES } from '../../hazard-map/hazard-map';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../shared/components/sector-icon/sector-icon.component';
 import { InfoIconComponent, ArrowRightIconComponent } from '../../../shared/icons';
@@ -77,6 +77,10 @@ export class HazardsComponent implements AfterViewInit {
 
   hazardOverflows(hazard: Hazard): boolean {
     return this.overflowMap.get(this.getHazardKey(hazard)) ?? false;
+  }
+
+  hasMapData(hazard: Hazard): boolean {
+    return SUPPORTED_HAZARD_TYPES.includes(hazard.hazardType);
   }
 
   getActionsCountForHazard(hazard: Hazard): number {
