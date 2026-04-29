@@ -6,6 +6,7 @@ from app.api.v1.deps import get_llm_client, get_location_details_service
 from app.api.v1.llm_endpoint_utils import (
     await_llm_response,
     clamp_chat_response_text,
+    extract_chat_response_text,
     raise_llm_http_exception,
 )
 from app.schemas.chatbot import (
@@ -68,7 +69,7 @@ async def chat_completions(
             completion_tokens = (
                 getattr(response.usage_metadata, "candidates_token_count", 0) or 0
             )
-        response_text = clamp_chat_response_text(response.text or "")
+        response_text = clamp_chat_response_text(extract_chat_response_text(response))
         return OpenAIChatCompletionResponse(
             id=completion_id,
             created=int(time.time()),

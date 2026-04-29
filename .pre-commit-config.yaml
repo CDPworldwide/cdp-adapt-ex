@@ -31,3 +31,12 @@ repos:
     hooks:
       - id: prettier
         files: ^frontend/.*\.(js|ts|json|css|scss|html)$
+
+  - repo: local
+    hooks:
+      - id: frontend-build
+        name: frontend build
+        language: system
+        pass_filenames: false
+        files: ^frontend/
+        entry: bash -lc 'cd frontend && bash scripts/write-environment.sh && npm run build'

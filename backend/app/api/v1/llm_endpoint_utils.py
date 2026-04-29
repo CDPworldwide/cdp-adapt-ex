@@ -27,6 +27,34 @@ def clamp_chat_response_text(response_text: str) -> str:
     return response_text
 
 
+def extract_chat_response_text(response) -> str:
+    try:
+        return response.text or ""
+    except ValueError as exc:
+        logger.warning(
+            "llm_response_text_accessor_failed",
+            error=str(exc),
+        )
+
+    candidates = getattr(response, "candidates", None) or []
+    if not candidates:
+        raise LLMServiceError("LLM returned no candidates")
+
+    first_candidate = candidates[0]
+    parts = getattr(getattr(first_candidate, "content", None), "parts", None) or []
+    text_parts = [part.text for part in parts if getattr(part, "text", None)]
+    if text_parts:
+        return "".join(text_parts)
+
+    finish_reason = getattr(first_candidate, "finish_reason", None)
+    if finish_reason is not None:
+        raise LLMServiceError(
+            f"LLM returned no text content (finish_reason={finish_reason})"
+        )
+
+    raise LLMServiceError("LLM returned no text content")
+
+
 def raise_llm_http_exception(exc: Exception, event_prefix: str) -> None:
     if isinstance(exc, LLMTimeoutError):
         logger.error(

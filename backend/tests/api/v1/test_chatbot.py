@@ -1,6 +1,6 @@
 import asyncio
 from types import SimpleNamespace
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, PropertyMock
 
 import pytest
 from app.api.v1.deps import get_location_details_service
@@ -97,6 +97,42 @@ async def test_chat_completions_coerces_missing_usage_counts(client, mock_llm_cl
         "completion_tokens": 0,
         "total_tokens": 0,
     }
+
+
+@pytest.mark.asyncio
+async def test_chat_completions_falls_back_when_response_text_accessor_fails(
+    client, mock_llm_client
+):
+    payload = {
+        "messages": [{"role": "user", "content": "What is Mumbai doing about heat?"}],
+        "locationData": _location_payload(),
+    }
+    mock_response = MagicMock()
+    type(mock_response).text = PropertyMock(
+        side_effect=ValueError("response.text requires a single text part")
+    )
+    mock_response.candidates = [
+        SimpleNamespace(
+            content=SimpleNamespace(
+                parts=[SimpleNamespace(text="Mumbai is expanding heat resilience measures.")]
+            )
+        )
+    ]
+    mock_response.usage_metadata = SimpleNamespace(
+        prompt_token_count=10,
+        candidates_token_count=5,
+    )
+    mock_llm_client.llm_chat_completion_response_async = AsyncMock(
+        return_value=mock_response
+    )
+
+    response = await client.post("/api/v1/chats/completions", json=payload)
+
+    assert response.status_code == 200
+    assert (
+        response.json()["choices"][0]["message"]["content"]
+        == "Mumbai is expanding heat resilience measures."
+    )
 
 
 @pytest.mark.asyncio
