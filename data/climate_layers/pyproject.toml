@@ -1,0 +1,17 @@
+[project]
+name = "cdp-climate-layers"
+version = "0.1.0"
+description = "Climate hazard score calculators (frost days, hot days, RX5day, FWI, extreme wind) for CDP risk methodology"
+requires-python = ">=3.10"
+dependencies = [
+    "xarray",
+    "numpy",
+    "requests",
+    "h5netcdf",
+    "rioxarray",
+    "fsspec[http]>=2026.4.0",
+    "cftime",
+]
+
+[tool.setuptools]
+packages = []
