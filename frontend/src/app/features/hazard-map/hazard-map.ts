@@ -207,7 +207,7 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
   private getInteractivityOptions(): google.maps.MapOptions {
     const isSupported = this.isHazardSupported(this.hazardType);
-    const isInteractive = !this.static && isSupported;
+    const isInteractive = !this.static && isSupported && this.isExpanded;
 
     return {
       zoomControl: isInteractive,
@@ -234,6 +234,9 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
       this.renderer.removeStyle(host, 'height');
       this.renderer.removeStyle(host, 'z-index');
       this.renderer.removeStyle(host, 'background');
+    }
+    if (this.googleMap) {
+      this.googleMap.setOptions(this.getInteractivityOptions());
     }
     // Trigger map resize after expansion/collapse to ensure proper rendering
     requestAnimationFrame(() => {

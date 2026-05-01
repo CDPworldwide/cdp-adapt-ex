@@ -1,11 +1,17 @@
 import {
+  AfterViewInit,
+  ChangeDetectorRef,
   Component,
-  Input,
-  Output,
+  ElementRef,
   EventEmitter,
+  Input,
+  NgZone,
   OnChanges,
+  OnDestroy,
   OnInit,
+  Output,
   SimpleChanges,
+  ViewChild,
   DestroyRef,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -56,7 +62,7 @@ declare let gtag: Function;
   templateUrl: './location-card.html',
   styleUrls: ['./location-card.css'],
 })
-export class LocationCardComponent implements OnChanges, OnInit {
+export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
   @Input()
   data: LocationData | null = null;
 
@@ -71,12 +77,21 @@ export class LocationCardComponent implements OnChanges, OnInit {
   selectedHazardFilter: string | null = null;
   jurisdictionBounds?: google.maps.LatLngBounds;
 
+  isStickyHeaderVisible = false;
+
+  @ViewChild('stickyTrigger')
+  private stickyTrigger?: ElementRef<HTMLElement>;
+  private scrollRoot?: HTMLElement;
+  private scrollHandler?: () => void;
+
   private lastTrackedLocationName: string | null = null;
   private geometry$ = new ReplaySubject<{ [key: string]: unknown } | undefined>(1);
 
   constructor(
     private geometryService: GeometryService,
     private destroyRef: DestroyRef,
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone,
   ) {}
 
   ngOnInit(): void {
@@ -93,6 +108,49 @@ export class LocationCardComponent implements OnChanges, OnInit {
       .subscribe((bounds) => {
         this.jurisdictionBounds = bounds;
       });
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.stickyTrigger) return;
+    const scrollRoot = this.findScrollableParent(this.stickyTrigger.nativeElement);
+    if (!scrollRoot) return;
+    this.scrollRoot = scrollRoot;
+    this.zone.runOutsideAngular(() => {
+      this.scrollHandler = () => this.checkStickyHeaderVisibility();
+      scrollRoot.addEventListener('scroll', this.scrollHandler, { passive: true });
+      this.checkStickyHeaderVisibility();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.scrollHandler) {
+      this.scrollRoot?.removeEventListener('scroll', this.scrollHandler);
+    }
+  }
+
+  private checkStickyHeaderVisibility(): void {
+    if (!this.stickyTrigger) return;
+    const shouldShow = this.stickyTrigger.nativeElement.getBoundingClientRect().top < 0;
+    if (shouldShow !== this.isStickyHeaderVisible) {
+      this.zone.run(() => {
+        this.isStickyHeaderVisible = shouldShow;
+        this.cdr.markForCheck();
+      });
+    }
+  }
+
+  private findScrollableParent(el: HTMLElement): HTMLElement | null {
+    let parent: HTMLElement | null = el.parentElement;
+    while (parent && parent !== document.documentElement) {
+      const overflowY = window.getComputedStyle(parent).overflowY;
+      const scrollableOverflow =
+        overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay';
+      if (scrollableOverflow && parent.scrollHeight > parent.clientHeight) {
+        return parent;
+      }
+      parent = parent.parentElement;
+    }
+    return document.scrollingElement as HTMLElement | null;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -141,8 +199,7 @@ export class LocationCardComponent implements OnChanges, OnInit {
   exploreHazardActions(hazard: Hazard): void {
     this.selectedHazardFilter = buildHazardActionFilter(hazard);
     this.updateActiveTab('actions');
-    const scrollable = document.getElementById('page-content')?.parentElement;
-    scrollable?.scrollTo({ top: 0, behavior: 'smooth' });
+    this.scrollRoot?.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   formatPopulation(value: number | null | undefined): string {

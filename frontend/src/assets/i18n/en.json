@@ -11,6 +11,7 @@
       "noDataTitle": "No disclosure data available for '{{location}}'",
       "noDataBody": "We don't yet have data to display for this location. We're continually expanding our coverage with historical disclosures and additional trusted data sources.",
       "searchSuggestions": "Suggestions",
+      "noResults": "No locations match '{{query}}'",
       "disclosesToCdp": "Disclosure Available"
     },
     "legend": {
@@ -64,7 +65,8 @@
     "tabs": {
       "hazards": "Hazards",
       "governmentActions": "Government actions",
-      "solutions": "Popular Solutions"
+      "solutions": "Popular Solutions",
+      "ariaLabel": "Location card tabs"
     },
     "hazards": {
       "sectionTitle": "Regional Vulnerabilities",
@@ -409,6 +411,7 @@
     "adaptationPlan": "Cities, states and regions that have an adaptation plan",
     "waterSecurityRisks": "Jurisdictions that report facing water security risks",
     "topHazards": "Top Reported Hazards",
+    "noHazardsReported": "No hazards reported",
     "projectsSeekingFinance": "Climate adaptation projects seeking finance",
     "populationExposed": "Jurisdictions already facing significant climate hazards"
   },

@@ -44,9 +44,9 @@
         <app-check-circle-icon size="28"></app-check-circle-icon>
         <div class="flex flex-col">
           <span
-            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl"
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
           >
-            {{ summary.adaptationPlanCount }}
+            {{ adaptationPlanDisplay() | number: '1.0-0' }}
           </span>
           <span
             class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
@@ -63,9 +63,9 @@
         <app-water-security-icon size="30"></app-water-security-icon>
         <div class="flex flex-col">
           <span
-            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl"
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
           >
-            {{ summary.waterSecurityRisksCount }}
+            {{ waterSecurityDisplay() | number: '1.0-0' }}
           </span>
           <span
             class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
@@ -80,7 +80,7 @@
         class="sm:col-span-2 lg:col-start-3 lg:col-span-2 lg:row-start-1 lg:row-span-2 bg-cdp-neutral-09 px-5 py-6 md:px-6 md:py-7 flex flex-col min-h-[320px] md:min-h-[400px] lg:min-h-0"
       >
         <span
-          class="block text-white font-roboto text-[11px] md:text-xs font-normal uppercase leading-none tracking-[0.28em] mb-4"
+          class="block text-white font-roboto text-[11px] md:text-xs font-normal uppercase leading-none tracking-cdp-eyebrow mb-4"
         >
           {{ 'disclosureTrends.topHazards' | translate }}
         </span>
@@ -90,7 +90,9 @@
               <!-- Rank 1: Large -->
               @if (summary.topHazards[0]) {
                 <div
-                  class="absolute w-[65%] aspect-square rounded-full bg-cdp-red top-[8%] left-[12.8%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
+                  class="absolute w-[65%] aspect-square rounded-full bg-cdp-red top-[8%] left-[12.8%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out motion-reduce:transition-none"
+                  [class.scale-0]="!hasEntered()"
+                  [class.scale-100]="hasEntered()"
                 >
                   <app-hazard-icon
                     [hazard]="summary.topHazards[0].type"
@@ -105,8 +107,8 @@
                   </span>
                   @if (summary.topHazards[0].range) {
                     <div class="mt-[5cqw] flex items-baseline">
-                      <span class="text-white font-roboto text-[15cqw] font-normal leading-none">{{
-                        getHazardNumber(summary.topHazards[0].range)
+                      <span class="text-white font-roboto text-[15cqw] font-normal leading-none tabular-nums">{{
+                        hazardNumberDisplays[0]() | number: '1.0-0'
                       }}</span>
                       <span class="text-white font-roboto text-[10cqw] font-normal leading-none"
                         >%</span
@@ -119,7 +121,9 @@
               <!-- Rank 2: Medium -->
               @if (summary.topHazards[1]) {
                 <div
-                  class="absolute w-[45%] aspect-square rounded-full bg-cdp-light-text top-[55%] left-0 flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
+                  class="absolute w-[45%] aspect-square rounded-full bg-cdp-light-text top-[55%] left-0 flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out delay-150 motion-reduce:transition-none motion-reduce:delay-0"
+                  [class.scale-0]="!hasEntered()"
+                  [class.scale-100]="hasEntered()"
                 >
                   <app-hazard-icon
                     [hazard]="summary.topHazards[1].type"
@@ -134,8 +138,8 @@
                   </span>
                   @if (summary.topHazards[1].range) {
                     <div class="mt-[5cqw] flex items-baseline">
-                      <span class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none"
-                        >{{ getHazardNumber(summary.topHazards[1].range) }}</span
+                      <span class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none tabular-nums"
+                        >{{ hazardNumberDisplays[1]() | number: '1.0-0' }}</span
                       >
                       <span class="text-cdp-border font-roboto text-[10cqw] font-normal leading-none"
                         >%</span
@@ -148,7 +152,9 @@
               <!-- Rank 3: Small -->
               @if (summary.topHazards[2]) {
                 <div
-                  class="absolute w-[31.7%] aspect-square rounded-full bg-cdp-neutral-04 top-[57%] right-[19%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw]"
+                  class="absolute w-[31.7%] aspect-square rounded-full bg-cdp-neutral-04 top-[57%] right-[19%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out delay-300 motion-reduce:transition-none motion-reduce:delay-0"
+                  [class.scale-0]="!hasEntered()"
+                  [class.scale-100]="hasEntered()"
                 >
                   <app-hazard-icon
                     [hazard]="summary.topHazards[2].type"
@@ -163,8 +169,8 @@
                   </span>
                   @if (summary.topHazards[2].range) {
                     <div class="mt-[5cqw] flex items-baseline">
-                      <span class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none"
-                        >{{ getHazardNumber(summary.topHazards[2].range) }}</span
+                      <span class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none tabular-nums"
+                        >{{ hazardNumberDisplays[2]() | number: '1.0-0' }}</span
                       >
                       <span class="text-cdp-border font-roboto text-[10cqw] font-normal leading-none"
                         >%</span
@@ -176,7 +182,9 @@
             </div>
           </div>
         } @else {
-          <span class="text-white/50 text-sm">No hazards reported</span>
+          <span class="text-white/50 text-sm">{{
+            'disclosureTrends.noHazardsReported' | translate
+          }}</span>
         }
       </div>
 
@@ -187,9 +195,9 @@
         <app-money-circle-icon size="28"></app-money-circle-icon>
         <div class="flex flex-col">
           <span
-            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl"
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
           >
-            {{ summary.projectsSeekingFinanceCount }}
+            {{ projectsSeekingFinanceDisplay() | number: '1.0-0' }}
           </span>
           <span
             class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
@@ -206,11 +214,11 @@
         <app-earth-icon size="28"></app-earth-icon>
         <div class="flex flex-col">
           <span
-            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl"
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
           >
             {{
               summary.jurisdictionsExposedPct != null
-                ? (summary.jurisdictionsExposedPct | number: '1.0-1') + '%'
+                ? (jurisdictionsExposedPctDisplay() | number: '1.0-1') + '%'
                 : '—'
             }}
           </span>

@@ -39,3 +39,8 @@
     transform-origin: bottom right;
   }
 }
+
+/* Hide Google Maps "Map data" / "Terms" attribution on static thumbnails where it obscures the small frame. */
+.static-thumbnail .gm-style-cc {
+  display: none !important;
+}

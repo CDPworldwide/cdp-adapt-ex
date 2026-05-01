@@ -42,6 +42,14 @@ module.exports = {
       fontSize: {
         xxs: '0.625rem', // 10px
       },
+      letterSpacing: {
+        'cdp-tight': '0.1px',
+        'cdp-medium': '0.15px',
+        'cdp-wide': '0.25px',
+        'cdp-wider': '0.4px',
+        'cdp-widest': '0.5px',
+        'cdp-eyebrow': '0.28em',
+      },
       zIndex: {
         2000: '2000',
       },
