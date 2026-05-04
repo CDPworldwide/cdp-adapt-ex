@@ -202,6 +202,11 @@ jobs:
           version: "0.9.18"
           enable-cache: true
 
+      - name: Install Graphviz
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgraphviz-dev
+
       - name: Generate API client from OpenAPI spec
         working-directory: client
         run: ./scripts/generate.sh

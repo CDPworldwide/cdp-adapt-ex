@@ -186,10 +186,12 @@ def test_get_vis_params():
     Tests that get_vis_params returns the correct visualization parameters.
     """
     hazard_name = HazardEnum.EXTREME_HEAT
+    # min=0 because palette[0] is the no-hazard tint (score 0 = assessed but
+    # no hazard); max=5 covers severity scores 1-5.
     expected_vis_params = {
-        "min": 1,
+        "min": 0,
         "max": 5,
-        "palette": ["#ffffcc", "#fed976", "#fd8d3c", "#fc4e2a", "#b10026"],
+        "palette": ["#FFFCEB", "#ffffcc", "#fed976", "#fd8d3c", "#fc4e2a", "#b10026"],
     }
 
     result = get_vis_params(hazard_name)
