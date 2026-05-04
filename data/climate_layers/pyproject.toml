@@ -8,9 +8,11 @@ dependencies = [
     "numpy",
     "requests",
     "h5netcdf",
+    "h5py",
     "rioxarray",
     "fsspec[http]>=2026.4.0",
     "cftime",
+    "bottleneck",
 ]
 
 [tool.setuptools]

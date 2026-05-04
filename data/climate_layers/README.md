@@ -13,22 +13,34 @@ This directory contains tools for calculating climate risk scores (1-5) from var
 
 ### Requirements
 
-```bash
-pip install xarray numpy requests h5netcdf rioxarray
+The simplest path is `uv sync` from this directory (a self-contained `pyproject.toml` ships next to the scripts):
 
-# If using the flood scores script (requires Google Earth Engine):
+```bash
+cd cdp-adapt-ex/data/climate_layers
+uv sync                        # creates .venv with all required deps
+.venv/bin/python <script>.py   # run scripts via the venv
+```
+
+Or install directly with pip:
+
+```bash
+pip install "xarray" "numpy" "requests" "h5netcdf" "h5py>=3.16" "fsspec[http]>=2026.4" "cftime" "bottleneck" "rioxarray"
+
+# Optional: only needed if running calculate_flood_scores.py against GEE
 pip install earthengine-api
-# Or via pyproject.toml:  pip install ".[gee]"
 ```
 
 ### Dependencies
 
-- `xarray`: For handling NetCDF climate data
-- `numpy`: For numerical computations
-- `requests`: For downloading data (climate scores script)
-- `h5netcdf`: For reading NetCDF files over HTTP
-- `rioxarray`: For GeoTIFF export
-- `earthengine-api`: For Google Earth Engine access (flood scores script only, optional)
+- `xarray`: NetCDF / labelled-array workhorse
+- `numpy`: numerical computation
+- `requests`: HEAD requests for variant discovery (climate scripts)
+- `h5netcdf` + `h5py`: NetCDF4 read engine
+- `fsspec[http]`: lazy HTTP reads of S3-hosted NetCDFs (pulls in `aiohttp`)
+- `cftime`: decodes non-standard CMIP6 calendars (`360_day`, `noleap`, …)
+- `bottleneck`: memory-efficient rolling-window reductions (used by `pr` rolling sum); without it, peak memory on RX5day single-year processing exceeds 7 GB
+- `rioxarray`: GeoTIFF export with explicit NoData tagging
+- `earthengine-api`: GEE batch ingest (only `calculate_flood_scores.py`)
 
 ### Google Earth Engine Setup (Flood Scores Only)
 
@@ -42,8 +54,8 @@ The flood scoring script requires a Google Earth Engine account and authenticate
    ```
 4. **Create asset folders** in your GEE project for export destinations:
    ```
-   projects/YOUR_PROJECT_ID/assets/hazards/Coastal-Flood/
-   projects/YOUR_PROJECT_ID/assets/hazards/Riverine-Flood/
+   projects/YOUR_PROJECT_ID/assets/hazards-v2/coastal-flood/
+   projects/YOUR_PROJECT_ID/assets/hazards-v2/riverine-flood/
    ```
 
 ---
@@ -278,15 +290,10 @@ python calculate_fwi_scores.py \
 
 - `--include-zero`: Include zero values in scoring (default: ignore zeros)
 
-## FWI Variables
+## FWI Variable
 
-| Variable | Description |
-|----------|-------------|
-| `FWI_N45` | Days with FWI > 45 (very high fire danger) |
-| `FWI_N30` | Days with FWI > 30 (high fire danger) |
-| `FWI_N20` | Days with FWI > 20 (moderate fire danger) |
-| `FWI_mean` | Mean Fire Weather Index |
-| `FWI_max` | Maximum Fire Weather Index |
+We score `FWI_N45` — annual count of days with Fire Weather Index > 45 (very high fire
+danger). Pass via `--var FWI_N45` (or omit `--var` since this is the default).
 
 
 # 3. Extreme Cold & Wind Scores
@@ -390,7 +397,7 @@ Outputs include NetCDF ensemble medians plus GeoTIFF scores saved in
 - **Access**: Google Earth Engine (`WRI/Aqueduct_Flood_Hazard_Maps/V2`)
 - **Flood Types**: Coastal (`inuncoast`) and Riverine (`inunriver`)
 - **Scenarios**: `historical`, `rcp4p5`, `rcp8p5`
-- **Return Periods**: 10, 25, 50, 100, 500 years
+- **Return Period**: 100-year (`rp100`) — only `rp100` is exported; the rest are skipped
 - **Documentation**: https://www.wri.org/aqueduct
 
 ## Prerequisites
@@ -399,8 +406,8 @@ Outputs include NetCDF ensemble medians plus GeoTIFF scores saved in
 - Authenticated access (run `earthengine authenticate`)
 - Asset folders created in your GEE project:
   ```
-  projects/<your-project>/assets/hazards/Coastal-Flood/
-  projects/<your-project>/assets/hazards/Riverine-Flood/
+  projects/<your-project>/assets/hazards-v2/coastal-flood/
+  projects/<your-project>/assets/hazards-v2/riverine-flood/
   ```
 
 ## Usage
@@ -412,20 +419,52 @@ python calculate_flood_scores.py
 
 The script reads `GEE_PROJECT_ID` from the environment and will fail with a clear error if it is not set.
 
+## Horizon years
+
+Only one set of years is exported per `(floodtype, scenario)`:
+
+| Floodtype | Scenario | Years exported |
+|-----------|----------|----------------|
+| `inuncoast` | `historical` | 2010 (real present-day baseline) |
+| `inuncoast` | `rcp4p5` / `rcp8p5` | 2030, 2050, 2080 |
+| `inunriver` | `historical` | 1980 (WATCH baseline reanalysis — only year WRI publishes for riverine) |
+| `inunriver` | `rcp4p5` / `rcp8p5` | 2030, 2050, 2080 |
+
+WRI also publishes coastal `historical` images at 2030/2050/2080 (baseline projected
+forward without climate-change forcing) but those horizons are excluded — the RCP
+scenarios already cover them under climate-change forcing.
+
+## Variant collapse
+
+WRI publishes multiple images per `(floodtype, scenario, year, returnperiod)`. The
+script collapses them deterministically:
+
+- **Coastal (`inuncoast`)**: 6 variants per filter — 3 SLR percentiles
+  (`projection ∈ {5, 50, 95}`) × 2 subsidence flags (`subsidence ∈ {nosub, wtsub}`).
+  We pick `projection=50` (median sea-level rise) and `subsidence='wtsub'` (with
+  subsidence; more realistic for coastal cities). 5 / 95 percentiles and the
+  no-subsidence variants are useful for sensitivity work but aren't exported as the
+  canonical layer.
+- **Riverine projected**: 5 GCM members (`NorESM1-M`, `GFDL-ESM2M`, `HadGEM2-ES`,
+  `IPSL-CM5A-LR`, `MIROC-ESM-CHEM`). We compute the **ensemble median** across
+  members (preserving the native grid via `setDefaultProjection`) — same approach
+  used for the NEX-GDDP-CMIP6 climate layers.
+- **Riverine historical**: single `WATCH` reanalysis image — no aggregation needed.
+
 ## Methodology
 
-For each flood type / scenario / year / return period combination:
+For each `(floodtype, scenario, year)` after variant collapse:
 
-1. **Mask zeros** — remove pixels with no inundation
+1. **Mask zeros** — remove pixels with no inundation depth
 2. **Trim outliers** — compute 2nd and 98th percentiles, restrict to that range
 3. **Quintile classification** — compute 20th/40th/60th/80th percentile thresholds on the trimmed range
-4. **Score 1-5** — classify all non-zero pixels into risk categories
+4. **Score 0-5** — `0` for no-flood pixels, `1-5` for flooded pixels by quintile, NoData for not-assessed pixels
 5. **Export** — submit as a GEE batch export task to your project assets
 
-Exports are organized as:
+Exports land at:
 ```
-projects/<GEE_PROJECT_ID>/assets/hazards/Coastal-Flood/{scenario}_{year}_rp{return_period}
-projects/<GEE_PROJECT_ID>/assets/hazards/Riverine-Flood/{scenario}_{year}_rp{return_period}
+projects/<GEE_PROJECT_ID>/assets/hazards-v2/coastal-flood/coastal-flood_{scenario}_{year}_rp100
+projects/<GEE_PROJECT_ID>/assets/hazards-v2/riverine-flood/riverine-flood_{scenario}_{year}_rp100
 ```
 
 ## Differences from Other Scripts
@@ -444,15 +483,25 @@ projects/<GEE_PROJECT_ID>/assets/hazards/Riverine-Flood/{scenario}_{year}_rp{ret
 
 ## Risk Score Categories
 
-Both scripts use the same 1-5 risk scoring system based on percentile thresholds:
+All scripts use the same 0-5 risk scoring system. Thresholds are quintiles of the
+non-zero values in the historical baseline; the four resulting cut-points are then
+applied to all future-scenario layers so scores are comparable across scenarios and
+periods.
 
-| Score | Category | Percentile Range |
-|-------|----------|------------------|
-| 1     | Very Low | 0-20th percentile |
-| 2     | Low      | 20th-40th percentile |
-| 3     | Medium   | 40th-60th percentile |
-| 4     | High     | 60th-80th percentile |
-| 5     | Very High| >80th percentile |
+| Score | Category | Meaning |
+|-------|----------|---------|
+| 0     | No hazard | Input value is exactly 0
+| 1     | Very Low | 0 < input ≤ 20th percentile of non-zero baseline |
+| 2     | Low      | 20th < input ≤ 40th percentile |
+| 3     | Medium   | 40th < input ≤ 60th percentile |
+| 4     | High     | 60th < input ≤ 80th percentile |
+| 5     | Very High| input > 80th percentile |
+| NoData | not assessed | Input was NaN — no source data for that pixel |
+
+The 0-vs-NoData distinction matters: a pixel with score `0` is genuinely "this hazard
+does not occur here", whereas NoData means we have no information to say either way.
+GeoTIFF outputs explicitly tag NaN as the nodata value (`rio.write_nodata(np.nan,
+encoded=True)`) so downstream tools render the two cases differently.
 
 ## Climate Scenarios
 
@@ -475,39 +524,34 @@ Both scripts use the same 1-5 risk scoring system based on percentile thresholds
 
 ### GeoTIFF Files
 
-Both scripts output GeoTIFF files with:
+GeoTIFF outputs are float32 with:
 - **Projection**: EPSG:4326 (WGS84)
 - **Longitude Range**: -180 to 180
-- **Values**: Risk scores 1-5 (float32 with NaN for masked areas)
+- **Values**: 0-5 score with explicit `nodata=NaN` tag
 
-**Climate Scores Output:**
+**Climate score outputs (frost / hot-days / RX5day):**
 ```
-scores/hotdays_score_1to5_{scenario}_{period}_epsg4326_lon-180_180.tif
-scores/pr_rx5day_score_1to5_{scenario}_{period}_epsg4326_lon-180_180.tif
+{metric}_score_1to5_{scenario}_{period}_epsg4326_lon-180_180.tif
 ```
+Examples: `frost_days_score_1to5_ssp126_2020_2039_epsg4326_lon-180_180.tif`,
+`hotdays_score_1to5_historical_1985_2014_epsg4326_lon-180_180.tif`.
 
-**FWI Output:**
+**FWI output:**
 ```
 {VAR}_score_1to5_{start_year}_{end_year}_epsg4326_lon-180_180_{scenario}.tif
 ```
+Example: `FWI_N45_score_1to5_2020_2039_epsg4326_lon-180_180_ssp245.tif`.
 
 ## Methodology
 
-### Processing Steps (Both Scripts)
+### Processing Steps
 
-1. **Load Historical Baseline**: Read data for baseline period (typically 1985-2015)
-2. **Compute Thresholds**: Calculate 20th, 40th, 60th, and 80th percentiles from baseline
-3. **Load Future Data**: Read data for future time periods
-4. **Calculate Mean**: Average values over each time period
-5. **Apply Thresholds**: Classify values into 1-5 scores
-6. **Export GeoTIFF**: Save georeferenced raster files
-
-### Baseline Thresholds
-
-By default, both scripts:
-- Ignore zero values when computing percentile thresholds
-- Use historical period (1985-2015) as baseline
-- Apply the same thresholds to all future scenarios
+1. **Load historical baseline**: read NetCDFs for the baseline period (typically 1985-2014)
+2. **Compute thresholds**: 20th / 40th / 60th / 80th percentile of the non-zero baseline
+3. **Load future scenarios**: NetCDFs for each `(scenario × period)` combination
+4. **Average**: ensemble median across CMIP6 models for that period
+5. **Classify**: assign 0/1-5 per pixel using the baseline thresholds
+6. **Export**: write GeoTIFF with NaN nodata tagging
 
 ## Troubleshooting
 
