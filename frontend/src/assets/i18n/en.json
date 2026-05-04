@@ -65,7 +65,7 @@
     "tabs": {
       "hazards": "Hazards",
       "governmentActions": "Government actions",
-      "solutions": "Popular Solutions",
+      "solutions": "Action ideas",
       "ariaLabel": "Location card tabs"
     },
     "hazards": {
@@ -261,8 +261,8 @@
       "noData": "No government actions data available.",
       "notDisclosed": "Not disclosed",
       "noActionsBanner": {
-        "title": "Not all information was disclosed",
-        "description": "This jurisdiction is missing some categories of disclosure in their CDP report. Download the full questionnaire and disclosure from the CDP open data portal.",
+        "title": "No reported actions to disclose",
+        "description": "TThis jurisdiction may be missing some categories of disclosure or may have no actions to disclose in their CDP report. Download the full questionnaire and disclosure from the CDP open data portal.",
         "button": "Visit the CDP Open Data Portal"
       },
       "noGoals": {
