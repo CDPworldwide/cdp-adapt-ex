@@ -113,7 +113,7 @@ export class HazardMapService {
           },
           tileSize: new google.maps.Size(256, 256),
           name: (response.data as HazardLayerResponse)?.layer?.name || 'Hazard Layer',
-          opacity: 0.7,
+          opacity: 0.65,
         });
       }),
       catchError((error) => {
