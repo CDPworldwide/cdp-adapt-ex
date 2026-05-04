@@ -53,12 +53,27 @@
                     class="w-full py-4 px-2 -mx-2 rounded-sm flex items-center justify-between text-left hover:bg-white/5 active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red transition-colors"
                     (click)="onSearch(option.name)"
                   >
-                    <span class="text-white text-2xl md:text-3xl font-light">
-                      @for (part of splitMatch(option.name, searchControl.value || ''); track $index) {
-                        <span [class.font-bold]="part.bold">{{ part.text }}</span>
+                    <span class="flex flex-col text-left">
+                      <span class="text-white text-2xl md:text-3xl font-light">
+                        @for (
+                          part of splitMatch(option.name, searchControl.value || '');
+                          track $index
+                        ) {
+                          <span [class.font-bold]="part.bold">{{ part.text }}</span>
+                        }
+                      </span>
+                      @if (option.country) {
+                        <span class="text-white/60 text-sm font-light mt-0.5">
+                          @for (
+                            part of splitMatch(option.country, searchControl.value || '');
+                            track $index
+                          ) {
+                            <span [class.font-medium]="part.bold">{{ part.text }}</span>
+                          }
+                        </span>
                       }
                     </span>
-                    <app-cdp-logo-icon class="text-white"></app-cdp-logo-icon>
+                    <app-cdp-logo-icon class="text-white shrink-0"></app-cdp-logo-icon>
                   </button>
                 </li>
               }

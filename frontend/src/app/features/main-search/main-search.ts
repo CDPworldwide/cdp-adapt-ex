@@ -236,16 +236,19 @@ export class MainSearchComponent implements OnInit {
     if (!value) {
       return locations.slice(0, MainSearchComponent.MAX_SUGGESTIONS);
     }
+    // Search both name and country so a query like "thailand" surfaces every
+    // Thai jurisdiction even though it doesn't appear in their names.
     const prepared = locations.map((loc) => ({
       ...loc,
-      _normalized: this.normalizeForSearch(loc.name),
+      _normalizedName: this.normalizeForSearch(loc.name),
+      _normalizedCountry: loc.country ? this.normalizeForSearch(loc.country) : '',
     }));
     const results = fuzzysort.go(this.normalizeForSearch(value), prepared, {
-      key: '_normalized',
+      keys: ['_normalizedName', '_normalizedCountry'],
       limit: MainSearchComponent.MAX_SUGGESTIONS,
     });
     return results.map((result) => {
-      const { _normalized, ...rest } = result.obj;
+      const { _normalizedName, _normalizedCountry, ...rest } = result.obj;
       return rest;
     });
   }

@@ -19,11 +19,32 @@
           {{ 'methodology.title' | translate }}
         </h1>
         <div class="w-12 h-[3px] bg-cdp-red mt-2"></div>
-        <p
-          class="text-base md:text-lg leading-relaxed text-cdp-text-secondary max-w-3xl mt-2 font-inter"
-        >
-          {{ 'methodology.intro' | translate }}
-        </p>
+        <div class="max-w-3xl mt-2 flex flex-col gap-4">
+          <p class="text-base md:text-lg leading-relaxed text-cdp-text-secondary font-inter">
+            {{ 'methodology.intro1Body' | translate }}
+            <!-- TODO: replace href with CDP Adapt landing page URL when CDP provides it -->
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors"
+              >{{ 'methodology.intro1LinkText' | translate }}</a
+            >
+          </p>
+          <p class="text-base md:text-lg leading-relaxed text-cdp-text-secondary font-inter">
+            {{ 'methodology.intro2Pre' | translate
+            }}<!-- TODO: replace href with feedback tool URL --><a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors"
+              >{{ 'methodology.intro2LinkText' | translate }}</a
+            >{{ 'methodology.intro2Post' | translate }}
+          </p>
+          <p class="text-base md:text-lg leading-relaxed text-cdp-text-secondary font-inter">
+            {{ 'methodology.intro3' | translate }}
+          </p>
+        </div>
       </header>
 
       <!-- CDP Questionnaire -->

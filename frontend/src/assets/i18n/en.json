@@ -417,9 +417,14 @@
   },
   "methodology": {
     "lastUpdated": "Last updated: {{date}}",
-    "lastUpdatedDate": "April 2026",
+    "lastUpdatedDate": "May 2026",
     "title": "Methodology",
-    "intro": "This platform draws from both CDP's annual questionnaire for reporting by governments and supplemental hazard data to cover the climate hazards that cities, states, and regions face and how they are addressing them. It also surfaces insights from around the globe by identifying relevant solutions and actions across cities with similar characteristics.",
+    "intro1Body": "The CDP Adaptation and Action Explorer is an open source, public-purpose tool designed to help cities, states, and regions better understand physical risks, explore adaptation and resilience solutions, and communicate progress to partners, funders, and constituents.",
+    "intro1LinkText": "Learn more here.",
+    "intro2Pre": "The current version of this tool is an initial public release (MVP), designed to demonstrate core functionality, test usability, and gather feedback from early users. Users may encounter limitations in coverage, features, and data depth. We welcome ",
+    "intro2LinkText": "feedback",
+    "intro2Post": " to help improve future versions.",
+    "intro3": "This Explorer draws from both CDP's annual questionnaire for reporting by governments and supplemental hazard data. Information about the questionnaire and a summary of other data sources and methods underlying each of the main features of the tool (Hazards, Government Actions, and Solutions) is summarized below.",
     "questionnaire": {
       "title": "CDP's annual questionnaire",
       "body": "Cities, states, and regions are invited to complete CDP's annual questionnaire through the CDP-ICLEI Track disclosure portal. The questionnaire captures qualitative and quantitative information on topics including governance, climate risk and vulnerability assessments, greenhouse gas emissions inventories, energy consumption, sectoral data, adaptation and mitigation goals, and climate planning and actions. Jurisdictions can update their disclosures through questionnaires released yearly. The Explorer currently displays data from 2025 public disclosures."
