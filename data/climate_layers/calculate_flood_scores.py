@@ -40,10 +40,10 @@ def select_image(subset, ft, scenario, yr, rp):
                  .filter(ee.Filter.eq("returnperiod", rp))
 
     if ft == "inuncoast":
-        # WRI publishes inuncoast historical only at projection=95 (high-end SLR
-        # estimate); rcp scenarios use projection=50 (median SLR).
-        sea_level_pct = 95 if scenario == "historical" else 50
-        img = base.filter(ee.Filter.eq("projection", sea_level_pct)) \
+        # All inuncoast scenarios use projection=95 (95th-percentile SLR) because only 
+        # 95th is available in historical scenario.
+        # subsidence='wtsub' (with subsidence) — realistic coastal-cities variant.
+        img = base.filter(ee.Filter.eq("projection", 95)) \
                   .filter(ee.Filter.eq("subsidence", "wtsub")) \
                   .select("inundation_depth") \
                   .first()
