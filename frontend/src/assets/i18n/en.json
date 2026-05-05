@@ -73,11 +73,6 @@
       "populationLabel": "Population Exposed to Primary Hazards",
       "gdpLabel": "Total GDP at Risk in USD",
       "sectorsLabel": "Vulnerable economic sectors",
-      "noHazardsBanner": {
-        "title": "No hazards disclosed",
-        "description": "This jurisdiction didn’t report any hazards on their CDP report.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP open data portal.",
-        "button": "Visit the CDP Open Data Portal"
-      },
       "noHazardsContent": {
         "title": "{{location}} hasn't disclosed hazard information for their jurisdiction as of the {{year}} CDP disclosure",
         "description": "Currently there isn’t any hazard information in the {{year}} CDP disclosure from {{location}}. There could be a few reasons for this, but for the sake of trust, accuracy and quality we aren’t showing other information.<br><br>As this project matures we are hoping to bring in previous years disclosures if they exist. We also want to apply methodologies and trusted external hazard data sources to compute hazards that could impact this location, as well as other locations globally. You can view other disclosed data for this location in the <a class=\"gov-actions-link text-cdp-red font-medium cursor-pointer hover:underline\">Government actions</a> tab for goals, actions and other projects for {{location}}."
@@ -214,26 +209,6 @@
       "scenarios": "Scenarios",
       "timeframes": "Timeframes available"
     },
-    "banners": {
-      "nonPublic": {
-        "title": "Report not available for public view",
-        "description": "This jurisdiction's CDP report is not available to display. All hazard information displayed on this page is sourced from CDP analysis.",
-        "cta": "Learn more about reporting",
-        "ctaDescription": "To learn more about cities, states, and regions that report to CDP, visit our website."
-      },
-      "nonDisclosing": {
-        "title": "No hazards disclosed",
-        "description": "This jurisdiction did not report any hazards in its CDP questionnaire response. All hazard information displayed on this page is sourced from CDP analysis.",
-        "cta": "Visit the CDP Open Data Portal",
-        "ctaDescription": "To see more about what this jurisdiction reported, download the full questionnaire from the CDP Open Data Portal."
-      },
-      "noReport": {
-        "title": "No report available",
-        "description": "This jurisdiction does not currently report information through the CDP questionnaire. All hazard information displayed on this page is sourced from CDP analysis.",
-        "cta": "Learn more about reporting",
-        "ctaDescription": "To learn more about cities, states, and regions that report to CDP, visit our website."
-      }
-    },
     "govActions": {
       "filterByHazard": "Filter by hazard",
       "all": "All",
@@ -359,11 +334,6 @@
       "exampleActions": "example actions",
       "resilienceAttributes": "Resilience attributes enhanced",
       "impactedSectors": "Impacted sectors",
-      "noSolutionsBanner": {
-        "title": "Not all information was disclosed",
-        "description": "This jurisdiction is missing some information on their CDP report.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP open data portal.",
-        "button": "Visit the CDP Open Data Portal"
-      },
       "noSolutionsContent": {
         "title": "{{location}} hasn't disclosed hazard information for their jurisdiction as of the {{year}} CDP disclosure",
         "description": "Currently there isn’t any hazard information in the {{year}} CDP disclosure from {{location}}. There could be a few reasons for this, but for the sake of trust, accuracy and quality we aren’t showing other information.<br><br>Since we don't have hazard data we can’t compute comparable locations that are affected by similar environmental hazards. What you could see here, and other locations in this product have solutions here, is a list of categories of solutions that are implemented other places around the world that share similar hazard profiles.<br><br>Solutions are categorized actions that could be applied at other locations around the world. Enabling users to look at their location and see what others are doing around the world that could be applied or implemented here."
@@ -392,9 +362,6 @@
     }
   },
   "cityDetail": {
-    "loading": {
-      "routeLabel": "Organization route"
-    },
     "notFound": {
       "eyebrow": "Organization route",
       "title": "We couldn't load this organization profile",

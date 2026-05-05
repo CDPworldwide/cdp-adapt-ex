@@ -16,10 +16,24 @@ import type { LocationPin } from '@pac-api/client';
 import { Subscription } from 'rxjs';
 import { GoogleMapsLoaderService } from 'src/app/shared/services/google-maps-loader.service';
 
-const CITY_PIN_ICON_URL = '/assets/icons/cdp_map_pin-red.svg';
-const REGION_PIN_ICON_URL = '/assets/icons/cdp_map_pin-blue.svg';
-const CITY_PIN_SELECTED_ICON_URL = '/assets/icons/cdp_map_pin-red-selected.svg';
-const REGION_PIN_SELECTED_ICON_URL = '/assets/icons/cdp_map_pin-blue-selected.svg';
+// Single teardrop pin shape; selected variants reuse the stroke colour as the
+// fill so they read as a darker version of the unselected pin.
+const PIN_PATH = 'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z';
+const pinDataUrl = (fill: string, stroke: string): string =>
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="${PIN_PATH}" fill="${fill}" stroke="${stroke}" stroke-width="1"/></svg>`,
+  );
+
+const CITY_FILL = '#EA1647';
+const CITY_STROKE = '#A12638';
+const REGION_FILL = '#00A6FF';
+const REGION_STROKE = '#0082C7';
+
+const CITY_PIN_ICON_URL = pinDataUrl(CITY_FILL, CITY_STROKE);
+const REGION_PIN_ICON_URL = pinDataUrl(REGION_FILL, REGION_STROKE);
+const CITY_PIN_SELECTED_ICON_URL = pinDataUrl(CITY_STROKE, CITY_STROKE);
+const REGION_PIN_SELECTED_ICON_URL = pinDataUrl(REGION_STROKE, REGION_STROKE);
 
 @Component({
   selector: 'app-maps',

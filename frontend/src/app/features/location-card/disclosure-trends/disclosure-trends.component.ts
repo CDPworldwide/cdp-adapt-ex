@@ -180,7 +180,7 @@ export class DisclosureTrendsComponent implements AfterViewInit, OnChanges, OnDe
     this.timeoutIds = [];
   }
 
-  private parseHazardNumber(range: string | null): number {
+  private parseHazardNumber(range: string | null | undefined): number {
     if (!range) return 0;
     const raw = this.getHazardNumber(range);
     const n = parseInt(raw, 10);

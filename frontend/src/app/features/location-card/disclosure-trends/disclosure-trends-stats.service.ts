@@ -1,28 +1,34 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import type { DisclosureTrendsSummary } from './disclosure-trends.stats';
+import { Observable, from } from 'rxjs';
+import {
+  type DisclosureTrendsSummary,
+  getDisclosureTrendsApiV1DisclosureTrendsGet,
+} from '@pac-api/client';
+import { createClient, createConfig } from '@pac-api/client/client';
+import { environment } from '@env/environment';
 
 /**
  * Provides dataset-wide disclosure trends for the homepage.
- *
- * TODO: replace the placeholder summary with a real aggregate endpoint once
- * the backend exposes one (e.g. `/api/v1/disclosure-trends?year=YYYY`). The
- * shape of {@link DisclosureTrendsSummary} matches what the component renders;
- * the wiring here is the only thing that needs to change.
  */
 @Injectable({ providedIn: 'root' })
 export class DisclosureTrendsStatsService {
-  getSummary(_year: number): Observable<DisclosureTrendsSummary> {
-    return of({
-      adaptationPlanCount: 312,
-      waterSecurityRisksCount: 184,
-      topHazards: [
-        { rank: 1, type: 'EXTREME_HEAT', range: '41-50%' },
-        { rank: 2, type: 'URBAN_FLOODING', range: '31-40%' },
-        { rank: 3, type: 'DROUGHT', range: '21-30%' },
-      ],
-      projectsSeekingFinanceCount: 427,
-      jurisdictionsExposedPct: 68,
-    });
+  private client = createClient(
+    createConfig({
+      baseUrl: environment.baseUrl,
+    }),
+  );
+
+  getSummary(year: number): Observable<DisclosureTrendsSummary> {
+    return from(
+      getDisclosureTrendsApiV1DisclosureTrendsGet({
+        client: this.client,
+        query: { year },
+      }).then((res) => {
+        if (res.error) {
+          throw res.error;
+        }
+        return res.data as DisclosureTrendsSummary;
+      }),
+    );
   }
 }

@@ -45,3 +45,4 @@ data/overture/geometry.json
 **/.playwright-mcp/
 .playwright-mcp/
 /*.png
+/test_scripts

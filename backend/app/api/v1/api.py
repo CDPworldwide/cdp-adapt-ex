@@ -1,4 +1,5 @@
 from app.api.v1.chatbot import router as chatbot_router
+from app.api.v1.disclosure_trends import router as disclosure_trends_router
 from app.api.v1.hazards import router as hazards_router
 from app.api.v1.locations import router as location_router
 from app.api.v1.suggest_follow_ups import router as suggest_follow_ups_router
@@ -17,6 +18,11 @@ api_router.include_router(
 
 api_router.include_router(hazards_router, prefix="/hazards", tags=["hazards"])
 api_router.include_router(translate_router, prefix="/translate", tags=["translate"])
+api_router.include_router(
+    disclosure_trends_router,
+    prefix="/disclosure-trends",
+    tags=["disclosure-trends"],
+)
 
 
 @api_router.get("/health")
