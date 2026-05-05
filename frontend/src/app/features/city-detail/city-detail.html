@@ -1,57 +1,166 @@
 <div class="flex flex-1 flex-col min-h-0 bg-cdp-bg text-cdp-dark">
   @if (isLoading) {
-    <div class="flex flex-1 flex-col min-h-0 animate-pulse">
-      <nav
-        aria-label="Main navigation"
-        class="bg-cdp-bg flex-shrink-0 border-b border-stone-200/80"
-      >
-        <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-          <div class="flex flex-col gap-2">
-            <app-cdp-logo-with-text-icon
-              width="70"
-              height="18"
-              color="black"
-            ></app-cdp-logo-with-text-icon>
-            <span class="text-xs uppercase tracking-[0.24em] text-stone-400">{{
-              'cityDetail.loading.routeLabel' | translate
-            }}</span>
-          </div>
-          <div class="h-10 w-28 rounded-full bg-stone-200"></div>
-        </div>
+    <div class="flex flex-1 flex-col min-h-0">
+      <nav aria-label="Main navigation" class="bg-cdp-bg flex-shrink-0">
+        <app-header></app-header>
       </nav>
 
-      <div class="flex-1 overflow-auto">
-        <div class="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 lg:px-6">
-          <div class="rounded-[28px] border border-stone-200 bg-white/80 px-5 py-5 shadow-sm">
-            <div class="mb-4 flex items-center justify-between gap-4">
-              <div class="space-y-3">
-                <div class="h-3 w-28 rounded-full bg-stone-200"></div>
-                <div class="h-10 w-56 rounded-full bg-stone-300"></div>
-                <div class="h-4 w-44 rounded-full bg-stone-200"></div>
-              </div>
-              <div class="hidden h-24 w-36 rounded-2xl bg-stone-200 lg:block"></div>
-            </div>
-
-            <div class="mb-5 flex gap-2 border-b border-stone-200 pb-4">
-              <div class="h-10 flex-1 rounded-full bg-stone-200"></div>
-              <div class="h-10 flex-1 rounded-full bg-stone-100"></div>
-              <div class="h-10 flex-1 rounded-full bg-stone-100"></div>
-            </div>
-
-            <div class="grid gap-4 lg:grid-cols-[minmax(0,1.7fr)_minmax(260px,1fr)]">
-              <div class="space-y-4">
-                <div class="h-6 w-40 rounded-full bg-stone-200"></div>
-                <div class="h-24 rounded-3xl bg-stone-100"></div>
-                <div class="h-24 rounded-3xl bg-stone-100"></div>
-                <div class="h-24 rounded-3xl bg-stone-100"></div>
-              </div>
-              <div class="h-80 rounded-[28px] bg-stone-200"></div>
-            </div>
+      <div class="flex-1 overflow-auto" aria-busy="true" aria-live="polite">
+        <div class="w-full max-w-[1600px] mx-auto bg-cdp-bg relative lg:px-2">
+          <!-- Back to Map (functional during loading) -->
+          <div class="flex items-center pt-4 pb-0 px-0 lg:p-4 lg:pb-0">
+            <button
+              type="button"
+              (click)="onBackHome()"
+              class="flex flex-row justify-center items-center px-3 lg:px-4 py-[10px] gap-2 rounded-xl hover:bg-gray-100 active:bg-gray-200 cursor-pointer transition-colors"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6.52051 10.8333L11.1872 15.5L9.99967 16.6667L3.33301 10L9.99967 3.33334L11.1872 4.5L6.52051 9.16667H16.6663V10.8333H6.52051Z"
+                  fill="black"
+                />
+              </svg>
+              <span
+                class="text-black font-roboto text-sm font-medium leading-5 tracking-cdp-tight"
+                >{{ 'locationCard.backToMap' | translate }}</span
+              >
+            </button>
           </div>
 
-          <div class="rounded-[28px] border border-stone-200 bg-white/70 px-5 py-4 shadow-sm">
-            <div class="mb-2 h-4 w-36 rounded-full bg-stone-200"></div>
-            <div class="h-3 w-72 max-w-full rounded-full bg-stone-100"></div>
+          <div class="animate-pulse">
+            <!-- Location Header placeholder -->
+            <div class="flex items-center gap-4 px-4 lg:px-6 pt-10 pb-4">
+              <div
+                class="hidden lg:block w-[120px] h-[120px] flex-shrink-0 rounded-[20px] bg-cdp-neutral-02"
+              ></div>
+              <div class="flex-1 flex flex-col gap-3 -translate-y-1">
+                <div
+                  class="h-10 lg:h-14 w-3/4 lg:w-[600px] max-w-full rounded-md bg-cdp-neutral-02"
+                ></div>
+                <div class="h-7 lg:h-10 w-1/3 lg:w-40 rounded-md bg-cdp-neutral-01"></div>
+                <div class="mt-2 h-3 w-44 max-w-full rounded-full bg-cdp-neutral-01"></div>
+              </div>
+            </div>
+
+            <!-- Tab Navigation placeholder -->
+            <div class="flex flex-col items-start self-stretch h-[90px] pt-10 pb-4 px-4 lg:px-6">
+              <div
+                class="flex items-end gap-2 lg:gap-20 flex-1 border-b border-[#bfbfbf] -mx-4 lg:mx-0 px-4 lg:px-0 justify-between lg:justify-start self-stretch"
+              >
+                <div
+                  class="pb-[15px]"
+                  [class.border-b]="activeTab === 'hazards'"
+                  [class.border-cdp-border]="activeTab === 'hazards'"
+                >
+                  <div
+                    class="h-4 w-16 rounded"
+                    [class.bg-cdp-neutral-02]="activeTab === 'hazards'"
+                    [class.bg-cdp-neutral-01]="activeTab !== 'hazards'"
+                  ></div>
+                </div>
+                <div
+                  class="pb-[15px]"
+                  [class.border-b]="activeTab === 'actions'"
+                  [class.border-cdp-border]="activeTab === 'actions'"
+                >
+                  <div
+                    class="h-4 w-28 rounded"
+                    [class.bg-cdp-neutral-02]="activeTab === 'actions'"
+                    [class.bg-cdp-neutral-01]="activeTab !== 'actions'"
+                  ></div>
+                </div>
+                <div
+                  class="pb-[15px]"
+                  [class.border-b]="activeTab === 'solutions'"
+                  [class.border-cdp-border]="activeTab === 'solutions'"
+                >
+                  <div
+                    class="h-4 w-20 rounded"
+                    [class.bg-cdp-neutral-02]="activeTab === 'solutions'"
+                    [class.bg-cdp-neutral-01]="activeTab !== 'solutions'"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Per-tab body placeholder -->
+            <div class="pt-4 pb-6 px-0 lg:px-6">
+              @switch (activeTab) {
+                @case ('hazards') {
+                  <div class="px-4 lg:px-0">
+                    <div class="mb-2 h-3 w-32 rounded bg-cdp-neutral-02"></div>
+                    <div class="h-3 w-72 max-w-full rounded bg-cdp-neutral-01"></div>
+                  </div>
+                  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 mb-8 px-4 lg:px-0">
+                    <div class="h-44 rounded-lg bg-cdp-neutral-02"></div>
+                    <div class="h-44 rounded-lg bg-cdp-neutral-02"></div>
+                  </div>
+                  <div class="px-4 lg:px-0 mb-4">
+                    <div class="h-3 w-48 rounded bg-cdp-neutral-02"></div>
+                  </div>
+                  <div
+                    class="bg-white rounded-lg p-6 mb-4 mx-4 lg:mx-0 flex flex-col lg:flex-row lg:items-center gap-4"
+                  >
+                    <div class="flex-1 space-y-2">
+                      <div class="h-4 w-3/4 rounded bg-cdp-neutral-02"></div>
+                      <div class="h-3 w-1/2 rounded bg-cdp-neutral-01"></div>
+                    </div>
+                    <div class="h-10 w-44 rounded bg-cdp-neutral-01 flex-shrink-0"></div>
+                  </div>
+                  <div class="bg-white rounded-lg p-6 mx-4 lg:mx-0 space-y-3">
+                    <div class="h-5 w-1/2 rounded bg-cdp-neutral-02"></div>
+                    <div class="h-3 w-full rounded bg-cdp-neutral-01"></div>
+                    <div class="h-3 w-5/6 rounded bg-cdp-neutral-01"></div>
+                  </div>
+                }
+                @case ('actions') {
+                  <div class="px-4 lg:px-0 mb-4">
+                    <div class="h-3 w-32 rounded bg-cdp-neutral-02"></div>
+                  </div>
+                  <div class="flex flex-wrap gap-2 mb-8 px-4 lg:px-0">
+                    @for (i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]; track i) {
+                      <div class="h-[60px] w-[88px] rounded-md bg-cdp-neutral-01"></div>
+                    }
+                  </div>
+                  <div class="px-4 lg:px-0 mb-4">
+                    <div class="h-3 w-44 rounded bg-cdp-neutral-02"></div>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-4 lg:px-0">
+                    @for (i of [1, 2, 3, 4]; track i) {
+                      <div class="h-32 rounded-lg bg-white"></div>
+                    }
+                  </div>
+                }
+                @case ('solutions') {
+                  <div class="px-4 lg:px-0 mb-4">
+                    <div class="h-3 w-28 rounded bg-cdp-neutral-02"></div>
+                  </div>
+                  <div class="flex flex-wrap gap-2 mb-8 px-4 lg:px-0">
+                    @for (i of [1, 2, 3, 4, 5]; track i) {
+                      <div class="h-[60px] w-[88px] rounded-md bg-cdp-neutral-01"></div>
+                    }
+                  </div>
+                  <div class="px-4 lg:px-0 mb-2 space-y-2">
+                    <div class="h-3 w-36 rounded bg-cdp-neutral-02"></div>
+                    <div class="h-3 w-72 max-w-full rounded bg-cdp-neutral-01"></div>
+                  </div>
+                  <div class="px-4 lg:px-0 mt-6 mb-4">
+                    <div class="h-3 w-40 rounded bg-cdp-neutral-02"></div>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 lg:px-0">
+                    @for (i of [1, 2, 3]; track i) {
+                      <div class="h-64 rounded-lg bg-cdp-neutral-02"></div>
+                    }
+                  </div>
+                }
+              }
+            </div>
           </div>
         </div>
       </div>
