@@ -263,6 +263,36 @@ jobs:
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
           bash scripts/write-environment.sh
 
+      - name: Validate generated frontend environment
+        working-directory: frontend
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          text = Path('src/environments/environment.ts').read_text(encoding='utf-8')
+
+          def extract(name: str) -> str:
+              match = re.search(rf"{name}: '([^']*)'", text)
+              return match.group(1) if match else ''
+
+          values = {
+              'baseUrl': extract('baseUrl'),
+              'aiServerUrl': extract('aiServerUrl'),
+              'apiKey': extract('apiKey'),
+              'apiKeyHeaderName': extract('apiKeyHeaderName'),
+          }
+
+          for key, value in values.items():
+              print(f"{key}_set={'yes' if value else 'no'}")
+              if value:
+                  print(f"{key}_length={len(value)}")
+
+          missing = [key for key in ('baseUrl', 'aiServerUrl', 'apiKey') if not values[key]]
+          if missing:
+              raise SystemExit(f"Missing generated frontend environment values: {', '.join(missing)}")
+          PY
+
       - name: Build frontend
         working-directory: frontend
         run: npm run build
