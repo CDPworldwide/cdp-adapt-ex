@@ -250,7 +250,7 @@ jobs:
         run: |
           FRONTEND_BASE_URL='${{ steps.decode-url.outputs.url }}' \
           FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
-          FRONTEND_API_KEY='${{ secrets.PRODUCTION_FRONTEND_API_KEY }}' \
+          FRONTEND_API_KEY='${{ env.ENVIRONMENT == 'production' && secrets.PRODUCTION_FRONTEND_API_KEY || secrets.FRONTEND_API_KEY }}' \
           FRONTEND_DEBUG_MODE='${{ env.ENVIRONMENT == 'development' }}' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
           bash scripts/write-environment.sh
