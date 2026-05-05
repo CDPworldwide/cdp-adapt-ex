@@ -86,7 +86,7 @@ jobs:
             ALLOWED_ORIGINS=development-ALLOWED_ORIGINS:latest
           env_vars: |
             PROJECT_NAME=CDP AI Server
-            AI_SERVER_API_KEY=${{ secrets.FRONTEND_API_KEY }}
+            AI_SERVER_API_KEY=${{ secrets.AI_SERVER_API_KEY }}
             AI_SERVER_API_KEY_HEADER_NAME=X-API-Key
             AI_SERVER_MODEL_NAME=cdp-gemini
             LLM_MODEL=gemini-2.5-flash
@@ -107,8 +107,8 @@ jobs:
           echo "Checking health of $URL..."
           for i in {1..12}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-              -H "Authorization: Bearer ${{ secrets.FRONTEND_API_KEY }}" \
-              -H "X-API-Key: ${{ secrets.FRONTEND_API_KEY }}" \
+              -H "Authorization: Bearer ${{ secrets.AI_SERVER_API_KEY }}" \
+              -H "X-API-Key: ${{ secrets.AI_SERVER_API_KEY }}" \
               "$URL/v1/models" || echo "000")
             if [ "$STATUS" = "200" ]; then
               echo "AI server deployment is healthy (HTTP $STATUS)"
