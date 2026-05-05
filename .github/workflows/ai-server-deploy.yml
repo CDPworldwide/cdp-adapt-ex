@@ -85,25 +85,9 @@ jobs:
             LLM_API_KEY=development-LLM_API_KEY:latest
             ALLOWED_ORIGINS=development-ALLOWED_ORIGINS:latest
           env_vars: |
-            PROJECT_NAME=CDP AI Server
             AI_SERVER_API_KEY=${{ secrets.AI_SERVER_API_KEY }}
-            AI_SERVER_API_KEY_HEADER_NAME=X-API-Key
-            AI_SERVER_MODEL_NAME=cdp-gemini
             LLM_MODEL=gemini-2.5-flash
-            DEFAULT_LLM_TEMPERATURE=0.2
-            MAX_TOKENS=2000
-            MAX_CHAT_MESSAGES=50
-            MAX_CHAT_TOTAL_CHARS=50000
-            MAX_CHAT_RESPONSE_CHARS=20000
-            SUGGEST_FOLLOW_UPS_MAX_TOKENS=256
-            LLM_REQUEST_TIMEOUT_SECONDS=60
           env_vars_update_strategy: overwrite
-
-      - name: Update CORS environment variables
-        run: |
-          gcloud run services update ${{ env.SERVICE_NAME }} \
-            --region=${{ env.REGION }} \
-            --update-env-vars='^@^CORS_ALLOW_METHODS=GET,POST,OPTIONS@CORS_ALLOW_HEADERS=Authorization,Content-Type,X-API-Key'
 
       - name: Verify deployment health
         run: |
