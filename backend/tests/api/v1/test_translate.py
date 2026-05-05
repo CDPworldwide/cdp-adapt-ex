@@ -42,6 +42,32 @@ async def test_translate_same_language_returns_original(client):
 
 
 @pytest.mark.asyncio
+async def test_translate_normalizes_language_codes(client):
+    with patch(
+        "app.services.clients.translate_client.translate_client.translate_texts",
+        return_value=["Hello world"],
+    ) as mock_translate:
+        response = await client.post(
+            "/api/v1/translate",
+            json={
+                "texts": ["Hola mundo"],
+                "target_language": "EN",
+                "source_language": " ES ",
+            },
+        )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["source_language"] == "es"
+    assert data["target_language"] == "en"
+    mock_translate.assert_called_once_with(
+        texts=["Hola mundo"],
+        target_language="en",
+        source_language="es",
+    )
+
+
+@pytest.mark.asyncio
 async def test_translate_unsupported_language_returns_400(client):
     response = await client.post(
         "/api/v1/translate",

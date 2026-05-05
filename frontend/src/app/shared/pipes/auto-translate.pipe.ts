@@ -15,29 +15,41 @@ export class AutoTranslatePipe implements PipeTransform {
   private currentValue = '';
   private lastInput = '';
   private lastLang = '';
+  private lastSourceLang = '';
 
-  transform(value: string | null | undefined): string {
+  transform(value: string | null | undefined, sourceLang = 'en'): string {
     if (!value) {
       return value ?? '';
     }
 
     const lang = this.languageService.currentLang();
+    const normalizedSourceLang = sourceLang.trim().toLowerCase();
 
-    if (lang === 'en' || !this.webTranslation.isSupported) {
+    if (lang === 'en' || lang === normalizedSourceLang || !this.webTranslation.isSupported) {
       return value;
     }
 
-    if (value === this.lastInput && lang === this.lastLang) {
+    if (
+      value === this.lastInput &&
+      lang === this.lastLang &&
+      normalizedSourceLang === this.lastSourceLang
+    ) {
       return this.currentValue;
     }
 
     this.lastInput = value;
     this.lastLang = lang;
+    this.lastSourceLang = normalizedSourceLang;
     this.currentValue = value;
 
     const requestedLang = lang;
-    this.webTranslation.translate(value).then((translated) => {
-      if (value === this.lastInput && requestedLang === this.languageService.currentLang()) {
+    const requestedSourceLang = normalizedSourceLang;
+    this.webTranslation.translate(value, normalizedSourceLang).then((translated) => {
+      if (
+        value === this.lastInput &&
+        requestedLang === this.languageService.currentLang() &&
+        requestedSourceLang === this.lastSourceLang
+      ) {
         this.currentValue = translated;
         this.cdr.markForCheck();
       }

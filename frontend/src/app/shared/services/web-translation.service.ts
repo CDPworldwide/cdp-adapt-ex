@@ -6,6 +6,7 @@ import { LanguageService } from './language.service';
 
 interface PendingEntry {
   resolvers: Array<(value: string) => void>;
+  sourceLang: string;
   text: string;
   targetLang: string;
 }
@@ -27,14 +28,15 @@ export class WebTranslationService {
     return true;
   }
 
-  async translate(text: string): Promise<string> {
+  async translate(text: string, sourceLang = 'en'): Promise<string> {
     const targetLang = this.languageService.currentLang();
 
-    if (!text || targetLang === 'en') {
+    if (!text || targetLang === 'en' || sourceLang === targetLang) {
       return text;
     }
 
-    const cacheKey = `${targetLang}:${text}`;
+    const normalizedSourceLang = sourceLang.trim().toLowerCase();
+    const cacheKey = `${normalizedSourceLang}:${targetLang}:${text}`;
 
     const cached = this.translationCache.get(cacheKey) ?? this.loadFromStorage(cacheKey);
     if (cached !== null) {
@@ -46,7 +48,12 @@ export class WebTranslationService {
       if (existing) {
         existing.resolvers.push(resolve);
       } else {
-        this.pendingBatch.set(cacheKey, { resolvers: [resolve], text, targetLang });
+        this.pendingBatch.set(cacheKey, {
+          resolvers: [resolve],
+          sourceLang: normalizedSourceLang,
+          text,
+          targetLang,
+        });
       }
       this.scheduleBatchFlush();
 
@@ -98,21 +105,24 @@ export class WebTranslationService {
     // Group by target language
     const byLang = new Map<string, Array<[string, PendingEntry]>>();
     for (const [cacheKey, entry] of batch) {
-      const group = byLang.get(entry.targetLang) ?? [];
+      const batchKey = `${entry.sourceLang}:${entry.targetLang}`;
+      const group = byLang.get(batchKey) ?? [];
       group.push([cacheKey, entry]);
-      byLang.set(entry.targetLang, group);
+      byLang.set(batchKey, group);
     }
 
-    for (const [targetLang, entries] of byLang) {
+    for (const [langPair, entries] of byLang) {
+      const [sourceLang, targetLang] = langPair.split(':');
       // Chunk into groups of MAX_BATCH_SIZE
       for (let i = 0; i < entries.length; i += MAX_BATCH_SIZE) {
         const chunk = entries.slice(i, i + MAX_BATCH_SIZE);
-        this.flushChunk(targetLang, chunk);
+        this.flushChunk(sourceLang, targetLang, chunk);
       }
     }
   }
 
   private async flushChunk(
+    sourceLang: string,
     targetLang: string,
     entries: Array<[string, PendingEntry]>,
   ): Promise<void> {
@@ -124,7 +134,7 @@ export class WebTranslationService {
         body: {
           texts,
           target_language: targetLang,
-          source_language: 'en',
+          source_language: sourceLang,
         },
       });
 

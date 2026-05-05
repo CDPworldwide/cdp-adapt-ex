@@ -2,6 +2,10 @@ import threading
 
 from google.cloud import translate_v3 as translate
 
+from app.services.clients.translation_text_processor import (
+    protect_acronyms,
+    restore_acronyms,
+)
 from app.shared.config import settings
 from app.shared.logging import logger
 
@@ -44,16 +48,24 @@ class TranslateClient:
             )
             return list(texts)
 
+        prepared_texts = [protect_acronyms(text) for text in texts]
+        contents = [prepared.text for prepared in prepared_texts]
+
         try:
             response = self.client.translate_text(
-                contents=texts,
+                contents=contents,
                 target_language_code=target_language,
                 source_language_code=source_language,
                 parent=self.parent,
                 mime_type="text/plain",
             )
 
-            return [t.translated_text for t in response.translations]
+            return [
+                restore_acronyms(translation.translated_text, prepared.placeholders)
+                for translation, prepared in zip(
+                    response.translations, prepared_texts, strict=False
+                )
+            ]
 
         except Exception as e:
             logger.error(
@@ -62,7 +74,10 @@ class TranslateClient:
                 target_language=target_language,
                 text_count=len(texts),
             )
-            return list(texts)
+            return [
+                restore_acronyms(prepared.text, prepared.placeholders)
+                for prepared in prepared_texts
+            ]
 
 
 translate_client = TranslateClient()

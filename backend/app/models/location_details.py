@@ -59,6 +59,7 @@ class DimCentral(SQLModel, table=True):
     discloser_country_or_area: str | None = None
     public_status: str | None = None
     current_pop: float | None = None
+    reporting_language: str | None = None
     ranked_hazards: str | None = None
     ranked_sectors: str | None = None
     requesting_auth: str | None = None

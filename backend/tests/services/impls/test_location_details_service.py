@@ -208,12 +208,28 @@ class TestGetEligibleLocationDetailsByName:
 
         assert result.name == "TestCity"
         assert result.country_name == "USA"
+        assert result.reporting_language is None
         assert result.lat == 20.0
         assert result.lng == 10.0
         assert len(result.hazards.hazards) == 1
         assert len(result.government_actions.goals) == 1
         assert len(result.government_actions.actions) == 1
         assert result.solutions.solutions == {}
+
+    async def test_get_location_exposes_reporting_language(
+        self,
+        location_details_service: LocationDetailsService,
+        mock_repository: AsyncMock,
+    ):
+        mock_repository.get_metadata.return_value = build_mock_metadata(
+            reporting_language="es"
+        )
+
+        result = await location_details_service.get_eligible_location_details_by_name(
+            "TestCity"
+        )
+
+        assert result.reporting_language == "es"
 
     async def test_get_location_includes_mapped_solutions(
         self,

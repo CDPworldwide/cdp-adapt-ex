@@ -99,6 +99,7 @@ class LocationProfileBuilder:
             lng=geo_data.lng,
             geometry=geo_data.geometry,
             disclosure_year=metadata.disclosing_year,
+            reporting_language=metadata.reporting_language,
             population=metadata.current_pop,
             requesters=(
                 [r.strip() for r in metadata.requesting_auth.split("|") if r.strip()]
