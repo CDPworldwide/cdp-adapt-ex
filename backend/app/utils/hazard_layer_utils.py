@@ -114,18 +114,21 @@ _HAZARD_LAYER_CONFIG: dict[HazardEnum, HazardLayerOptions] = {
         },
     ),
     HazardEnum.RIVER_FLOODING: HazardLayerOptions(
-        scenarios=[ScenarioEnum.SSP245,
-                   ScenarioEnum.SSP585],
-        historical_year_range=YearRange(start=1979, end=2019),
+        scenarios=[ScenarioEnum.HISTORICAL, ScenarioEnum.SSP245, ScenarioEnum.SSP585],
+        # Historical = 1980 (WRI Aqueduct riverine baseline). RCP scenarios use
+        # 2030/2050/2080 horizons. Mirrors the coastal config so both flood
+        # layers share scenario/year axes.
+        historical_year_range=YearRange(start=1980, end=1980),
         year_ranges=[
-            YearRange(start=2020, end=2039),
-            YearRange(start=2040, end=2059),
-            YearRange(start=2070, end=2089),
+            YearRange(start=2030, end=2030),
+            YearRange(start=2050, end=2050),
+            YearRange(start=2080, end=2080),
         ],
         palette=["#EAF6FF", "#8FD9FF", "#47BFFF", "#00A6FF", "#0082C7", "#005C8F"],
         source=_WRI_AQUEDUCT_SOURCE,
         partial_image_id_templates={
-            "projected": "riverine-flood/riverine-flood_{scenario}_{year1}_rp100"
+            "historical": "riverine-flood/riverine-flood_historical_{year1}_rp100",
+            "projected": "riverine-flood/riverine-flood_{scenario}_{year1}_rp100",
         },
     ),
     HazardEnum.WATER_STRESS: HazardLayerOptions(
