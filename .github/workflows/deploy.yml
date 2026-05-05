@@ -51,6 +51,13 @@ jobs:
         with:
           project_id: ${{ env.PROJECT_ID }}
 
+      - name: Get Backend Secrets from Secret Manager
+        id: backend-secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: |-
+            API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
+
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
 
@@ -125,7 +132,7 @@ jobs:
       - name: Verify backend revision and health
         id: verify-backend
         env:
-          BACKEND_API_KEY: ${{ env.ENVIRONMENT == 'production' && secrets.PRODUCTION_FRONTEND_API_KEY || secrets.FRONTEND_API_KEY }}
+          BACKEND_API_KEY: ${{ steps.backend-secrets.outputs.API_KEY }}
         run: |
           EXPECTED_SHA="${{ github.sha }}"
           BACKEND_URL=""
@@ -243,6 +250,7 @@ jobs:
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
           secrets: |-
+            API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
             GOOGLE_MAPS_API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
 
       - name: Create production environment.ts
@@ -250,7 +258,7 @@ jobs:
         run: |
           FRONTEND_BASE_URL='${{ steps.decode-url.outputs.url }}' \
           FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
-          FRONTEND_API_KEY='${{ env.ENVIRONMENT == 'production' && secrets.PRODUCTION_FRONTEND_API_KEY || secrets.FRONTEND_API_KEY }}' \
+          FRONTEND_API_KEY='${{ steps.frontend-secrets.outputs.API_KEY }}' \
           FRONTEND_DEBUG_MODE='${{ env.ENVIRONMENT == 'development' }}' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
           bash scripts/write-environment.sh
