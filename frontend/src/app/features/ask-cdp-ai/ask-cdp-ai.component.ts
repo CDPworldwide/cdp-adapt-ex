@@ -12,7 +12,7 @@ import {
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { type LocationProfileOutput } from '@pac-api/client';
+import { type LocationProfile } from '@pac-api/client';
 import {
   AskCdpAiService,
   type AskCdpAiContextArea,
@@ -35,7 +35,7 @@ export class AskCdpAiComponent implements OnChanges {
   private sanitizer = inject(DomSanitizer);
   private destroyRef = inject(DestroyRef);
 
-  @Input() locationData: LocationProfileOutput | null = null;
+  @Input() locationData: LocationProfile | null = null;
   @Input() contextArea: AskCdpAiContextArea = 'hazards';
   @Input() isOpen = false;
   @Output() openChange = new EventEmitter<boolean>();

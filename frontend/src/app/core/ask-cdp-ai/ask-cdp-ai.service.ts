@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of, from } from 'rxjs';
 import { tap, map, catchError, switchMap } from 'rxjs/operators';
-import { type LocationProfileInput } from '@pac-api/client';
+import { type LocationProfile } from '@pac-api/client';
 import { Chat } from '@ai-sdk/angular';
 import { type ChatTransport, type UIMessage, type UIMessageChunk } from 'ai';
 import { marked } from 'marked';
@@ -18,10 +18,10 @@ type AiRequestBody = {
   stream: boolean;
   messages: OpenAiMessage[];
   metadata: {
-    locationData: LocationProfileInput | null;
+    locationData: LocationProfile | null;
     contextArea: AskCdpAiContextArea;
   };
-  locationData: LocationProfileInput | null;
+  locationData: LocationProfile | null;
   contextArea: AskCdpAiContextArea;
 };
 
@@ -39,13 +39,13 @@ export class AskCdpAiService {
   readonly followUpError = signal<string | null>(null);
   readonly conversationHistory = signal<ConversationMessage[]>([]);
 
-  private locationContext: LocationProfileInput | null = null;
+  private locationContext: LocationProfile | null = null;
   private contextArea: AskCdpAiContextArea = 'hazards';
   private locationContextKey: string | null = null;
   private readonly aiChat = this.createAiChat();
 
   setLocationContext(
-    locationData: LocationProfileInput | null | undefined,
+    locationData: LocationProfile | null | undefined,
     contextArea: AskCdpAiContextArea = 'hazards',
   ): void {
     const nextLocationContext = locationData ?? null;
@@ -282,12 +282,12 @@ export class AskCdpAiService {
     };
   }
 
-  private buildAiLocationData(): LocationProfileInput | null {
+  private buildAiLocationData(): LocationProfile | null {
     if (!this.locationContext) {
       return null;
     }
 
-    return JSON.parse(JSON.stringify(this.locationContext)) as LocationProfileInput;
+    return JSON.parse(JSON.stringify(this.locationContext)) as LocationProfile;
   }
 
   private buildAiServerMessages(): OpenAiMessage[] {
@@ -329,7 +329,9 @@ export class AskCdpAiService {
         'adaptation solutions, peer actions, local projects, and implementation opportunities',
     };
 
-    return `Suggest follow-up questions for exploring ${focusByTab[this.contextArea]} in ${locationName}.`;
+    return `Suggest follow-up questions for exploring ${
+      focusByTab[this.contextArea]
+    } in ${locationName}.`;
   }
 
   private textToUiMessageStream(content: string): ReadableStream<UIMessageChunk> {
@@ -437,7 +439,7 @@ export class AskCdpAiService {
   }
 
   private buildLocationContextKey(
-    locationData: LocationProfileInput | null,
+    locationData: LocationProfile | null,
     contextArea: AskCdpAiContextArea,
   ): string | null {
     if (!locationData) {

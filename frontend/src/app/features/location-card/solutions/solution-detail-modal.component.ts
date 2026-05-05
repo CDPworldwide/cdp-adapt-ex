@@ -12,7 +12,7 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/materia
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AdaptationAction, LocationProfile, SolutionCardOutput } from '@pac-api/client';
+import { AdaptationAction, LocationProfile, SolutionCard } from '@pac-api/client';
 import {
   AdaptationActionDetailComponent,
   DETAIL_HERO_BACKGROUND,
@@ -49,7 +49,7 @@ import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
 })
 export class SolutionDetailModalComponent implements OnInit, OnDestroy {
   public data = inject<{
-    solution: SolutionCardOutput;
+    solution: SolutionCard;
     location: LocationProfile | null;
   }>(MAT_DIALOG_DATA);
 
@@ -61,7 +61,7 @@ export class SolutionDetailModalComponent implements OnInit, OnDestroy {
   slideClass = '';
   private destroy$ = new Subject<void>();
 
-  getBackgroundStyle(_solution: SolutionCardOutput): string {
+  getBackgroundStyle(_solution: SolutionCard): string {
     return DETAIL_HERO_BACKGROUND;
   }
 

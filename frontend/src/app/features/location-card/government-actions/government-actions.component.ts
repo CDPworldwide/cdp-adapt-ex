@@ -8,7 +8,7 @@ import type {
   AdaptationAction,
   AdaptationGoal,
   Hazard,
-  ProjectSeekingFundingOutput as ProjectSeekingFunding,
+  ProjectSeekingFunding,
 } from '@pac-api/client';
 
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';

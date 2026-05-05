@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ProjectSeekingFundingDetailComponent } from './project-seeking-funding-detail.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ProjectSeekingFundingOutput, PlannedProjectStatusEnum } from '@pac-api/client';
+import { ProjectSeekingFunding, PlannedProjectStatusEnum } from '@pac-api/client';
 import { By } from '@angular/platform-browser';
 
 describe('ProjectSeekingFundingDetailComponent', () => {
   let component: ProjectSeekingFundingDetailComponent;
   let fixture: ComponentFixture<ProjectSeekingFundingDetailComponent>;
 
-  const mockProject: ProjectSeekingFundingOutput = {
+  const mockProject: ProjectSeekingFunding = {
     title: 'Test Project',
     description: 'A short description that should not trigger truncation.',
     status: PlannedProjectStatusEnum.SCOPING,

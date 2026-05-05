@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { AskCdpAiService } from './ask-cdp-ai.service';
-import { type LocationProfileInput } from '@pac-api/client';
+import { type LocationProfile } from '@pac-api/client';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('AskCdpAiService', () => {
   let service: AskCdpAiService;
   let translate: TranslateService;
   let originalFetch: any;
-  const mockLocationData: LocationProfileInput = {
+  const mockLocationData: LocationProfile = {
     organizationId: 12345,
     name: 'New York',
     countryName: 'United States',
