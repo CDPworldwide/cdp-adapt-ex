@@ -21,6 +21,25 @@
     "description": {
       "text": "Browse local climate hazards, actions, and adaptation projects seeking funding from cities, states, and regions worldwide",
       "learnMore": "Learn more"
+    },
+    "welcomeModal": {
+      "beta": "BETA",
+      "earlyAccess": "Early access — feedback welcome",
+      "eyebrow": "Welcome to the",
+      "title": "CDP Adaptation & Action Explorer",
+      "description": "An open-source tool helping cities, states, and regions understand climate risks, explore resilience solutions, and communicate progress to partners and funders. More features are on the way.",
+      "prompt": "What best describes you?",
+      "roles": {
+        "ngo": "NGO / Nonprofit / Academic",
+        "governmentDiscloser": "Government – CDP Discloser",
+        "financial": "Financial Institution / Investor",
+        "governmentNotDisclosing": "Government – Not Currently Disclosing",
+        "business": "Business",
+        "other": "Other"
+      },
+      "startExploring": "Start Exploring",
+      "skip": "Skip for now",
+      "closeAriaLabel": "Close welcome dialog"
     }
   },
   "maps": {
