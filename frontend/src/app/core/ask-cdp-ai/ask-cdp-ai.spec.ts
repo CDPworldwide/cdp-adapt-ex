@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AskCdpAiService } from './ask-cdp-ai.service';
 import { type LocationProfile } from '@pac-api/client';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { environment } from '@env/environment';
 
 describe('AskCdpAiService', () => {
   let service: AskCdpAiService;
@@ -99,6 +100,9 @@ describe('AskCdpAiService', () => {
         readRequestBodyAt(0).then((body) => {
           expect(String((window.fetch as jasmine.Spy).calls.argsFor(0)[0])).toContain(
             '/v1/suggest-follow-ups',
+          );
+          expect(String((window.fetch as jasmine.Spy).calls.argsFor(0)[0])).toBe(
+            `${environment.aiServerUrl}/v1/suggest-follow-ups`,
           );
           expect(body.locationData).toEqual(mockLocationData);
           expect(body.contextArea).toBe('hazards');
@@ -229,8 +233,14 @@ describe('AskCdpAiService', () => {
             expect(String((window.fetch as jasmine.Spy).calls.argsFor(0)[0])).toContain(
               '/v1/chat/completions',
             );
+            expect(String((window.fetch as jasmine.Spy).calls.argsFor(0)[0])).toBe(
+              `${environment.aiServerUrl}/v1/chat/completions`,
+            );
             expect(String((window.fetch as jasmine.Spy).calls.argsFor(1)[0])).toContain(
               '/v1/suggest-follow-ups',
+            );
+            expect(String((window.fetch as jasmine.Spy).calls.argsFor(1)[0])).toBe(
+              `${environment.aiServerUrl}/v1/suggest-follow-ups`,
             );
             expect(chatBody.metadata.locationData).toEqual(mockLocationData);
             expect(chatBody.contextArea).toBe('hazards');

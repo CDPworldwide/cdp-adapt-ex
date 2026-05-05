@@ -191,18 +191,26 @@ export class AskCdpAiService {
   }
 
   private buildAiChatUrl(): string {
-    const aiServerUrl = environment.aiServerUrl || environment.baseUrl;
-    return `${aiServerUrl.replace(/\/$/, '')}/v1/chat/completions`;
+    return `${this.buildAiServerBaseUrl()}/v1/chat/completions`;
   }
 
   private buildAiHeaders(): Record<string, string> {
-    const apiKey = 'apiKey' in environment ? environment.apiKey : '';
+    const apiKey =
+      'aiServerApiKey' in environment && environment.aiServerApiKey
+        ? environment.aiServerApiKey
+        : 'apiKey' in environment
+          ? environment.apiKey
+          : '';
     if (!apiKey) {
       return {};
     }
 
     const apiKeyHeaderName =
-      'apiKeyHeaderName' in environment ? environment.apiKeyHeaderName : 'X-API-Key';
+      'aiServerApiKeyHeaderName' in environment && environment.aiServerApiKeyHeaderName
+        ? environment.aiServerApiKeyHeaderName
+        : 'apiKeyHeaderName' in environment
+          ? environment.apiKeyHeaderName
+          : 'X-API-Key';
 
     return {
       Authorization: `Bearer ${apiKey}`,
@@ -259,8 +267,17 @@ export class AskCdpAiService {
   }
 
   private buildAiFollowUpsUrl(): string {
-    const aiServerUrl = environment.aiServerUrl || environment.baseUrl;
-    return `${aiServerUrl.replace(/\/$/, '')}/v1/suggest-follow-ups`;
+    return `${this.buildAiServerBaseUrl()}/v1/suggest-follow-ups`;
+  }
+
+  private buildAiServerBaseUrl(): string {
+    const aiServerUrl = environment.aiServerUrl;
+
+    if (!aiServerUrl) {
+      throw new Error('AI server URL is not configured.');
+    }
+
+    return aiServerUrl.replace(/\/$/, '');
   }
 
   private buildAiRequestBody(

@@ -5,6 +5,8 @@ export const environment = {
   aiModel: 'cdp-gemini',
   apiKey: '',
   apiKeyHeaderName: 'X-API-Key',
+  aiServerApiKey: '',
+  aiServerApiKeyHeaderName: 'X-API-Key',
   authDisabled: false,
   isDebugMode: false,
   firebaseConfig: {
