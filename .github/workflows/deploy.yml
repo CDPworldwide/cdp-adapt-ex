@@ -25,6 +25,7 @@ env:
   ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
   SERVICE_NAME_BACKEND: ${{ github.ref == 'refs/heads/production' && 'cdp-server-prod' || 'cdp-server-dev' }}
   SERVICE_NAME_FRONTEND: ${{ github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend-dev' }}
+  SERVICE_NAME_AI: cdp-ai-server
 
 jobs:
   deploy-backend:
@@ -228,6 +229,26 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Determine AI server URL
+        id: ai-server-url
+        run: |
+          AI_SERVER_URL=$(gcloud run services describe ${{ env.SERVICE_NAME_AI }} \
+            --region=${{ env.REGION }} \
+            --format='value(status.url)' 2>/dev/null || echo "")
+
+          if [ -z "$AI_SERVER_URL" ]; then
+            echo "AI server service ${{ env.SERVICE_NAME_AI }} not found"
+            exit 1
+          fi
+
+          echo "url=$AI_SERVER_URL" >> "$GITHUB_OUTPUT"
+          echo "AI server URL: $AI_SERVER_URL"
+
       - name: Get Frontend Secrets from Secret Manager
         id: frontend-secrets
         uses: google-github-actions/get-secretmanager-secrets@v2
@@ -239,6 +260,7 @@ jobs:
         working-directory: frontend
         run: |
           FRONTEND_BASE_URL='${{ steps.decode-url.outputs.url }}' \
+          FRONTEND_AI_SERVER_URL='${{ steps.ai-server-url.outputs.url }}' \
           FRONTEND_API_KEY='${{ secrets.PRODUCTION_FRONTEND_API_KEY }}' \
           FRONTEND_DEBUG_MODE='${{ env.ENVIRONMENT == 'development' }}' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
@@ -251,11 +273,6 @@ jobs:
       - name: Run frontend tests
         working-directory: frontend
         run: npm run test:ci
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
