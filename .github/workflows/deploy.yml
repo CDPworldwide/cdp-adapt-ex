@@ -21,11 +21,11 @@ env:
   REGION: us-central1
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
   NODE_VERSION: "20.x"
+  AI_SERVER_URL: https://cdp-ai-server-pbybuiwoxq-uc.a.run.app
   # Branch-specific environment configuration
   ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
   SERVICE_NAME_BACKEND: ${{ github.ref == 'refs/heads/production' && 'cdp-server-prod' || 'cdp-server-dev' }}
   SERVICE_NAME_FRONTEND: ${{ github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend-dev' }}
-  SERVICE_NAME_AI: cdp-ai-server
 
 jobs:
   deploy-backend:
@@ -124,6 +124,8 @@ jobs:
 
       - name: Verify backend revision and health
         id: verify-backend
+        env:
+          BACKEND_API_KEY: ${{ env.ENVIRONMENT == 'production' && secrets.PRODUCTION_FRONTEND_API_KEY || secrets.FRONTEND_API_KEY }}
         run: |
           EXPECTED_SHA="${{ github.sha }}"
           BACKEND_URL=""
@@ -148,7 +150,9 @@ jobs:
           done
 
           HEALTH_URL="$BACKEND_URL/api/v1/health"
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL" || echo "000")
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "X-API-Key: $BACKEND_API_KEY" \
+            "$HEALTH_URL" || echo "000")
           if [ "$STATUS" != "200" ]; then
             echo "Backend health check failed: $HEALTH_URL -> HTTP $STATUS"
             exit 1
@@ -234,21 +238,6 @@ jobs:
         with:
           project_id: ${{ env.PROJECT_ID }}
 
-      - name: Determine AI server URL
-        id: ai-server-url
-        run: |
-          AI_SERVER_URL=$(gcloud run services describe ${{ env.SERVICE_NAME_AI }} \
-            --region=${{ env.REGION }} \
-            --format='value(status.url)' 2>/dev/null || echo "")
-
-          if [ -z "$AI_SERVER_URL" ]; then
-            echo "AI server service ${{ env.SERVICE_NAME_AI }} not found"
-            exit 1
-          fi
-
-          echo "url=$AI_SERVER_URL" >> "$GITHUB_OUTPUT"
-          echo "AI server URL: $AI_SERVER_URL"
-
       - name: Get Frontend Secrets from Secret Manager
         id: frontend-secrets
         uses: google-github-actions/get-secretmanager-secrets@v2
@@ -260,7 +249,7 @@ jobs:
         working-directory: frontend
         run: |
           FRONTEND_BASE_URL='${{ steps.decode-url.outputs.url }}' \
-          FRONTEND_AI_SERVER_URL='${{ steps.ai-server-url.outputs.url }}' \
+          FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
           FRONTEND_API_KEY='${{ secrets.PRODUCTION_FRONTEND_API_KEY }}' \
           FRONTEND_DEBUG_MODE='${{ env.ENVIRONMENT == 'development' }}' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \

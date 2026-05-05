@@ -106,7 +106,10 @@ jobs:
           URL="${{ steps.deploy.outputs.url }}"
           echo "Checking health of $URL..."
           for i in {1..12}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL/healthz" || echo "000")
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              -H "Authorization: Bearer ${{ secrets.FRONTEND_API_KEY }}" \
+              -H "X-API-Key: ${{ secrets.FRONTEND_API_KEY }}" \
+              "$URL/v1/models" || echo "000")
             if [ "$STATUS" = "200" ]; then
               echo "AI server deployment is healthy (HTTP $STATUS)"
               exit 0

@@ -19,13 +19,13 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: us-central1
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
+  AI_SERVER_URL: https://cdp-ai-server-pbybuiwoxq-uc.a.run.app
   # Dynamic service name: production, dev, or PR-specific preview
   SERVICE_NAME: >-
     ${{ github.event_name == 'pull_request' && format('frontend-preview-pr-{0}', github.event.pull_request.number) ||
         (github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend-dev') }}
   IS_PREVIEW: ${{ github.event_name == 'pull_request' }}
   ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
-  AI_SERVICE_NAME: cdp-ai-server
   NODE_VERSION: "20.x"
 
 jobs:
@@ -38,7 +38,6 @@ jobs:
       id-token: write
     outputs:
       backend-url: ${{ steps.backend-url.outputs.url }}
-      ai-server-url: ${{ steps.ai-server-url.outputs.url }}
 
     steps:
       - name: Checkout repository
@@ -140,21 +139,6 @@ jobs:
             echo "url=${{ secrets.BASE_URL }}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Determine AI server URL
-        id: ai-server-url
-        run: |
-          AI_SERVER_URL=$(gcloud run services describe ${{ env.AI_SERVICE_NAME }} \
-            --region=${{ env.REGION }} \
-            --format='value(status.url)' 2>/dev/null || echo "")
-
-          if [ -z "$AI_SERVER_URL" ]; then
-            echo "AI server service ${{ env.AI_SERVICE_NAME }} not found"
-            exit 1
-          fi
-
-          echo "url=$AI_SERVER_URL" >> $GITHUB_OUTPUT
-          echo "AI server URL: $AI_SERVER_URL"
-
       - name: Get Frontend Secrets from Secret Manager
         id: frontend-secrets
         uses: google-github-actions/get-secretmanager-secrets@v2
@@ -166,7 +150,7 @@ jobs:
         working-directory: frontend
         run: |
           FRONTEND_BASE_URL='${{ steps.backend-url.outputs.url }}' \
-          FRONTEND_AI_SERVER_URL='${{ steps.ai-server-url.outputs.url }}' \
+          FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
           FRONTEND_API_KEY='${{ secrets.FRONTEND_API_KEY }}' \
           FRONTEND_AUTH_DISABLED='false' \
           FRONTEND_DEBUG_MODE='${{ env.ENVIRONMENT == 'development' }}' \
@@ -396,7 +380,7 @@ jobs:
             **Commit:** `${{ github.sha }}`
             **Environment:** preview (PR #${{ github.event.pull_request.number }})
             **Backend:** ${{ steps.backend-url.outputs.url }}
-            **AI Server:** ${{ needs.build-and-test.outputs.ai-server-url }}
+            **AI Server:** ${{ env.AI_SERVER_URL }}
 
             ### Test Credentials
             Use these credentials to login to the preview:

@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   baseUrl: '',
-  aiServerUrl: '',
+  aiServerUrl: 'https://cdp-ai-server-pbybuiwoxq-uc.a.run.app',
   aiModel: 'cdp-gemini',
   apiKey: '',
   apiKeyHeaderName: 'X-API-Key',
