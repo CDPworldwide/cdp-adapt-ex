@@ -1,0 +1,121 @@
+name: AI Server Deploy to Cloud Run
+
+on:
+  push:
+    branches: [main, production]
+    paths:
+      - "ai-server/**"
+      - ".github/workflows/ai-server-deploy.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: us-central1
+  ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
+  SERVICE_NAME: cdp-ai-server
+
+jobs:
+  deploy:
+    name: Deploy ai-server
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
+
+      - name: Build and push Docker image
+        working-directory: ai-server
+        run: |
+          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}"
+          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:latest"
+
+          docker build --pull --no-cache -t $IMAGE_TAG -t $IMAGE_LATEST .
+          docker push $IMAGE_TAG
+          docker push $IMAGE_LATEST
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ env.REGION }}
+          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          flags: |
+            --allow-unauthenticated
+            --min-instances=0
+            --max-instances=10
+            --memory=1Gi
+            --cpu=1
+            --timeout=300
+            --port=8080
+          labels: |
+            environment=shared
+            managed-by=github-actions
+            commit-sha=${{ github.sha }}
+          secrets: |
+            LLM_API_KEY=development-LLM_API_KEY:latest
+            ALLOWED_ORIGINS=development-ALLOWED_ORIGINS:latest
+          env_vars: |
+            PROJECT_NAME=CDP AI Server
+            AI_SERVER_API_KEY=${{ secrets.FRONTEND_API_KEY }}
+            AI_SERVER_API_KEY_HEADER_NAME=X-API-Key
+            AI_SERVER_MODEL_NAME=cdp-gemini
+            LLM_MODEL=gemini-2.5-flash
+            DEFAULT_LLM_TEMPERATURE=0.2
+            MAX_TOKENS=2000
+            MAX_CHAT_MESSAGES=50
+            MAX_CHAT_TOTAL_CHARS=50000
+            MAX_CHAT_RESPONSE_CHARS=20000
+            SUGGEST_FOLLOW_UPS_MAX_TOKENS=256
+            LLM_REQUEST_TIMEOUT_SECONDS=60
+            CORS_ALLOW_METHODS=GET,POST,OPTIONS
+            CORS_ALLOW_HEADERS=Authorization,Content-Type,X-API-Key
+          env_vars_update_strategy: overwrite
+
+      - name: Verify deployment health
+        run: |
+          URL="${{ steps.deploy.outputs.url }}"
+          echo "Checking health of $URL..."
+          for i in {1..12}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL/healthz" || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "AI server deployment is healthy (HTTP $STATUS)"
+              exit 0
+            fi
+            echo "Attempt $i/12: HTTP $STATUS, waiting 5s..."
+            sleep 5
+          done
+          echo "AI server deployment health check failed"
+          exit 1
+
+      - name: Show deployed service URL
+        run: echo "Deployed AI server to ${{ steps.deploy.outputs.url }}"
