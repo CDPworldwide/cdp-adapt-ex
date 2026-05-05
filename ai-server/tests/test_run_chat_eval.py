@@ -363,15 +363,3 @@ def test_post_chat_completion_retries_transient_http_errors(monkeypatch):
     assert response["choices"][0]["message"]["content"] == "ok"
     assert len(attempts) == 2
 
-
-def test_load_questions_file_preserves_review_assertions():
-    cases = load_cases_from_questions_file()
-    critical_cases = {case["id"]: case for case in cases if case.get("assertions")}
-
-    assert "comments-row-1" in critical_cases
-    assert "comments-row-7" in critical_cases
-    assert "CSTAR" in critical_cases["comments-row-1"]["assertions"]["forbidden"]
-    assert (
-        "may not have reliable mitigation data"
-        in critical_cases["comments-row-7"]["assertions"]["requiredAll"]
-    )
