@@ -1,12 +1,10 @@
 <div class="flex flex-col lg:flex-row w-full max-w-full bg-white lg:rounded-2xl overflow-hidden">
-  <!-- Top/Left Side: Image Placeholder -->
+  <!-- Top/Left Side: Hero Image -->
   @if (showHeroImage) {
     <div
-      class="relative w-full h-52 lg:w-96 lg:min-h-200 lg:h-auto self-stretch bg-cdp-peach flex-shrink-0 flex items-center justify-center p-6 lg:p-10"
+      class="relative w-full h-52 lg:w-96 lg:min-h-200 lg:h-auto self-stretch flex-shrink-0 p-6 lg:p-10"
+      [style.background]="heroBackground"
     >
-      <app-image-placeholder-icon
-        class="opacity-40 w-24 h-24 lg:w-32 lg:h-32"
-      ></app-image-placeholder-icon>
       <!-- Close Button for Mobile (on the image) -->
       <button
         type="button"
@@ -14,7 +12,7 @@
         aria-label="Close"
         class="lg:hidden absolute top-4 right-4 p-2 flex justify-center items-center rounded-full bg-white/50 backdrop-blur-sm hover:bg-white/80 transition-colors"
       >
-        <app-close-icon color="black" size="18"></app-close-icon>
+        <app-close-icon color="white" size="18"></app-close-icon>
       </button>
     </div>
   }
@@ -103,7 +101,11 @@
             <div
               class="text-cdp-border font-roboto text-2xl font-normal leading-normal tracking-[1.2px]"
             >
-              {{ (action.totalCostUsd | currency: 'USD' : 'symbol' : '1.0-0') || '—' }}
+              @if (action.totalCostUsd != null && action.totalCostUsd > 0) {
+                {{ action.totalCostUsd | currency: 'USD' : 'symbol' : '1.0-0' }}
+              } @else {
+                {{ 'locationCard.govActions.notDisclosed' | translate }}
+              }
             </div>
           </div>
           <div class="flex-1 inline-flex flex-col justify-start items-start gap-3">

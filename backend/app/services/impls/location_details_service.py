@@ -242,8 +242,8 @@ class LocationDetailsService:
 
             funded_percent = None
             if (
-                project.total_cost_usd
-                and project.total_needed_usd
+                project.total_cost_usd is not None
+                and project.total_needed_usd is not None
                 and project.total_cost_usd > 0
             ):
                 funded_percent = (

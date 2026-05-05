@@ -1,4 +1,4 @@
-<div class="flex flex-1 flex-col min-h-0 text-cdp-dark bg-cdp-bg relative">
+<div class="flex flex-col text-cdp-dark bg-cdp-bg relative pb-20">
   <div
     class="fixed inset-0 z-40 bg-black/90 transition-opacity duration-300"
     [ngClass]="isOverlayOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'"
@@ -40,7 +40,7 @@
             <li>
               <button
                 type="button"
-                class="w-full py-4 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
+                class="w-full py-4 px-2 -mx-2 rounded-sm flex items-center justify-between text-left hover:bg-white/5 active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red transition-colors"
                 (click)="onSearch(option.name)"
               >
                 <span class="text-white text-2xl md:text-3xl font-light">
@@ -63,7 +63,7 @@
     </div>
   </div>
 
-  <div class="flex flex-1 flex-col min-h-0">
+  <div class="flex flex-col min-h-screen">
     <nav class="bg-cdp-bg flex-shrink-0">
       <app-header></app-header>
     </nav>
@@ -82,7 +82,7 @@
         <div class="flex flex-col items-center gap-4 max-w-full">
           <button
             type="button"
-            class="flex items-center gap-4 max-w-full bg-transparent border-none cursor-pointer p-0"
+            class="flex items-center gap-4 max-w-full bg-transparent border-none cursor-pointer p-0 hover:opacity-70 active:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-4 focus-visible:ring-offset-cdp-bg rounded-sm transition-opacity"
             (click)="openSearchOverlay()"
             [attr.aria-label]="
               'homepage.hero.notFound' | translate: { location: searchControl.value }
@@ -109,7 +109,7 @@
       } @else {
         <button
           type="button"
-          class="flex items-center gap-4 max-w-full bg-transparent border-none cursor-pointer p-0"
+          class="flex items-center gap-4 max-w-full bg-transparent border-none cursor-pointer p-0 hover:opacity-70 active:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-4 focus-visible:ring-offset-cdp-bg rounded-sm transition-opacity"
           (click)="openSearchOverlay()"
           [attr.aria-label]="'homepage.hero.searchOrSelect' | translate"
         >
@@ -124,7 +124,7 @@
     </div>
 
     <div
-      class="flex-1 min-h-0 flex flex-col md:flex-row md:items-start gap-8 md:gap-16 px-4 md:px-16 pb-6 w-full max-w-7xl mx-auto"
+      class="flex-1 flex flex-col md:flex-row md:items-start gap-8 md:gap-16 px-4 md:px-16 pb-6 w-full max-w-7xl mx-auto min-h-[300px]"
     >
       <div class="flex flex-col md:flex-shrink-0 w-full max-w-[560px] mx-auto md:mx-0">
         <div class="relative aspect-[624/567]">
@@ -168,15 +168,23 @@
             <p class="text-base md:text-lg leading-relaxed text-cdp-dark max-w-sm">
               {{ 'homepage.description.text' | translate }}
             </p>
-            <button
-              type="button"
-              class="mt-2 px-4 py-3 bg-cdp-dark flex justify-center items-center hover:bg-opacity-90 transition-opacity text-white text-base font-inter leading-4"
+            <a
+              routerLink="/learn-more"
+              class="mt-2 px-4 py-3 bg-cdp-dark inline-flex justify-center items-center no-underline hover:bg-black active:bg-cdp-neutral-08 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors text-white text-base font-inter leading-4"
             >
               {{ 'homepage.description.learnMore' | translate }}
-            </button>
+            </a>
           </div>
         }
       </div>
     </div>
   </div>
+
+  <!-- Disclosure Trends — visible by scrolling down; only shown when a location is selected -->
+  @if (selectedLocationData) {
+    <app-disclosure-trends
+      [data]="selectedLocationData"
+      [year]="resolvedYear"
+    ></app-disclosure-trends>
+  }
 </div>

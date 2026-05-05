@@ -38,3 +38,7 @@ export { CloseIconComponent } from './close-icon.component';
 export { ImagePlaceholderIconComponent } from './image-placeholder-icon.component';
 export * from './info-icon.component';
 export { LocationPinIconComponent } from './location-pin-icon.component';
+export { CheckCircleIconComponent } from './check-circle-icon.component';
+export { WaterSecurityIconComponent } from './water-security-icon.component';
+export { MoneyCircleIconComponent } from './money-circle-icon.component';
+export { EarthIconComponent } from './earth-icon.component';
