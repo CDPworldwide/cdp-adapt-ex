@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 QUESTIONS_FILE = ROOT / "data" / "questions.json"
 ORG_DATA_DIR = ROOT / "org-data"

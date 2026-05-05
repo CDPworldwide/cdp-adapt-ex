@@ -588,16 +588,13 @@ def load_cases_from_reviewed_comments(
 
             org_id = int(org_id_raw)
             location_data = _load_org_location_data(org_id, org_data_dir)
-            location = (
-                row.get("page_or_jurisdiction")
-                or ", ".join(
-                    item
-                    for item in (
-                        row.get("matched_organization"),
-                        row.get("matched_country_or_area"),
-                    )
-                    if item
+            location = row.get("page_or_jurisdiction") or ", ".join(
+                item
+                for item in (
+                    row.get("matched_organization"),
+                    row.get("matched_country_or_area"),
                 )
+                if item
             )
             source_row = row.get("source_row") or str(len(cases) + 1)
             cases.append(
@@ -741,7 +738,9 @@ def count_solution_cards(solutions: dict[str, Any]) -> int:
     solution_groups = (solutions or {}).get("solutions", {})
     if not isinstance(solution_groups, dict):
         return 0
-    return sum(len(cards) for cards in solution_groups.values() if isinstance(cards, list))
+    return sum(
+        len(cards) for cards in solution_groups.values() if isinstance(cards, list)
+    )
 
 
 def count_peer_actions(solutions: dict[str, Any]) -> int:
@@ -758,7 +757,9 @@ def count_peer_actions(solutions: dict[str, Any]) -> int:
     return total
 
 
-def build_payload_summary(case: dict[str, Any], payload: dict[str, Any]) -> dict[str, Any]:
+def build_payload_summary(
+    case: dict[str, Any], payload: dict[str, Any]
+) -> dict[str, Any]:
     location_data = payload.get("locationData") or {}
     hazards = location_data.get("hazards") or {}
     government_actions = location_data.get("governmentActions") or {}

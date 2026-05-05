@@ -9,7 +9,6 @@ from app.main import app
 from app.providers.gemini import GeminiCompletion
 from utility_scripts.run_chat_eval import load_cases_from_questions_file
 
-
 ROOT = Path(__file__).resolve().parents[1]
 REVIEWED_CASES = load_cases_from_questions_file(
     ROOT / "data" / "questions.json", ROOT / "org-data"
@@ -68,7 +67,9 @@ async def test_reviewed_questions_replay_through_chat_endpoint(case, monkeypatch
     else:
         assert len(provider.requests) == 1
         request_location = provider.requests[0].resolved_location_data()
-        assert request_location["organizationId"] == case["locationData"]["organizationId"]
+        assert (
+            request_location["organizationId"] == case["locationData"]["organizationId"]
+        )
         assert request_location["name"] == case["locationData"]["name"]
         assert request_location["geometry"] == {}
 

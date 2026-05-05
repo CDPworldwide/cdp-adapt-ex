@@ -64,7 +64,9 @@ async def chat_completions(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
         raise_llm_http_exception(exc)
-        raise HTTPException(status_code=500, detail="An unexpected error occurred") from exc
+        raise HTTPException(
+            status_code=500, detail="An unexpected error occurred"
+        ) from exc
 
     if len(completion.text) > settings.max_chat_response_chars:
         raise HTTPException(status_code=502, detail="LLM response exceeded limit")
@@ -102,7 +104,9 @@ async def _stream_openai_chunks(text: str, model: str):
             "object": "chat.completion.chunk",
             "created": created,
             "model": model,
-            "choices": [{"index": 0, "delta": {"role": "assistant"}, "finish_reason": None}],
+            "choices": [
+                {"index": 0, "delta": {"role": "assistant"}, "finish_reason": None}
+            ],
         }
     )
     if text:

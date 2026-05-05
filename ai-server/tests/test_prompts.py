@@ -55,7 +55,9 @@ def test_remote_system_prompt_fetch_is_cached(monkeypatch):
 
 
 def test_local_system_prompt_file_reloads_without_cache():
-    prompt_path = prompts.Path(__file__).parents[1] / "app" / "prompts" / "_tmp_test_prompt.md"
+    prompt_path = (
+        prompts.Path(__file__).parents[1] / "app" / "prompts" / "_tmp_test_prompt.md"
+    )
     try:
         prompt_path.write_text("first prompt", encoding="utf-8")
         assert prompts.load_system_prompt("_tmp_test_prompt.md") == "first prompt"
@@ -145,9 +147,7 @@ def test_build_system_prompt_scopes_context_to_hazards_tab():
         },
         context_area="hazards",
     )
-    context = json.loads(
-        system_prompt.split("```json\n", 1)[1].removesuffix("\n```")
-    )
+    context = json.loads(system_prompt.split("```json\n", 1)[1].removesuffix("\n```"))
 
     assert list(context.keys()) == [
         "organizationId",
@@ -190,9 +190,7 @@ def test_build_system_prompt_scopes_context_to_actions_tab():
         },
         context_area="actions",
     )
-    context = json.loads(
-        system_prompt.split("```json\n", 1)[1].removesuffix("\n```")
-    )
+    context = json.loads(system_prompt.split("```json\n", 1)[1].removesuffix("\n```"))
 
     assert context["contextArea"] == "actions"
     assert "governmentActions" in context
@@ -213,9 +211,7 @@ def test_build_system_prompt_scopes_context_to_solutions_tab():
         },
         context_area="solutions",
     )
-    context = json.loads(
-        system_prompt.split("```json\n", 1)[1].removesuffix("\n```")
-    )
+    context = json.loads(system_prompt.split("```json\n", 1)[1].removesuffix("\n```"))
 
     assert context["contextArea"] == "solutions"
     assert "solutions" in context
@@ -275,14 +271,17 @@ def test_build_system_prompt_trims_solution_peer_examples():
 def test_system_prompt_contains_review_grounding_guardrails():
     prompt = prompts.load_system_prompt()
 
-    assert "Do not use \"CSTAR\" in user-facing answers" in prompt
+    assert 'Do not use "CSTAR" in user-facing answers' in prompt
     assert "CDP-ICLEI Track disclosure" in prompt
     assert "CDP States & Regions Questionnaire disclosure" in prompt
-    assert "Do not say a city, state, or region \"ranked\" hazards" in prompt
+    assert 'Do not say a city, state, or region "ranked" hazards' in prompt
     assert "Do not substitute population exposure, magnitude" in prompt
-    assert "how likely each hazard is to occur and how severe its impact could be" in prompt
-    assert "do not begin with \"Yes\"" in prompt
-    assert "For broad \"climate context\" questions" in prompt
+    assert (
+        "how likely each hazard is to occur and how severe its impact could be"
+        in prompt
+    )
+    assert 'do not begin with "Yes"' in prompt
+    assert 'For broad "climate context" questions' in prompt
     assert "aggregate structured data for the location" in prompt
     assert "the platform data contains" in prompt
     assert "I cannot assign a climate action score or ranking" in prompt

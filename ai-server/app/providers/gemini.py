@@ -10,7 +10,6 @@ from app.prompts import build_system_prompt
 from app.schemas import ChatCompletionRequest
 from app.settings import Settings
 
-
 RESPONSE_REPLACEMENTS = {
     "Community participation": "Resident involvement",
     "community participation": "resident involvement",

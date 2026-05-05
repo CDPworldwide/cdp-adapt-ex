@@ -108,4 +108,3 @@ async def test_chat_completion_rejects_system_messages(monkeypatch):
     assert response.status_code == 422
     assert "Client-supplied system messages are not allowed" in response.text
     get_settings.cache_clear()
-

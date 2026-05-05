@@ -7,7 +7,6 @@ from urllib.parse import urlparse
 
 import httpx
 
-
 SYSTEM_PROMPT_ENV_VAR = "SYSTEM_PROMPT"
 SYSTEM_PROMPT_FILE_NAME = "system_prompt.md"
 DEFAULT_SYSTEM_PROMPT = "You are a helpful climate risk assistant."
@@ -270,9 +269,7 @@ def summarize_government_action(item: dict[str, Any]) -> dict[str, Any]:
         "status": sanitize_location_context(item.get("status")),
         "timeframe": item.get("timeframe"),
         "description": truncate_text(item.get("description")),
-        "hazardsAddressed": sanitize_location_context(
-            item.get("hazardsAddressed", [])
-        ),
+        "hazardsAddressed": sanitize_location_context(item.get("hazardsAddressed", [])),
         "impactedSectors": sanitize_location_context(item.get("impactedSectors", [])),
     }
 
@@ -281,9 +278,7 @@ def summarize_government_goal(item: dict[str, Any]) -> dict[str, Any]:
     return {
         "title": item.get("title"),
         "description": truncate_text(item.get("description")),
-        "hazardsAddressed": sanitize_location_context(
-            item.get("hazardsAddressed", [])
-        ),
+        "hazardsAddressed": sanitize_location_context(item.get("hazardsAddressed", [])),
         "metricIndicator": item.get("metricIndicator"),
         "baseYear": item.get("baseYear"),
         "targetYear": item.get("targetYear"),

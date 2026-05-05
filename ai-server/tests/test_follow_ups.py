@@ -18,7 +18,9 @@ class StubProvider:
     def __init__(self, response):
         self.response = response
 
-    async def generate(self, request, prompt_name="system_prompt.md", response_schema=None):
+    async def generate(
+        self, request, prompt_name="system_prompt.md", response_schema=None
+    ):
         return self.response
 
 

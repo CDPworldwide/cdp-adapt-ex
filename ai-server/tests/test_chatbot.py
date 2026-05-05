@@ -188,7 +188,9 @@ async def test_chat_completions_returns_suggestions_for_empty_ask_ai_click(monke
     get_settings.cache_clear()
     provider = RecordingProvider(GeminiCompletion(text="unused"))
     app.dependency_overrides[get_provider] = lambda: provider
-    app.dependency_overrides[get_location_verifier] = lambda: VerifyingLocationVerifier()
+    app.dependency_overrides[get_location_verifier] = lambda: (
+        VerifyingLocationVerifier()
+    )
 
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
@@ -222,7 +224,9 @@ async def test_chat_completions_coerces_missing_usage_counts(monkeypatch):
             completion_tokens=0,
         )
     )
-    app.dependency_overrides[get_location_verifier] = lambda: VerifyingLocationVerifier()
+    app.dependency_overrides[get_location_verifier] = lambda: (
+        VerifyingLocationVerifier()
+    )
 
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
@@ -254,7 +258,11 @@ def test_build_completion_falls_back_when_response_text_accessor_fails():
         candidates=[
             SimpleNamespace(
                 content=SimpleNamespace(
-                    parts=[SimpleNamespace(text="Mumbai is expanding heat resilience measures.")]
+                    parts=[
+                        SimpleNamespace(
+                            text="Mumbai is expanding heat resilience measures."
+                        )
+                    ]
                 )
             )
         ],
@@ -286,7 +294,9 @@ def test_sanitize_response_text_rewrites_reviewed_dropdown_label_phrasing():
     sanitized = sanitize_response_text(text)
 
     assert "Community participation" not in sanitized
-    assert "security and protection for poor and vulnerable populations" not in sanitized
+    assert (
+        "security and protection for poor and vulnerable populations" not in sanitized
+    )
     assert "co-benefits" not in sanitized
     assert "Resident involvement" in sanitized
     assert "safety for lower-income or higher-risk communities" in sanitized
@@ -381,7 +391,9 @@ async def test_chat_completions_rejects_oversized_llm_response(monkeypatch):
     app.dependency_overrides[get_provider] = lambda: RecordingProvider(
         GeminiCompletion(text="x" * (settings.max_chat_response_chars + 1))
     )
-    app.dependency_overrides[get_location_verifier] = lambda: VerifyingLocationVerifier()
+    app.dependency_overrides[get_location_verifier] = lambda: (
+        VerifyingLocationVerifier()
+    )
 
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
@@ -409,7 +421,9 @@ async def test_chat_completions_times_out_upstream(monkeypatch):
 
     get_settings.cache_clear()
     app.dependency_overrides[get_provider] = lambda: SlowProvider()
-    app.dependency_overrides[get_location_verifier] = lambda: VerifyingLocationVerifier()
+    app.dependency_overrides[get_location_verifier] = lambda: (
+        VerifyingLocationVerifier()
+    )
 
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
@@ -434,8 +448,12 @@ async def test_chat_completions_maps_typed_llm_auth_errors(monkeypatch):
     from app.settings import get_settings
 
     get_settings.cache_clear()
-    app.dependency_overrides[get_provider] = lambda: ErrorProvider(LLMAuthError("bad auth"))
-    app.dependency_overrides[get_location_verifier] = lambda: VerifyingLocationVerifier()
+    app.dependency_overrides[get_provider] = lambda: ErrorProvider(
+        LLMAuthError("bad auth")
+    )
+    app.dependency_overrides[get_location_verifier] = lambda: (
+        VerifyingLocationVerifier()
+    )
 
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
@@ -464,7 +482,9 @@ async def test_chat_completions_maps_typed_llm_rate_limit_errors(monkeypatch):
     app.dependency_overrides[get_provider] = lambda: ErrorProvider(
         LLMRateLimitError("quota exceeded")
     )
-    app.dependency_overrides[get_location_verifier] = lambda: VerifyingLocationVerifier()
+    app.dependency_overrides[get_location_verifier] = lambda: (
+        VerifyingLocationVerifier()
+    )
 
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"

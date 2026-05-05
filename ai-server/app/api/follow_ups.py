@@ -49,4 +49,6 @@ async def suggest_follow_ups(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
         raise_llm_http_exception(exc)
-        raise HTTPException(status_code=500, detail="An unexpected error occurred") from exc
+        raise HTTPException(
+            status_code=500, detail="An unexpected error occurred"
+        ) from exc

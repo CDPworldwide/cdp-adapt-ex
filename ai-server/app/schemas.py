@@ -5,7 +5,6 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.settings import get_settings
 
-
 CONTEXT_AREAS = {"hazards", "actions", "solutions"}
 
 

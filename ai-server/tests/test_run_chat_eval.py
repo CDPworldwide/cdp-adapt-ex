@@ -314,7 +314,9 @@ def test_score_case_fails_missing_and_forbidden_assertions():
 
     assert score["passed"] is False
     assert score["assertions"]["missingAll"] == ["formal ranking"]
-    assert score["assertions"]["missingAnyGroups"] == [["platform data", "structured data"]]
+    assert score["assertions"]["missingAnyGroups"] == [
+        ["platform data", "structured data"]
+    ]
     assert score["assertions"]["forbiddenFound"] == [
         "directly stated in the disclosure"
     ]
@@ -346,7 +348,9 @@ def test_post_chat_completion_retries_transient_http_errors(monkeypatch):
         return StubResponse()
 
     monkeypatch.setattr("utility_scripts.run_chat_eval.request.urlopen", stub_urlopen)
-    monkeypatch.setattr("utility_scripts.run_chat_eval.time.sleep", lambda seconds: None)
+    monkeypatch.setattr(
+        "utility_scripts.run_chat_eval.time.sleep", lambda seconds: None
+    )
 
     response = post_chat_completion(
         "http://example.test",
@@ -367,6 +371,7 @@ def test_load_questions_file_preserves_review_assertions():
     assert "comments-row-1" in critical_cases
     assert "comments-row-7" in critical_cases
     assert "CSTAR" in critical_cases["comments-row-1"]["assertions"]["forbidden"]
-    assert "may not have reliable mitigation data" in critical_cases["comments-row-7"][
-        "assertions"
-    ]["requiredAll"]
+    assert (
+        "may not have reliable mitigation data"
+        in critical_cases["comments-row-7"]["assertions"]["requiredAll"]
+    )

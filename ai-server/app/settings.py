@@ -24,7 +24,9 @@ class Settings:
         self.max_tokens = int(os.getenv("MAX_TOKENS", "2000"))
         self.max_chat_messages = int(os.getenv("MAX_CHAT_MESSAGES", "50"))
         self.max_chat_total_chars = int(os.getenv("MAX_CHAT_TOTAL_CHARS", "50000"))
-        self.max_chat_response_chars = int(os.getenv("MAX_CHAT_RESPONSE_CHARS", "20000"))
+        self.max_chat_response_chars = int(
+            os.getenv("MAX_CHAT_RESPONSE_CHARS", "20000")
+        )
         self.suggest_follow_ups_max_tokens = int(
             os.getenv("SUGGEST_FOLLOW_UPS_MAX_TOKENS", "256")
         )

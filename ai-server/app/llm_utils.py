@@ -22,4 +22,6 @@ def raise_llm_http_exception(exc: Exception) -> None:
     if isinstance(exc, LLMRateLimitError):
         raise HTTPException(status_code=429, detail="Rate limit exceeded") from exc
     if isinstance(exc, LLMServiceError):
-        raise HTTPException(status_code=502, detail="LLM service request failed") from exc
+        raise HTTPException(
+            status_code=502, detail="LLM service request failed"
+        ) from exc

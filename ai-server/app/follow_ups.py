@@ -197,9 +197,9 @@ def summarize_location_data_for_follow_ups(
                         :FOLLOW_UP_SUMMARY_ITEM_LIMIT
                     ],
                 }
-                for hazard in ((location_data.get("hazards") or {}).get("hazards") or [])[
-                    :FOLLOW_UP_SUMMARY_ITEM_LIMIT
-                ]
+                for hazard in (
+                    (location_data.get("hazards") or {}).get("hazards") or []
+                )[:FOLLOW_UP_SUMMARY_ITEM_LIMIT]
             ],
         },
         "governmentActions": {
@@ -367,7 +367,9 @@ def parse_follow_up_questions_from_text(
     )
 
 
-def build_follow_up_request(chat_request: ChatCompletionRequest) -> ChatCompletionRequest:
+def build_follow_up_request(
+    chat_request: ChatCompletionRequest,
+) -> ChatCompletionRequest:
     catalog = load_approved_follow_up_question_catalog()
     candidate_questions = select_candidate_questions(chat_request, catalog)
     selection_message = build_follow_up_selection_message(candidate_questions)
@@ -390,4 +392,6 @@ def parse_follow_up_response(response) -> SuggestFollowUpsResponse:
         return SuggestFollowUpsResponse.model_validate(parsed_response)
 
     catalog = load_approved_follow_up_question_catalog()
-    return parse_follow_up_questions_from_text(getattr(response, "text", "") or "", catalog)
+    return parse_follow_up_questions_from_text(
+        getattr(response, "text", "") or "", catalog
+    )
