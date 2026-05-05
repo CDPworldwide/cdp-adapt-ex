@@ -20,10 +20,13 @@
     "format": "cd backend && uv run ruff format .",
     "client": "npm run client:refresh",
     "client:refresh": "cd client && npm run refresh",
+    "client:refresh-verify": "cd client && npm run refresh:verify",
     "client:generate": "cd client && npm run generate",
     "client:check": "cd client && npm run check",
+    "client:verify": "cd client && npm run verify",
     "client:build": "cd client && npm run build",
     "client:install": "cd client && npm install",
+    "frontend:verify": "cd frontend && bash scripts/write-environment.sh && npm run build",
     "sync:org-data": "npm run client:build && node scripts/sync-org-data.mjs"
   },
   "dependencies": {

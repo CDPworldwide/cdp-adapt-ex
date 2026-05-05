@@ -34,9 +34,32 @@ repos:
 
   - repo: local
     hooks:
+      - id: client-build
+        name: client build
+        language: system
+        pass_filenames: false
+        files: ^client/.*\.(ts|json)$
+        entry: bash -c 'cd client && npm run build'
+
+      - id: client-verify
+        name: client verify
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        files: ^(client/|backend/)
+        entry: bash -c 'cd client && npm run refresh:verify'
+
       - id: frontend-build
         name: frontend build
         language: system
         pass_filenames: false
         files: ^frontend/
-        entry: bash -lc 'cd frontend && bash scripts/write-environment.sh && npm run build'
+        entry: bash -c 'cd frontend && bash scripts/write-environment.sh && npm run build'
+
+      - id: frontend-verify
+        name: frontend verify
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        files: ^(frontend/|client/)
+        entry: bash -c 'cd frontend && bash scripts/write-environment.sh && npm run build'
