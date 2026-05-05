@@ -23,7 +23,7 @@ env:
   # Dynamic service name: production, dev, or PR-specific preview
   SERVICE_NAME: >-
     ${{ github.event_name == 'pull_request' && format('frontend-preview-pr-{0}', github.event.pull_request.number) ||
-        (github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend-dev') }}
+        (github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend') }}
   IS_PREVIEW: ${{ github.event_name == 'pull_request' }}
   ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
   NODE_VERSION: "20.x"
