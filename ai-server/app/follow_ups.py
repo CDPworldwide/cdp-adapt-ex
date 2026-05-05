@@ -1,13 +1,12 @@
 import re
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 import pydantic
-from app.schemas.chatbot import OpenAIChatCompletionRequest, OpenAIChatMessage
-from app.schemas.suggest_follow_ups import SuggestFollowUpsResponse
-from app.services.interfaces.llm_client import LLMClient
-from app.shared.logging import logger
 from pydantic import BaseModel, Field
+
+from app.schemas import ChatCompletionRequest, ChatMessage, SuggestFollowUpsResponse
 
 
 class ApprovedFollowUpQuestion(BaseModel):
@@ -59,7 +58,6 @@ STOP_WORDS = {
     "which",
     "with",
 }
-
 APPROVED_FOLLOW_UP_QUESTIONS_PATH = (
     Path(__file__).with_name("data") / "approved_follow_up_questions.json"
 )
@@ -72,11 +70,10 @@ def load_approved_follow_up_question_catalog() -> ApprovedFollowUpQuestionCatalo
     )
 
 
-def extract_latest_user_query(chat_request: OpenAIChatCompletionRequest) -> str:
-    """Return the most recent user message so follow-ups stay tied to the latest turn."""
+def extract_latest_user_query(chat_request: ChatCompletionRequest) -> str:
     for message in reversed(chat_request.messages):
         if message.role == "user":
-            return message.content
+            return message.text_content()
     return ""
 
 
@@ -88,7 +85,16 @@ def _tokenize(text: str) -> set[str]:
     }
 
 
-def _question_type_bias(query_text: str, question: ApprovedFollowUpQuestion) -> int:
+def _question_type_bias(
+    query_text: str,
+    question: ApprovedFollowUpQuestion,
+    context_area: str | None = None,
+) -> int:
+    if context_area == "hazards" and question.question_type == "Hazards":
+        return QUESTION_TYPE_BIAS_BOOST
+    if context_area in {"actions", "solutions"} and question.question_type == "Actions":
+        return QUESTION_TYPE_BIAS_BOOST
+
     lowered_query = query_text.lower()
     if question.question_type == "Hazards":
         if any(
@@ -118,79 +124,80 @@ def _candidate_sort_key(
     question: ApprovedFollowUpQuestion,
     query_text: str,
     query_tokens: set[str],
+    context_area: str | None = None,
 ) -> tuple[int, int, int]:
-    """Rank candidates by latest-turn lexical overlap, then likelihood, then stable id."""
     token_overlap = len(query_tokens & _tokenize(question.question))
-    latest_turn_relevance = token_overlap + _question_type_bias(query_text, question)
+    latest_turn_relevance = token_overlap + _question_type_bias(
+        query_text, question, context_area
+    )
     return (-latest_turn_relevance, -question.likelihood_rank, question.id)
 
 
 def select_candidate_questions(
-    chat_request: OpenAIChatCompletionRequest,
+    chat_request: ChatCompletionRequest,
     catalog: ApprovedFollowUpQuestionCatalog,
     limit: int = FOLLOW_UP_CANDIDATE_COUNT,
 ) -> list[ApprovedFollowUpQuestion]:
-    """Select the highest-signal follow-up candidates for the latest user turn."""
     query_text = extract_latest_user_query(chat_request)
     query_tokens = _tokenize(query_text)
-
+    context_area = chat_request.resolved_context_area()
     ranked_questions = sorted(
         catalog.questions,
-        key=lambda question: _candidate_sort_key(question, query_text, query_tokens),
+        key=lambda question: _candidate_sort_key(
+            question, query_text, query_tokens, context_area
+        ),
     )
     return ranked_questions[:limit]
 
 
-def summarize_location_data_for_follow_ups(location_data):
-    """Trim large location payloads before sending them to the follow-up prompt."""
-    location_dict = location_data.model_dump(by_alias=True, mode="json")
+def summarize_location_data_for_follow_ups(
+    location_data: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    if location_data is None:
+        return None
 
-    summarized_location = {
-        "organizationId": location_dict["organizationId"],
-        "name": location_dict["name"],
-        "countryName": location_dict["countryName"],
-        "lat": location_dict["lat"],
-        "lng": location_dict["lng"],
+    statistics = (location_data.get("hazards") or {}).get("statistics") or {}
+    government_actions = location_data.get("governmentActions") or {}
+    solutions = (location_data.get("solutions") or {}).get("solutions") or {}
+
+    return {
+        "organizationId": location_data.get("organizationId"),
+        "name": location_data.get("name"),
+        "countryName": location_data.get("countryName"),
+        "lat": location_data.get("lat"),
+        "lng": location_data.get("lng"),
         "geometry": {},
-        "isReportingLeader": location_dict.get("isReportingLeader", False),
-        "disclosureYear": location_dict.get("disclosureYear"),
-        "requesters": location_dict.get("requesters", [])[
+        "isReportingLeader": location_data.get("isReportingLeader", False),
+        "disclosureYear": location_data.get("disclosureYear"),
+        "requesters": (location_data.get("requesters") or [])[
             :FOLLOW_UP_SUMMARY_ITEM_LIMIT
         ],
-        "population": location_dict.get("population"),
+        "population": location_data.get("population"),
         "hazards": {
             "statistics": {
-                "populationExposedValue": location_dict["hazards"]["statistics"].get(
-                    "populationExposedValue"
+                "populationExposedValue": statistics.get("populationExposedValue"),
+                "populationExposedPercentage": statistics.get(
+                    "populationExposedPercentage"
                 ),
-                "populationExposedPercentage": location_dict["hazards"][
-                    "statistics"
-                ].get("populationExposedPercentage"),
-                "gdpAtRiskValue": location_dict["hazards"]["statistics"].get(
-                    "gdpAtRiskValue"
-                ),
-                "gdpAtRiskPercentage": location_dict["hazards"]["statistics"].get(
-                    "gdpAtRiskPercentage"
-                ),
-                "gdpAtRiskCurrencyCode": location_dict["hazards"]["statistics"].get(
-                    "gdpAtRiskCurrencyCode"
-                ),
-                "vulnerableSectors": location_dict["hazards"]["statistics"].get(
-                    "vulnerableSectors", []
-                )[:FOLLOW_UP_SUMMARY_ITEM_LIMIT],
+                "gdpAtRiskValue": statistics.get("gdpAtRiskValue"),
+                "gdpAtRiskPercentage": statistics.get("gdpAtRiskPercentage"),
+                "gdpAtRiskCurrencyCode": statistics.get("gdpAtRiskCurrencyCode"),
+                "vulnerableSectors": (statistics.get("vulnerableSectors") or [])[
+                    :FOLLOW_UP_SUMMARY_ITEM_LIMIT
+                ],
             },
             "hazards": [
                 {
                     "hazard": hazard.get("hazard"),
                     "hazardRank": hazard.get("hazardRank"),
-                    "vulnerableGroups": hazard.get("vulnerableGroups", [])[
+                    "vulnerableGroups": (hazard.get("vulnerableGroups") or [])[
                         :FOLLOW_UP_SUMMARY_ITEM_LIMIT
                     ],
-                    "mostExposedSectors": hazard.get("mostExposedSectors", [])[
+                    "mostExposedSectors": (hazard.get("mostExposedSectors") or [])[
                         :FOLLOW_UP_SUMMARY_ITEM_LIMIT
                     ],
                 }
-                for hazard in location_dict["hazards"].get("hazards", [])[
+                for hazard in ((location_data.get("hazards") or {}).get("hazards") or [])[
                     :FOLLOW_UP_SUMMARY_ITEM_LIMIT
                 ]
             ],
@@ -200,11 +207,11 @@ def summarize_location_data_for_follow_ups(location_data):
                 {
                     "title": goal.get("title"),
                     "targetYear": goal.get("targetYear"),
-                    "hazardsAddressed": goal.get("hazardsAddressed", [])[
+                    "hazardsAddressed": (goal.get("hazardsAddressed") or [])[
                         :FOLLOW_UP_SUMMARY_ITEM_LIMIT
                     ],
                 }
-                for goal in location_dict["governmentActions"].get("goals", [])[
+                for goal in (government_actions.get("goals") or [])[
                     :FOLLOW_UP_SUMMARY_ITEM_LIMIT
                 ]
             ],
@@ -212,14 +219,14 @@ def summarize_location_data_for_follow_ups(location_data):
                 {
                     "title": action.get("title"),
                     "status": action.get("status"),
-                    "hazardsAddressed": action.get("hazardsAddressed", [])[
+                    "hazardsAddressed": (action.get("hazardsAddressed") or [])[
                         :FOLLOW_UP_SUMMARY_ITEM_LIMIT
                     ],
-                    "impactedSectors": action.get("impactedSectors", [])[
+                    "impactedSectors": (action.get("impactedSectors") or [])[
                         :FOLLOW_UP_SUMMARY_ITEM_LIMIT
                     ],
                 }
-                for action in location_dict["governmentActions"].get("actions", [])[
+                for action in (government_actions.get("actions") or [])[
                     :FOLLOW_UP_SUMMARY_ITEM_LIMIT
                 ]
             ],
@@ -230,7 +237,7 @@ def summarize_location_data_for_follow_ups(location_data):
                     "financeStatus": project.get("financeStatus"),
                     "fundedPercent": project.get("fundedPercent"),
                 }
-                for project in location_dict["governmentActions"].get("projects", [])[
+                for project in (government_actions.get("projects") or [])[
                     :FOLLOW_UP_SUMMARY_ITEM_LIMIT
                 ]
             ],
@@ -241,20 +248,15 @@ def summarize_location_data_for_follow_ups(location_data):
                     {"solution": card.get("solution")}
                     for card in cards[:FOLLOW_UP_SUMMARY_ITEM_LIMIT]
                 ]
-                for category, cards in location_dict["solutions"]
-                .get("solutions", {})
-                .items()
-            },
+                for category, cards in solutions.items()
+            }
         },
     }
-
-    return type(location_data).model_validate(summarized_location)
 
 
 def build_follow_up_selection_message(
     candidate_questions: list[ApprovedFollowUpQuestion],
-) -> OpenAIChatMessage:
-    """Build the final instruction sent to the LLM for follow-up selection."""
+) -> ChatMessage:
     candidate_lines = [
         (
             f"{index}. [{question.question_type} | {question.likelihood}] "
@@ -262,8 +264,7 @@ def build_follow_up_selection_message(
         )
         for index, question in enumerate(candidate_questions, start=1)
     ]
-
-    return OpenAIChatMessage(
+    return ChatMessage(
         role="user",
         content=(
             f"Select exactly {FOLLOW_UP_SELECTION_COUNT} follow-up questions from the candidates below.\n"
@@ -366,60 +367,27 @@ def parse_follow_up_questions_from_text(
     )
 
 
-class SuggestFollowUps:
-    def __init__(self, llm_client: LLMClient):
-        self.llm_client = llm_client
+def build_follow_up_request(chat_request: ChatCompletionRequest) -> ChatCompletionRequest:
+    catalog = load_approved_follow_up_question_catalog()
+    candidate_questions = select_candidate_questions(chat_request, catalog)
+    selection_message = build_follow_up_selection_message(candidate_questions)
+    summarized_location_data = summarize_location_data_for_follow_ups(
+        chat_request.resolved_location_data()
+    )
+    return chat_request.model_copy(
+        update={
+            "messages": [*chat_request.messages, selection_message],
+            "location_data": summarized_location_data,
+        }
+    )
 
-    def build_request(
-        self, chat_request: OpenAIChatCompletionRequest
-    ) -> OpenAIChatCompletionRequest:
-        catalog = load_approved_follow_up_question_catalog()
-        candidate_questions = select_candidate_questions(chat_request, catalog)
-        selection_message = build_follow_up_selection_message(candidate_questions)
-        summarized_location_data = (
-            summarize_location_data_for_follow_ups(chat_request.location_data)
-            if chat_request.location_data is not None
-            else None
-        )
-        return chat_request.model_copy(
-            update={
-                "messages": [*chat_request.messages, selection_message],
-                "location_data": summarized_location_data,
-            }
-        )
 
-    def suggest_follow_ups(
-        self,
-        chat_request: OpenAIChatCompletionRequest,
-    ):
-        logger.info("suggesting_follow_ups")
-        follow_up_request = self.build_request(chat_request)
-        return self.llm_client.llm_chat_completion_response_sync(
-            follow_up_request,
-            "suggest_follow_ups.md",
-            SuggestFollowUpsResponse,
-        )
+def parse_follow_up_response(response) -> SuggestFollowUpsResponse:
+    parsed_response = getattr(response, "parsed", None)
+    if isinstance(parsed_response, SuggestFollowUpsResponse):
+        return parsed_response
+    if isinstance(parsed_response, dict):
+        return SuggestFollowUpsResponse.model_validate(parsed_response)
 
-    async def suggest_follow_ups_async(
-        self,
-        chat_request: OpenAIChatCompletionRequest,
-        analytics_context: dict | None = None,
-    ):
-        logger.info("suggesting_follow_ups_async")
-        follow_up_request = self.build_request(chat_request)
-        return await self.llm_client.llm_chat_completion_response_async(
-            follow_up_request,
-            "suggest_follow_ups.md",
-            SuggestFollowUpsResponse,
-            analytics_context,
-        )
-
-    def parse_response(self, response) -> SuggestFollowUpsResponse:
-        parsed_response = getattr(response, "parsed", None)
-        if isinstance(parsed_response, SuggestFollowUpsResponse):
-            return parsed_response
-        if isinstance(parsed_response, dict):
-            return SuggestFollowUpsResponse.model_validate(parsed_response)
-
-        catalog = load_approved_follow_up_question_catalog()
-        return parse_follow_up_questions_from_text(response.text, catalog)
+    catalog = load_approved_follow_up_question_catalog()
+    return parse_follow_up_questions_from_text(getattr(response, "text", "") or "", catalog)

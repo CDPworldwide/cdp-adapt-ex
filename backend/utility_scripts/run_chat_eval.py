@@ -10,8 +10,8 @@ from pathlib import Path
 from typing import Any
 from urllib import error, request
 
-DEFAULT_BASE_URL = "http://127.0.0.1:8000"
-DEFAULT_ENDPOINT = "/api/v1/chat/completions"
+DEFAULT_BASE_URL = "http://127.0.0.1:8088"
+DEFAULT_ENDPOINT = "/v1/chat/completions"
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_CASES_FILE = SCRIPT_DIR / "chat_eval_cases.json"
 

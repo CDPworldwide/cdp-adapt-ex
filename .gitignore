@@ -45,3 +45,6 @@ data/overture/geometry.json
 **/.playwright-mcp/
 .playwright-mcp/
 /*.png
+/ai-server/.wrangler
+/node_modules
+/ai-server/org-data

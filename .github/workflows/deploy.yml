@@ -99,6 +99,7 @@ jobs:
             commit-sha=${{ github.sha }}
           secrets: |
             POSTGRES_PASSWORD=${{ env.ENVIRONMENT }}-POSTGRES_PASSWORD:latest
+            API_KEY=${{ env.ENVIRONMENT }}-API_KEY:latest
             LLM_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
             GOOGLE_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
             ALLOWED_ORIGINS=${{ env.ENVIRONMENT }}-ALLOWED_ORIGINS:latest
@@ -237,16 +238,11 @@ jobs:
       - name: Create production environment.ts
         working-directory: frontend
         run: |
-          cat > src/environments/environment.ts <<EOF
-          export const environment = {
-            production: true,
-            baseUrl: '${{ steps.decode-url.outputs.url }}',
-            isDebugMode: ${{ env.ENVIRONMENT == 'development' }},
-            mapsConfig: {
-              apiKey: '${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}',
-            },
-          };
-          EOF
+          FRONTEND_BASE_URL='${{ steps.decode-url.outputs.url }}' \
+          FRONTEND_API_KEY='${{ secrets.PRODUCTION_FRONTEND_API_KEY }}' \
+          FRONTEND_DEBUG_MODE='${{ env.ENVIRONMENT == 'development' }}' \
+          FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
+          bash scripts/write-environment.sh
 
       - name: Build frontend
         working-directory: frontend

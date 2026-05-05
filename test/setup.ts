@@ -1,6 +1,17 @@
 import { beforeAll, afterAll } from 'vitest';
+import { existsSync } from 'node:fs';
+
+if (existsSync('.env')) {
+  process.loadEnvFile?.('.env');
+}
+
+if (existsSync('.env.local')) {
+  process.loadEnvFile?.('.env.local');
+}
 
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8000';
+const API_KEY_HEADER_NAME = process.env.API_KEY_HEADER_NAME || 'X-API-Key';
+const API_KEY = process.env.API_KEY || '';
 
 let sessionToken: string | null = null;
 
@@ -29,6 +40,10 @@ export function clearAuthToken() {
 export function getRequestHeaders(includeAuth = true) {
   const headers: Record<string, string> = {};
 
+  if (API_KEY) {
+    headers[API_KEY_HEADER_NAME] = API_KEY;
+  }
+
   if (includeAuth && sessionToken) {
     headers.Authorization = `Bearer ${sessionToken}`;
   }
@@ -46,4 +61,4 @@ export function getApiOptions(includeAuth = true) {
   };
 }
 
-export { API_BASE_URL };
+export { API_BASE_URL, API_KEY, API_KEY_HEADER_NAME };

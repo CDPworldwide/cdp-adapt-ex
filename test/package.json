@@ -6,6 +6,7 @@
   "scripts": {
     "test": "vitest",
     "test:run": "vitest run",
+    "test:chatbot": "vitest run ../ai-server/tests/chatbot.test.ts",
     "test:chat-eval": "vitest run chat-eval.test.ts chat-eval-refusal.test.ts",
     "test:chat-eval:ci": "CI=true vitest run --reporter=dot chat-eval.test.ts chat-eval-refusal.test.ts",
     "test:chat-eval:report": "CHAT_EVAL_SUMMARY_PATH=./artifacts/chat-eval-summary.json vitest run --reporter=dot chat-eval.test.ts chat-eval-refusal.test.ts",

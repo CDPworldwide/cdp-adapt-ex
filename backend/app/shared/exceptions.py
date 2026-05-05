@@ -32,3 +32,19 @@ class CityGeometryMissingException(Exception):
     def __init__(self, city_name: str):
         self.city_name = city_name
         super().__init__(f"City '{city_name}' has invalid or missing geometry data")
+
+
+class LLMServiceError(Exception):
+    """Base exception for upstream LLM service failures."""
+
+
+class LLMAuthError(LLMServiceError):
+    """Raised when the upstream LLM rejects authentication."""
+
+
+class LLMRateLimitError(LLMServiceError):
+    """Raised when the upstream LLM enforces a quota or rate limit."""
+
+
+class LLMTimeoutError(LLMServiceError):
+    """Raised when the upstream LLM call exceeds the allowed timeout."""

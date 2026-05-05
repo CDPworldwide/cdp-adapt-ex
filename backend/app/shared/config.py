@@ -139,26 +139,23 @@ class Settings:
             "t",
             "yes",
         )
+        self.API_KEY_HEADER_NAME = os.getenv("API_KEY_HEADER_NAME", "X-API-Key")
+        self.API_KEY = os.getenv("API_KEY", "")
 
         # CORS Settings
-        self.ALLOWED_ORIGINS = parse_list_from_env("ALLOWED_ORIGINS", ["*"])
+        self.ALLOWED_ORIGINS = parse_list_from_env("ALLOWED_ORIGINS", [])
+        self.CORS_ALLOW_METHODS = parse_list_from_env(
+            "CORS_ALLOW_METHODS", ["GET", "POST", "OPTIONS"]
+        )
+        self.CORS_ALLOW_HEADERS = parse_list_from_env(
+            "CORS_ALLOW_HEADERS",
+            ["Authorization", "Content-Type", self.API_KEY_HEADER_NAME],
+        )
 
         # Langfuse Configuration
         self.LANGFUSE_PUBLIC_KEY = os.getenv("LANGFUSE_PUBLIC_KEY", "")
         self.LANGFUSE_SECRET_KEY = os.getenv("LANGFUSE_SECRET_KEY", "")
         self.LANGFUSE_HOST = os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
-
-        # LLM Configuration
-        self.LLM_API_KEY = os.getenv("LLM_API_KEY", "")
-        self.LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3-flash-preview")
-        self.DEFAULT_LLM_TEMPERATURE = float(
-            os.getenv("DEFAULT_LLM_TEMPERATURE", "0.2")
-        )
-        self.MAX_TOKENS = int(os.getenv("MAX_TOKENS", "2000"))
-        self.SUGGEST_FOLLOW_UPS_MAX_TOKENS = int(
-            os.getenv("SUGGEST_FOLLOW_UPS_MAX_TOKENS", "256")
-        )
-        self.MAX_LLM_CALL_RETRIES = int(os.getenv("MAX_LLM_CALL_RETRIES", "3"))
 
         # Logging Configuration
         self.LOG_DIR = Path(os.getenv("LOG_DIR", "../logs"))
@@ -170,7 +167,7 @@ class Settings:
         self.POSTGRES_PORT = int(os.getenv("POSTGRES_PORT", "5432"))
         self.POSTGRES_DB = os.getenv("POSTGRES_DB", "cdp")
         self.POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")
-        self.POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres")
+        self.POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "")
         self.POSTGRES_POOL_SIZE = int(os.getenv("POSTGRES_POOL_SIZE", "20"))
         self.POSTGRES_MAX_OVERFLOW = int(os.getenv("POSTGRES_MAX_OVERFLOW", "10"))
         self.CHECKPOINT_TABLES = [
@@ -186,8 +183,7 @@ class Settings:
 
         # Rate limit endpoints defaults
         default_endpoints = {
-            "chat": ["10 per minute"],
-            "suggest_follow_ups": ["10 per minute"],
+            "translate": ["60 per minute"],
         }
 
         # Update rate limit endpoints from environment variables
@@ -212,7 +208,7 @@ class Settings:
         self.EVALUATION_BASE_URL = os.getenv(
             "EVALUATION_BASE_URL", "https://api.openai.com/v1"
         )
-        self.EVALUATION_API_KEY = os.getenv("EVALUATION_API_KEY", self.LLM_API_KEY)
+        self.EVALUATION_API_KEY = os.getenv("EVALUATION_API_KEY", "")
         self.EVALUATION_SLEEP_TIME = int(os.getenv("EVALUATION_SLEEP_TIME", "10"))
 
         # Apply environment-specific settings

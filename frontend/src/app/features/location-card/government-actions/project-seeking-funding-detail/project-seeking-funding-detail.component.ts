@@ -16,22 +16,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ProjectSeekingFundingOutput } from '@pac-api/client';
 import { CloseIconComponent } from '../../../../shared/icons/close-icon.component';
 import { ImagePlaceholderIconComponent } from '../../../../shared/icons/image-placeholder-icon.component';
-import { HazardIconComponent } from '../../../../shared/components/hazard-icon/hazard-icon.component';
 import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
-import { ShowMoreButtonComponent } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-project-seeking-funding-detail',
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    CloseIconComponent,
-    ImagePlaceholderIconComponent,
-    HazardIconComponent,
-    AutoTranslatePipe,
-    ShowMoreButtonComponent,
-  ],
+  imports: [CommonModule, TranslateModule, CloseIconComponent, ImagePlaceholderIconComponent, AutoTranslatePipe],
   templateUrl: './project-seeking-funding-detail.component.html',
 })
 export class ProjectSeekingFundingDetailComponent implements AfterViewInit, OnChanges {

@@ -85,6 +85,7 @@ jobs:
             commit-sha=${{ github.sha }}
           secrets: |
             POSTGRES_PASSWORD=${{ env.ENVIRONMENT }}-POSTGRES_PASSWORD:latest
+            API_KEY=${{ env.ENVIRONMENT }}-API_KEY:latest
             LLM_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
             GOOGLE_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
             ALLOWED_ORIGINS=${{ env.ENVIRONMENT }}-ALLOWED_ORIGINS:latest

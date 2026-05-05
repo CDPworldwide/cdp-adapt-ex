@@ -5,18 +5,13 @@ import {
   LocationPin,
   LocationPinsResponse,
 } from '@pac-api/client';
-import { createClient, createConfig } from '@pac-api/client/client';
-import { environment } from '@env/environment';
+import { createApiClient } from '../../shared/services/api-client';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LocationPinsService {
-  private client = createClient(
-    createConfig({
-      baseUrl: environment.baseUrl,
-    }),
-  );
+  private client = createApiClient();
 
   constructor() {}
 
