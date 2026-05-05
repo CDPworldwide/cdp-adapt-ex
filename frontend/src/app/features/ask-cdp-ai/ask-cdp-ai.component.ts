@@ -13,7 +13,10 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { type LocationProfileOutput } from '@pac-api/client';
-import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
+import {
+  AskCdpAiService,
+  type AskCdpAiContextArea,
+} from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { AskCdpAiLogoIconComponent } from '../../shared/icons/ask-cdp-ai-logo-icon.component';
 import { marked } from 'marked';
@@ -33,6 +36,7 @@ export class AskCdpAiComponent implements OnChanges {
   private destroyRef = inject(DestroyRef);
 
   @Input() locationData: LocationProfileOutput | null = null;
+  @Input() contextArea: AskCdpAiContextArea = 'hazards';
   @Input() isOpen = false;
   @Output() openChange = new EventEmitter<boolean>();
 
@@ -50,15 +54,8 @@ export class AskCdpAiComponent implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['locationData']) {
-      this.askCdpAiService.setLocationContext(this.locationData);
-    }
-
-    if (changes['isOpen'] && this.isOpen && this.conversationHistory().length === 0) {
-      this.askCdpAiService
-        .loadStarterQuestions()
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe();
+    if (changes['locationData'] || changes['contextArea']) {
+      this.askCdpAiService.setLocationContext(this.locationData, this.contextArea);
     }
   }
 

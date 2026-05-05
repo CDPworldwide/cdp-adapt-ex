@@ -15,30 +15,6 @@ class PACUser(HttpUser):
         self.client.get("/api/v1/locations/pins")
 
     @task(1)
-    def chat_completion(self):
-        """Task to hit the chat completions endpoint."""
-        payload = {
-            "messages": [
-                {
-                    "role": "user",
-                    "content": "Tell me about climate hazards in Bogor City Government",
-                }
-            ],
-            "location_data": {
-                "organization_id": 101,
-                "name": "Bogor City Government",
-                "country_name": "Indonesia",
-                "lat": -6.5971,
-                "lng": 106.8060,
-                "geometry": {"type": "Point", "coordinates": [106.8060, -6.5971]},
-                "hazards": {"statistics": {}},
-                "government_actions": {},
-                "solutions": {},
-            },
-        }
-        self.client.post("/api/v1/chats/completions", json=payload)
-
-    @task(1)
     def get_location_details_by_id(self):
         """Task to hit the location details endpoint by ID."""
         self.client.get("/api/v1/locations/id/46473")

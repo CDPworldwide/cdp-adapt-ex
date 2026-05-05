@@ -46,6 +46,7 @@ describe('CityDetailPageComponent', () => {
   let mockGoogleMapsLoaderService: jasmine.SpyObj<GoogleMapsLoaderService>;
   let askCdpAiServiceMock: any;
   let routeParamMap$: BehaviorSubject<any>;
+  let routeData$: BehaviorSubject<any>;
 
   const MOCK_LOCATION_DATA = {
     name: 'Junagadh',
@@ -89,6 +90,7 @@ describe('CityDetailPageComponent', () => {
 
     mockHazardMapService.getHazardLayer.and.returnValue(of(null));
     mockGoogleMapsLoaderService.loadApi.and.returnValue(EMPTY);
+    routeData$ = new BehaviorSubject({});
 
     await TestBed.configureTestingModule({
       imports: [
@@ -102,7 +104,10 @@ describe('CityDetailPageComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: HazardMapService, useValue: mockHazardMapService },
         { provide: GoogleMapsLoaderService, useValue: mockGoogleMapsLoaderService },
-        { provide: ActivatedRoute, useValue: { paramMap: routeParamMap$.asObservable() } },
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: routeParamMap$.asObservable(), data: routeData$.asObservable() },
+        },
         { provide: AskCdpAiService, useValue: askCdpAiServiceMock },
       ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -129,6 +134,29 @@ describe('CityDetailPageComponent', () => {
     expect(component.isNotFound).toBeFalse();
   });
 
+  it('passes the active tab as the AI context area', () => {
+    expect(askCdpAiServiceMock.setLocationContext).toHaveBeenCalledWith(
+      MOCK_LOCATION_DATA,
+      'hazards',
+    );
+
+    routeParamMap$.next(convertToParamMap({ organizationId: '867355', tab: 'solutions' }));
+    fixture.detectChanges();
+
+    expect(askCdpAiServiceMock.setLocationContext).toHaveBeenCalledWith(
+      MOCK_LOCATION_DATA,
+      'solutions',
+    );
+  });
+
+  it('prefetches starter questions for the selected tab after loading the location', () => {
+    expect(askCdpAiServiceMock.setLocationContext).toHaveBeenCalledWith(
+      MOCK_LOCATION_DATA,
+      'hazards',
+    );
+    expect(askCdpAiServiceMock.loadStarterQuestions).toHaveBeenCalled();
+  });
+
   it('sets not found when API fails', () => {
     mockLocationService.getLocationByOrganizationId.and.returnValue(
       throwError(() => new Error('404')),
@@ -148,13 +176,25 @@ describe('CityDetailPageComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '867355', 'actions']);
   });
 
-  it('should open the AI sidebar and load starter questions', () => {
+  it('should open the AI sidebar without fetching starter questions again', () => {
     component.isAiOpen = false;
     fixture.detectChanges();
+    const starterQuestionFetchCount = askCdpAiServiceMock.loadStarterQuestions.calls.count();
     const button = fixture.debugElement.query(By.css('[data-testid="ask-ai-toggle"]'));
     expect(button).toBeTruthy();
 
     button.nativeElement.click();
+    fixture.detectChanges();
+
+    expect(component.isAiOpen).toBeTrue();
+    expect(askCdpAiServiceMock.loadStarterQuestions.calls.count()).toBe(starterQuestionFetchCount);
+  });
+
+  it('opens the AI sidebar automatically when route data requests it', () => {
+    component.isAiOpen = false;
+    askCdpAiServiceMock.loadStarterQuestions.calls.reset();
+
+    routeData$.next({ openAiPanel: true });
     fixture.detectChanges();
 
     expect(component.isAiOpen).toBeTrue();

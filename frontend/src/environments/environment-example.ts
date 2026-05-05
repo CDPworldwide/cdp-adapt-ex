@@ -1,6 +1,8 @@
 export const environment = {
   production: true,
   baseUrl: '',
+  aiServerUrl: '',
+  aiModel: 'cdp-gemini',
   apiKey: '',
   apiKeyHeaderName: 'X-API-Key',
   authDisabled: false,

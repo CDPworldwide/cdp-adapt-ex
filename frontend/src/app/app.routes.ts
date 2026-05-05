@@ -16,6 +16,14 @@ export const routes: Routes = [
       import('./features/city-detail/city-detail').then((m) => m.CityDetailPageComponent),
   },
   {
+    path: 'org/:organizationId/chat',
+    loadComponent: () =>
+      import('./features/city-detail/city-detail').then((m) => m.CityDetailPageComponent),
+    data: {
+      openAiPanel: true,
+    },
+  },
+  {
     path: 'org/:organizationId/:tab',
     loadComponent: () =>
       import('./features/city-detail/city-detail').then((m) => m.CityDetailPageComponent),

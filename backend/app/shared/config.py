@@ -157,29 +157,6 @@ class Settings:
         self.LANGFUSE_SECRET_KEY = os.getenv("LANGFUSE_SECRET_KEY", "")
         self.LANGFUSE_HOST = os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com")
 
-        # LLM Configuration
-        self.LLM_API_KEY = os.getenv("LLM_API_KEY", "")
-        self.LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3-flash-preview")
-        self.DEFAULT_LLM_TEMPERATURE = float(
-            os.getenv("DEFAULT_LLM_TEMPERATURE", "0.2")
-        )
-        self.MAX_TOKENS = int(os.getenv("MAX_TOKENS", "2000"))
-        self.MAX_CHAT_MAX_TOKENS = int(
-            os.getenv("MAX_CHAT_MAX_TOKENS", str(self.MAX_TOKENS))
-        )
-        self.MAX_CHAT_MESSAGES = int(os.getenv("MAX_CHAT_MESSAGES", "50"))
-        self.MAX_CHAT_TOTAL_CHARS = int(os.getenv("MAX_CHAT_TOTAL_CHARS", "50000"))
-        self.MAX_CHAT_RESPONSE_CHARS = int(
-            os.getenv("MAX_CHAT_RESPONSE_CHARS", "20000")
-        )
-        self.LLM_REQUEST_TIMEOUT_SECONDS = float(
-            os.getenv("LLM_REQUEST_TIMEOUT_SECONDS", "30")
-        )
-        self.SUGGEST_FOLLOW_UPS_MAX_TOKENS = int(
-            os.getenv("SUGGEST_FOLLOW_UPS_MAX_TOKENS", "256")
-        )
-        self.MAX_LLM_CALL_RETRIES = int(os.getenv("MAX_LLM_CALL_RETRIES", "3"))
-
         # Logging Configuration
         self.LOG_DIR = Path(os.getenv("LOG_DIR", "../logs"))
         self.LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
@@ -206,8 +183,6 @@ class Settings:
 
         # Rate limit endpoints defaults
         default_endpoints = {
-            "chat": ["10 per minute"],
-            "suggest_follow_ups": ["10 per minute"],
             "translate": ["60 per minute"],
         }
 
@@ -233,7 +208,7 @@ class Settings:
         self.EVALUATION_BASE_URL = os.getenv(
             "EVALUATION_BASE_URL", "https://api.openai.com/v1"
         )
-        self.EVALUATION_API_KEY = os.getenv("EVALUATION_API_KEY", self.LLM_API_KEY)
+        self.EVALUATION_API_KEY = os.getenv("EVALUATION_API_KEY", "")
         self.EVALUATION_SLEEP_TIME = int(os.getenv("EVALUATION_SLEEP_TIME", "10"))
 
         # Apply environment-specific settings

@@ -11,14 +11,12 @@ from app.services.impls.discloser_client_impl import discloser_client
 from app.services.impls.earth_engine_hazard_data_provider_impl import (
     EarthEngineHazardDataProviderImpl,
 )
-from app.services.impls.gemini_client import gemini_service
 from app.services.impls.location_details_service import LocationDetailsService
 from app.services.interfaces.city_resolution_service import CityResolutionService
 from app.services.interfaces.discloser_client import DiscloserClient
 from app.services.interfaces.hazard_data_provider_interface import (
     HazardDataProviderInterface,
 )
-from app.services.interfaces.llm_client import LLMClient
 from app.shared.config import settings
 from fastapi import HTTPException, Security, status
 from fastapi.security.api_key import APIKeyHeader
@@ -47,11 +45,6 @@ def get_location_details_service() -> LocationDetailsService:
     return LocationDetailsService(
         get_location_details_repository(), get_city_resolution_service()
     )
-
-
-def get_llm_client() -> LLMClient:
-    """Dependency that returns the LLMClient instance."""
-    return gemini_service
 
 
 def get_discloser_client() -> DiscloserClient:

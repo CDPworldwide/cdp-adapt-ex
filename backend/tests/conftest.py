@@ -4,7 +4,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 from app.api.v1.deps import (
     get_database_service,
-    get_llm_client,
     get_location_details_service,
     get_location_details_repository,
 )
@@ -14,7 +13,6 @@ from app.services.clients.database.base import DatabaseService
 from app.services.clients.database.location_details_repository import (
     LocationDetailsRepository,
 )
-from app.services.impls.gemini_client import GeminiLLMClient
 from app.shared.config import settings
 from httpx import ASGITransport, AsyncClient
 from sqlmodel import SQLModel, create_engine
@@ -47,22 +45,12 @@ def location_details_repo(db_engine):
 
 
 @pytest.fixture
-def mock_llm_client():
-    mock = MagicMock(spec=GeminiLLMClient)
-    mock.llm_chat_completion_response_sync.return_value = "Mocked LLM Response"
-    return mock
-
-
-@pytest.fixture
-async def client(db_service, mock_llm_client):
+async def client(db_service):
     original_api_key = settings.API_KEY
     settings.API_KEY = TEST_API_KEY
 
     def override_get_database_service():
         return db_service
-
-    def override_get_llm_client():
-        return mock_llm_client
 
     def override_get_location_details_repository():
         return LocationDetailsRepository(db_service.engine)
@@ -92,7 +80,6 @@ async def client(db_service, mock_llm_client):
     # Note: this maps to the depends function used in the routes, so we can mock
     # the LLMClient as well
     app.dependency_overrides[get_database_service] = override_get_database_service
-    app.dependency_overrides[get_llm_client] = override_get_llm_client
     app.dependency_overrides[get_location_details_service] = (
         override_get_location_details_service
     )

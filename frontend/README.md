@@ -19,9 +19,11 @@ It is built with **Angular 20**, **Tailwind CSS**, and **Angular Material**.
    Copy the example environment file and update it with your local backend URL:
    ```bash
    cp src/environments/environment-example.ts src/environments/environment.development.ts
+   cp .env.example .env
    ```
    **CRITICAL**: Open `src/environments/environment.development.ts` and set the `baseUrl` to match your running backend.
    - If running via `uv run fastapi dev`, the default is usually `http://localhost:8000`.
+   - Set `aiServerUrl` to your AI server domain. The build script also accepts `AI_SERVER_URL` from `.env`/CI and writes it into the Angular environment.
    - If your backend has `API_KEY` configured, also set `apiKey` and `apiKeyHeaderName` so frontend requests include the required header.
 
 ### 3. Build the API Client (CRITICAL)

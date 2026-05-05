@@ -69,54 +69,88 @@ describe('AskCdpAiService', () => {
   });
 
   describe('getFollowUpQuestions', () => {
-    it('should build starter questions locally with location context', (done) => {
+    it('should fetch starter questions from the AI server with location context', (done) => {
       service.setLocationContext(mockLocationData);
+      (window.fetch as jasmine.Spy).and.returnValue(
+        Promise.resolve(
+          new Response(
+            JSON.stringify({
+              follow_up_questions: [
+                'What hazards affect New York?',
+                'What actions are planned in New York?',
+                'What projects need funding in New York?',
+              ],
+            }),
+            {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            },
+          ),
+        ),
+      );
 
       service.loadStarterQuestions().subscribe(() => {
-        expect(window.fetch).not.toHaveBeenCalled();
+        expect(window.fetch).toHaveBeenCalledTimes(1);
         expect(service.followUpQuestions().length).toBe(3);
         expect(
           service.followUpQuestions().every((question) => question.includes('New York')),
         ).toBeTrue();
         expect(service.isFollowUpLoading()).toBeFalse();
-        done();
-      });
-    });
-
-    it('should successfully get follow-up questions', (done) => {
-      service.setLocationContext(mockLocationData);
-      // Correct structure: follow_up_questions at root
-      const mockResponse = {
-        follow_up_questions: ['Question 1?', 'Question 2?'],
-      };
-
-      (window.fetch as jasmine.Spy).and.returnValue(
-        Promise.resolve({
-          ok: true,
-          status: 200,
-          headers: new Headers({ 'Content-Type': 'application/json' }),
-          json: () => Promise.resolve(mockResponse),
-          text: () => Promise.resolve(JSON.stringify(mockResponse)),
-        }),
-      );
-
-      service.getFollowUpQuestions().subscribe(() => {
-        expect(service.followUpQuestions()).toEqual(['Question 1?', 'Question 2?']);
-        expect(service.isFollowUpLoading()).toBeFalse();
-        expect(service.followUpError()).toBeNull();
-        void readMostRecentRequestBody().then((body) => {
+        readRequestBodyAt(0).then((body) => {
+          expect(String((window.fetch as jasmine.Spy).calls.argsFor(0)[0])).toContain(
+            '/v1/suggest-follow-ups',
+          );
           expect(body.locationData).toEqual(mockLocationData);
+          expect(body.contextArea).toBe('hazards');
+          expect(body.metadata.contextArea).toBe('hazards');
+          expect(body.messages.at(-1)?.role).toBe('user');
           done();
         });
       });
     });
 
-    it('should handle error when getting follow-up questions fails', (done) => {
+    it('should fetch follow-up questions from the AI server', (done) => {
       service.setLocationContext(mockLocationData);
-      (window.fetch as jasmine.Spy).and.returnValue(Promise.reject(new Error('Fetch error')));
+      service.conversationHistory.set([{ role: 'user', content: 'Hello' }]);
+      (window.fetch as jasmine.Spy).and.returnValue(
+        Promise.resolve(
+          new Response(
+            JSON.stringify({
+              follow_up_questions: ['Question 1', 'Question 2', 'Question 3'],
+            }),
+            {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            },
+          ),
+        ),
+      );
 
       service.getFollowUpQuestions().subscribe(() => {
-        expect(service.followUpError()).toBe('Fetch error');
+        expect(window.fetch).toHaveBeenCalledTimes(1);
+        expect(service.followUpQuestions().length).toBe(3);
+        expect(service.isFollowUpLoading()).toBeFalse();
+        expect(service.followUpError()).toBeNull();
+        readRequestBodyAt(0).then((body) => {
+          expect(String((window.fetch as jasmine.Spy).calls.argsFor(0)[0])).toContain(
+            '/v1/suggest-follow-ups',
+          );
+          expect(body.messages.at(-1)?.content).toBe('Hello');
+          done();
+        });
+      });
+    });
+
+    it('should set an error when the AI server follow-up request fails', (done) => {
+      service.setLocationContext(mockLocationData);
+      spyOn(console, 'error');
+      (window.fetch as jasmine.Spy).and.returnValue(
+        Promise.resolve(new Response('Nope', { status: 500 })),
+      );
+
+      service.getFollowUpQuestions().subscribe(() => {
+        expect(window.fetch).toHaveBeenCalledTimes(1);
+        expect(service.followUpError()).toBe('Nope');
         expect(service.isFollowUpLoading()).toBeFalse();
         done();
       });
@@ -148,50 +182,61 @@ describe('AskCdpAiService', () => {
   describe('sendChatQuery', () => {
     it('should successfully send chat query and then load follow-up questions', (done) => {
       service.setLocationContext(mockLocationData);
-      const chatResponse = {
-        choices: [
-          {
-            message: {
-              content: 'Chat response',
-            },
-          },
-        ],
-      };
-      const followUpResponse = {
-        follow_up_questions: ['Question 1?', 'Question 2?', 'Question 3?'],
-      };
+      (window.fetch as jasmine.Spy).and.callFake((url: string) => {
+        if (String(url).includes('/v1/chat/completions')) {
+          return Promise.resolve(
+            new Response(
+              [
+                'data: {"choices":[{"delta":{"role":"assistant"},"finish_reason":null}]}',
+                '',
+                'data: {"choices":[{"delta":{"content":"Chat response"},"finish_reason":null}]}',
+                '',
+                'data: [DONE]',
+                '',
+              ].join('\n'),
+              {
+                status: 200,
+                headers: { 'Content-Type': 'text/event-stream' },
+              },
+            ),
+          );
+        }
 
-      (window.fetch as jasmine.Spy).and.returnValues(
-        Promise.resolve({
-          ok: true,
-          status: 200,
-          headers: new Headers({ 'Content-Type': 'application/json' }),
-          json: () => Promise.resolve(chatResponse),
-          text: () => Promise.resolve(JSON.stringify(chatResponse)),
-        }),
-        Promise.resolve({
-          ok: true,
-          status: 200,
-          headers: new Headers({ 'Content-Type': 'application/json' }),
-          json: () => Promise.resolve(followUpResponse),
-          text: () => Promise.resolve(JSON.stringify(followUpResponse)),
-        }),
-      );
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              follow_up_questions: ['Question 1', 'Question 2', 'Question 3'],
+            }),
+            {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            },
+          ),
+        );
+      });
 
       // Mock marked to return the expected HTML
       spyOn(service, 'parseToHtml').and.returnValue('<p>Chat response</p>');
 
       service.sendChatQuery('Hello').subscribe(() => {
         expect(service.disclosure()).toContain('<p>Chat response</p>');
-        expect(service.followUpQuestions()).toEqual(followUpResponse.follow_up_questions);
+        expect(service.followUpQuestions().length).toBe(3);
         expect(service.isDisclosureLoading()).toBeFalse();
         expect(service.isFollowUpLoading()).toBeFalse();
         expect(window.fetch).toHaveBeenCalledTimes(2);
         Promise.all([readRequestBodyAt(0), readRequestBodyAt(1)]).then(
           ([chatBody, followUpBody]) => {
-            expect(chatBody.locationData).toEqual(mockLocationData);
+            expect(String((window.fetch as jasmine.Spy).calls.argsFor(0)[0])).toContain(
+              '/v1/chat/completions',
+            );
+            expect(String((window.fetch as jasmine.Spy).calls.argsFor(1)[0])).toContain(
+              '/v1/suggest-follow-ups',
+            );
+            expect(chatBody.metadata.locationData).toEqual(mockLocationData);
+            expect(chatBody.contextArea).toBe('hazards');
+            expect(chatBody.metadata.contextArea).toBe('hazards');
             expect(chatBody.messages.at(-1)?.content).toBe('Hello');
-            expect(followUpBody.locationData).toEqual(mockLocationData);
+            expect(followUpBody.messages.at(-1)?.content).toBe('Chat response');
             const lastMessage = service.conversationHistory().at(-1);
             expect(lastMessage?.content).toBe('<p>Chat response</p>');
             done();
@@ -199,14 +244,56 @@ describe('AskCdpAiService', () => {
         );
       });
     });
+
+    it('should send the active page context area to the AI server', (done) => {
+      service.setLocationContext(mockLocationData, 'solutions');
+      (window.fetch as jasmine.Spy).and.callFake((url: string) => {
+        if (String(url).includes('/v1/chat/completions')) {
+          return Promise.resolve(
+            new Response(
+              [
+                'data: {"choices":[{"delta":{"content":"Solutions response"}}]}',
+                '',
+                'data: [DONE]',
+                '',
+              ].join('\n'),
+              {
+                status: 200,
+                headers: { 'Content-Type': 'text/event-stream' },
+              },
+            ),
+          );
+        }
+
+        return Promise.resolve(
+          new Response(JSON.stringify({ follow_up_questions: ['Question 1'] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        );
+      });
+      spyOn(service, 'parseToHtml').and.returnValue('<p>Solutions response</p>');
+
+      service.sendChatQuery('What solutions are common?').subscribe(() => {
+        readRequestBodyAt(0).then((body) => {
+          expect(body.contextArea).toBe('solutions');
+          expect(body.metadata.contextArea).toBe('solutions');
+          done();
+        });
+      });
+    });
   });
 
   function readRequestBodyAt(index: number): Promise<any> {
-    const request = (window.fetch as jasmine.Spy).calls.argsFor(index)[0] as Request;
-    return request.clone().json();
-  }
+    const [request, init] = (window.fetch as jasmine.Spy).calls.argsFor(index) as [
+      Request | string,
+      RequestInit | undefined,
+    ];
 
-  function readMostRecentRequestBody(): Promise<any> {
-    return readRequestBodyAt((window.fetch as jasmine.Spy).calls.count() - 1);
+    if (request instanceof Request) {
+      return request.clone().json();
+    }
+
+    return Promise.resolve(JSON.parse(String(init?.body)));
   }
 });
