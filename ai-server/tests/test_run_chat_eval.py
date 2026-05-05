@@ -362,4 +362,3 @@ def test_post_chat_completion_retries_transient_http_errors(monkeypatch):
 
     assert response["choices"][0]["message"]["content"] == "ok"
     assert len(attempts) == 2
-
