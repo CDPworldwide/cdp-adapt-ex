@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, combineLatest, map, of, startWith } from 'rxjs';
 import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import fuzzysort from 'fuzzysort';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
@@ -26,11 +26,13 @@ import { LocationSummaryComponent } from '../maps/location-summary/location-summ
 import { ActionStatusEnum } from '@pac-api/client';
 import type { AdaptationAction, Hazard, HazardProfile, LocationPin } from '@pac-api/client';
 import { CdpLogoIconComponent } from '../../shared/icons';
+import { AskCdpAiLogoIconComponent } from '../../shared/icons/ask-cdp-ai-logo-icon.component';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
 import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
 import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
 import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
+import { AskCdpAiComponent } from '../ask-cdp-ai/ask-cdp-ai.component';
 
 @Component({
   selector: 'app-main-search',
@@ -44,19 +46,24 @@ import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component'
     MatIconModule,
     ReactiveFormsModule,
     TranslateModule,
-    RouterLink,
     Maps,
     LocationSummaryComponent,
     CdpLogoIconComponent,
+    AskCdpAiLogoIconComponent,
     AppHeaderComponent,
     DisclosureTrendsComponent,
     WelcomeModalComponent,
+    AskCdpAiComponent,
   ],
 })
 export class MainSearchComponent implements OnInit {
   searchControl = new FormControl('');
   isNotFound = false;
   isOverlayOpen = false;
+  isAiOpen = false;
+  // Session-only: when the user dismisses the intro card it stays gone for the
+  // current page load and reappears on reload. No persistence by design.
+  isInfoCardDismissed = false;
   allLocations: LocationSuggestion[] = [];
   filteredLocations!: Observable<LocationSuggestion[]>;
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
@@ -187,6 +194,16 @@ export class MainSearchComponent implements OnInit {
 
   closeSearchOverlay(): void {
     this.isOverlayOpen = false;
+  }
+
+  dismissInfoCard(): void {
+    this.isInfoCardDismissed = true;
+  }
+
+  scrollToTrends(): void {
+    document
+      .querySelector('app-disclosure-trends')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   @HostListener('document:keydown.escape')
