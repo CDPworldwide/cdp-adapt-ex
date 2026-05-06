@@ -283,8 +283,8 @@ describe('GovernmentActionsComponent', () => {
       const compiled = fixture.nativeElement as HTMLElement;
       const summaryText = compiled.querySelector('app-actions-summary')?.textContent || '';
 
-      // Should show the custom otherHazardDetails
-      expect(summaryText).toContain('Unusual volcanic activity');
+      // Should show the custom otherHazardDetails (title-cased)
+      expect(summaryText).toContain('Unusual Volcanic Activity');
       // Should NOT show OTHERS as a translation key
       expect(summaryText).not.toContain('OTHERS');
     });

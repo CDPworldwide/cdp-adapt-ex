@@ -9,11 +9,20 @@ from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
+from sqlmodel import SQLModel
+
 from app.api.v1.api import api_router
+from app.models.onboarding import UserRoleSelection
 from app.services.clients.database import database_service
 from app.shared.config import settings
 from app.shared.limiter import limiter
 from app.shared.logging import logger
+
+# Tables fully owned by the API (writes go through SQLModel). Auto-created on
+# startup so we don't need a migration tool for this set. Read-only analytical
+# tables (DimCentral, FactHazards, etc.) are managed outside the app and must
+# NOT be added here.
+APP_OWNED_TABLES = [UserRoleSelection.__table__]
 
 load_dotenv()
 
@@ -27,6 +36,10 @@ async def lifespan(app: FastAPI):
         logger.info("startup_event", message="Skipping database initialization")
     else:
         database_service.initialize()
+        async with database_service.engine.begin() as conn:
+            await conn.run_sync(
+                SQLModel.metadata.create_all, tables=APP_OWNED_TABLES
+            )
 
     yield
 

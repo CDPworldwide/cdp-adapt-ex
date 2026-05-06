@@ -32,7 +32,7 @@
         [class.bg-cdp-neutral-02]="!isSelected(hazardKey(row))"
         [matTooltip]="
           row.hazard.hazardType === 'OTHERS'
-            ? row.hazard.otherHazardDetails || 'Other'
+            ? hazardName(row) || 'Other'
             : (hazardTranslationKey(row) | translate)
         "
         matTooltipPosition="above"

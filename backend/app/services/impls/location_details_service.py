@@ -416,30 +416,42 @@ class LocationDetailsService:
         return LocationDetailsService._pins_cache
 
     async def _fetch_all_location_pins(self) -> list[LocationPin]:
-        """Fetches and transforms all unique location pins from the repository."""
+        """Fetches and transforms all unique location pins from the repository.
+
+        Prefers the pre-computed `centroid` POINT column when present. Falls back
+        to the legacy "first vertex of polygon" extraction when centroid is NULL,
+        which keeps pins working for rows the upstream backfill hasn't reached.
+        """
         geometries = await self.repository.get_all_location_geometries()
         pins = []
         for location_geom in geometries:
-            geometry = json.loads(location_geom.geometry)
-            coords = self.profile_builder.extract_first_coordinate_pair(geometry)
-
             org_type = location_geom.org_type
             if org_type == "States & Regions":
                 org_type = OrgTypeEnum.STATE_AND_REGION
             elif org_type == "City":
                 org_type = OrgTypeEnum.CITY
 
-            if coords:
-                pins.append(
-                    LocationPin(
-                        name=location_geom.name,
-                        lng=coords[0],
-                        lat=coords[1],
-                        org_type=org_type,
-                    )
-                )
+            if (
+                location_geom.centroid_lng is not None
+                and location_geom.centroid_lat is not None
+            ):
+                lng, lat = location_geom.centroid_lng, location_geom.centroid_lat
             else:
-                logger.error(
-                    f"Geometry data missing: Location '{location_geom.name}' is missing valid geometry or coordinate data."
+                geometry = json.loads(location_geom.geometry)
+                coords = self.profile_builder.extract_first_coordinate_pair(geometry)
+                if not coords:
+                    logger.error(
+                        f"Geometry data missing: Location '{location_geom.name}' is missing valid geometry or coordinate data."
+                    )
+                    continue
+                lng, lat = coords
+
+            pins.append(
+                LocationPin(
+                    name=location_geom.name,
+                    lng=lng,
+                    lat=lat,
+                    org_type=org_type,
                 )
+            )
         return pins

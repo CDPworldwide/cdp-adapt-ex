@@ -85,12 +85,13 @@ class LocationDetailsRepository:
             org_id: The CDP disclosing organization number.
 
         Returns:
-            The DimCentral record with geometry as GeoJSON string, or None if not found.
+            The DimCentral record with geometry/centroid as GeoJSON strings, or None if not found.
         """
         async with AsyncSession(self.engine) as session:
+            geo_columns = {"geometry", "centroid"}
             columns = [
-                func.ST_AsGeoJSON(DimCentral.geometry).label("geometry")
-                if c.name == "geometry"
+                func.ST_AsGeoJSON(getattr(DimCentral, c.name)).label(c.name)
+                if c.name in geo_columns
                 else getattr(DimCentral, c.name)
                 for c in DimCentral.__table__.columns
             ]
@@ -186,7 +187,10 @@ class LocationDetailsRepository:
         """Return a list of all unique location names, their geometries, and organization type.
 
         Returns:
-            A list of LocationGeometry objects, where each object contains a location name, its GeoJSON geometry dictionary, and the organization type.
+            A list of LocationGeometry objects, each containing a location name, its
+            GeoJSON polygon, the organization type, and pre-computed centroid lng/lat
+            (NULL until the upstream data is backfilled — the service degrades to
+            polygon-vertex extraction in that case).
         """
         async with AsyncSession(self.engine) as session:
             statement = (
@@ -194,6 +198,8 @@ class LocationDetailsRepository:
                     DimCentral.disclosing_organization.label("name"),
                     func.ST_AsGeoJSON(DimCentral.geometry).label("geometry"),
                     DimCentral.disclosing_org_type.label("org_type"),
+                    func.ST_X(DimCentral.centroid).label("centroid_lng"),
+                    func.ST_Y(DimCentral.centroid).label("centroid_lat"),
                 )
                 .where(
                     DimCentral.has_geometry,

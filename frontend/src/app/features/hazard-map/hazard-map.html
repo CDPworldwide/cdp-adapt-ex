@@ -2,7 +2,7 @@
   <div #map class="w-full h-full" [ngClass]="{ 'rounded-none': isExpanded }"></div>
   @if (showExpand) {
     <button
-      class="absolute top-3 right-3 lg:top-6 lg:right-6 h-9 lg:w-[170px] lg:h-[56px] bg-black hover:bg-black/90 rounded-[100px] flex items-center justify-center gap-1.5 lg:gap-2 px-3 lg:px-6 py-2 lg:py-4 cursor-pointer transition-colors z-10 focus:outline-2 focus:outline-white focus:outline-offset-2"
+      class="absolute top-3 right-3 lg:top-6 lg:right-6 bg-black hover:bg-black/90 rounded-full inline-flex justify-center items-center gap-1.5 px-4 py-1.5 cursor-pointer transition-colors z-10 focus:outline-2 focus:outline-white focus:outline-offset-2"
       (click)="toggleExpand()"
       [attr.aria-label]="
         isExpanded ? ('shared.collapseMap' | translate) : ('shared.expandMap' | translate)
@@ -10,14 +10,13 @@
       type="button"
     >
       <span
-        class="text-white font-roboto text-xs lg:text-base font-medium leading-4 lg:leading-6 tracking-[0.15px] whitespace-nowrap"
+        class="text-white font-roboto text-sm font-medium leading-5 tracking-[0.25px] whitespace-nowrap"
       >
         {{ isExpanded ? ('shared.collapseMap' | translate) : ('shared.expandMap' | translate) }}
       </span>
-      <mat-icon
-        class="!text-base !w-4 !h-4 lg:!text-2xl lg:!w-6 lg:!h-6 !leading-none text-white shrink-0"
-        >{{ isExpanded ? 'close_fullscreen' : 'open_in_full' }}</mat-icon
-      >
+      <mat-icon class="!text-base !w-4 !h-4 !leading-none text-white shrink-0">{{
+        isExpanded ? 'close_fullscreen' : 'open_in_full'
+      }}</mat-icon>
     </button>
   }
 

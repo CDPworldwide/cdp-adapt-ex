@@ -7,8 +7,6 @@ import {
   OnDestroy,
   NgZone,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
 import { MapSelectionService } from '../main-search/map-selection.service';
 import { LocationPinsService } from './location-pins.service';
 import { OrgTypeEnum } from '@pac-api/client';
@@ -16,10 +14,28 @@ import type { LocationPin } from '@pac-api/client';
 import { Subscription } from 'rxjs';
 import { GoogleMapsLoaderService } from 'src/app/shared/services/google-maps-loader.service';
 
-const CITY_PIN_ICON_URL = '/assets/icons/cdp_map_pin-red.svg';
-const REGION_PIN_ICON_URL = '/assets/icons/cdp_map_pin-blue.svg';
-const CITY_PIN_SELECTED_ICON_URL = '/assets/icons/cdp_map_pin-red-selected.svg';
-const REGION_PIN_SELECTED_ICON_URL = '/assets/icons/cdp_map_pin-blue-selected.svg';
+// Circle-on-stick pin shape (a filled disc with a vertical bar trailing
+// downward). Single fill — the selected variant uses a darker shade.
+const PIN_PATH =
+  'M4.6665 0.00130224C2.08918 0.00130209 -0.000162543 2.09064 -0.000162601 4.66797' +
+  'C-0.00016266 7.2453 2.08917 9.33464 4.6665 9.33464C7.24383 9.33464 9.33317 7.2453 9.33317 4.66797' +
+  'C9.33317 2.09064 7.24383 0.0013024 4.6665 0.00130224Z' +
+  'M4.6665 4.66797L3.7915 4.66797L3.7915 23.6781L4.6665 23.6781L5.5415 23.6781L5.5415 4.66797L4.6665 4.66797Z';
+const pinDataUrl = (fill: string): string =>
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 24" width="10" height="24"><path d="${PIN_PATH}" fill="${fill}"/></svg>`,
+  );
+
+const CITY_FILL = '#E81647';
+const CITY_FILL_SELECTED = '#A12638';
+const REGION_FILL = '#00A6FF';
+const REGION_FILL_SELECTED = '#0082C7';
+
+const CITY_PIN_ICON_URL = pinDataUrl(CITY_FILL);
+const REGION_PIN_ICON_URL = pinDataUrl(REGION_FILL);
+const CITY_PIN_SELECTED_ICON_URL = pinDataUrl(CITY_FILL_SELECTED);
+const REGION_PIN_SELECTED_ICON_URL = pinDataUrl(REGION_FILL_SELECTED);
 
 @Component({
   selector: 'app-maps',
@@ -180,10 +196,12 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
         ? REGION_PIN_ICON_URL
         : CITY_PIN_ICON_URL;
 
+    // The pin SVG has a 10:24 aspect ratio (circle on top, bar trailing down).
+    const pinHeight = isDesktop ? 32 : 24;
     return {
       iconUrl,
-      width: Math.round((isDesktop ? 32 : 24) * scale),
-      height: Math.round((isDesktop ? 40 : 30) * scale),
+      width: Math.round(((pinHeight * 10) / 24) * scale),
+      height: Math.round(pinHeight * scale),
       // Make sure the selected pin is always on top of other pins
       zIndex: isSelected ? 10000 : 9999,
     };

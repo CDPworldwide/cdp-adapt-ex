@@ -12,7 +12,6 @@ import {
 import { LocationService } from '../../shared/services/location.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
-import { CdpLogoWithTextIconComponent } from '../../shared/icons';
 import { AskCdpAiLogoIconComponent } from '../../shared/icons/ask-cdp-ai-logo-icon.component';
 import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 
@@ -25,7 +24,6 @@ const VALID_TABS: readonly LocationCardTabKey[] = ['hazards', 'actions', 'soluti
     CommonModule,
     TranslateModule,
     AppHeaderComponent,
-    CdpLogoWithTextIconComponent,
     AskCdpAiComponent,
     LocationCardComponent,
     AskCdpAiLogoIconComponent,

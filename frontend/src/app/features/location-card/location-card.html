@@ -1,6 +1,97 @@
 <!-- Location Card - Mobile First Design -->
 @if (data) {
-<div class="w-full bg-cdp-bg relative">
+<div class="w-full max-w-[1600px] mx-auto bg-cdp-bg relative lg:px-2">
+  <!-- Sticky Compact Header (revealed once original tabs scroll off-screen) -->
+  <div
+    class="fixed top-0 left-0 right-0 z-30 bg-cdp-bg border-b border-[#bfbfbf] shadow-sm transition-opacity duration-150"
+    [class.opacity-0]="!isStickyHeaderVisible"
+    [class.invisible]="!isStickyHeaderVisible"
+    [class.opacity-100]="isStickyHeaderVisible"
+    [attr.aria-hidden]="!isStickyHeaderVisible"
+  >
+    <div class="mx-auto max-w-[1600px] lg:px-2">
+      <div class="flex items-center gap-3 px-4 lg:px-6 pt-3 pb-2">
+        <div
+          class="w-10 h-10 flex-shrink-0 overflow-hidden rounded-md static-thumbnail border border-cdp-neutral-02"
+        >
+          @if (data.lat != null && data.lng != null) {
+            <app-hazard-map
+              [lat]="data.lat"
+              [lng]="data.lng"
+              [locationName]="data.name"
+              [zoom]="6"
+              [showExpand]="false"
+              [static]="true"
+              [grayscale]="false"
+              [geometry]="data.geometry"
+              [calculatedBounds]="jurisdictionBounds"
+            ></app-hazard-map>
+          }
+        </div>
+        <h2
+          class="flex-1 min-w-0 text-cdp-dark font-roboto text-xl lg:text-2xl font-normal leading-tight truncate"
+        >
+          {{ data.name }}@if (data.countryName) {
+            <span>, {{ data.countryName }}</span>
+          }
+        </h2>
+      </div>
+      <div
+        class="px-4 lg:px-6"
+        role="tablist"
+        [attr.aria-label]="'locationCard.tabs.ariaLabel' | translate"
+      >
+        <div class="flex items-end gap-2 lg:gap-20 justify-between lg:justify-start self-stretch">
+          <button
+            (click)="setActiveTab('hazards')"
+            class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
+            [ngClass]="activeTab === 'hazards' ? 'font-medium leading-8' : 'font-normal leading-5'"
+            role="tab"
+            [attr.aria-selected]="activeTab === 'hazards'"
+          >
+            <span
+              class="inline-block pb-[15px] whitespace-nowrap"
+              [class.border-b]="activeTab === 'hazards'"
+              [class.border-cdp-border]="activeTab === 'hazards'"
+            >
+              {{ 'locationCard.tabs.hazards' | translate }}
+            </span>
+          </button>
+          <button
+            (click)="setActiveTab('actions')"
+            class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
+            [ngClass]="activeTab === 'actions' ? 'font-medium leading-8' : 'font-normal leading-5'"
+            role="tab"
+            [attr.aria-selected]="activeTab === 'actions'"
+          >
+            <span
+              class="inline-block pb-[15px] whitespace-nowrap"
+              [class.border-b]="activeTab === 'actions'"
+              [class.border-cdp-border]="activeTab === 'actions'"
+            >
+              {{ 'locationCard.tabs.governmentActions' | translate }}
+            </span>
+          </button>
+          <button
+            (click)="setActiveTab('solutions')"
+            class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
+            [ngClass]="activeTab === 'solutions' ? 'font-medium leading-8' : 'font-normal leading-5'"
+            role="tab"
+            [attr.aria-selected]="activeTab === 'solutions'"
+          >
+            <span
+              class="inline-block pb-[15px] whitespace-nowrap"
+              [class.border-b]="activeTab === 'solutions'"
+              [class.border-cdp-border]="activeTab === 'solutions'"
+            >
+              {{ 'locationCard.tabs.solutions' | translate }}
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Back to Map Button -->
   <div class="flex items-center pt-4 pb-0 px-0 lg:p-4 lg:pb-0">
     <button
@@ -20,7 +111,7 @@
           fill="black"
         />
       </svg>
-      <span class="text-black font-roboto text-sm font-medium leading-5 tracking-[0.1px]">{{
+      <span class="text-black font-roboto text-sm font-medium leading-5 tracking-cdp-tight">{{
         'locationCard.backToMap' | translate
       }}</span>
     </button>
@@ -30,7 +121,7 @@
   <div class="flex items-center gap-4 px-4 lg:px-6 pt-10 pb-4">
     <!-- Map Thumbnail -->
     <div
-      class="hidden lg:block w-20 h-20 lg:w-[120px] lg:h-[120px] flex-shrink-0 overflow-hidden rounded-[20px]"
+      class="hidden lg:block w-20 h-20 lg:w-[120px] lg:h-[120px] flex-shrink-0 overflow-hidden rounded-[20px] static-thumbnail"
     >
       @if (data.lat != null && data.lng != null) {
         <app-hazard-map
@@ -51,7 +142,7 @@
       <!-- Name Container -->
       <div class="flex flex-col">
         <h1
-          class="text-4xl lg:text-[60px] text-cdp-dark font-roboto font-normal leading-tight lg:leading-normal tracking-[-1.8px]"
+          class="text-4xl lg:text-6xl text-cdp-dark font-roboto font-normal leading-tight lg:leading-normal tracking-[-1.8px]"
         >
           {{ data.name }}
           <span class="text-3xl lg:text-[40px] block">{{ data.countryName }}</span>
@@ -60,10 +151,10 @@
         <!-- Population -->
         @if (data.population) {
           <div class="flex items-center gap-1 mt-4">
-            <div class="text-black font-roboto text-xs font-medium leading-4 tracking-[0.4px]">
+            <div class="text-black font-roboto text-xs font-medium leading-4 tracking-cdp-wider">
               {{ 'locationCard.header.estimatedPopulation' | translate }}
             </div>
-            <div class="text-black font-roboto text-xs font-normal leading-4 tracking-[0.4px]">
+            <div class="text-black font-roboto text-xs font-normal leading-4 tracking-cdp-wider">
               ~{{ formatPopulation(data.population) }}
             </div>
             <div
@@ -95,7 +186,7 @@
     >
       <button
         (click)="setActiveTab('hazards')"
-        class="text-cdp-border text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
+        class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
         [ngClass]="activeTab === 'hazards' ? 'font-medium leading-8' : 'font-normal leading-5'"
         role="tab"
         [attr.aria-selected]="activeTab === 'hazards'"
@@ -111,7 +202,7 @@
       </button>
       <button
         (click)="setActiveTab('actions')"
-        class="text-cdp-border text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
+        class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
         [ngClass]="activeTab === 'actions' ? 'font-medium leading-8' : 'font-normal leading-5'"
         role="tab"
         [attr.aria-selected]="activeTab === 'actions'"
@@ -127,7 +218,7 @@
       </button>
       <button
         (click)="setActiveTab('solutions')"
-        class="text-cdp-border text-center font-roboto text-sm tracking-[0.25px] transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
+        class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
         [ngClass]="activeTab === 'solutions' ? 'font-medium leading-8' : 'font-normal leading-5'"
         role="tab"
         [attr.aria-selected]="activeTab === 'solutions'"
@@ -143,6 +234,9 @@
       </button>
     </div>
   </div>
+
+  <!-- Sticky-header trigger sentinel: when this scrolls past the top, the compact header reveals -->
+  <div #stickyTrigger aria-hidden="true" class="h-px"></div>
 
   <!-- Tab Content -->
   <div class="pt-4 pb-6 px-0 lg:px-6">

@@ -44,6 +44,11 @@ class LocationGeometry(SQLModel):
     name: str
     geometry: str
     org_type: str | None = None
+    # Pre-computed centroid coordinates (POINT geometry on DimCentral). When
+    # present they are used directly; when NULL the service falls back to
+    # extracting the first coordinate pair from `geometry`.
+    centroid_lng: float | None = None
+    centroid_lat: float | None = None
 
 
 class DimCentral(SQLModel, table=True):
@@ -65,6 +70,10 @@ class DimCentral(SQLModel, table=True):
     has_geometry: bool | None = None
     disclosing_year: int = Field(primary_key=True)
     geometry: Any = Field(
+        sa_column=Column(SafeGeometry()),
+        default=None,
+    )
+    centroid: Any = Field(
         sa_column=Column(SafeGeometry()),
         default=None,
     )

@@ -181,10 +181,18 @@
                     </span>
                   </div>
                 }
+                @let titleParts = splitTitleAtLastColon(action.title | autoTranslate);
+                @if (titleParts.prefix) {
+                  <p
+                    class="text-xs font-normal font-roboto leading-4 tracking-[0.4px] text-cdp-neutral-05 self-stretch line-clamp-1 overflow-hidden text-ellipsis"
+                  >
+                    {{ titleParts.prefix }}
+                  </p>
+                }
                 <h3
                   class="text-[22px] font-normal font-roboto leading-7 tracking-normal text-cdp-border self-stretch line-clamp-2 overflow-hidden text-ellipsis"
                 >
-                  {{ action.title | autoTranslate }}
+                  {{ titleParts.main }}
                 </h3>
               </div>
 

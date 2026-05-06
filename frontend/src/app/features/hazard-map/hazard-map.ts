@@ -23,7 +23,6 @@ import { HazardColorPaletteComponent } from './hazard-legend/hazard-color-palett
 import { HazardMapService } from './hazard-map.service';
 import { GoogleMapsLoaderService } from '../../shared/services/google-maps-loader.service';
 import { HazardLayerOptions } from '@pac-api/client';
-import { AskCdpAiComponent } from '../ask-cdp-ai/ask-cdp-ai.component';
 
 export const SUPPORTED_HAZARD_TYPES: HazardEnum[] = [
   HazardEnum.WATER_STRESS,
@@ -70,7 +69,6 @@ const FLOOD_SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
     HazardIconComponent,
     HazardColorPaletteComponent,
     TranslateModule,
-    AskCdpAiComponent,
   ],
   templateUrl: './hazard-map.html',
   styles: [':host { display: block; width: 100%; height: 100%; }'],
@@ -221,7 +219,7 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
   private getInteractivityOptions(): google.maps.MapOptions {
     const isSupported = this.isHazardSupported(this.hazardType);
-    const isInteractive = !this.static && isSupported;
+    const isInteractive = !this.static && isSupported && this.isExpanded;
 
     return {
       zoomControl: isInteractive,
@@ -248,6 +246,9 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
       this.renderer.removeStyle(host, 'height');
       this.renderer.removeStyle(host, 'z-index');
       this.renderer.removeStyle(host, 'background');
+    }
+    if (this.googleMap) {
+      this.googleMap.setOptions(this.getInteractivityOptions());
     }
     // Trigger map resize after expansion/collapse to ensure proper rendering
     requestAnimationFrame(() => {

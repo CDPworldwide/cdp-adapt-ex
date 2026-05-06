@@ -33,8 +33,8 @@ export class MethodologyComponent {
 
   readonly minimumCriteria: MinimumCriterion[] = [
     {
-      id: 'rva',
-      questionNumber: '2.1.1',
+      id: 'climateHazards',
+      questionNumber: '2.2',
       rawDataLinks: [
         {
           labelKey: 'methodology.minimumCriteria.rawDataLabels.cities',
@@ -46,9 +46,34 @@ export class MethodologyComponent {
         },
       ],
     },
-    { id: 'climateHazards', questionNumber: '2.2' },
-    { id: 'adaptationGoals', questionNumber: '5.1.1' },
-    { id: 'adaptationActions', questionNumber: '9.1' },
+    {
+      id: 'adaptationGoals',
+      questionNumber: '5.1.1',
+      rawDataLinks: [
+        {
+          labelKey: 'methodology.minimumCriteria.rawDataLabels.cities',
+          url: 'https://data.cdp.net/Full-cities-public-datasets/2025-Full-Cities-Public-Data-Separated-by-Question/fjfh-2t9d/about_data',
+        },
+        {
+          labelKey: 'methodology.minimumCriteria.rawDataLabels.statesAndRegions',
+          url: 'https://data.cdp.net/Full-states-and-regions-public-datasets/2025-Full-States-and-Regions-Public-Data-Separated/s3cp-8s8w/about_data',
+        },
+      ],
+    },
+    {
+      id: 'adaptationActions',
+      questionNumber: '9.1',
+      rawDataLinks: [
+        {
+          labelKey: 'methodology.minimumCriteria.rawDataLabels.cities',
+          url: 'https://data.cdp.net/Full-cities-public-datasets/2025-Full-Cities-Public-Data-Separated-by-Question/fjfh-2t9d/about_data',
+        },
+        {
+          labelKey: 'methodology.minimumCriteria.rawDataLabels.statesAndRegions',
+          url: 'https://data.cdp.net/Full-states-and-regions-public-datasets/2025-Full-States-and-Regions-Public-Data-Separated/s3cp-8s8w/about_data',
+        },
+      ],
+    },
     {
       id: 'projects',
       questionNumber: '9.3',

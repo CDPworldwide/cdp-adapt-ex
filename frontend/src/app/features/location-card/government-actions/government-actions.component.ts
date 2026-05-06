@@ -83,6 +83,18 @@ export class GovernmentActionsComponent implements OnChanges {
     return Array.isArray(model) ? model.join(', ') : (model as string);
   }
 
+  splitTitleAtLastColon(title: string | null | undefined): { prefix: string; main: string } {
+    if (!title) return { prefix: '', main: '' };
+    const segments = title
+      .split(':')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (segments.length <= 1) return { prefix: '', main: title.trim() };
+    const main = segments.pop()!;
+    const prefix = segments.filter((s) => s.toLowerCase() !== 'other').join(': ');
+    return { prefix, main };
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     const dataChanged = !!changes['data'] && !!this.data;
     const filterChanged = !!changes['selectedFilter'];

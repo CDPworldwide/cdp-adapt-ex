@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, combineLatest, map, of, startWith } from 'rxjs';
 import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import fuzzysort from 'fuzzysort';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
@@ -26,8 +26,13 @@ import { LocationSummaryComponent } from '../maps/location-summary/location-summ
 import { ActionStatusEnum } from '@pac-api/client';
 import type { AdaptationAction, Hazard, HazardProfile, LocationPin } from '@pac-api/client';
 import { CdpLogoIconComponent } from '../../shared/icons';
+import { AskCdpAiLogoIconComponent } from '../../shared/icons/ask-cdp-ai-logo-icon.component';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
+import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
+import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
+import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
+import { AskCdpAiComponent } from '../ask-cdp-ai/ask-cdp-ai.component';
 
 @Component({
   selector: 'app-main-search',
@@ -41,18 +46,24 @@ import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/di
     MatIconModule,
     ReactiveFormsModule,
     TranslateModule,
-    RouterLink,
     Maps,
     LocationSummaryComponent,
     CdpLogoIconComponent,
+    AskCdpAiLogoIconComponent,
     AppHeaderComponent,
     DisclosureTrendsComponent,
+    WelcomeModalComponent,
+    AskCdpAiComponent,
   ],
 })
 export class MainSearchComponent implements OnInit {
   searchControl = new FormControl('');
   isNotFound = false;
   isOverlayOpen = false;
+  isAiOpen = false;
+  // Session-only: when the user dismisses the intro card it stays gone for the
+  // current page load and reappears on reload. No persistence by design.
+  isInfoCardDismissed = false;
   allLocations: LocationSuggestion[] = [];
   filteredLocations!: Observable<LocationSuggestion[]>;
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
@@ -60,6 +71,9 @@ export class MainSearchComponent implements OnInit {
   selectedLocation: LocationPin | null = null;
   selectedLocationData: LocationData | null = null;
   isLoadingHazardData = false;
+
+  readonly disclosureTrendsYear = 2025;
+  disclosureTrendsSummary!: Observable<DisclosureTrendsSummary>;
   totalHazardsCount = 0;
   implementedActionsCount = 0;
   projectsRequiringFundingCount = 0;
@@ -74,9 +88,14 @@ export class MainSearchComponent implements OnInit {
     private locationService: LocationService,
     private mapSelectionService: MapSelectionService,
     private router: Router,
+    private disclosureTrendsStatsService: DisclosureTrendsStatsService,
   ) {}
 
   ngOnInit() {
+    this.disclosureTrendsSummary = this.disclosureTrendsStatsService.getSummary(
+      this.disclosureTrendsYear,
+    );
+
     this.filteredLocations = combineLatest([
       this.searchControl.valueChanges.pipe(startWith(this.searchControl.value || '')),
       this.allLocations$,
@@ -177,6 +196,16 @@ export class MainSearchComponent implements OnInit {
     this.isOverlayOpen = false;
   }
 
+  dismissInfoCard(): void {
+    this.isInfoCardDismissed = true;
+  }
+
+  scrollToTrends(): void {
+    document
+      .querySelector('app-disclosure-trends')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   @HostListener('document:keydown.escape')
   onEscapeKey(): void {
     if (this.isOverlayOpen) {
@@ -226,16 +255,19 @@ export class MainSearchComponent implements OnInit {
     if (!value) {
       return locations.slice(0, MainSearchComponent.MAX_SUGGESTIONS);
     }
+    // Search both name and country so a query like "thailand" surfaces every
+    // Thai jurisdiction even though it doesn't appear in their names.
     const prepared = locations.map((loc) => ({
       ...loc,
-      _normalized: this.normalizeForSearch(loc.name),
+      _normalizedName: this.normalizeForSearch(loc.name),
+      _normalizedCountry: loc.country ? this.normalizeForSearch(loc.country) : '',
     }));
     const results = fuzzysort.go(this.normalizeForSearch(value), prepared, {
-      key: '_normalized',
+      keys: ['_normalizedName', '_normalizedCountry'],
       limit: MainSearchComponent.MAX_SUGGESTIONS,
     });
     return results.map((result) => {
-      const { _normalized, ...rest } = result.obj;
+      const { _normalizedName, _normalizedCountry, ...rest } = result.obj;
       return rest;
     });
   }
