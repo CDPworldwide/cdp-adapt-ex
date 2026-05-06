@@ -85,20 +85,8 @@ jobs:
             LLM_API_KEY=development-LLM_API_KEY:latest
             ALLOWED_ORIGINS=development-ALLOWED_ORIGINS:latest
           env_vars: |
-            PROJECT_NAME=CDP AI Server
             AI_SERVER_API_KEY=${{ secrets.AI_SERVER_API_KEY }}
-            AI_SERVER_API_KEY_HEADER_NAME=X-API-Key
-            AI_SERVER_MODEL_NAME=cdp-gemini
             LLM_MODEL=gemini-2.5-flash
-            DEFAULT_LLM_TEMPERATURE=0.2
-            MAX_TOKENS=2000
-            MAX_CHAT_MESSAGES=50
-            MAX_CHAT_TOTAL_CHARS=50000
-            MAX_CHAT_RESPONSE_CHARS=20000
-            SUGGEST_FOLLOW_UPS_MAX_TOKENS=256
-            LLM_REQUEST_TIMEOUT_SECONDS=60
-            CORS_ALLOW_METHODS=GET,POST,OPTIONS
-            CORS_ALLOW_HEADERS=Authorization,Content-Type,X-API-Key
           env_vars_update_strategy: overwrite
 
       - name: Verify deployment health
@@ -119,6 +107,35 @@ jobs:
           done
           echo "AI server deployment health check failed"
           exit 1
+
+      - name: Verify CORS preflight
+        run: |
+          URL="${{ steps.deploy.outputs.url }}"
+          HEADERS=$(mktemp)
+          STATUS=$(curl -s -o /tmp/cors-preflight-body -D "$HEADERS" -w "%{http_code}" \
+            -X OPTIONS \
+            -H "Origin: https://frontend-pbybuiwoxq-uc.a.run.app" \
+            -H "Access-Control-Request-Method: POST" \
+            -H "Access-Control-Request-Headers: authorization,content-type,x-api-key" \
+            "$URL/v1/suggest-follow-ups" || echo "000")
+
+          cat "$HEADERS"
+          cat /tmp/cors-preflight-body
+
+          if [ "$STATUS" != "200" ]; then
+            echo "CORS preflight failed with HTTP $STATUS"
+            exit 1
+          fi
+
+          if ! grep -iq "access-control-allow-methods: .*POST" "$HEADERS"; then
+            echo "CORS preflight did not allow POST"
+            exit 1
+          fi
+
+          if ! grep -iq "access-control-allow-headers: .*x-api-key" "$HEADERS"; then
+            echo "CORS preflight did not allow X-API-Key"
+            exit 1
+          fi
 
       - name: Show deployed service URL
         run: echo "Deployed AI server to ${{ steps.deploy.outputs.url }}"

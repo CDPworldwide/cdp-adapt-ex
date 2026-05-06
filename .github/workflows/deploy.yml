@@ -24,8 +24,8 @@ env:
   AI_SERVER_URL: https://cdp-ai-server-pbybuiwoxq-uc.a.run.app
   # Branch-specific environment configuration
   ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
-  SERVICE_NAME_BACKEND: ${{ github.ref == 'refs/heads/production' && 'cdp-server-prod' || 'cdp-server-dev' }}
-  SERVICE_NAME_FRONTEND: ${{ github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend-dev' }}
+  SERVICE_NAME_BACKEND: ${{ github.ref == 'refs/heads/production' && 'cdp-server-prod' || 'cdp-server' }}
+  SERVICE_NAME_FRONTEND: ${{ github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend' }}
 
 jobs:
   deploy-backend:

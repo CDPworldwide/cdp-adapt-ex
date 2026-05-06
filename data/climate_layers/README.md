@@ -439,16 +439,20 @@ scenarios already cover them under climate-change forcing.
 WRI publishes multiple images per `(floodtype, scenario, year, returnperiod)`. The
 script collapses them deterministically:
 
-- **Coastal (`inuncoast`)**: 6 variants per filter — 3 SLR percentiles
+- **Coastal (`inuncoast`)**: WRI publishes up to 3 SLR percentiles
   (`projection ∈ {5, 50, 95}`) × 2 subsidence flags (`subsidence ∈ {nosub, wtsub}`).
-  We pick `projection=50` (median sea-level rise) and `subsidence='wtsub'` (with
-  subsidence; more realistic for coastal cities). 5 / 95 percentiles and the
-  no-subsidence variants are useful for sensitivity work but aren't exported as the
-  canonical layer.
+  We always pick `projection=95` (high-end / 95th-percentile SLR) and
+  `subsidence='wtsub'`. Historical only ships at projection=95 anyway, so using
+  the same percentile across historical + rcp keeps the baseline thresholds
+  comparable to the future projections rather than mixing a high-end baseline
+  against a median future. The 5/50 percentiles and `nosub` variants are useful
+  for sensitivity analysis but aren't exported as the canonical layer.
 - **Riverine projected**: 5 GCM members (`NorESM1-M`, `GFDL-ESM2M`, `HadGEM2-ES`,
   `IPSL-CM5A-LR`, `MIROC-ESM-CHEM`). We compute the **ensemble median** across
-  members (preserving the native grid via `setDefaultProjection`) — same approach
-  used for the NEX-GDDP-CMIP6 climate layers.
+  members via `toBands().reduce(ee.Reducer.median())` rather than
+  `ImageCollection.median()`; the latter strips the source projection and lets
+  EE fall back to a default grid that fails the polar-edge transform during
+  export, while `toBands` preserves the WRI native grid (origin -180, 90).
 - **Riverine historical**: single `WATCH` reanalysis image — no aggregation needed.
 
 ## Methodology

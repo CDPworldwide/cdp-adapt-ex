@@ -311,7 +311,9 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     }
 
     if (this.googleMap) {
-      if (this.geometry && (!this.hazardType || this.isHazardSupported(this.hazardType))) {
+      // Render the jurisdiction polygon whenever geometry is present, even if
+      // the currently-selected hazard has no GEE tile.
+      if (this.geometry) {
         this.jurisdictionLayer = new window.google.maps.Data();
         const feature: { type: string; geometry: { [key: string]: unknown } } = {
           type: 'Feature',

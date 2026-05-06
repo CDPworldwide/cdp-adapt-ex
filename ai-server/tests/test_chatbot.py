@@ -416,10 +416,10 @@ async def test_chat_completions_rejects_oversized_llm_response(monkeypatch):
 
 async def test_chat_completions_times_out_upstream(monkeypatch):
     monkeypatch.setenv("AI_SERVER_API_KEY", "")
-    monkeypatch.setenv("LLM_REQUEST_TIMEOUT_SECONDS", "0.001")
     from app.settings import get_settings
 
     get_settings.cache_clear()
+    get_settings().llm_request_timeout_seconds = 0.001
     app.dependency_overrides[get_provider] = lambda: SlowProvider()
     app.dependency_overrides[get_location_verifier] = lambda: (
         VerifyingLocationVerifier()
