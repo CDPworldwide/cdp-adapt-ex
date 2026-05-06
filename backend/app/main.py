@@ -5,6 +5,9 @@ from fastapi import (
     FastAPI,
 )
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from sqlmodel import SQLModel
 
@@ -12,6 +15,7 @@ from app.api.v1.api import api_router
 from app.models.onboarding import UserRoleSelection
 from app.services.clients.database import database_service
 from app.shared.config import settings
+from app.shared.limiter import limiter
 from app.shared.logging import logger
 
 # Tables fully owned by the API (writes go through SQLModel). Auto-created on
@@ -46,13 +50,16 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_middleware(SlowAPIMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_credentials="*" not in settings.ALLOWED_ORIGINS,
+    allow_methods=settings.CORS_ALLOW_METHODS,
+    allow_headers=settings.CORS_ALLOW_HEADERS,
 )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)

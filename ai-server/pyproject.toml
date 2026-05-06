@@ -1,0 +1,29 @@
+[project]
+name = "cdp-ai-server"
+version = "0.1.0"
+description = "OpenAI-compatible CDP AI server"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard]>=0.118.0",
+    "google-genai>=1.39.1",
+    "httpx>=0.28.0",
+    "pydantic>=2.11.0",
+    "python-dotenv>=1.0.0",
+    "structlog>=25.4.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.0",
+    "pytest-asyncio>=1.3.0",
+    "ruff>=0.14.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 88

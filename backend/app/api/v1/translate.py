@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.post("", response_model=TranslateResponse)
-@limiter.limit("60 per minute")
+@limiter.limit(settings.RATE_LIMIT_ENDPOINTS["translate"][0])
 async def translate_texts(
     request: Request,
     translate_request: TranslateRequest,

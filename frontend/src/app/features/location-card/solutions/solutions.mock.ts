@@ -1,11 +1,6 @@
-import {
-  HazardEnum,
-  LocationProfile,
-  SolutionCategoryEnum,
-  SolutionCardOutput,
-} from '@pac-api/client';
+import { HazardEnum, LocationProfile, SolutionCategoryEnum, SolutionCard } from '@pac-api/client';
 
-export const MOCK_SOLUTION_CARD: SolutionCardOutput = {
+export const MOCK_SOLUTION_CARD: SolutionCard = {
   solution: 'Test Solution',
   solutionCategory: SolutionCategoryEnum.ENGINEERED_BUILT_ENVIRONMENT,
   pctPeerTakingAction: 50,

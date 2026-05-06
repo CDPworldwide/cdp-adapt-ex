@@ -9,35 +9,64 @@ const clientDir = path.dirname(__dirname);
 const indexPath = path.join(clientDir, 'src', 'index.ts');
 const typesPath = path.join(clientDir, 'src', 'types.gen.ts');
 
-const aliasExportLine = "export { type ActionsTab, type AdaptationAction, type AdaptationGoal, type HazardProfile, type LocationProfile, type ProjectSeekingFunding } from './types.gen.js';\n";
-const aliasBlock = "\n// Backward-compatible aliases keep existing frontend consumers stable while the\n// generated client adopts explicit Input/Output model names.\nexport type ActionsTab = ActionsTabOutput;\nexport type AdaptationAction = AdaptationActionOutput;\nexport type AdaptationGoal = AdaptationGoalOutput;\nexport type HazardProfile = HazardProfileOutput;\nexport type LocationProfile = LocationProfileOutput;\nexport type ProjectSeekingFunding = ProjectSeekingFundingOutput;\n";
+const aliasExportLine =
+  "export { type ActionsTabOutput as ActionsTab, type AdaptationActionOutput as AdaptationAction, type AdaptationGoalOutput as AdaptationGoal, type HazardProfileOutput as HazardProfile, type LocationProfileOutput as LocationProfile, type ProjectSeekingFundingOutput as ProjectSeekingFunding } from './types.gen.js';\n";
+const aliasHeader =
+  '// Backward-compatible aliases keep existing frontend consumers stable while the\n// generated client adopts explicit Input/Output model names.\n';
+const legacyTypeNames = [
+  'ActionsTab',
+  'AdaptationAction',
+  'AdaptationGoal',
+  'HazardProfile',
+  'LocationProfile',
+  'ProjectSeekingFunding',
+];
 
-async function patchIndex() {
+function hasPlainLegacyTypes(typesSource) {
+  return legacyTypeNames.every((name) =>
+    typesSource.includes(`export type ${name} =`)
+  );
+}
+
+function hasOutputLegacyTypes(typesSource) {
+  return legacyTypeNames.every((name) =>
+    typesSource.includes(`export type ${name}Output =`)
+  );
+}
+
+async function patchIndex(typesSource) {
   const indexSource = await readFile(indexPath, 'utf8');
+  const cleanedSource = indexSource.replace(aliasExportLine, '');
 
-  if (indexSource.includes(aliasExportLine.trim())) {
+  if (hasPlainLegacyTypes(typesSource) || !hasOutputLegacyTypes(typesSource)) {
+    if (cleanedSource !== indexSource) {
+      await writeFile(indexPath, cleanedSource);
+    }
     return;
   }
 
-  const sdkExportMatch = indexSource.match(/^export \{.*\} from '\.\/sdk\.gen\.js';\n/m);
+  if (cleanedSource.includes(aliasExportLine.trim())) {
+    return;
+  }
+
+  const sdkExportMatch = cleanedSource.match(/^export \{.*\} from '\.\/sdk\.gen\.js';\n/m);
 
   if (!sdkExportMatch) {
     throw new Error('Could not find generated SDK export line in client/src/index.ts');
   }
 
-  const patchedSource = indexSource.replace(sdkExportMatch[0], `${sdkExportMatch[0]}${aliasExportLine}`);
+  const patchedSource = cleanedSource.replace(sdkExportMatch[0], `${sdkExportMatch[0]}${aliasExportLine}`);
   await writeFile(indexPath, patchedSource);
 }
 
 async function patchTypes() {
   const typesSource = await readFile(typesPath, 'utf8');
+  const aliasStart = typesSource.indexOf(aliasHeader);
+  const patchedSource = aliasStart >= 0 ? typesSource.slice(0, aliasStart).trimEnd() + '\n' : typesSource;
+  await writeFile(typesPath, patchedSource);
 
-  if (typesSource.includes('export type ActionsTab = ActionsTabOutput;')) {
-    return;
-  }
-
-  await writeFile(typesPath, `${typesSource}${aliasBlock}`);
+  return patchedSource;
 }
 
-await patchIndex();
-await patchTypes();
+const patchedTypesSource = await patchTypes();
+await patchIndex(patchedTypesSource);

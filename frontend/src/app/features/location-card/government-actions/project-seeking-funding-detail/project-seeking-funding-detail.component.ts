@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { ProjectSeekingFundingOutput } from '@pac-api/client';
+import { ProjectSeekingFunding } from '@pac-api/client';
 import { CloseIconComponent } from '../../../../shared/icons/close-icon.component';
 import { ImagePlaceholderIconComponent } from '../../../../shared/icons/image-placeholder-icon.component';
 import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
@@ -31,7 +31,7 @@ import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe'
   templateUrl: './project-seeking-funding-detail.component.html',
 })
 export class ProjectSeekingFundingDetailComponent implements AfterViewInit, OnChanges {
-  @Input() project!: ProjectSeekingFundingOutput;
+  @Input() project!: ProjectSeekingFunding;
   @Output() closed = new EventEmitter<void>();
 
   @ViewChild('descriptionElement') descriptionElement?: ElementRef<HTMLElement>;

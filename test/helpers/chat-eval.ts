@@ -1,5 +1,5 @@
 import {
-  chatCompletionsApiV1ChatCompletionsPost,
+  chatCompletionsApiV1ChatsCompletionsPost,
   type LocationProfileInput,
   type OpenAiChatCompletionRequest,
 } from '@pac-api/client';
@@ -35,6 +35,14 @@ const DEFAULT_REFUSAL_HINTS = [
 type JsonObject = Record<string, unknown>;
 const MAX_CHAT_EVAL_ATTEMPTS = 3;
 const RETRYABLE_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
+const LOCATION_CACHE = new Map<string, LocationProfileInput>();
+let LOCATION_SUMMARIES_PROMISE: Promise<LocationSummary[]> | null = null;
+
+interface LocationSummary {
+  id: number;
+  name: string;
+  country: string;
+}
 
 export interface RawEvalCase {
   id?: string;
@@ -94,6 +102,58 @@ export interface ChatEvalResult {
   score: ChatEvalScore;
 }
 
+async function resolveCanonicalLocationData(
+  baseUrl: string,
+  headers: Record<string, string>,
+  testCase: ChatEvalCase,
+): Promise<LocationProfileInput> {
+  const organizationId = Number(testCase.locationData.organizationId ?? 0);
+  if (organizationId > 0) {
+    return testCase.locationData;
+  }
+
+  const cached = LOCATION_CACHE.get(testCase.location);
+  if (cached) {
+    return cached;
+  }
+
+  const [cityName, countryName] = splitLocation(testCase.location);
+  const normalizedCity = normalizeLocationToken(cityName);
+  const normalizedCountry = normalizeLocationToken(countryName);
+  const summaries = await loadLocationSummaries(baseUrl, headers);
+  const matchingSummary = summaries.find((summary) => {
+    const summaryName = normalizeLocationToken(summary.name);
+    const summaryCountry = normalizeLocationToken(summary.country);
+
+    const cityMatches = summaryName.includes(normalizedCity) || normalizedCity.includes(summaryName);
+    const countryMatches = summaryCountry.includes(normalizedCountry) || normalizedCountry.includes(summaryCountry);
+
+    return cityMatches && countryMatches;
+  });
+
+  if (!matchingSummary) {
+    throw new Error(`Failed to match canonical location data for ${testCase.location}`);
+  }
+
+  const response = await fetch(`${baseUrl}/api/v1/locations/id/${matchingSummary.id}`, {
+    headers,
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to load canonical location data for ${testCase.location}: HTTP ${response.status}`,
+    );
+  }
+
+  const payload = (await response.json()) as { location?: LocationProfileInput };
+  if (!payload.location) {
+    throw new Error(`Location lookup for ${testCase.location} did not return a location payload`);
+  }
+
+  LOCATION_CACHE.set(testCase.location, payload.location);
+  return payload.location;
+}
+
 function sleep(ms: number) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
@@ -110,6 +170,43 @@ function normalizeLooseText(value: string): string {
     .replace(/[\u2018\u2019]/g, "'")
     .replace(/[\u201C\u201D]/g, '"')
     .replace(/\r\n/g, '\n');
+}
+
+function normalizeLocationToken(value: string): string {
+  return normalizeLooseText(value)
+    .toLowerCase()
+    .replace(/\b(city|municipality|municipalidad|metropolitan|government|prefeitura|district|council|regional|region|state|province|county|town|village|of|de|do|da|la|el)\b/g, ' ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+async function loadLocationSummaries(
+  baseUrl: string,
+  headers: Record<string, string>,
+): Promise<LocationSummary[]> {
+  if (!LOCATION_SUMMARIES_PROMISE) {
+    LOCATION_SUMMARIES_PROMISE = (async () => {
+      const response = await fetch(`${baseUrl}/api/v1/locations/names`, { headers });
+      if (!response.ok) {
+        throw new Error(`Failed to load location summaries: HTTP ${response.status}`);
+      }
+
+      const payload = (await response.json()) as {
+        locations?: Array<{ id?: number; name?: string; country?: string }>;
+      };
+
+      return (payload.locations ?? []).filter(
+        (location): location is LocationSummary => (
+          typeof location.id === 'number'
+          && typeof location.name === 'string'
+          && typeof location.country === 'string'
+        ),
+      );
+    })();
+  }
+
+  return LOCATION_SUMMARIES_PROMISE;
 }
 
 function buildLocationTerms(location: string, locationData: JsonObject, explicitTerms?: string[]): string[] {
@@ -274,7 +371,7 @@ function normalizeAction(item: unknown, index: number) {
     totalCostUsd: value.totalCostUsd ?? null,
     timeframe: value.timeframe ?? null,
     description: value.description ?? null,
-    resilienceEnhanced: value.resilienceEnhanced ?? null,
+    resilienceEnhanced: asArray(value.resilienceEnhanced),
     impactedSectors: asArray(value.impactedSectors).map(normalizeSector),
   };
 }
@@ -607,14 +704,15 @@ export async function runChatEvalCase(
   headers: Record<string, string>,
   testCase: ChatEvalCase,
 ) : Promise<ChatEvalResult> {
+  const locationData = await resolveCanonicalLocationData(baseUrl, headers, testCase);
   const body: OpenAiChatCompletionRequest = {
     messages: [{ role: 'user', content: testCase.question }],
-    locationData: testCase.locationData,
+    locationData,
   };
 
   for (let attempt = 1; attempt <= MAX_CHAT_EVAL_ATTEMPTS; attempt += 1) {
     try {
-      const response = await chatCompletionsApiV1ChatCompletionsPost({
+      const response = await chatCompletionsApiV1ChatsCompletionsPost({
         baseUrl,
         headers,
         body,

@@ -83,6 +83,7 @@ Sensitive variables must be defined in Secret Manager with the appropriate envir
 | `POSTGRES_HOST` | Database host (e.g., Cloud SQL Unix socket path). |
 | `POSTGRES_DB` | Database name (e.g., `cdp`). |
 | `POSTGRES_USER` | Database username. |
+| `API_KEY` | Shared API key required by protected backend endpoints. |
 | `LLM_API_KEY` | API Key for Vertex AI / Gemini. |
 | `ALLOWED_ORIGINS` | CORS origins (comma-separated). |
 | `GOOGLE_MAPS_API_KEY` | Google Maps API Key. |

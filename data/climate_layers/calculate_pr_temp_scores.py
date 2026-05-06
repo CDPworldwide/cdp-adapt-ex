@@ -289,6 +289,7 @@ def save_geotiff(da: xr.DataArray, out_path: Path):
         da
         .rio.write_crs("EPSG:4326", inplace=False)
         .rio.set_spatial_dims(x_dim=lon_name, y_dim=lat_name, inplace=False)
+        .rio.write_nodata(np.nan, encoded=True)
     )
     da_rio.rio.to_raster(out_path)
     print(f"  Saved → {out_path}")
@@ -305,10 +306,12 @@ def classify_1to5(
     Args:
         da: Input DataArray
         thresholds: Tuple of (p20, p40, p60, p80) threshold values
-        ignore_zero: If True, ignore zero values when creating mask
+        ignore_zero: If True, exclude zeros from the 1-5 classification and
+                     assign them score 0 (hazard absent, distinct from NoData)
 
     Returns:
-        DataArray with scores 1-5 (and NaN for invalid/masked values)
+        DataArray with scores 1-5 (and NaN for no-data pixels). When
+        ignore_zero=True, zero-valued inputs receive score 0 instead of NaN.
     """
     p20, p40, p60, p80 = thresholds
 
@@ -317,6 +320,9 @@ def classify_1to5(
         mask &= (da > 0)
 
     score = xr.full_like(da, np.nan)
+    if ignore_zero:
+        # Zero hazard → score 0 (NaN == 0 is False, so no-data stays NaN)
+        score = xr.where(da == 0, 0, score)
     score = xr.where(mask & (da <= p20), 1, score)
     score = xr.where(mask & (da > p20) & (da <= p40), 2, score)
     score = xr.where(mask & (da > p40) & (da <= p60), 3, score)

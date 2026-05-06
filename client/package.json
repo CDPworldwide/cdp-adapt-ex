@@ -23,7 +23,9 @@
   "scripts": {
     "generate": "openapi-ts && node ./scripts/patch-generated-client.mjs",
     "refresh": "./scripts/generate.sh",
+    "refresh:verify": "npm run refresh && npm run build",
     "check": "./scripts/check-generated.sh",
+    "verify": "npm run generate && npm run build",
     "build": "tsc",
     "clean": "rimraf dist",
     "prebuild": "npm run clean"

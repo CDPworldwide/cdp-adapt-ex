@@ -6,12 +6,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import { ArrowRightLongIconComponent } from '../../../shared/icons';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
-  HazardEnum,
-  LocationProfile,
-  SolutionCardOutput,
-  SolutionCategoryEnum,
-} from '@pac-api/client';
+import { HazardEnum, LocationProfile, SolutionCard, SolutionCategoryEnum } from '@pac-api/client';
 import { SolutionDetailModalComponent } from './solution-detail-modal.component';
 
 @Component({
@@ -54,9 +49,9 @@ export class SolutionsComponent {
 
     // Group solutions into their respective categories and remove empty ones
     return Object.entries(this.data.solutions.solutions)
-      .map(([category, solutions]: [string, SolutionCardOutput[] | undefined]) => {
+      .map(([category, solutions]: [string, SolutionCard[] | undefined]) => {
         const filteredSolutions = (solutions || []).filter(
-          (s: SolutionCardOutput) =>
+          (s: SolutionCard) =>
             !this.selectedHazard ||
             s.solutionHazardsAddressed?.some((h) => h.hazardType === this.selectedHazard),
         );
@@ -89,7 +84,7 @@ export class SolutionsComponent {
     return `linear-gradient(180deg, rgba(30, 30, 30, 0.20) 33.22%, rgba(30, 30, 30, 0.30) 70.4%), url('${img}') lightgray 20% / cover no-repeat`;
   }
 
-  openSolutionDetail(solution: SolutionCardOutput): void {
+  openSolutionDetail(solution: SolutionCard): void {
     const isMobile =
       this.breakpointObserver.isMatched(Breakpoints.Handset) ||
       this.breakpointObserver.isMatched('(max-width: 1023px)');

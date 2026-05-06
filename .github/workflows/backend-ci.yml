@@ -28,6 +28,15 @@ jobs:
         with:
           python-version-file: "backend/.python-version"
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+
       # Needed for pygraphviz
       - name: Install Graphviz
         run: |
@@ -69,12 +78,16 @@ jobs:
         run: |
           APP_ENV=test uv run pytest -q || (if [ $? -eq 5 ]; then echo "No tests found, passing." && exit 0; else exit $?; fi)
 
-      # Regenerates openapi.json from the backend and fails if it differs
-      # from the committed version
-      - name: Check API client is in sync
+      - name: Install client dependencies
+        if: github.event_name == 'pull_request'
+        working-directory: client
+        run: npm ci
+
+      # Regenerates the OpenAPI spec and client as part of CI instead of
+      # requiring committed generated files to stay in sync.
+      - name: Generate and build API client
         if: github.event_name == 'pull_request'
         run: |
-          cp client/openapi.json client/openapi.json.committed
           cd backend
           SKIP_DATABASE_INIT=true uv run uvicorn app.main:app --host 127.0.0.1 --port 4352 &
           SERVER_PID=$!
@@ -85,19 +98,6 @@ jobs:
             sleep 1
           done
           kill $SERVER_PID 2>/dev/null || true
-          cd ..
-          # Normalize trailing newlines before comparing
-          sed -i -e '$a\' client/openapi.json.committed 2>/dev/null || true
-          sed -i -e '$a\' client/openapi.json 2>/dev/null || true
-          if ! diff -q client/openapi.json.committed client/openapi.json > /dev/null 2>&1; then
-            echo "::error::client/openapi.json is out of sync with the backend."
-            echo ""
-            echo "The committed openapi.json does not match what the backend generates."
-            echo "Run 'npm run client' and commit the updated client/openapi.json."
-            echo ""
-            echo "Diff:"
-            diff client/openapi.json.committed client/openapi.json || true
-            exit 1
-          fi
-          echo "✓ client/openapi.json is in sync with the backend."
-          rm -f client/openapi.json.committed
+          cd ../client
+          npm run generate
+          npm run build
