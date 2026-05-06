@@ -65,7 +65,13 @@
     "expandMap": "Expand map",
     "collapseMap": "Collapse map",
     "showLess": "Show less",
-    "methodology": "Methodology"
+    "methodology": "Methodology",
+    "helpMenu": {
+      "label": "Help",
+      "about": "About this tool",
+      "feedback": "Give feedback",
+      "externalIndicator": "(opens in a new tab)"
+    }
   },
   "locationCard": {
     "backToMap": "Back to map",

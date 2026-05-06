@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { environment } from '@env/environment';
 
 const STORAGE_KEY = 'cdp-welcome-dismissed';
 const ROLE_STORAGE_KEY = 'cdp-user-role';
@@ -44,6 +45,7 @@ export class WelcomeModalComponent implements OnInit {
       return;
     }
     this.persistRole(this.selectedRole);
+    this.reportRole(this.selectedRole);
     this.dismiss();
   }
 
@@ -81,5 +83,16 @@ export class WelcomeModalComponent implements OnInit {
     } catch {
       // storage unavailable — selection is non-critical metadata.
     }
+  }
+
+  private reportRole(roleId: string): void {
+    // Fire-and-forget: never block dismissal on the network.
+    void fetch(`${environment.baseUrl}/api/v1/onboarding/role`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role: roleId }),
+    }).catch(() => {
+      // Telemetry only; ignore failures.
+    });
   }
 }

@@ -16,9 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ProjectSeekingFundingOutput } from '@pac-api/client';
 import { CloseIconComponent } from '../../../../shared/icons/close-icon.component';
 import { ImagePlaceholderIconComponent } from '../../../../shared/icons/image-placeholder-icon.component';
-import { HazardIconComponent } from '../../../../shared/components/hazard-icon/hazard-icon.component';
 import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
-import { ShowMoreButtonComponent } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-project-seeking-funding-detail',
@@ -28,9 +26,7 @@ import { ShowMoreButtonComponent } from 'src/app/shared/components';
     TranslateModule,
     CloseIconComponent,
     ImagePlaceholderIconComponent,
-    HazardIconComponent,
     AutoTranslatePipe,
-    ShowMoreButtonComponent,
   ],
   templateUrl: './project-seeking-funding-detail.component.html',
 })

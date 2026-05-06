@@ -80,6 +80,15 @@ ON "CSTAR_2025_Dim_Central"  USING GIST (geometry);
 ALTER TABLE "CSTAR_2025_Dim_Central"
 DROP COLUMN geom_wkt;
 
+-- 5. Pre-computed centroid POINT used by the world-map pin layer.
+--    Backend falls back to the first vertex of `geometry` when this is NULL,
+--    so it can be backfilled incrementally without breaking the map.
+ALTER TABLE "CSTAR_2025_Dim_Central"
+ADD COLUMN centroid GEOMETRY(Point, 4326);
+
+CREATE INDEX idx_target_table_centroid
+ON "CSTAR_2025_Dim_Central" USING GIST (centroid);
+
 -----------------------------------------
 -- change requesting org to pipe deliminated too to be consistent
 UPDATE "CSTAR_2025_Dim_Central"

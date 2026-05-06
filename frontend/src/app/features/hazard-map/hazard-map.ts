@@ -23,7 +23,6 @@ import { HazardColorPaletteComponent } from './hazard-legend/hazard-color-palett
 import { HazardMapService } from './hazard-map.service';
 import { GoogleMapsLoaderService } from '../../shared/services/google-maps-loader.service';
 import { HazardLayerOptions } from '@pac-api/client';
-import { AskCdpAiComponent } from '../ask-cdp-ai/ask-cdp-ai.component';
 
 export const SUPPORTED_HAZARD_TYPES: HazardEnum[] = [
   HazardEnum.WATER_STRESS,
@@ -56,7 +55,6 @@ const SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
     HazardIconComponent,
     HazardColorPaletteComponent,
     TranslateModule,
-    AskCdpAiComponent,
   ],
   templateUrl: './hazard-map.html',
   styles: [':host { display: block; width: 100%; height: 100%; }'],
