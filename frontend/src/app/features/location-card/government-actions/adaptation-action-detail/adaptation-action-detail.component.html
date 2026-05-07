@@ -69,7 +69,7 @@
             <h2
               class="text-black text-2xl lg:text-[31px] font-normal font-roboto leading-tight lg:leading-normal break-words"
             >
-              {{ action.title | autoTranslate }}
+              {{ splitTitleAtLastColon(action.title | autoTranslate).main }}
             </h2>
           </div>
           @if (action.status) {
