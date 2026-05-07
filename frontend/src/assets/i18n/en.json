@@ -404,14 +404,9 @@
   },
   "cityDetail": {
     "notFound": {
-      "eyebrow": "Organization route",
-      "title": "We couldn't load this organization profile",
-      "descriptionPrefix": "We couldn't find data for organization ID",
-      "descriptionSuffix": ". The link may be outdated, or this organization may not have climate data available yet.",
-      "unknownOrganization": "unknown",
-      "guidance": "Check the organization ID in the URL, or return to search to open a different organization.",
-      "backToSearch": "Back to search",
-      "tryAnotherOrganization": "Try another organization"
+      "title": "Something went wrong",
+      "description": "We couldn't find data for this jurisdiction. Please try again.",
+      "backToMap": "Back to map"
     }
   },
   "disclosureTrends": {
