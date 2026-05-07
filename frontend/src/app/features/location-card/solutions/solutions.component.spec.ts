@@ -43,7 +43,7 @@ describe('SolutionsComponent', () => {
         },
         solutions: {
           hazardFiltersTitle: 'Hazard Filters',
-          popularSolutionsTitle: 'Popular Solutions',
+          popularSolutionsTitle: 'Popular peer actions',
           sourceDescription: 'Source',
           noSolutionsBanner: {
             title: 'Not all information was disclosed',

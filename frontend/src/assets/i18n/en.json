@@ -347,7 +347,7 @@
     "solutions": {
       "alsoHasLocalAction": "also has action(s) in this category",
       "exampleActionsCount": "View {{count}} example actions",
-      "popularSolutionsTitle": "Popular solutions",
+      "popularSolutionsTitle": "Popular peer actions",
       "totalCostOfAction": "Total cost of action (USD)",
       "timeframe": "Timeframe",
       "hazardFiltersTitle": "Hazard filters",
@@ -370,6 +370,7 @@
   },
   "askCdpAi": {
     "buttonText": "Ask the AI Explorer",
+    "betaDisclaimer": "Beta: Trained on CDP disclosure data from cities, states, and regions. Results may be inaccurate and are not guaranteed.",
     "emptyState": {
       "title": "Ask a question about {{location}}.",
       "description": "Use the input below to ask about risks, actions, or climate context for this location."
