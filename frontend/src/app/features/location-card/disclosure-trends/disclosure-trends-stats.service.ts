@@ -4,19 +4,14 @@ import {
   type DisclosureTrendsSummary,
   getDisclosureTrendsApiV1DisclosureTrendsGet,
 } from '@pac-api/client';
-import { createClient, createConfig } from '@pac-api/client/client';
-import { environment } from '@env/environment';
+import { createApiClient } from '../../../shared/services/api-client';
 
 /**
  * Provides dataset-wide disclosure trends for the homepage.
  */
 @Injectable({ providedIn: 'root' })
 export class DisclosureTrendsStatsService {
-  private client = createClient(
-    createConfig({
-      baseUrl: environment.baseUrl,
-    }),
-  );
+  private client = createApiClient();
 
   getSummary(year: number): Observable<DisclosureTrendsSummary> {
     return from(

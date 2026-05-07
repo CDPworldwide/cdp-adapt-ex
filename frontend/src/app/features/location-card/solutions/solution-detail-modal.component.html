@@ -1,4 +1,5 @@
 <div
+  #outerContainer
   class="flex flex-col lg:flex-row h-full lg:h-[80vh] w-full lg:w-[80vw] overflow-y-auto lg:overflow-hidden shadow-2xl relative bg-white"
 >
   <!-- Solution Overview -->
@@ -50,27 +51,6 @@
         </div>
       }
 
-      <!-- Peers Taking Action -->
-      <div class="flex flex-col mt-6 lg:mt-14">
-        <span class="text-white font-inter text-xs font-bold leading-normal">
-          {{ 'locationCard.solutions.jurisdictionsTakingAction' | translate }}
-        </span>
-        <div class="flex items-center gap-2 mt-3">
-          <div
-            class="w-6 h-6 rounded-full flex-shrink-0"
-            [style.background]="
-              'conic-gradient(#2DCF8B ' + (data.solution.pctPeerTakingAction || 0) + '%, #606060 0)'
-            "
-            style="
-              mask-image: radial-gradient(transparent 58%, black 60%);
-              -webkit-mask-image: radial-gradient(transparent 58%, black 60%);
-            "
-          ></div>
-          <span class="text-white text-2xl font-roboto font-normal leading-normal tracking-[1.2px]">
-            {{ data.solution.pctPeerTakingAction || 0 | number: '1.0-2' }}%
-          </span>
-        </div>
-      </div>
     </div>
 
     <!-- Navigation Controls for Example Actions -->
@@ -128,7 +108,7 @@
   </div>
 
   <!-- Right/Bottom Side: Action Detail -->
-  <div class="flex-1 bg-white lg:overflow-y-auto overflow-x-hidden">
+  <div #detailContainer class="flex-1 bg-white lg:overflow-y-auto overflow-x-hidden">
     @if (currentAction) {
       <div [class]="'w-full h-full ' + slideClass">
         <app-adaptation-action-detail

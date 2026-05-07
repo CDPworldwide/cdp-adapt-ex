@@ -1,29 +1,32 @@
 <div class="bg-white border-l border-gray-200 flex flex-col h-full">
   <!-- Header Section -->
-  <div
-    class="p-4 bg-white border-b border-gray-200 flex justify-between items-center flex-shrink-0"
-  >
-    <h2 class="text-lg font-semibold text-gray-800">{{ 'askCdpAi.buttonText' | translate }}</h2>
-    <button
-      data-testid="ask-ai-toggle"
-      (click)="toggleOpen()"
-      class="text-gray-500 hover:text-gray-700"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
+  <div class="p-4 bg-white border-b border-gray-200 flex-shrink-0">
+    <div class="flex justify-between items-center">
+      <h2 class="text-lg font-semibold text-gray-800">{{ 'askCdpAi.buttonText' | translate }}</h2>
+      <button
+        data-testid="ask-ai-toggle"
+        (click)="toggleOpen()"
+        class="text-gray-500 hover:text-gray-700"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M17 8l4 4m0 0l-4 4m4-4H3"
-        />
-      </svg>
-    </button>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 8l4 4m0 0l-4 4m4-4H3"
+          />
+        </svg>
+      </button>
+    </div>
+    <p class="mt-2 text-sm font-medium text-cdp-red leading-snug">
+      {{ 'askCdpAi.betaDisclaimer' | translate }}
+    </p>
   </div>
 
   <!-- Main Content -->

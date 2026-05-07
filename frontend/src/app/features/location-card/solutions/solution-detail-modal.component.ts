@@ -1,7 +1,9 @@
 import {
   Component,
+  ElementRef,
   OnInit,
   OnDestroy,
+  ViewChild,
   inject,
   ChangeDetectorRef,
   ViewEncapsulation,
@@ -59,6 +61,8 @@ export class SolutionDetailModalComponent implements OnInit, OnDestroy {
 
   currentActionIndex = 0;
   slideClass = '';
+  @ViewChild('outerContainer') private outerContainer?: ElementRef<HTMLElement>;
+  @ViewChild('detailContainer') private detailContainer?: ElementRef<HTMLElement>;
   private destroy$ = new Subject<void>();
 
   getBackgroundStyle(_solution: SolutionCard): string {
@@ -108,6 +112,7 @@ export class SolutionDetailModalComponent implements OnInit, OnDestroy {
     if (this.currentActionIndex < this.totalActions - 1) {
       this.currentActionIndex++;
       this.slide('right');
+      this.scrollToTop();
     }
   }
 
@@ -115,7 +120,14 @@ export class SolutionDetailModalComponent implements OnInit, OnDestroy {
     if (this.currentActionIndex > 0) {
       this.currentActionIndex--;
       this.slide('left');
+      this.scrollToTop();
     }
+  }
+
+  // Mobile uses outer scroll; desktop uses the detail column. Reset both.
+  private scrollToTop(): void {
+    this.outerContainer?.nativeElement.scrollTo({ top: 0, behavior: 'smooth' });
+    this.detailContainer?.nativeElement.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   private slide(dir: 'right' | 'left'): void {

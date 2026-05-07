@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { SolutionsComponent } from './solutions.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -17,7 +18,7 @@ describe('SolutionsComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [SolutionsComponent, TranslateModule.forRoot()],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     })
       .overrideComponent(SolutionsComponent, {
         remove: { imports: [MatDialogModule] },
@@ -43,7 +44,7 @@ describe('SolutionsComponent', () => {
         },
         solutions: {
           hazardFiltersTitle: 'Hazard Filters',
-          popularSolutionsTitle: 'Popular Solutions',
+          popularSolutionsTitle: 'Popular peer actions',
           sourceDescription: 'Source',
           noSolutionsBanner: {
             title: 'Not all information was disclosed',

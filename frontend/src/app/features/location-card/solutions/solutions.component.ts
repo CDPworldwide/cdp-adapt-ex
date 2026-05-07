@@ -4,8 +4,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
-import { ArrowRightLongIconComponent } from '../../../shared/icons';
+import { ArrowRightLongIconComponent, InfoIconComponent } from '../../../shared/icons';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
 import { HazardEnum, LocationProfile, SolutionCard, SolutionCategoryEnum } from '@pac-api/client';
 import { SolutionDetailModalComponent } from './solution-detail-modal.component';
 
@@ -17,8 +18,10 @@ import { SolutionDetailModalComponent } from './solution-detail-modal.component'
     TranslateModule,
     HazardIconComponent,
     ArrowRightLongIconComponent,
+    InfoIconComponent,
     MatTooltipModule,
     MatDialogModule,
+    RouterLink,
   ],
   templateUrl: './solutions.component.html',
 })

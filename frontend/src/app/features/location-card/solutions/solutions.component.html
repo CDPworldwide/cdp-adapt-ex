@@ -68,6 +68,15 @@
               : { year: data?.disclosureYear || ('locationCard.hazardDetail.unknown' | translate) }
         }}
       </span>
+      <a
+        routerLink="/methodology"
+        [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
+        matTooltipPosition="above"
+        [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
+        class="inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+      >
+        <app-info-icon size="14"></app-info-icon>
+      </a>
     </div>
   </section>
 
@@ -183,41 +192,6 @@
                     </div>
                   }
 
-                  <!-- Vertical Divider -->
-                  <div class="w-px self-stretch bg-[#767676]"></div>
-
-                  <!-- Jurisdictions Taking this Action -->
-                  <div class="flex flex-col gap-2">
-                    <span
-                      class="text-white text-sm font-medium font-roboto leading-5 tracking-[0.25px]"
-                    >
-                      {{ 'locationCard.solutions.jurisdictionsTakingAction' | translate }}
-                    </span>
-                    <div class="flex items-center gap-2">
-                      <div
-                        class="w-6 h-6 rounded-full flex-shrink-0"
-                        [style.background]="
-                          'conic-gradient(#2DCF8B ' +
-                          (solution.pctPeerTakingAction || 0) +
-                          '%, #606060 0)'
-                        "
-                        style="
-                          mask-image: radial-gradient(transparent 58%, black 60%);
-                          -webkit-mask-image: radial-gradient(transparent 58%, black 60%);
-                        "
-                      ></div>
-                      <div class="flex items-baseline">
-                        <span
-                          class="text-white text-2xl font-normal font-roboto leading-normal tracking-[1.2px]"
-                          >{{ solution.pctPeerTakingAction || 0 | number: '1.0-2' }}</span
-                        >
-                        <span
-                          class="text-white text-2xl font-normal font-roboto leading-normal tracking-[1.2px]"
-                          >%</span
-                        >
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 <!-- Footer: Example Actions -->

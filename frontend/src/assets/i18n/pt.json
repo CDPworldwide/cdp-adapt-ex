@@ -63,7 +63,7 @@
       "contactUs": "Contate-nos"
     },
     "tabs": {
-      "hazards": "riscos",
+      "hazards": "Riscos",
       "governmentActions": "Ações governamentais",
       "solutions": "Soluções"
     },
@@ -201,7 +201,7 @@
       "actions": "Ações",
       "disclosed": "Divulgados",
       "adaptationGoals": "Metas de adaptação ({{count}} Divulgado)",
-      "hazardsAddressed": "riscos abordados",
+      "hazardsAddressed": "Riscos abordados",
       "targetYear": "Ano alvo",
       "adaptationActions": "Ações de adaptação ({{count}} Divulgadas)",
       "coBenefits": "Benefícios colaterais",
@@ -286,7 +286,7 @@
       "climateHazards": "Riscos climáticos",
       "statusOfAction": "Estado da ação",
       "coBenefits": "Benefícios colaterais",
-      "hazardsAddressed": "riscos abordados",
+      "hazardsAddressed": "Riscos abordados",
       "jurisdictionsTakingAction": "Jurisdições que tomaram essa medida",
       "exampleActions": "Ações de exemplo",
       "resilienceAttributes": "Atributos de resiliência aprimorados",

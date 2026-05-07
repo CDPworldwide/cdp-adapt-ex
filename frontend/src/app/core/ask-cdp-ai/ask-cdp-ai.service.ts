@@ -242,9 +242,9 @@ export class AskCdpAiService {
   }
 
   private getMessageText(message: UIMessage): string {
-    return message.parts
+    return (message.parts as Array<{ type: string; text?: string }>)
       .filter((part) => part.type === 'text')
-      .map((part) => part.text)
+      .map((part) => part.text ?? '')
       .join('');
   }
 
