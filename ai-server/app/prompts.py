@@ -264,7 +264,9 @@ def select_solution_cards(
     return selected_categories
 
 
-def solution_card_priority(card: dict[str, Any], original_index: int) -> tuple[Any, ...]:
+def solution_card_priority(
+    card: dict[str, Any], original_index: int
+) -> tuple[Any, ...]:
     peer_actions = card.get("peerActions")
     return (
         bool(card.get("hasLocalAction")),

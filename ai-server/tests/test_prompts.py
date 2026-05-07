@@ -318,7 +318,9 @@ def test_build_system_prompt_limits_solution_cards_globally_by_priority():
     context = json.loads(context_json.removesuffix("\n```"))
     solution_categories = context["solutions"]["solutions"]
     cards = [
-        card for category_cards in solution_categories.values() for card in category_cards
+        card
+        for category_cards in solution_categories.values()
+        for card in category_cards
     ]
 
     assert len(cards) == prompts.MAX_SOLUTION_CARDS_TOTAL

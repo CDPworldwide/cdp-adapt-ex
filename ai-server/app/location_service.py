@@ -64,7 +64,9 @@ def _nested_list(data: Mapping[str, Any], section: str, key: str) -> list[Any]:
     return []
 
 
-def _nested_mapping(data: Mapping[str, Any], section: str, key: str) -> Mapping[str, Any]:
+def _nested_mapping(
+    data: Mapping[str, Any], section: str, key: str
+) -> Mapping[str, Any]:
     section_data = data.get(section)
     if isinstance(section_data, Mapping):
         value = section_data.get(key)
