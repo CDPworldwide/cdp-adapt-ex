@@ -131,8 +131,16 @@
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
           [innerHTML]="
-            'locationCard.govActions.noGoals.description'
-              | translate: { location: locationName || '', year: disclosureYear || '' }
+            (selectedFilter
+              ? 'locationCard.govActions.noGoals.descriptionFiltered'
+              : 'locationCard.govActions.noGoals.description'
+            )
+              | translate
+                : {
+                    location: locationName || '',
+                    country: countryName || '',
+                    year: disclosureYear || '',
+                  }
           "
         ></p>
       }
@@ -250,8 +258,16 @@
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
           [innerHTML]="
-            'locationCard.govActions.noActions.description'
-              | translate: { location: locationName || '', year: disclosureYear || '' }
+            (selectedFilter
+              ? 'locationCard.govActions.noActions.descriptionFiltered'
+              : 'locationCard.govActions.noActions.description'
+            )
+              | translate
+                : {
+                    location: locationName || '',
+                    country: countryName || '',
+                    year: disclosureYear || '',
+                  }
           "
         ></p>
       }
@@ -346,8 +362,16 @@
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
           [innerHTML]="
-            'locationCard.govActions.noProjects.description'
-              | translate: { location: locationName || '', year: disclosureYear || '' }
+            (selectedFilter
+              ? 'locationCard.govActions.noProjects.descriptionFiltered'
+              : 'locationCard.govActions.noProjects.description'
+            )
+              | translate
+                : {
+                    location: locationName || '',
+                    country: countryName || '',
+                    year: disclosureYear || '',
+                  }
           "
         ></p>
       }

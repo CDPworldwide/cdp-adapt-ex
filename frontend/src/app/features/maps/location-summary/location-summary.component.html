@@ -1,5 +1,16 @@
 @if (location) {
-  <div class="flex flex-col w-full bg-white text-cdp-dark px-[22px] pt-[28px] pb-[22px]">
+  <div
+    class="relative flex flex-col w-full bg-white text-cdp-dark max-h-[calc(100vh-19rem)]"
+  >
+    <button
+      type="button"
+      (click)="onClose()"
+      [attr.aria-label]="'shared.close' | translate"
+      class="absolute top-3 right-3 z-10 p-1.5 rounded-full text-cdp-neutral-05 hover:text-cdp-dark hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+    >
+      <app-close-icon size="16"></app-close-icon>
+    </button>
+    <div class="overflow-y-auto px-[22px] pt-[28px] pb-[22px]">
     @if (isLoading) {
       <div class="flex flex-col items-center justify-center w-full py-12">
         <mat-spinner diameter="40"></mat-spinner>
@@ -69,5 +80,6 @@
         </button>
       </footer>
     }
+    </div>
   </div>
 }

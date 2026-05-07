@@ -65,6 +65,7 @@
     }
   },
   "shared": {
+    "close": "Close",
     "showMore": "Show more",
     "selectLanguage": "Select language",
     "expandMap": "Expand map",
@@ -266,21 +267,24 @@
       "noData": "No government actions data available.",
       "notDisclosed": "Not disclosed",
       "noActionsBanner": {
-        "title": "No reported actions to disclose",
-        "description": "This jurisdiction may be missing some categories of disclosure or may have no actions to disclose in their CDP report. Download the full questionnaire and disclosure from the CDP open data portal.",
+        "title": "Some data may not be reported",
+        "description": "This jurisdiction may be missing some categories of disclosure from their CDP report.<br><br>Download the full disclosure from the CDP open data portal.",
         "button": "Visit the CDP Open Data Portal"
       },
       "noGoals": {
         "title": "Adaptation goals",
-        "description": "<strong>{{location}}</strong> didn’t disclose any hazard related <strong>adaptation goals</strong> in {{year}} in the CDP disclosure. There can be many reasons why the data hasn’t been disclosed, and ideally we would like to have them show up here."
+        "description": "{{location}} ({{country}}) didn’t disclose any adaptation goals in their {{year}} CDP disclosure.",
+        "descriptionFiltered": "{{location}} ({{country}}) didn’t disclose any adaptation goals for the selected hazard in their {{year}} CDP disclosure."
       },
       "noActions": {
         "title": "Adaptation actions",
-        "description": "<strong>{{location}}</strong> didn’t disclose any hazard related <strong>adaptation actions</strong> in {{year}} in the CDP disclosure. There could be any reason why we can’t display the data, but we hope to increase the data available over future and past years as we expand the capabilities of this product."
+        "description": "{{location}} ({{country}}) didn’t disclose any adaptation actions in their {{year}} CDP disclosure.",
+        "descriptionFiltered": "{{location}} ({{country}}) didn’t disclose any adaptation actions for the selected hazard in their {{year}} CDP disclosure."
       },
       "noProjects": {
         "title": "Projects seeking funding",
-        "description": "<strong>{{location}}</strong> didn’t disclose any hazard related <strong>projects seeking funding</strong> in {{year}} in the CDP disclosure. Due to the lack of information we can’t provide any details or insights into funding gaps for {{location}}’s projects or progress in their process to obtain funding or manage these projects."
+        "description": "{{location}} ({{country}}) didn’t disclose any projects seeking funding in their {{year}} CDP disclosure.",
+        "descriptionFiltered": "{{location}} ({{country}}) didn’t disclose any projects seeking funding to address the selected hazard in their {{year}} CDP disclosure."
       },
       "detail": {
         "dialogLabel": "Detail dialog",

@@ -3,12 +3,19 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
+import { CloseIconComponent } from '../../../shared/icons';
 import type { Hazard, LocationPin } from '@pac-api/client';
 
 @Component({
   selector: 'app-location-summary',
   standalone: true,
-  imports: [CommonModule, TranslateModule, MatProgressSpinnerModule, HazardIconComponent],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    MatProgressSpinnerModule,
+    HazardIconComponent,
+    CloseIconComponent,
+  ],
   templateUrl: './location-summary.component.html',
   styleUrls: ['./location-summary.component.css'],
 })
