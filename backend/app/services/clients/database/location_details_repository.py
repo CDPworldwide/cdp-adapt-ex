@@ -2,7 +2,7 @@
 
 from typing import List, Optional
 
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -32,8 +32,13 @@ class LocationDetailsRepository:
                 select(FactHazards)
                 .where(
                     FactHazards.cdp_disclosing_org_number == org_id,
-                    # No public_status filter — hazards are always visible
-                    # (Public, Non-Public, or GEE-derived for non-disclosers).
+                    # Suppress disclosed Non-Public hazards while keeping Public
+                    # and GEE-derived (NULL public_status) rows. (`!=` alone
+                    # would silently drop NULL rows under SQL three-valued logic.)
+                    or_(
+                        FactHazards.public_status != "Non-Public",
+                        FactHazards.public_status.is_(None),
+                    ),
                 )
                 .order_by(FactHazards.hazard_rank)
             )
