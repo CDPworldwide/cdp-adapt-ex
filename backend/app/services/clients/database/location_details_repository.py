@@ -32,7 +32,8 @@ class LocationDetailsRepository:
                 select(FactHazards)
                 .where(
                     FactHazards.cdp_disclosing_org_number == org_id,
-                    FactHazards.public_status == "Public",
+                    # No public_status filter — hazards are always visible
+                    # (Public, Non-Public, or GEE-derived for non-disclosers).
                 )
                 .order_by(FactHazards.hazard_rank)
             )
@@ -137,7 +138,8 @@ class LocationDetailsRepository:
                 func.lower(DimCentral.disclosing_organization)
                 == organization_name.lower(),
                 DimCentral.has_geometry,
-                DimCentral.public_status == "Public",
+                # No public_status filter — Public, Non-Public, and non-disclosers
+                # all need to resolve so search bar clicks reach the detail page.
             )
             results = (await session.exec(statement)).all()
             return [
@@ -153,6 +155,10 @@ class LocationDetailsRepository:
     async def get_all_location_summaries(self) -> List[OrganizationSummary]:
         """Return all organizations with their IDs and names.
 
+        Includes Public disclosers, Non-Public disclosers, and non-disclosers
+        (who have an empty `public_status` as of May 7, schema to be updated later). The search bar surfaces all three
+        buckets.
+
         Returns:
             A list of `OrganizationSummary` objects used for search suggestions.
         """
@@ -166,7 +172,6 @@ class LocationDetailsRepository:
                 )
                 .where(
                     DimCentral.has_geometry,
-                    DimCentral.public_status == "Public",
                 )
                 .distinct()
             )
@@ -202,7 +207,9 @@ class LocationDetailsRepository:
                 )
                 .where(
                     DimCentral.has_geometry,
-                    DimCentral.public_status == "Public",
+                    # Disclosers (Public + Non-Public) only — non-disclosers
+                    # (empty public_status as of May 7) appear in search but not on the map.
+                    DimCentral.public_status.in_(["Public", "Non-Public"]),
                 )
                 .distinct(DimCentral.disclosing_organization)
             )
