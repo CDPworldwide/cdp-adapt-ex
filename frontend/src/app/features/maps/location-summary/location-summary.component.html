@@ -1,7 +1,5 @@
 @if (location) {
-  <div
-    class="relative flex flex-col w-full bg-white text-cdp-dark max-h-[calc(100vh-19rem)]"
-  >
+  <div class="relative flex flex-col w-full bg-white text-cdp-dark max-h-[calc(100vh-19rem)]">
     <button
       type="button"
       (click)="onClose()"
@@ -11,77 +9,77 @@
       <app-close-icon size="16"></app-close-icon>
     </button>
     <div class="overflow-y-auto px-[22px] pt-[28px] pb-[22px]">
-    @if (isLoading) {
-      <div class="flex flex-col items-center justify-center w-full py-12">
-        <mat-spinner diameter="40"></mat-spinner>
-        <p class="text-gray-500 mt-4">{{ 'maps.loading' | translate }}</p>
-      </div>
-    } @else {
-      <header class="flex flex-col gap-3 pb-6">
-        @if (isReportingLeader) {
-          <span
-            class="self-start inline-flex items-center justify-center gap-[3px] px-2 py-[3px] rounded-[6px] bg-cdp-red text-white font-roboto-mono text-[13px] font-light leading-[25px] [font-feature-settings:'liga'_off,'clig'_off]"
-          >
-            {{ 'maps.reportingLeader' | translate }}
-          </span>
-        }
-        <h2 class="text-2xl font-medium font-inter leading-tight m-0">
-          {{ location.name }}
-        </h2>
-      </header>
-
-      <!-- Primary Climate Hazards -->
-      <div class="py-6 flex flex-col gap-2">
-        <div class="flex items-center gap-3">
-          <span class="text-[22px] font-light font-roboto leading-none">
-            {{ totalHazards.toString().padStart(2, '0') }}
-          </span>
-          <span class="text-cdp-dark">–</span>
-          <div class="flex items-center gap-2 text-cdp-neutral-05">
-            @for (hazard of topHazards; track $index) {
-              <app-hazard-icon
-                [hazard]="hazard.hazardType"
-                [otherHazardDetails]="hazard.otherHazardDetails"
-                class="flex items-center justify-center"
-              ></app-hazard-icon>
-            }
-          </div>
+      @if (isLoading) {
+        <div class="flex flex-col items-center justify-center w-full py-12">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p class="text-gray-500 mt-4">{{ 'maps.loading' | translate }}</p>
         </div>
-        <span class="text-[10px] uppercase tracking-[2.8px] text-black">
-          {{ 'maps.primaryClimateHazards' | translate }}
-        </span>
-      </div>
+      } @else {
+        <header class="flex flex-col gap-3 pb-6">
+          @if (isReportingLeader) {
+            <span
+              class="self-start inline-flex items-center justify-center gap-[3px] px-2 py-[3px] rounded-[6px] bg-cdp-red text-white font-roboto-mono text-[13px] font-light leading-[25px] [font-feature-settings:'liga'_off,'clig'_off]"
+            >
+              {{ 'maps.reportingLeader' | translate }}
+            </span>
+          }
+          <h2 class="text-2xl font-medium font-inter leading-tight m-0">
+            {{ location.name }}
+          </h2>
+        </header>
 
-      <!-- Disclosed Adaptation Actions -->
-      <div class="border-t border-cdp-neutral-02 py-6 flex flex-col gap-2">
-        <span class="text-[22px] font-light font-roboto leading-none">
-          {{ disclosedActions.toString().padStart(2, '0') }}
-        </span>
-        <span class="text-[10px] uppercase tracking-[2.8px] text-black">
-          {{ 'maps.disclosedActions' | translate }}
-        </span>
-      </div>
+        <!-- Primary Climate Hazards -->
+        <div class="py-6 flex flex-col gap-2">
+          <div class="flex items-center gap-3">
+            <span class="text-[22px] font-light font-roboto leading-none">
+              {{ totalHazards.toString().padStart(2, '0') }}
+            </span>
+            <span class="text-cdp-dark">–</span>
+            <div class="flex items-center gap-2 text-cdp-neutral-05">
+              @for (hazard of topHazards; track $index) {
+                <app-hazard-icon
+                  [hazard]="hazard.hazardType"
+                  [otherHazardDetails]="hazard.otherHazardDetails"
+                  class="flex items-center justify-center"
+                ></app-hazard-icon>
+              }
+            </div>
+          </div>
+          <span class="text-[10px] uppercase tracking-[2.8px] text-black">
+            {{ 'maps.primaryClimateHazards' | translate }}
+          </span>
+        </div>
 
-      <!-- Projects Seeking Funding -->
-      <div class="border-t border-cdp-neutral-02 py-6 flex flex-col gap-2">
-        <span class="text-[22px] font-light font-roboto leading-none">
-          {{ projectsSeekingFunding.toString().padStart(2, '0') }}
-        </span>
-        <span class="text-[10px] uppercase tracking-[2.8px] text-black">
-          {{ 'maps.projectsSeekingFunding' | translate }}
-        </span>
-      </div>
+        <!-- Disclosed Adaptation Actions -->
+        <div class="border-t border-cdp-neutral-02 py-6 flex flex-col gap-2">
+          <span class="text-[22px] font-light font-roboto leading-none">
+            {{ disclosedActions.toString().padStart(2, '0') }}
+          </span>
+          <span class="text-[10px] uppercase tracking-[2.8px] text-black">
+            {{ 'maps.disclosedActions' | translate }}
+          </span>
+        </div>
 
-      <!-- Footer -->
-      <footer class="pt-4 flex items-center justify-between gap-4">
-        <button
-          (click)="onLearnMore()"
-          class="px-5 py-2 bg-cdp-dark text-white text-sm font-medium font-roboto hover:bg-opacity-90 transition-opacity"
-        >
-          {{ 'maps.learnMore' | translate }}
-        </button>
-      </footer>
-    }
+        <!-- Projects Seeking Funding -->
+        <div class="border-t border-cdp-neutral-02 py-6 flex flex-col gap-2">
+          <span class="text-[22px] font-light font-roboto leading-none">
+            {{ projectsSeekingFunding.toString().padStart(2, '0') }}
+          </span>
+          <span class="text-[10px] uppercase tracking-[2.8px] text-black">
+            {{ 'maps.projectsSeekingFunding' | translate }}
+          </span>
+        </div>
+
+        <!-- Footer -->
+        <footer class="pt-4 flex items-center justify-between gap-4">
+          <button
+            (click)="onLearnMore()"
+            class="px-5 py-2 bg-cdp-dark text-white text-sm font-medium font-roboto hover:bg-opacity-90 transition-opacity"
+          >
+            {{ 'maps.learnMore' | translate }}
+          </button>
+        </footer>
+      }
     </div>
   </div>
 }
