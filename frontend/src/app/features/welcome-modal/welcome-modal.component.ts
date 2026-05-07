@@ -21,13 +21,13 @@ export class WelcomeModalComponent implements OnInit {
   selectedRole: string | null = null;
 
   readonly roles: RoleOption[] = [
-    { id: 'ngo', labelKey: 'homepage.welcomeModal.roles.ngo' },
     { id: 'governmentDiscloser', labelKey: 'homepage.welcomeModal.roles.governmentDiscloser' },
-    { id: 'financial', labelKey: 'homepage.welcomeModal.roles.financial' },
     {
       id: 'governmentNotDisclosing',
       labelKey: 'homepage.welcomeModal.roles.governmentNotDisclosing',
     },
+    { id: 'ngo', labelKey: 'homepage.welcomeModal.roles.ngo' },
+    { id: 'financial', labelKey: 'homepage.welcomeModal.roles.financial' },
     { id: 'business', labelKey: 'homepage.welcomeModal.roles.business' },
     { id: 'other', labelKey: 'homepage.welcomeModal.roles.other' },
   ];
