@@ -195,6 +195,7 @@
           <app-location-summary
             [location]="selectedLocation"
             [isLoading]="isLoadingHazardData"
+            [isReportingLeader]="selectedLocationData?.isReportingLeader ?? false"
             [totalHazards]="totalHazardsCount"
             [topHazards]="topFourHazards"
             [disclosedActions]="disclosedActionsCount"

@@ -118,10 +118,10 @@
   </div>
 
   <!-- Location Header -->
-  <div class="flex items-center gap-4 px-4 lg:px-6 pt-10 pb-4">
+  <div class="px-4 lg:px-6 pt-10 pb-4 flex items-stretch gap-4">
     <!-- Map Thumbnail -->
     <div
-      class="hidden lg:block w-20 h-20 lg:w-[120px] lg:h-[120px] flex-shrink-0 overflow-hidden rounded-[20px] static-thumbnail"
+      class="hidden lg:block w-20 h-20 lg:w-[168px] lg:h-[168px] flex-shrink-0 overflow-hidden rounded-[20px] static-thumbnail"
     >
       @if (data.lat != null && data.lng != null) {
         <app-hazard-map
@@ -137,43 +137,51 @@
         ></app-hazard-map>
       }
     </div>
-    <!-- Left Container -->
-    <div class="flex-1 flex flex-col gap-2 -translate-y-1">
-      <!-- Name Container -->
-      <div class="flex flex-col">
-        <h1
-          class="text-4xl lg:text-6xl text-cdp-dark font-roboto font-normal leading-tight lg:leading-normal tracking-[-1.8px]"
+    <!-- Name + population column. Title block sits at the top (where the
+         reporting-leader badge would be); population is pinned to the bottom
+         so the column reads top-and-bottom regardless of badge presence. -->
+    <div class="flex-1 flex flex-col">
+      @if (data.isReportingLeader) {
+        <span
+          class="-mb-3 self-start inline-flex items-center justify-center gap-[3px] px-2 py-[3px] rounded-[6px] bg-cdp-red text-white font-roboto-mono text-[13px] font-light leading-[25px] [font-feature-settings:'liga'_off,'clig'_off]"
         >
-          {{ data.name }}
-          <span class="text-3xl lg:text-[40px] block">{{ data.countryName }}</span>
-        </h1>
+          {{ 'maps.reportingLeader' | translate }}
+        </span>
+      }
+      <h1
+        class="text-4xl lg:text-6xl text-cdp-dark font-roboto font-normal leading-tight lg:leading-normal tracking-[-1.8px]"
+      >
+        {{ data.name }}
+        <span class="text-3xl lg:text-[40px] block -mt-3">{{ data.countryName }}</span>
+      </h1>
 
-        <!-- Population -->
-        @if (data.population) {
-          <div class="flex items-center gap-1 mt-4">
-            <div class="text-black font-roboto text-xs font-medium leading-4 tracking-cdp-wider">
-              {{ 'locationCard.header.estimatedPopulation' | translate }}
-            </div>
-            <div class="text-black font-roboto text-xs font-normal leading-4 tracking-cdp-wider">
-              ~{{ formatPopulation(data.population) }}
-            </div>
-            <div
-              matTooltip="{{
-                'locationCard.header.populationTooltip' | translate: { location: data.name }
-              }}"
-              class="flex items-center justify-center cursor-pointer group"
-            >
-              <app-info-icon
-                size="10"
-                class="text-cdp-neutral-05 group-hover:text-cdp-dark transition-colors"
-              ></app-info-icon>
-            </div>
+      <!-- Population -->
+      @if (data.population) {
+        <div class="flex items-center gap-1 mt-2 lg:mt-auto">
+          <div
+            class="text-black font-roboto text-xs font-normal leading-normal tracking-cdp-eyebrow uppercase"
+          >
+            {{ 'locationCard.header.estimatedPopulation' | translate }}
           </div>
-        }
-      </div>
+          <div
+            class="text-black font-roboto text-xs font-normal leading-normal tracking-cdp-eyebrow uppercase"
+          >
+            ~{{ formatPopulation(data.population) }}
+          </div>
+          <div
+            matTooltip="{{
+              'locationCard.header.populationTooltip' | translate: { location: data.name }
+            }}"
+            class="flex items-center justify-center cursor-pointer group ml-1"
+          >
+            <app-info-icon
+              size="10"
+              class="text-cdp-neutral-05 group-hover:text-cdp-dark transition-colors"
+            ></app-info-icon>
+          </div>
+        </div>
+      }
     </div>
-
-    <!-- Right Actions -->
   </div>
 
   <!-- Tab Navigation -->
