@@ -265,7 +265,7 @@
       "notDisclosed": "Not disclosed",
       "noActionsBanner": {
         "title": "No reported actions to disclose",
-        "description": "TThis jurisdiction may be missing some categories of disclosure or may have no actions to disclose in their CDP report. Download the full questionnaire and disclosure from the CDP open data portal.",
+        "description": "This jurisdiction may be missing some categories of disclosure or may have no actions to disclose in their CDP report. Download the full questionnaire and disclosure from the CDP open data portal.",
         "button": "Visit the CDP Open Data Portal"
       },
       "noGoals": {
