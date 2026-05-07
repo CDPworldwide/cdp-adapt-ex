@@ -21,6 +21,7 @@ import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { MapSelectionService } from './map-selection.service';
+import { SEARCH_ALIASES, COUNTRY_ALIASES } from './search-aliases';
 import { Maps } from '../maps/maps';
 import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
 import type { Hazard, HazardProfile, LocationPin } from '@pac-api/client';
@@ -237,11 +238,18 @@ export class MainSearchComponent implements OnInit {
   private static readonly MAX_SUGGESTIONS = 5;
 
   private normalizeForSearch(value: string): string {
-    return stripDiacritics(value)
+    const base = stripDiacritics(value)
       .replace(/\bst\.?\b/gi, 'saint')
       .replace(/\bste\.?\b/gi, 'sainte')
       .replace(/\bmt\.?\b/gi, 'mount')
-      .replace(/\bft\.?\b/gi, 'fort');
+      .replace(/\bft\.?\b/gi, 'fort')
+      .toLowerCase()
+      .replace(/[.,()'"]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    // Redirect well-known alternate names to their canonical form so e.g.
+    // "NYC" -> "new york", "U.K." -> "united kingdom", "Bombay" -> "mumbai".
+    return SEARCH_ALIASES[base] ?? COUNTRY_ALIASES[base] ?? base;
   }
 
   private _filter(
