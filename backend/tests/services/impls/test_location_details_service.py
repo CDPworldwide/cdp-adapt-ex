@@ -612,6 +612,43 @@ class TestGetEligibleLocationDetailsByName:
         assert result.government_actions.actions[0].co_benefits == []
 
 
+class TestGetLocationDetailsByOrgId:
+    """Tests for direct organization ID profile lookup."""
+
+    async def test_get_location_by_org_id_allows_non_public_metadata(
+        self,
+        location_details_service: LocationDetailsService,
+        mock_repository: AsyncMock,
+    ):
+        """Direct org links can load geometry-backed non-public organizations."""
+        mock_repository.has_organization.return_value = True
+        mock_repository.get_metadata.return_value = build_mock_metadata(
+            cdp_disclosing_org_number=72990,
+            disclosing_organization="Vestland County",
+            public_status=None,
+        )
+
+        result = await location_details_service.get_location_details_by_org_id(72990)
+
+        assert result.organization_id == 72990
+        assert result.name == "Vestland County"
+        assert result.geometry == {"type": "Point", "coordinates": [10.0, 20.0]}
+        mock_repository.has_organization.assert_awaited_once_with(72990)
+
+    async def test_get_location_by_org_id_raises_when_org_missing(
+        self,
+        location_details_service: LocationDetailsService,
+        mock_repository: AsyncMock,
+    ):
+        mock_repository.has_organization.return_value = False
+
+        with pytest.raises(CityNotFoundException) as exc_info:
+            await location_details_service.get_location_details_by_org_id(999999)
+
+        assert exc_info.value.city_name == "999999"
+        mock_repository.get_metadata.assert_not_awaited()
+
+
 class TestGetAllLocationPins:
     """Tests for the get_all_location_pins method."""
 
