@@ -112,7 +112,7 @@ class LocationProfileBuilder:
         return LocationProfile(
             organization_id=org_id,
             name=metadata.disclosing_organization,
-            country_name=metadata.discloser_country_or_area or "Unknown",
+            country_name=metadata.discloser_country_or_area or "",
             lat=geo_data.lat,
             lng=geo_data.lng,
             geometry=geo_data.geometry,
