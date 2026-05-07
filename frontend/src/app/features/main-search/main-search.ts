@@ -32,6 +32,14 @@ import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends
 import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
 import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
 
+// `São Paulo` → `sao paulo`. NFD-strip combining marks; preserves length.
+function stripDiacritics(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase();
+}
+
 @Component({
   selector: 'app-main-search',
   templateUrl: './main-search.html',
@@ -219,28 +227,28 @@ export class MainSearchComponent implements OnInit {
     if (!trimmed) {
       return [{ text: name, bold: false }];
     }
-    const idx = name.toLowerCase().indexOf(trimmed.toLowerCase());
+    // Strip-only (no abbrev expansion) so indexes line up with `name`.
+    const strippedName = stripDiacritics(name);
+    const strippedQuery = stripDiacritics(trimmed);
+    const idx = strippedName.indexOf(strippedQuery);
     if (idx === -1) {
       return [{ text: name, bold: false }];
     }
     return [
       { text: name.substring(0, idx), bold: false },
-      { text: name.substring(idx, idx + trimmed.length), bold: true },
-      { text: name.substring(idx + trimmed.length), bold: false },
+      { text: name.substring(idx, idx + strippedQuery.length), bold: true },
+      { text: name.substring(idx + strippedQuery.length), bold: false },
     ];
   }
 
   private static readonly MAX_SUGGESTIONS = 5;
 
   private normalizeForSearch(value: string): string {
-    return value
-      .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '')
+    return stripDiacritics(value)
       .replace(/\bst\.?\b/gi, 'saint')
       .replace(/\bste\.?\b/gi, 'sainte')
       .replace(/\bmt\.?\b/gi, 'mount')
-      .replace(/\bft\.?\b/gi, 'fort')
-      .toLowerCase();
+      .replace(/\bft\.?\b/gi, 'fort');
   }
 
   private _filter(
@@ -274,8 +282,10 @@ export class MainSearchComponent implements OnInit {
     }
 
     const trimmedQuery = searchQuery.trim();
+    // Accent-insensitive so "Sao Paulo" resolves to "São Paulo".
+    const normalizedQuery = this.normalizeForSearch(trimmedQuery);
     const selectedLocation = this.allLocations.find(
-      (location) => location.name.toLowerCase() === trimmedQuery.toLowerCase(),
+      (location) => this.normalizeForSearch(location.name) === normalizedQuery,
     );
 
     if (selectedLocation) {
