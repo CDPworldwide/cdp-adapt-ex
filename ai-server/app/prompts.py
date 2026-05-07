@@ -11,12 +11,14 @@ SYSTEM_PROMPT_ENV_VAR = "SYSTEM_PROMPT"
 SYSTEM_PROMPT_FILE_NAME = "system_prompt.md"
 DEFAULT_SYSTEM_PROMPT = "You are a helpful climate risk assistant."
 PROMPT_FETCH_TIMEOUT_SECONDS = 10.0
-MAX_SOLUTION_CARDS_PER_CATEGORY = 3
-MAX_PEER_ACTIONS_PER_SOLUTION = 2
+MAX_SOLUTION_CARDS_PER_CATEGORY = 1
+MAX_SOLUTION_CARDS_TOTAL = 6
+MAX_PEER_ACTIONS_PER_SOLUTION = 1
 MAX_GOVERNMENT_ACTIONS = 20
 MAX_GOVERNMENT_GOALS = 12
 MAX_GOVERNMENT_PROJECTS = 12
 MAX_CONTEXT_TEXT_CHARS = 1200
+MAX_PEER_ACTION_TEXT_CHARS = 300
 INTERNAL_CONTEXT_KEYS = {"geometry", "hazardRank"}
 VALID_CONTEXT_AREAS = {"hazards", "actions", "solutions"}
 COMMON_LOCATION_CONTEXT_KEYS = (
@@ -218,24 +220,67 @@ def sanitize_solutions_context(value: dict[str, Any]) -> dict[str, Any]:
         return sanitize_location_context(value)
 
     trimmed_categories = {}
-    for category, cards in solutions.items():
-        if not isinstance(cards, list):
-            continue
-        trimmed_cards = [
-            summarize_solution_card(card)
-            for card in cards[:MAX_SOLUTION_CARDS_PER_CATEGORY]
-            if isinstance(card, dict)
-        ]
-        if trimmed_cards:
-            trimmed_categories[category] = trimmed_cards
+    selected_cards = select_solution_cards(solutions)
+    for category, cards in selected_cards.items():
+        trimmed_categories[category] = [summarize_solution_card(card) for card in cards]
 
     return {
         "solutions": trimmed_categories,
         "trimmingNote": (
-            f"Showing up to {MAX_SOLUTION_CARDS_PER_CATEGORY} solution cards per "
-            f"category and {MAX_PEER_ACTIONS_PER_SOLUTION} peer examples per card."
+            f"Showing up to {MAX_SOLUTION_CARDS_TOTAL} solution cards total, "
+            f"{MAX_SOLUTION_CARDS_PER_CATEGORY} per category, and "
+            f"{MAX_PEER_ACTIONS_PER_SOLUTION} peer examples per card."
         ),
     }
+
+
+def select_solution_cards(
+    solutions: dict[str, Any],
+) -> dict[str, list[dict[str, Any]]]:
+    candidates = []
+    for category, cards in solutions.items():
+        if not isinstance(cards, list):
+            continue
+        for index, card in enumerate(cards):
+            if isinstance(card, dict):
+                candidates.append((category, card, index))
+
+    candidates.sort(
+        key=lambda item: solution_card_priority(item[1], item[2]),
+        reverse=True,
+    )
+
+    selected_categories: dict[str, list[dict[str, Any]]] = {}
+    selected_count = 0
+    for category, card, _ in candidates:
+        if selected_count >= MAX_SOLUTION_CARDS_TOTAL:
+            break
+        category_cards = selected_categories.setdefault(category, [])
+        if len(category_cards) >= MAX_SOLUTION_CARDS_PER_CATEGORY:
+            continue
+        category_cards.append(card)
+        selected_count += 1
+
+    return selected_categories
+
+
+def solution_card_priority(card: dict[str, Any], original_index: int) -> tuple[Any, ...]:
+    peer_actions = card.get("peerActions")
+    return (
+        bool(card.get("hasLocalAction")),
+        numeric_value(card.get("pctPeerTakingAction")),
+        len(peer_actions) if isinstance(peer_actions, list) else 0,
+        -original_index,
+    )
+
+
+def numeric_value(value: Any) -> float:
+    if isinstance(value, (int, float)):
+        return float(value)
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return 0.0
 
 
 def sanitize_government_actions_context(value: dict[str, Any]) -> dict[str, Any]:
@@ -253,7 +298,9 @@ def sanitize_government_actions_context(value: dict[str, Any]) -> dict[str, Any]
         ],
         "projects": [
             summarize_government_project(item)
-            for item in (value.get("projects") or [])[:MAX_GOVERNMENT_PROJECTS]
+            for item in sorted_government_projects(value.get("projects") or [])[
+                :MAX_GOVERNMENT_PROJECTS
+            ]
             if isinstance(item, dict)
         ],
         "trimmingNote": (
@@ -261,6 +308,17 @@ def sanitize_government_actions_context(value: dict[str, Any]) -> dict[str, Any]
             "context; use titles, descriptions, hazards, status, and timeframe only."
         ),
     }
+
+
+def sorted_government_projects(projects: list[Any]) -> list[Any]:
+    return sorted(
+        projects,
+        key=lambda item: (
+            numeric_value(item.get("totalNeeded")) if isinstance(item, dict) else 0,
+            bool(item.get("financeStatus")) if isinstance(item, dict) else False,
+        ),
+        reverse=True,
+    )
 
 
 def summarize_government_action(item: dict[str, Any]) -> dict[str, Any]:
@@ -326,21 +384,19 @@ def summarize_peer_action(item: dict[str, Any]) -> dict[str, Any]:
             "title": action.get("title"),
             "status": sanitize_location_context(action.get("status")),
             "timeframe": action.get("timeframe"),
-            "description": truncate_text(action.get("description")),
+            "description": truncate_text(
+                action.get("description"), MAX_PEER_ACTION_TEXT_CHARS
+            ),
             "hazardsAddressed": sanitize_location_context(
                 action.get("hazardsAddressed", [])
-            ),
-            "coBenefits": sanitize_location_context(action.get("coBenefits", [])[:5]),
-            "resilienceEnhanced": sanitize_location_context(
-                action.get("resilienceEnhanced", [])[:5]
             ),
         },
     }
 
 
-def truncate_text(value: Any) -> Any:
+def truncate_text(value: Any, max_chars: int = MAX_CONTEXT_TEXT_CHARS) -> Any:
     if not isinstance(value, str):
         return value
-    if len(value) <= MAX_CONTEXT_TEXT_CHARS:
+    if len(value) <= max_chars:
         return value
-    return value[: MAX_CONTEXT_TEXT_CHARS - 20].rstrip() + "... [truncated]"
+    return value[: max_chars - 20].rstrip() + "... [truncated]"

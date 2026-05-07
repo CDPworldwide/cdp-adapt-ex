@@ -167,6 +167,64 @@ def test_chat_request_infers_actions_context_for_vulnerable_population_question(
     assert request.resolved_context_area() == "actions"
 
 
+def test_chat_request_uses_funding_question_over_visible_solutions_tab():
+    location_data = _location_payload()
+    location_data["governmentActions"]["projects"] = [
+        {
+            "title": "30MW PV Plant with BESS",
+            "financeStatus": "Project not funded and seeking full funding",
+        }
+    ]
+    request = ChatCompletionRequest(
+        messages=[
+            {
+                "role": "user",
+                "content": "What projects are seeking funding?",
+            }
+        ],
+        contextArea="solutions",
+        locationData=location_data,
+    )
+
+    assert request.resolved_context_area() == "actions"
+    assert request.resolved_location_data()["governmentActions"]["projects"] == [
+        {
+            "title": "30MW PV Plant with BESS",
+            "financeStatus": "Project not funded and seeking full funding",
+        }
+    ]
+
+
+def test_chat_request_infers_solutions_context_for_peer_solution_question():
+    request = ChatCompletionRequest(
+        messages=[
+            {
+                "role": "user",
+                "content": "What peer solutions could George learn from for coastal flooding?",
+            }
+        ],
+        contextArea="hazards",
+        locationData=_location_payload(),
+    )
+
+    assert request.resolved_context_area() == "solutions"
+
+
+def test_chat_request_infers_actions_context_for_action_source_question():
+    request = ChatCompletionRequest(
+        messages=[
+            {
+                "role": "user",
+                "content": "What sources or references are available for coastal flooding actions?",
+            }
+        ],
+        contextArea="hazards",
+        locationData=_location_payload(),
+    )
+
+    assert request.resolved_context_area() == "actions"
+
+
 def test_chat_request_infers_hazards_context_for_ranking_question():
     request = ChatCompletionRequest(
         messages=[
@@ -300,6 +358,20 @@ def test_sanitize_response_text_rewrites_reviewed_dropdown_label_phrasing():
     assert "co-benefits" not in sanitized
     assert "Resident involvement" in sanitized
     assert "safety for lower-income or higher-risk communities" in sanitized
+
+
+def test_gemini_generation_config_disables_thinking_for_chat():
+    from app.providers.gemini import GeminiProvider
+    from app.settings import Settings
+
+    request = ChatCompletionRequest(
+        messages=[{"role": "user", "content": "What hazards are reported?"}]
+    )
+
+    config = GeminiProvider(Settings()).build_generation_config(request)
+
+    assert config.thinking_config is not None
+    assert config.thinking_config.thinking_budget == 0
 
 
 def test_build_completion_rejects_truncated_responses():

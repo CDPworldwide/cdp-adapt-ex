@@ -38,12 +38,22 @@ class Settings:
         self.suggest_follow_ups_max_tokens = SUGGEST_FOLLOW_UPS_MAX_TOKENS
         self.llm_request_timeout_seconds = LLM_REQUEST_TIMEOUT_SECONDS
         self.mock_response = os.getenv("AI_SERVER_MOCK_RESPONSE", "")
+        self.log_llm_prompts = _parse_bool(
+            os.getenv("AI_SERVER_LOG_PROMPTS"),
+            os.getenv("LOG_LEVEL", "").upper() == "DEBUG",
+        )
 
 
 def _parse_list(value: str | None, default: list[str]) -> list[str]:
     if not value:
         return default
     return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def _parse_bool(value: str | None, default: bool) -> bool:
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
 @lru_cache(maxsize=1)

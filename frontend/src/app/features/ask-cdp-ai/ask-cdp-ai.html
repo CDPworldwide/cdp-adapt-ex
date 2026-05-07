@@ -41,8 +41,10 @@
         </div>
       } @else if (message.role === 'assistant') {
         <div class="mb-4">
-          <div class="bg-gray-100 rounded-lg p-3 max-w-lg">
-            <p [innerHTML]="getSafeHtml(message.content)"></p>
+          <div
+            class="ai-assistant-message max-w-lg rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm"
+          >
+            <div class="ai-markdown" [innerHTML]="getSafeHtml(message.content)"></div>
           </div>
         </div>
         <!-- Follow-up questions for the last assistant message -->

@@ -1,3 +1,5 @@
+import json
+import logging
 from dataclasses import dataclass
 
 from google import genai
@@ -9,6 +11,8 @@ from app.errors import LLMAuthError, LLMRateLimitError, LLMServiceError
 from app.prompts import build_system_prompt
 from app.schemas import ChatCompletionRequest
 from app.settings import Settings
+
+logger = logging.getLogger("uvicorn.error")
 
 RESPONSE_REPLACEMENTS = {
     "Community participation": "Resident involvement",
@@ -50,6 +54,11 @@ class GeminiProvider:
         prompt_name: str = "system_prompt.md",
         response_schema: type[BaseModel] | None = None,
     ) -> types.GenerateContentConfig:
+        system_instruction = build_system_prompt(
+            request.resolved_location_data(),
+            prompt_name,
+            context_area=request.resolved_context_area(),
+        )
         config = types.GenerateContentConfig(
             temperature=(
                 request.temperature
@@ -60,14 +69,9 @@ class GeminiProvider:
                 request.max_tokens or self.settings.max_tokens,
                 self.settings.max_tokens,
             ),
-            system_instruction=build_system_prompt(
-                request.resolved_location_data(),
-                prompt_name,
-                context_area=request.resolved_context_area(),
-            ),
+            system_instruction=system_instruction,
         )
-        if prompt_name == "suggest_follow_ups.md":
-            config.thinking_config = types.ThinkingConfig(thinking_budget=0)
+        config.thinking_config = types.ThinkingConfig(thinking_budget=0)
         if response_schema is not None:
             config.response_mime_type = "application/json"
             config.response_schema = response_schema
@@ -85,6 +89,13 @@ class GeminiProvider:
             prompt_name=prompt_name,
             response_schema=response_schema,
         )
+        if self.settings.log_llm_prompts:
+            _log_llm_prompt_payload(
+                request=request,
+                prompt_name=prompt_name,
+                model=self.settings.llm_model,
+                system_instruction=str(config.system_instruction or ""),
+            )
 
         try:
             return await self.client.aio.models.generate_content(
@@ -127,6 +138,29 @@ def _prepare_contents(messages):
             )
         )
     return contents
+
+
+def _log_llm_prompt_payload(
+    request: ChatCompletionRequest,
+    prompt_name: str,
+    model: str,
+    system_instruction: str,
+) -> None:
+    payload = {
+        "event": "llm_prompt_payload",
+        "promptName": prompt_name,
+        "model": model,
+        "contextArea": request.resolved_context_area(),
+        "messages": [
+            {"role": message.role, "content": message.text_content()}
+            for message in request.messages
+        ],
+        "systemInstruction": system_instruction,
+    }
+    logger.info(
+        "llm_prompt_payload\n%s",
+        json.dumps(payload, ensure_ascii=False, indent=2),
+    )
 
 
 def _extract_response_text(response) -> str:

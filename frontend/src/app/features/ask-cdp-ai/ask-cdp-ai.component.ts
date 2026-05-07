@@ -18,7 +18,6 @@ import {
   type AskCdpAiContextArea,
 } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { marked } from 'marked';
 
 declare let gtag: Function;
 

@@ -300,11 +300,7 @@ export class AskCdpAiService {
   }
 
   private buildAiLocationData(): LocationProfile | null {
-    if (!this.locationContext) {
-      return null;
-    }
-
-    return JSON.parse(JSON.stringify(this.locationContext)) as LocationProfile;
+    return this.locationContext;
   }
 
   private buildAiServerMessages(): OpenAiMessage[] {
@@ -463,7 +459,12 @@ export class AskCdpAiService {
       return null;
     }
 
-    return `${locationData.organizationId}|${locationData.name}|${locationData.countryName}|${locationData.lat}|${locationData.lng}|${contextArea}`;
+    const { geometry: _geometry, ...locationContextForKey } = locationData;
+
+    return JSON.stringify({
+      contextArea,
+      locationData: locationContextForKey,
+    });
   }
 
   private resetConversationState(): void {
@@ -479,7 +480,75 @@ export class AskCdpAiService {
   }
 
   public parseToHtml(content: string): string {
-    const dirty = marked(content) as string;
+    const dirty = marked(this.formatCitationMarkdown(content)) as string;
     return DOMPurify.sanitize(dirty);
+  }
+
+  private formatCitationMarkdown(content: string): string {
+    const sourcesMatch = content.match(/(?:^|\n)Sources:\s*\n([\s\S]*)$/i);
+    let formattedContent = content;
+    let sourcesHtml = '';
+
+    if (sourcesMatch?.[1]) {
+      const parsedSources = sourcesMatch[1]
+        .split(/\n+/)
+        .map((line) => line.trim())
+        .map((line) => line.match(/^\[\^(\d+)\]:\s*(.+)$/))
+        .filter((match): match is RegExpMatchArray => Boolean(match));
+
+      const uniqueSources = parsedSources.reduce<Array<{ text: string }>>(
+        (sources, match) => {
+          const [, , sourceText] = match;
+          const existingSource = sources.find(
+            (source) => this.normalizeSourceText(source.text) === this.normalizeSourceText(sourceText),
+          );
+
+          if (existingSource) {
+            return sources;
+          }
+
+          return [...sources, { text: sourceText }];
+        },
+        [],
+      );
+
+      if (uniqueSources.length) {
+        formattedContent = content.slice(0, sourcesMatch.index ?? 0).trimEnd();
+        const sourceItems = uniqueSources.map(
+          (source) =>
+            `<li>${this.linkifySourceText(source.text)}</li>`,
+        );
+        sourcesHtml = [
+          '<section class="ai-sources" aria-label="Sources">',
+          '<p class="ai-sources-title">Sources</p>',
+          `<ul>${sourceItems.join('')}</ul>`,
+          '</section>',
+        ].join('');
+      }
+    }
+
+    formattedContent = formattedContent.replace(/\[\^\d+\]/g, '');
+
+    return sourcesHtml ? `${formattedContent}\n\n${sourcesHtml}` : formattedContent;
+  }
+
+  private normalizeSourceText(sourceText: string): string {
+    return sourceText.replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
+  private linkifySourceText(sourceText: string): string {
+    return this.escapeHtml(sourceText).replace(
+      /`?(https?:\/\/[^\s`<]+)`?/g,
+      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>',
+    );
+  }
+
+  private escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 }

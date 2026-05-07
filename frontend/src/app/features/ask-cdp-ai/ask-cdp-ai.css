@@ -1,4 +1,78 @@
-/* Add any component specific styles here if Tailwind is not enough */
 :host {
   display: block;
+}
+
+.ai-assistant-message {
+  color: #111827;
+}
+
+:host ::ng-deep .ai-markdown {
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+:host ::ng-deep .ai-markdown > * + * {
+  margin-top: 0.75rem;
+}
+
+:host ::ng-deep .ai-markdown p {
+  margin: 0;
+}
+
+:host ::ng-deep .ai-markdown strong {
+  color: #111827;
+  font-weight: 700;
+}
+
+:host ::ng-deep .ai-markdown ol,
+:host ::ng-deep .ai-markdown ul {
+  display: grid;
+  gap: 0.625rem;
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+}
+
+:host ::ng-deep .ai-markdown li {
+  padding-left: 0.125rem;
+}
+
+:host ::ng-deep .ai-markdown li::marker {
+  color: #e40046;
+  font-weight: 700;
+}
+
+:host ::ng-deep .ai-markdown .ai-citation {
+  display: none;
+}
+
+:host ::ng-deep .ai-markdown .ai-sources {
+  margin-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 0.75rem;
+  color: #4b5563;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+:host ::ng-deep .ai-markdown .ai-sources-title {
+  margin: 0 0 0.5rem;
+  color: #111827;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+:host ::ng-deep .ai-markdown .ai-sources ul {
+  display: grid;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+:host ::ng-deep .ai-markdown .ai-sources a {
+  color: #b00035;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
