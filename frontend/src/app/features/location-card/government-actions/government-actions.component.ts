@@ -18,6 +18,7 @@ import { AdaptationGoalDetailComponent } from './adaptation-goal-detail/adaptati
 import { ProjectSeekingFundingDetailComponent } from './project-seeking-funding-detail/project-seeking-funding-detail.component';
 import { ActionsSummaryComponent } from './actions-summary/actions-summary.component';
 import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
+import { splitTitleAtLastColon } from '../../../shared/utils/title.util';
 import type { HazardSummaryRow, DetailItemType } from './government-actions.types';
 
 export type { HazardSummaryRow, DetailItemType };
@@ -83,17 +84,7 @@ export class GovernmentActionsComponent implements OnChanges {
     return Array.isArray(model) ? model.join(', ') : (model as string);
   }
 
-  splitTitleAtLastColon(title: string | null | undefined): { prefix: string; main: string } {
-    if (!title) return { prefix: '', main: '' };
-    const segments = title
-      .split(':')
-      .map((s) => s.trim())
-      .filter(Boolean);
-    if (segments.length <= 1) return { prefix: '', main: title.trim() };
-    const main = segments.pop()!;
-    const prefix = segments.filter((s) => s.toLowerCase() !== 'other').join(': ');
-    return { prefix, main };
-  }
+  splitTitleAtLastColon = splitTitleAtLastColon;
 
   ngOnChanges(changes: SimpleChanges): void {
     const dataChanged = !!changes['data'] && !!this.data;
