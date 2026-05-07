@@ -57,6 +57,12 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
   expandedHazards = new Set<string>();
   showAllHazards = false;
   topHazardsRevealed = false;
+  // Synthetic scrollbar state for the "Most Exposed Economic Sectors" card.
+  // macOS Chrome's overlay scrollbar auto-hides regardless of webkit styling,
+  // so we paint our own thumb on the card's right edge and sync it here.
+  sectorListScrollable = false;
+  sectorListThumbHeight = 0;
+  sectorListThumbTop = 0;
   private overflowMap = new Map<string, boolean>();
   private cardHeightPxMap = new Map<string, number>();
   // pb-20 (80px) reserved at the bottom of the inner data when expanded so the
@@ -82,10 +88,16 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
     this.topHazardsGrids.changes.subscribe(() =>
       setTimeout(() => this.observeTopHazardsGrid()),
     );
-    this.sectorLists.changes.subscribe(() => setTimeout(() => this.observeSectorList()));
+    this.sectorLists.changes.subscribe(() =>
+      setTimeout(() => {
+        this.observeSectorList();
+        this.updateSectorScrollState();
+      }),
+    );
     setTimeout(() => {
       this.observeTopHazardsGrid();
       this.observeSectorList();
+      this.updateSectorScrollState();
     });
   }
 
@@ -129,6 +141,32 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
     );
     observer.observe(grid);
     this.observers.push(observer);
+  }
+
+  onSectorListScroll(): void {
+    this.updateSectorScrollState();
+  }
+
+  private updateSectorScrollState(): void {
+    const list = this.sectorLists.first?.nativeElement;
+    if (!list) {
+      this.sectorListScrollable = false;
+      return;
+    }
+    const scrollable = list.scrollHeight > list.clientHeight + 1;
+    this.sectorListScrollable = scrollable;
+    if (!scrollable) {
+      this.sectorListThumbHeight = 0;
+      this.sectorListThumbTop = 0;
+      return;
+    }
+    // Thumb height is proportional to visible / total; minimum 15% so it
+    // stays grabbable on long lists.
+    this.sectorListThumbHeight = Math.max(15, (list.clientHeight / list.scrollHeight) * 100);
+    const maxScroll = list.scrollHeight - list.clientHeight;
+    const progress = maxScroll > 0 ? list.scrollTop / maxScroll : 0;
+    this.sectorListThumbTop = progress * (100 - this.sectorListThumbHeight);
+    this.cdr.markForCheck();
   }
 
   private observeSectorList(): void {

@@ -32,6 +32,18 @@
   margin-top: -0.5px;
 }
 
+/* Element still scrolls (mouse wheel / touch / keyboard) but renders no
+   visible scrollbar. The synthetic external bar painted by the component
+   handles the visual indication. */
+.custom-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @media (max-width: 1023px) {
   .gm-bundled-control,
   .gm-bundled-control-on-bottom {

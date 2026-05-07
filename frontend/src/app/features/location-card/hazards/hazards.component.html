@@ -86,7 +86,7 @@
           <!-- Most Exposed Economic Sectors Card -->
           @if (data.hazards.statistics.vulnerableSectors; as vulnerableSectors) {
             <div
-              class="lg:w-1/2 bg-cdp-dark p-4 lg:p-6 lg:rounded-sm h-40 lg:h-[200px] flex flex-col overflow-hidden justify-between lg:justify-start gap-3 lg:gap-0"
+              class="lg:w-1/2 bg-cdp-dark p-4 lg:p-6 lg:rounded-sm h-40 lg:h-[200px] flex flex-col overflow-hidden justify-between lg:justify-start gap-3 lg:gap-0 relative"
             >
               <!-- Title row -->
               <div class="flex justify-between items-center lg:items-start shrink-0">
@@ -134,10 +134,11 @@
                 >
                   {{ vulnerableSectors.length }}
                 </div>
-                <div class="w-[120px] ml-auto h-full relative -translate-x-6">
+                <div class="w-[240px] mx-auto h-full relative translate-x-2">
                   <div
                     #sectorList
                     class="flex flex-col gap-2 overflow-y-auto custom-scrollbar h-full pb-10"
+                    (scroll)="onSectorListScroll()"
                   >
                     <div
                       *ngFor="let sector of vulnerableSectors"
@@ -151,7 +152,7 @@
                         class="shrink-0"
                       ></app-sector-icon>
                       <span
-                        class="text-white font-roboto text-xs font-normal leading-4 tracking-cdp-widest"
+                        class="text-white font-roboto text-xs font-normal leading-4 tracking-cdp-widest whitespace-nowrap"
                         >{{
                           sector.sectorType === 'OTHERS'
                             ? sector.otherSectorDetails
@@ -166,6 +167,23 @@
                   ></div>
                 </div>
               </div>
+              <!-- Synthetic scrollbar pinned to the card's right edge.
+                   macOS Chrome's overlay scrollbar auto-hides regardless of
+                   ::-webkit-scrollbar styling, so we paint our own. The
+                   thumb's height + position track the actual scroll state of
+                   #sectorList via [style] bindings updated in (scroll). -->
+              @if (sectorListScrollable) {
+                <div
+                  aria-hidden="true"
+                  class="hidden lg:block absolute right-2 top-16 bottom-3 w-1 bg-white/20 rounded-full pointer-events-none"
+                >
+                  <div
+                    class="absolute left-0 right-0 bg-white/70 rounded-full"
+                    [style.height.%]="sectorListThumbHeight"
+                    [style.top.%]="sectorListThumbTop"
+                  ></div>
+                </div>
+              }
             </div>
           }
         </div>
