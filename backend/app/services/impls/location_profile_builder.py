@@ -60,7 +60,7 @@ class LocationProfileBuilder:
             )
             raise CityNotFoundException(fallback_name)
 
-        geo_data = self.extract_geometry_and_coords(metadata.geometry)
+        geo_data = self.extract_geometry_and_coords(metadata.geometry, metadata.centroid)
         if not geo_data.is_valid:
             logger.error(
                 "Data inconsistency: location '%s' (org_id=%s) is missing valid geometry or coordinate data.",
@@ -151,10 +151,17 @@ class LocationProfileBuilder:
         return None
 
     def extract_geometry_and_coords(
-        self, geometry_data: str | dict[str, Any] | None
+        self,
+        geometry_data: str | dict[str, Any] | None,
+        centroid_data: str | dict[str, Any] | None = None,
     ) -> GeometryData:
-        """Parse geometry data and extract a geometry dict and first lng/lat pair."""
-        if not geometry_data:
+        """Parse geometry data and pick a representative (lng, lat).
+
+        Prefers ``centroid_data`` (a GeoJSON Point) for the lng/lat when
+        provided. Falls back to the first vertex of ``geometry_data`` for
+        rows where the centroid hasn't been backfilled.
+        """
+        if not geometry_data and not centroid_data:
             return GeometryData(None, None, None)
 
         try:
@@ -164,14 +171,24 @@ class LocationProfileBuilder:
                 else geometry_data
             )
 
-            coords = (
-                self.extract_first_coordinate_pair(geometry)
-                if isinstance(geometry, dict)
-                else None
-            )
+            coords = None
+            if centroid_data is not None:
+                centroid = (
+                    json.loads(centroid_data)
+                    if isinstance(centroid_data, str)
+                    else centroid_data
+                )
+                if isinstance(centroid, dict):
+                    coords = self.extract_first_coordinate_pair(centroid)
+            if coords is None and isinstance(geometry, dict):
+                coords = self.extract_first_coordinate_pair(geometry)
 
             if coords:
-                return GeometryData(geometry, coords[0], coords[1])
+                return GeometryData(
+                    geometry if isinstance(geometry, dict) else None,
+                    coords[0],
+                    coords[1],
+                )
 
             return GeometryData(
                 geometry if isinstance(geometry, dict) else None, None, None
