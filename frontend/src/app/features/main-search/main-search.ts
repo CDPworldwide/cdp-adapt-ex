@@ -23,8 +23,7 @@ import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { MapSelectionService } from './map-selection.service';
 import { Maps } from '../maps/maps';
 import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
-import { ActionStatusEnum } from '@pac-api/client';
-import type { AdaptationAction, Hazard, HazardProfile, LocationPin } from '@pac-api/client';
+import type { Hazard, HazardProfile, LocationPin } from '@pac-api/client';
 import { CdpLogoIconComponent } from '../../shared/icons';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
@@ -70,7 +69,7 @@ export class MainSearchComponent implements OnInit {
   readonly disclosureTrendsYear = 2025;
   disclosureTrendsSummary!: Observable<DisclosureTrendsSummary>;
   totalHazardsCount = 0;
-  implementedActionsCount = 0;
+  disclosedActionsCount = 0;
   projectsRequiringFundingCount = 0;
   topFourHazards: Hazard[] = [];
 
@@ -115,7 +114,7 @@ export class MainSearchComponent implements OnInit {
           this.selectedLocation = location;
           if (location) {
             this.totalHazardsCount = 0;
-            this.implementedActionsCount = 0;
+            this.disclosedActionsCount = 0;
             this.projectsRequiringFundingCount = 0;
             this.topFourHazards = [];
             this.isLoadingHazardData = true;
@@ -148,13 +147,7 @@ export class MainSearchComponent implements OnInit {
   private processLocationData(data: LocationData): void {
     this.selectedLocationData = data;
     this.totalHazardsCount = data.hazards?.hazards?.length || 0;
-    this.implementedActionsCount =
-      data.governmentActions?.actions?.filter(
-        (action: AdaptationAction) =>
-          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_JURISDICTION_WIDE ||
-          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_MOST_OF_JURISDICTION ||
-          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_TARGETED,
-      ).length || 0;
+    this.disclosedActionsCount = data.governmentActions?.actions?.length || 0;
     this.projectsRequiringFundingCount = data.governmentActions?.projects?.length || 0;
     this.topFourHazards = (data.hazards?.hazards || [])
       .map((hazardProfile: HazardProfile) => hazardProfile.hazard)

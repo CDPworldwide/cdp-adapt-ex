@@ -17,7 +17,7 @@ export class LocationSummaryComponent {
   @Input() isLoading = false;
   @Input() totalHazards = 0;
   @Input() topHazards: Hazard[] = [];
-  @Input() implementedActions = 0;
+  @Input() disclosedActions = 0;
   @Input() projectsSeekingFunding = 0;
 
   @Output() close = new EventEmitter<void>();
