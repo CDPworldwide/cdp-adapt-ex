@@ -26,13 +26,11 @@ import { LocationSummaryComponent } from '../maps/location-summary/location-summ
 import { ActionStatusEnum } from '@pac-api/client';
 import type { AdaptationAction, Hazard, HazardProfile, LocationPin } from '@pac-api/client';
 import { CdpLogoIconComponent } from '../../shared/icons';
-import { AskCdpAiLogoIconComponent } from '../../shared/icons/ask-cdp-ai-logo-icon.component';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
 import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
 import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
 import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
-import { AskCdpAiComponent } from '../ask-cdp-ai/ask-cdp-ai.component';
 
 @Component({
   selector: 'app-main-search',
@@ -49,18 +47,15 @@ import { AskCdpAiComponent } from '../ask-cdp-ai/ask-cdp-ai.component';
     Maps,
     LocationSummaryComponent,
     CdpLogoIconComponent,
-    AskCdpAiLogoIconComponent,
     AppHeaderComponent,
     DisclosureTrendsComponent,
     WelcomeModalComponent,
-    AskCdpAiComponent,
   ],
 })
 export class MainSearchComponent implements OnInit {
   searchControl = new FormControl('');
   isNotFound = false;
   isOverlayOpen = false;
-  isAiOpen = false;
   // Session-only: when the user dismisses the intro card it stays gone for the
   // current page load and reappears on reload. No persistence by design.
   isInfoCardDismissed = false;

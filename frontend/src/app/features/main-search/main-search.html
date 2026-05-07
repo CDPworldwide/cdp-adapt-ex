@@ -265,52 +265,7 @@
         </svg>
       </button>
 
-      <!-- Floating Ask CDP AI launcher (homepage). The white callout sits to
-           the left of the red trigger button with a small triangle pointing
-           toward it; the button itself remains a single click target. Hidden
-           while the search overlay or chat panel is open. -->
-      @if (!isOverlayOpen && !isAiOpen) {
-        <button
-          type="button"
-          (click)="isAiOpen = true"
-          class="absolute right-6 bottom-6 z-10 flex items-center gap-4 focus-visible:outline-none"
-        >
-          <span class="relative bg-white px-4 py-2 flex flex-col items-start text-left">
-            <span class="text-xxs uppercase tracking-cdp-eyebrow text-cdp-red font-medium">
-              {{ 'homepage.askAi.title' | translate }}
-            </span>
-            <span class="text-sm text-cdp-dark font-roboto leading-tight">
-              {{ 'homepage.askAi.subtitle' | translate }}
-            </span>
-            <span
-              aria-hidden="true"
-              class="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-[6px] border-b-[6px] border-l-[10px] border-t-transparent border-b-transparent border-l-white"
-            ></span>
-          </span>
-          <span
-            class="flex items-center justify-center w-12 h-12 bg-cdp-red rounded-full shadow-cdp-card flex-shrink-0 hover:bg-black transition-colors focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
-          >
-            <app-ask-cdp-ai-logo-icon size="24" color="white"></app-ask-cdp-ai-logo-icon>
-          </span>
-        </button>
-      }
     </div>
-  </div>
-
-  <!-- Ask CDP AI side panel (general adaptation mode — no location bound).
-       Pinned to top-0 / h-screen so the panel covers the full viewport,
-       overriding the header on the homepage layout. -->
-  <div
-    class="fixed top-0 right-0 h-screen w-full bg-white z-50 transition-transform duration-300 ease-in-out transform lg:w-1/3 xl:w-1/4"
-    [class.translate-x-full]="!isAiOpen"
-    [class.invisible]="!isAiOpen"
-  >
-    <app-ask-cdp-ai
-      class="block h-full"
-      [locationData]="null"
-      [isOpen]="isAiOpen"
-      (openChange)="isAiOpen = $event"
-    ></app-ask-cdp-ai>
   </div>
 
   <!-- Disclosure Trends — dataset-wide aggregate, visible by scrolling down. -->
