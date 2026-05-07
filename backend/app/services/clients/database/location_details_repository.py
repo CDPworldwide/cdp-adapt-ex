@@ -98,7 +98,6 @@ class LocationDetailsRepository:
             statement = select(*columns).where(
                 DimCentral.cdp_disclosing_org_number == org_id,
                 DimCentral.has_geometry,
-                DimCentral.public_status == "Public",
             )
             result = (await session.exec(statement)).first()
             if result is None:
@@ -106,11 +105,11 @@ class LocationDetailsRepository:
             return DimCentral(**result._mapping)
 
     async def has_organization(self, org_id: int) -> bool:
-        """Return whether a public organization exists for the provided ID."""
+        """Return whether an organization with geometry exists for the provided ID."""
         async with AsyncSession(self.engine) as session:
             statement = select(DimCentral.cdp_disclosing_org_number).where(
                 DimCentral.cdp_disclosing_org_number == org_id,
-                DimCentral.public_status == "Public",
+                DimCentral.has_geometry,
             )
             return (await session.exec(statement)).first() is not None
 
