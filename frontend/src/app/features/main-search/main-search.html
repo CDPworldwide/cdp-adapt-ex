@@ -97,7 +97,7 @@
     </nav>
 
     <div
-      class="flex flex-col items-center px-6 bg-cdp-bg flex-shrink-0 pt-6 pb-3 md:pt-8 md:pb-4"
+      class="flex flex-col items-center px-6 bg-cdp-bg flex-shrink-0 pt-6 pb-1 md:pt-8 md:pb-4"
       [class.invisible]="isOverlayOpen"
     >
       <span
@@ -141,9 +141,12 @@
           (click)="openSearchOverlay()"
           [attr.aria-label]="'homepage.hero.searchOrSelect' | translate"
         >
-          <mat-icon class="text-cdp-dark !text-[28px] !w-7 !h-7 flex-shrink-0">search</mat-icon>
+          <mat-icon
+            class="text-cdp-dark !text-xl !w-5 !h-5 !leading-5 sm:!text-[28px] sm:!w-7 sm:!h-7 sm:!leading-7 flex-shrink-0"
+            >search</mat-icon
+          >
           <span
-            class="text-xl sm:text-3xl md:text-5xl lg:text-6xl font-light text-cdp-neutral-02 leading-tight lg:leading-none text-left lg:whitespace-nowrap"
+            class="text-xl sm:text-3xl md:text-5xl lg:text-6xl font-light text-cdp-neutral-02 leading-none sm:leading-tight lg:leading-none text-left lg:whitespace-nowrap"
           >
             {{ 'homepage.hero.searchOrSelect' | translate }}
           </span>
@@ -151,12 +154,20 @@
       }
     </div>
 
-    <!-- "Or explore on map" eyebrow with the legend on the left -->
+    <!-- "Or explore on map" eyebrow with the legend on the left.
+         On mobile the two stack (eyebrow on top, legend below) to avoid
+         overlapping; from md+ the legend is absolute-positioned to the left
+         and the eyebrow centers in the row. -->
     <div
-      class="relative px-4 md:px-8 lg:px-12 py-3 flex items-center justify-center bg-cdp-bg flex-shrink-0"
+      class="relative px-4 md:px-8 lg:px-12 py-3 flex flex-col items-center gap-2 md:flex-row md:gap-0 md:justify-center bg-cdp-bg flex-shrink-0"
       [class.invisible]="isOverlayOpen"
     >
-      <div class="absolute left-4 md:left-8 lg:left-12 flex items-center gap-6">
+      <span
+        class="text-xs uppercase tracking-cdp-eyebrow text-cdp-dark font-roboto font-normal text-center"
+      >
+        {{ 'homepage.hero.orExploreOnMap' | translate }}
+      </span>
+      <div class="flex items-center gap-6 md:absolute md:left-8 lg:left-12">
         <div class="flex items-center gap-2">
           <div class="w-3 h-3 bg-cdp-blue rounded-full"></div>
           <div class="text-black text-xs font-normal font-roboto-mono leading-3 tracking-wide">
@@ -170,11 +181,6 @@
           </div>
         </div>
       </div>
-      <span
-        class="text-xs uppercase tracking-cdp-eyebrow text-cdp-dark font-roboto font-normal text-center"
-      >
-        {{ 'homepage.hero.orExploreOnMap' | translate }}
-      </span>
     </div>
 
     <!-- Map fills the rest of the viewport. Cards overlay it. -->

@@ -27,7 +27,9 @@
     "scrollDownAria": "Scroll to disclosure trends",
     "welcomeModal": {
       "beta": "BETA",
-      "earlyAccess": "Early access — feedback welcome",
+      "earlyAccess": "Early access —",
+      "feedbackWelcome": "feedback welcome",
+      "mobileNotice": "Note: this experience has not been optimized for mobile. For best results, please use the CDP Adaptation & Action Explorer on desktop.",
       "eyebrow": "Welcome to the",
       "title": "CDP Adaptation & Action Explorer",
       "description": "An open-source tool helping cities, states, and regions understand climate risks, explore resilience solutions, and communicate progress to partners and funders. More features are on the way.",
