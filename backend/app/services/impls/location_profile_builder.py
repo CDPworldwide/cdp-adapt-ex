@@ -3,6 +3,7 @@
 import json
 from collections import defaultdict
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from app.models.location_details import DimCentral
@@ -35,6 +36,23 @@ class GeometryData:
         return (
             self.geometry is not None and self.lng is not None and self.lat is not None
         )
+
+
+_A_LIST_PATH = Path(__file__).resolve().parents[2] / "data" / "cdp_a_list_2025.json"
+
+
+def _load_a_list() -> frozenset[int]:
+    """Read the curated CDP A-List of org IDs at import time."""
+    try:
+        with _A_LIST_PATH.open() as f:
+            payload = json.load(f)
+        return frozenset(int(x) for x in payload.get("AList", []))
+    except (FileNotFoundError, json.JSONDecodeError, ValueError) as e:
+        logger.warning("a_list_load_failed", path=str(_A_LIST_PATH), error=str(e))
+        return frozenset()
+
+
+_A_LIST: frozenset[int] = _load_a_list()
 
 
 class LocationProfileBuilder:
@@ -94,10 +112,11 @@ class LocationProfileBuilder:
         return LocationProfile(
             organization_id=org_id,
             name=metadata.disclosing_organization,
-            country_name=metadata.discloser_country_or_area or "Unknown",
+            country_name=metadata.discloser_country_or_area or "",
             lat=geo_data.lat,
             lng=geo_data.lng,
             geometry=geo_data.geometry,
+            is_reporting_leader=org_id in _A_LIST,
             disclosure_year=metadata.disclosing_year,
             population=metadata.current_pop,
             requesters=(

@@ -21,6 +21,8 @@ import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { MapSelectionService } from './map-selection.service';
+import { SEARCH_ALIASES, COUNTRY_ALIASES } from './search-aliases';
+import { STATE_ABBREV_TO_NAME } from './state-abbrev';
 import { Maps } from '../maps/maps';
 import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
 import type { Hazard, HazardProfile, LocationPin } from '@pac-api/client';
@@ -237,11 +239,28 @@ export class MainSearchComponent implements OnInit {
   private static readonly MAX_SUGGESTIONS = 5;
 
   private normalizeForSearch(value: string): string {
-    return stripDiacritics(value)
+    const base = stripDiacritics(value)
       .replace(/\bst\.?\b/gi, 'saint')
       .replace(/\bste\.?\b/gi, 'sainte')
       .replace(/\bmt\.?\b/gi, 'mount')
-      .replace(/\bft\.?\b/gi, 'fort');
+      .replace(/\bft\.?\b/gi, 'fort')
+      .toLowerCase()
+      .replace(/[.,()'"]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    // Redirect well-known alternate names to their canonical form so e.g.
+    // "NYC" -> "new york", "U.K." -> "united kingdom", "Bombay" -> "mumbai".
+    return SEARCH_ALIASES[base] ?? COUNTRY_ALIASES[base] ?? base;
+  }
+
+  // Append the expanded admin-1 name when an entry ends in ", XX" (US/Canada
+  // codes). Lets queries like "California" or "Ontario" surface "City of Long
+  // Beach, CA" and "City of Toronto, ON" alongside the state-entity entries.
+  private buildSearchHaystack(name: string): string {
+    const normalized = this.normalizeForSearch(name);
+    const m = name.match(/,\s*([A-Z]{2,3})\s*$/);
+    const expansion = m ? STATE_ABBREV_TO_NAME[m[1]] : undefined;
+    return expansion ? `${normalized} ${this.normalizeForSearch(expansion)}` : normalized;
   }
 
   private _filter(
@@ -255,7 +274,7 @@ export class MainSearchComponent implements OnInit {
     // Thai jurisdiction even though it doesn't appear in their names.
     const prepared = locations.map((loc) => ({
       ...loc,
-      _normalizedName: this.normalizeForSearch(loc.name),
+      _normalizedName: this.buildSearchHaystack(loc.name),
       _normalizedCountry: loc.country ? this.normalizeForSearch(loc.country) : '',
     }));
     const results = fuzzysort.go(this.normalizeForSearch(value), prepared, {

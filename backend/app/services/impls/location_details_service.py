@@ -84,6 +84,20 @@ class LocationDetailsService:
             self.repository.get_solution_examples(org_id),
         )
 
+        # Suppress this org's own disclosed adaptation content for Non-Public
+        # disclosers — their goals/actions/projects are private. Solutions and
+        # peer-actions are NOT suppressed: they're recommendations sourced from
+        # other (Public) peer orgs, so showing them doesn't leak anything about
+        # the Non-Public target. Public orgs and non-disclosers (empty
+        # public_status) pass through; non-disclosers naturally have no
+        # disclosed content today but may receive GEE-derived data later, which
+        # should not be silently suppressed by a broader `!= "Public"`
+        # condition.
+        if metadata is not None and metadata.public_status == "Non-Public":
+            goals = []
+            actions = []
+            projects = []
+
         mapped_hazards = self._map_to_hazard_profiles(hazards, org_id)
         mapped_goals = self._map_to_adaptation_goals(goals, org_id)
         mapped_actions = self._map_to_adaptation_actions(actions, org_id)

@@ -74,11 +74,11 @@
           </div>
           @if (action.status) {
             <div
-              class="mt-[18px] h-5 px-2.5 py-1 rounded-sm inline-flex justify-start items-center overflow-hidden"
+              class="mt-[18px] px-2.5 py-1 rounded-sm inline-flex items-center self-start max-w-full"
               [ngClass]="getStatusBadgeClass(action.status)"
             >
               <div
-                class="text-right text-white font-roboto text-[13px] font-normal leading-[25px] tracking-[1px]"
+                class="text-white font-roboto text-[13px] font-normal leading-tight tracking-[1px]"
               >
                 {{
                   action.status.statusType === 'OTHERS' && action.status.otherStatusDetails

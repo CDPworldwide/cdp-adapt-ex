@@ -79,10 +79,6 @@ export class CityDetailPageComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  onTryAnotherOrganization(): void {
-    this.router.navigate(['/']);
-  }
-
   onTabChange(tab: LocationCardTabKey): void {
     if (!this.organizationId || tab === this.activeTab) {
       return;

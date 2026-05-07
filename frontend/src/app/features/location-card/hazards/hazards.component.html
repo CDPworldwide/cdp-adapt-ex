@@ -38,7 +38,7 @@
           >
             <div class="flex justify-between items-center">
               <h3
-                class="text-cdp-neutral-01 font-roboto text-sm font-normal leading-5 tracking-cdp-tight uppercase"
+                class="text-cdp-neutral-01 font-roboto text-sm lg:text-base font-normal leading-5 lg:leading-6 tracking-cdp-medium uppercase"
               >
                 {{ 'locationCard.hazardOverview.topHazardsDisclosed' | translate }}
               </h3>
@@ -86,7 +86,7 @@
           <!-- Most Exposed Economic Sectors Card -->
           @if (data.hazards.statistics.vulnerableSectors; as vulnerableSectors) {
             <div
-              class="lg:w-1/2 bg-cdp-dark p-4 lg:p-6 lg:rounded-sm h-40 lg:h-[200px] flex flex-col overflow-hidden justify-between lg:justify-start gap-3 lg:gap-0"
+              class="lg:w-1/2 bg-cdp-dark p-4 lg:p-6 lg:rounded-sm h-40 lg:h-[200px] flex flex-col overflow-hidden justify-between lg:justify-start gap-3 lg:gap-0 relative"
             >
               <!-- Title row -->
               <div class="flex justify-between items-center lg:items-start shrink-0">
@@ -134,10 +134,11 @@
                 >
                   {{ vulnerableSectors.length }}
                 </div>
-                <div class="w-[120px] ml-auto h-full relative -translate-x-6">
+                <div class="w-[240px] mx-auto h-full relative translate-x-2">
                   <div
                     #sectorList
                     class="flex flex-col gap-2 overflow-y-auto custom-scrollbar h-full pb-10"
+                    (scroll)="onSectorListScroll()"
                   >
                     <div
                       *ngFor="let sector of vulnerableSectors"
@@ -151,7 +152,7 @@
                         class="shrink-0"
                       ></app-sector-icon>
                       <span
-                        class="text-white font-roboto text-xs font-normal leading-4 tracking-cdp-widest"
+                        class="text-white font-roboto text-xs font-normal leading-4 tracking-cdp-widest whitespace-nowrap"
                         >{{
                           sector.sectorType === 'OTHERS'
                             ? sector.otherSectorDetails
@@ -166,6 +167,23 @@
                   ></div>
                 </div>
               </div>
+              <!-- Synthetic scrollbar pinned to the card's right edge.
+                   macOS Chrome's overlay scrollbar auto-hides regardless of
+                   ::-webkit-scrollbar styling, so we paint our own. The
+                   thumb's height + position track the actual scroll state of
+                   #sectorList via [style] bindings updated in (scroll). -->
+              @if (sectorListScrollable) {
+                <div
+                  aria-hidden="true"
+                  class="hidden lg:block absolute right-2 top-16 bottom-3 w-1 bg-white/20 rounded-full pointer-events-none"
+                >
+                  <div
+                    class="absolute left-0 right-0 bg-white/70 rounded-full"
+                    [style.height.%]="sectorListThumbHeight"
+                    [style.top.%]="sectorListThumbTop"
+                  ></div>
+                </div>
+              }
             </div>
           }
         </div>
@@ -580,10 +598,41 @@
       </div>
     }
 
-    <!-- Empty state -->
+    <!-- Empty state: red banner per Figma -->
     @if (!data.hazards.hazards?.length) {
-      <div class="px-4 py-8 text-center">
-        <p class="text-sm text-gray-500">{{ 'locationCard.hazardDetail.noData' | translate }}</p>
+      <div class="mb-8 px-4 lg:px-0">
+        <div class="w-full px-6 py-4 bg-cdp-red flex justify-start items-center gap-6">
+          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
+            <app-no-hazards-icon size="44" color="white"></app-no-hazards-icon>
+          </div>
+          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
+            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
+              <div
+                class="self-stretch text-white text-base font-semibold font-roboto leading-6 tracking-tight"
+              >
+                {{ 'locationCard.hazards.noHazardsBanner.title' | translate }}
+              </div>
+              <div
+                class="self-stretch text-white text-sm font-light font-roboto leading-5 tracking-tight"
+                [innerHTML]="'locationCard.hazards.noHazardsBanner.description' | translate"
+              ></div>
+            </div>
+            <div class="h-12 flex justify-center items-center shrink-0">
+              <a
+                href="https://data.cdp.net/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-white inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-gray-100 transition-colors"
+              >
+                <div
+                  class="justify-center text-cdp-red text-sm font-normal font-roboto leading-5 tracking-tight"
+                >
+                  {{ 'locationCard.hazards.noHazardsBanner.button' | translate }}
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     }
 

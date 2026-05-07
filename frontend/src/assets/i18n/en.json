@@ -104,6 +104,11 @@
       "populationLabel": "Population Exposed to Primary Hazards",
       "gdpLabel": "Total GDP at Risk in USD",
       "sectorsLabel": "Vulnerable economic sectors",
+      "noHazardsBanner": {
+        "title": "No hazards disclosed",
+        "description": "This jurisdiction didn’t report any hazards on their CDP report. <strong>All hazard information displayed on this page is sourced from CDP analysis</strong>.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP open data portal.",
+        "button": "CDP open data portal"
+      },
       "noHazardsContent": {
         "title": "{{location}} hasn't disclosed hazard information for their jurisdiction as of the {{year}} CDP disclosure",
         "description": "Currently there isn’t any hazard information in the {{year}} CDP disclosure from {{location}}. There could be a few reasons for this, but for the sake of trust, accuracy and quality we aren’t showing other information.<br><br>As this project matures we are hoping to bring in previous years disclosures if they exist. We also want to apply methodologies and trusted external hazard data sources to compute hazards that could impact this location, as well as other locations globally. You can view other disclosed data for this location in the <a class=\"gov-actions-link text-cdp-red font-medium cursor-pointer hover:underline\">Government actions</a> tab for goals, actions and other projects for {{location}}."
@@ -353,19 +358,20 @@
     "solutions": {
       "alsoHasLocalAction": "also has action(s) in this category",
       "exampleActionsCount": "View {{count}} example actions",
-      "popularSolutionsTitle": "Popular peer actions",
+      "popularSolutionsTitle": "Action Ideas from Peer Cities",
       "totalCostOfAction": "Total cost of action (USD)",
       "timeframe": "Timeframe",
       "hazardFiltersTitle": "Hazard filters",
       "description": "Description",
       "sourceLabel": "Source:",
-      "sourceText": "CDP aggregation and analysis of {{year}} disclosures from peer cities",
+      "sourceText": "CDP aggregation and analysis on {{year}} Disclosures from Peer Cities",
       "climateHazards": "Climate hazards",
       "statusOfAction": "Status of action",
       "coBenefits": "Co-benefits",
       "hazardsAddressed": "Hazards Addressed",
       "jurisdictionsTakingAction": "Jurisdictions Taking this Action",
       "seeMethodology": "See Methodology for details",
+      "intro": "Browse ideas for actions that other cities with similar climate conditions and shared hazards are taking to respond",
       "exampleActions": "example actions",
       "resilienceAttributes": "Resilience attributes enhanced",
       "impactedSectors": "Impacted sectors",
@@ -399,14 +405,9 @@
   },
   "cityDetail": {
     "notFound": {
-      "eyebrow": "Organization route",
-      "title": "We couldn't load this organization profile",
-      "descriptionPrefix": "We couldn't find data for organization ID",
-      "descriptionSuffix": ". The link may be outdated, or this organization may not have climate data available yet.",
-      "unknownOrganization": "unknown",
-      "guidance": "Check the organization ID in the URL, or return to search to open a different organization.",
-      "backToSearch": "Back to search",
-      "tryAnotherOrganization": "Try another organization"
+      "title": "Something went wrong",
+      "description": "We couldn't find data for this jurisdiction. Please try again.",
+      "backToMap": "Back to map"
     }
   },
   "disclosureTrends": {

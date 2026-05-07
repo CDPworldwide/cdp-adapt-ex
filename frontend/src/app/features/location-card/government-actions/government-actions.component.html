@@ -86,7 +86,7 @@
                   >
                     {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                   </p>
-                  <div class="hazard-chips-scroll flex flex-row gap-2 overflow-x-auto">
+                  <div class="flex flex-row flex-wrap gap-2">
                     @for (hazard of goal.hazardsAddressed; track hazard) {
                       <div class="flex items-center gap-2 p-1 h-5 shrink-0">
                         <app-hazard-icon
@@ -178,9 +178,9 @@
                 @if (action.status) {
                   <div
                     [ngClass]="getStatusClass(action.status)"
-                    class="h-[25px] px-2 rounded-sm inline-flex justify-center items-center self-start overflow-hidden"
+                    class="px-2 py-1 rounded-sm inline-flex items-center self-start"
                   >
-                    <span class="text-white text-[13px] font-normal font-roboto truncate">
+                    <span class="text-white text-[13px] font-normal font-roboto leading-tight">
                       {{
                         action.status.statusType === 'OTHERS' && action.status.otherStatusDetails
                           ? action.status.otherStatusDetails
@@ -228,7 +228,7 @@
                   >
                     {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                   </p>
-                  <div class="hazard-chips-scroll flex flex-row gap-2 overflow-x-auto">
+                  <div class="flex flex-row flex-wrap gap-2">
                     @for (hazard of action.hazardsAddressed; track hazard) {
                       <div class="flex items-center gap-2 p-1 h-5 shrink-0">
                         <app-hazard-icon

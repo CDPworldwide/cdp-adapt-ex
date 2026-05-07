@@ -2,7 +2,7 @@
 
 from typing import List, Optional
 
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -32,7 +32,13 @@ class LocationDetailsRepository:
                 select(FactHazards)
                 .where(
                     FactHazards.cdp_disclosing_org_number == org_id,
-                    FactHazards.public_status == "Public",
+                    # Suppress disclosed Non-Public hazards while keeping Public
+                    # and GEE-derived (NULL public_status) rows. (`!=` alone
+                    # would silently drop NULL rows under SQL three-valued logic.)
+                    or_(
+                        FactHazards.public_status != "Non-Public",
+                        FactHazards.public_status.is_(None),
+                    ),
                 )
                 .order_by(FactHazards.hazard_rank)
             )
@@ -137,7 +143,8 @@ class LocationDetailsRepository:
                 func.lower(DimCentral.disclosing_organization)
                 == organization_name.lower(),
                 DimCentral.has_geometry,
-                DimCentral.public_status == "Public",
+                # No public_status filter — Public, Non-Public, and non-disclosers
+                # all need to resolve so search bar clicks reach the detail page.
             )
             results = (await session.exec(statement)).all()
             return [
@@ -153,6 +160,10 @@ class LocationDetailsRepository:
     async def get_all_location_summaries(self) -> List[OrganizationSummary]:
         """Return all organizations with their IDs and names.
 
+        Includes Public disclosers, Non-Public disclosers, and non-disclosers
+        (who have an empty `public_status` as of May 7, schema to be updated later). The search bar surfaces all three
+        buckets.
+
         Returns:
             A list of `OrganizationSummary` objects used for search suggestions.
         """
@@ -166,7 +177,6 @@ class LocationDetailsRepository:
                 )
                 .where(
                     DimCentral.has_geometry,
-                    DimCentral.public_status == "Public",
                 )
                 .distinct()
             )
@@ -202,7 +212,9 @@ class LocationDetailsRepository:
                 )
                 .where(
                     DimCentral.has_geometry,
-                    DimCentral.public_status == "Public",
+                    # Disclosers (Public + Non-Public) only — non-disclosers
+                    # (empty public_status as of May 7) appear in search but not on the map.
+                    DimCentral.public_status.in_(["Public", "Non-Public"]),
                 )
                 .distinct(DimCentral.disclosing_organization)
             )
