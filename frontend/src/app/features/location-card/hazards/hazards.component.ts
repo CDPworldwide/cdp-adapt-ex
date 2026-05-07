@@ -17,7 +17,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { HazardMapComponent, SUPPORTED_HAZARD_TYPES } from '../../hazard-map/hazard-map';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../shared/components/sector-icon/sector-icon.component';
-import { InfoIconComponent, ArrowRightIconComponent } from '../../../shared/icons';
+import {
+  InfoIconComponent,
+  ArrowRightIconComponent,
+  NoHazardsIconComponent,
+} from '../../../shared/icons';
 import { ShowMoreButtonComponent } from '../../../shared/components/show-more-button/show-more-button.component';
 import type { AdaptationAction, Hazard, LocationProfile } from '@pac-api/client';
 
@@ -33,6 +37,7 @@ import type { AdaptationAction, Hazard, LocationProfile } from '@pac-api/client'
     SectorIconComponent,
     InfoIconComponent,
     ArrowRightIconComponent,
+    NoHazardsIconComponent,
     ShowMoreButtonComponent,
   ],
   templateUrl: './hazards.component.html',
