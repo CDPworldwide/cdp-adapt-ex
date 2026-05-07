@@ -1,4 +1,5 @@
 <div
+  #outerContainer
   class="flex flex-col lg:flex-row h-full lg:h-[80vh] w-full lg:w-[80vw] overflow-y-auto lg:overflow-hidden shadow-2xl relative bg-white"
 >
   <!-- Solution Overview -->
@@ -128,7 +129,7 @@
   </div>
 
   <!-- Right/Bottom Side: Action Detail -->
-  <div class="flex-1 bg-white lg:overflow-y-auto overflow-x-hidden">
+  <div #detailContainer class="flex-1 bg-white lg:overflow-y-auto overflow-x-hidden">
     @if (currentAction) {
       <div [class]="'w-full h-full ' + slideClass">
         <app-adaptation-action-detail
