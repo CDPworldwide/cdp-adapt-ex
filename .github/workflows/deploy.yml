@@ -2,7 +2,7 @@ name: Deploy Orchestrator
 
 on:
   push:
-    branches: [main, production]
+    branches: [production]
     paths:
       - "backend/**"
       - "frontend/**"
@@ -22,14 +22,15 @@ env:
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
   NODE_VERSION: "20.x"
   AI_SERVER_URL: https://cdp-ai-server-pbybuiwoxq-uc.a.run.app
-  # Branch-specific environment configuration
-  ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
-  SERVICE_NAME_BACKEND: ${{ github.ref == 'refs/heads/production' && 'cdp-server-prod' || 'cdp-server' }}
-  SERVICE_NAME_FRONTEND: ${{ github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend' }}
+  # Production is the only long-lived deployment from this workflow.
+  ENVIRONMENT: production
+  SERVICE_NAME_BACKEND: cdp-server-prod
+  # Keep the single public frontend URL on the existing frontend service.
+  SERVICE_NAME_FRONTEND: frontend
 
 jobs:
   deploy-backend:
-    name: Deploy backend (${{ github.ref == 'refs/heads/production' && 'production' || 'development' }})
+    name: Deploy backend (production)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -95,7 +96,7 @@ jobs:
           image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_BACKEND }}:${{ github.sha }}
           flags: |
             --allow-unauthenticated
-            --add-cloudsql-instances=${{ env.PROJECT_ID }}:${{ env.REGION }}:${{ env.ENVIRONMENT == 'production' && 'cdp-prod' || 'cdp-test' }}
+            --add-cloudsql-instances=${{ env.PROJECT_ID }}:${{ env.REGION }}:cdp-prod
             --min-instances=1
             --max-instances=10
             --memory=2Gi
@@ -118,7 +119,7 @@ jobs:
             PROJECT_ID=${{ env.PROJECT_ID }}
             LOCATION=${{ env.REGION }}
             APP_ENV=${{ env.ENVIRONMENT }}
-            DEBUG=${{ env.ENVIRONMENT == 'development' && 'true' || 'false' }}
+            DEBUG=false
             LOG_FORMAT=json
             POSTGRES_PORT=5432
             LLM_MODEL=${{ secrets.LLM_MODEL || 'gemini-2.5-flash' }}
@@ -171,7 +172,7 @@ jobs:
           echo "Backend ready: $BACKEND_URL"
 
   deploy-frontend:
-    name: Deploy frontend (${{ github.ref == 'refs/heads/production' && 'production' || 'development' }})
+    name: Deploy frontend (production)
     runs-on: ubuntu-latest
     needs: deploy-backend
     permissions:
@@ -260,7 +261,7 @@ jobs:
           FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
           FRONTEND_API_KEY='${{ steps.frontend-secrets.outputs.API_KEY }}' \
           FRONTEND_AI_SERVER_API_KEY='${{ secrets.AI_SERVER_API_KEY }}' \
-          FRONTEND_DEBUG_MODE='${{ env.ENVIRONMENT == 'development' }}' \
+          FRONTEND_DEBUG_MODE='false' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
           bash scripts/write-environment.sh
 
