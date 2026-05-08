@@ -173,6 +173,7 @@ class LocationDetailsService:
                 target_year=g.target_year,
             )
             for g in goals
+            if g.goal_english and g.goal_english.strip()
         ]
 
     def _build_adaptation_action(
