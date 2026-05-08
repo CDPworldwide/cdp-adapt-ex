@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 
 ACRONYM_PATTERN = re.compile(
-    r"\b(?=[A-Z0-9/-]{2,}\b)(?=[A-Z0-9/-]*[A-Z])[A-Z0-9]+(?:[/-][A-Z0-9]+)*\b"
+    r"\b(?:[A-Za-z]{1,2}\.)+[A-Za-z]\.?(?=\W|$)|\b(?=[A-Z0-9/-]{2,}\b)(?=[A-Z0-9/-]*[A-Z])[A-Z0-9]+(?:[/-][A-Z0-9]+)*\b"
 )
 PLACEHOLDER_TEMPLATE = "[[PAC_ACRONYM_{index}]]"
 

@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform, inject, ChangeDetectorRef } from '@angular/core';
 import { WebTranslationService } from '../services/web-translation.service';
 import { LanguageService } from '../services/language.service';
+import { normalizeTranslationLanguage } from '../services/translation-language.util';
 
 @Pipe({
   name: 'autoTranslate',
@@ -17,13 +18,13 @@ export class AutoTranslatePipe implements PipeTransform {
   private lastLang = '';
   private lastSourceLang = '';
 
-  transform(value: string | null | undefined, sourceLang = 'en'): string {
+  transform(value: string | null | undefined, sourceLang: string | null | undefined = 'en'): string {
     if (!value) {
       return value ?? '';
     }
 
-    const lang = this.languageService.currentLang();
-    const normalizedSourceLang = sourceLang.trim().toLowerCase();
+    const lang = normalizeTranslationLanguage(this.languageService.currentLang());
+    const normalizedSourceLang = normalizeTranslationLanguage(sourceLang);
 
     if (lang === 'en' || lang === normalizedSourceLang || !this.webTranslation.isSupported) {
       return value;
@@ -47,7 +48,7 @@ export class AutoTranslatePipe implements PipeTransform {
     this.webTranslation.translate(value, normalizedSourceLang).then((translated) => {
       if (
         value === this.lastInput &&
-        requestedLang === this.languageService.currentLang() &&
+        requestedLang === normalizeTranslationLanguage(this.languageService.currentLang()) &&
         requestedSourceLang === this.lastSourceLang
       ) {
         this.currentValue = translated;

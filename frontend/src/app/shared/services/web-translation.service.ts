@@ -3,6 +3,7 @@ import { translateTextsApiV1TranslatePost } from '@pac-api/client';
 import type { TranslateResponse } from '@pac-api/client';
 import { createApiClient } from './api-client';
 import { LanguageService } from './language.service';
+import { normalizeTranslationLanguage } from './translation-language.util';
 
 interface PendingEntry {
   resolvers: Array<(value: string) => void>;
@@ -28,14 +29,14 @@ export class WebTranslationService {
     return true;
   }
 
-  async translate(text: string, sourceLang = 'en'): Promise<string> {
-    const targetLang = this.languageService.currentLang();
+  async translate(text: string, sourceLang: string | null | undefined = 'en'): Promise<string> {
+    const targetLang = normalizeTranslationLanguage(this.languageService.currentLang());
+    const normalizedSourceLang = normalizeTranslationLanguage(sourceLang);
 
-    if (!text || targetLang === 'en' || sourceLang === targetLang) {
+    if (!text || targetLang === 'en' || normalizedSourceLang === targetLang) {
       return text;
     }
 
-    const normalizedSourceLang = sourceLang.trim().toLowerCase();
     const cacheKey = `${normalizedSourceLang}:${targetLang}:${text}`;
 
     const cached = this.translationCache.get(cacheKey) ?? this.loadFromStorage(cacheKey);
