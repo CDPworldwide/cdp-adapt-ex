@@ -92,9 +92,23 @@ PGPASSWORD="$POSTGRES_PASSWORD" psql \
 
 ## Update Remote System Prompt
 
-Upload `app/prompts/system_prompt.md` to the stable public R2 object used by
-`SYSTEM_PROMPT`:
+The deployed AI server reads `SYSTEM_PROMPT` from this stable public GCS URL:
+
+```text
+https://storage.googleapis.com/cdp-ai-server-prompts-project-bb4fd058-24e7-4ccb-b06/prompts/system_prompt.md
+```
+
+Upload `app/prompts/system_prompt.md` to that object:
 
 ```bash
-script/update-system-prompt
+uv run update-system-prompt
 ```
+
+The script uses project `project-bb4fd058-24e7-4ccb-b06`, creates/configures
+the prompt bucket if needed, uploads with `text/markdown`, and prints the fixed
+URL. Remote prompts are re-fetched after `SYSTEM_PROMPT_CACHE_SECONDS` so prompt
+edits can be picked up without restarting the server.
+
+Local runs need permission to create/update the GCS bucket. The GitHub Actions
+prompt upload workflow runs the same command through workload identity whenever
+the prompt or upload tooling changes on `main` or `production`.

@@ -1,0 +1,51 @@
+name: Upload AI System Prompt
+
+on:
+  push:
+    branches: [main, production]
+    paths:
+      - "ai-server/app/prompts/system_prompt.md"
+      - "ai-server/pyproject.toml"
+      - "ai-server/script/update-system-prompt"
+      - "ai-server/uv.lock"
+      - "ai-server/utility_scripts/update_system_prompt.py"
+      - ".github/workflows/ai-system-prompt.yml"
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: project-bb4fd058-24e7-4ccb-b06
+  SYSTEM_PROMPT_BUCKET: cdp-ai-server-prompts-project-bb4fd058-24e7-4ccb-b06
+  SYSTEM_PROMPT_OBJECT: prompts/system_prompt.md
+
+jobs:
+  upload:
+    name: Upload system prompt
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.9.18"
+          enable-cache: true
+
+      - name: Upload system prompt
+        working-directory: ai-server
+        run: uv run update-system-prompt
