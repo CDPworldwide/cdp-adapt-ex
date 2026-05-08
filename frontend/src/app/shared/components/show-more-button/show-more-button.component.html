@@ -1,9 +1,9 @@
 <button
   type="button"
   (click)="onClick()"
-  class="w-[136px] h-[48px] bg-white rounded-[24px] shadow-[0_1px_2px_0_rgba(0,0,0,0.30),0_1px_3px_1px_rgba(0,0,0,0.15)] border border-zinc-100 inline-flex justify-center items-center px-6 py-3 hover:bg-zinc-50 active:bg-zinc-100 transition-colors cursor-pointer"
+  class="bg-white rounded-full shadow-[0_1px_2px_0_rgba(0,0,0,0.30),0_1px_3px_1px_rgba(0,0,0,0.15)] border border-zinc-100 inline-flex justify-center items-center px-4 py-1.5 hover:bg-zinc-50 active:bg-zinc-100 transition-colors cursor-pointer"
 >
-  <span class="text-[#E81647] font-roboto text-base font-medium leading-6 tracking-[0.5px]">
+  <span class="text-cdp-red font-roboto text-sm font-medium leading-5 tracking-[0.25px]">
     {{ (expanded ? 'shared.showLess' : 'shared.showMore') | translate }}
   </span>
 </button>

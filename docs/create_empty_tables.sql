@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS postgis;
+
 -- CENTRAL DIMENSION TABLE --
 --drop table "CSTAR_2025_Dim_Central"
 CREATE TABLE "CSTAR_2025_Dim_Central" (
@@ -45,6 +47,7 @@ CREATE TABLE "CSTAR_2025_Dim_Central" (
     "requesting_auth" character varying(255),
     "ided_non_disclosers" character varying(255),
     "geom_wkt" TEXT,
+    "centroid_wkt" TEXT,
     "has_geometry" BOOLEAN,
     "ecoregion" character varying(255)
 
@@ -60,31 +63,6 @@ ALTER COLUMN disclosing_year SET NOT NULL;
 -- 2. Create the composite Primary Key
 ALTER TABLE "CSTAR_2025_Dim_Central"
 ADD CONSTRAINT "CSTAR_2025_Dim_Central_pkey" PRIMARY KEY (cdp_disclosing_org_number, disclosing_year);
-
------------------------------------------
---Geospatial Cleanup: Convert the text-based WKT column into a native PostGIS geometry column for map performance.
--- 1. Add the actual spatial column (SRID 4326 = WGS84/GPS)
-ALTER TABLE "CSTAR_2025_Dim_Central"
-ADD COLUMN geometry GEOMETRY(Geometry, 4326);
-
--- 2. Parse text into geometry
-UPDATE "CSTAR_2025_Dim_Central"
-SET geometry = ST_GeomFromText(NULLIF(geom_wkt, ''), 4326)
-WHERE geom_wkt IS NOT NULL AND geom_wkt != '';
-
--- 3. Create a spatial index (Crucial for map performance)
-CREATE INDEX idx_target_table_geom
-ON "CSTAR_2025_Dim_Central"  USING GIST (geometry);
-
--- 4. Clean up intermediate column
-ALTER TABLE "CSTAR_2025_Dim_Central"
-DROP COLUMN geom_wkt;
-
------------------------------------------
--- change requesting org to pipe deliminated too to be consistent
-UPDATE "CSTAR_2025_Dim_Central"
-SET "requesting_auth" = REPLACE("requesting_auth", ',', '|')
-WHERE "requesting_auth" LIKE '%,%'; -- Optional: Only update rows containing a comma
 
 -- FACT HAZARD TABLE --
 --drop table "CSTAR_2025_Fact_Hazard";

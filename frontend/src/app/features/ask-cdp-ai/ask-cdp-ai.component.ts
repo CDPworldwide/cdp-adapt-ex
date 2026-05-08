@@ -18,15 +18,13 @@ import {
   type AskCdpAiContextArea,
 } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { AskCdpAiLogoIconComponent } from '../../shared/icons/ask-cdp-ai-logo-icon.component';
-import { marked } from 'marked';
 
 declare let gtag: Function;
 
 @Component({
   selector: 'app-ask-cdp-ai',
   standalone: true,
-  imports: [FormsModule, TranslateModule, AskCdpAiLogoIconComponent],
+  imports: [FormsModule, TranslateModule],
   templateUrl: './ask-cdp-ai.html',
   styleUrls: ['./ask-cdp-ai.css'],
 })

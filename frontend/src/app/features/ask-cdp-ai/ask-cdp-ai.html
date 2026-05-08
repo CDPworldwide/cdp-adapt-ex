@@ -1,29 +1,32 @@
 <div class="bg-white border-l border-gray-200 flex flex-col h-full">
   <!-- Header Section -->
-  <div
-    class="p-4 bg-white border-b border-gray-200 flex justify-between items-center flex-shrink-0"
-  >
-    <h2 class="text-lg font-semibold text-gray-800">{{ 'askCdpAi.buttonText' | translate }}</h2>
-    <button
-      data-testid="ask-ai-toggle"
-      (click)="toggleOpen()"
-      class="text-gray-500 hover:text-gray-700"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
+  <div class="p-4 bg-white border-b border-gray-200 flex-shrink-0">
+    <div class="flex justify-between items-center">
+      <h2 class="text-lg font-semibold text-gray-800">{{ 'askCdpAi.buttonText' | translate }}</h2>
+      <button
+        data-testid="ask-ai-toggle"
+        (click)="toggleOpen()"
+        class="text-gray-500 hover:text-gray-700"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M17 8l4 4m0 0l-4 4m4-4H3"
-        />
-      </svg>
-    </button>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 8l4 4m0 0l-4 4m4-4H3"
+          />
+        </svg>
+      </button>
+    </div>
+    <p class="mt-2 text-sm font-medium text-cdp-red leading-snug">
+      {{ 'askCdpAi.betaDisclaimer' | translate }}
+    </p>
   </div>
 
   <!-- Main Content -->
@@ -38,8 +41,10 @@
         </div>
       } @else if (message.role === 'assistant') {
         <div class="mb-4">
-          <div class="bg-gray-100 rounded-lg p-3 max-w-lg">
-            <p [innerHTML]="getSafeHtml(message.content)"></p>
+          <div
+            class="ai-assistant-message max-w-lg rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm"
+          >
+            <div class="ai-markdown" [innerHTML]="getSafeHtml(message.content)"></div>
           </div>
         </div>
         <!-- Follow-up questions for the last assistant message -->
@@ -69,7 +74,7 @@
                     <button
                       data-testid="ask-ai-suggestion"
                       (click)="onFollowUpClick(q)"
-                      class="w-full text-left text-sm text-white bg-cdp-red hover:bg-red-600 py-2 px-3 rounded-full transition-colors flex justify-between items-center"
+                      class="w-full text-left text-sm text-white bg-cdp-red hover:bg-red-600 py-2 px-3 rounded-lg transition-colors flex justify-between items-center"
                     >
                       <span>{{ q }}</span>
                       <svg
@@ -131,7 +136,7 @@
           <button
             data-testid="ask-ai-suggestion"
             (click)="onFollowUpClick(q)"
-            class="w-full text-left text-sm text-white bg-cdp-red hover:bg-red-600 py-2 px-3 rounded-full transition-colors flex justify-between items-center"
+            class="w-full text-left text-sm text-white bg-cdp-red hover:bg-red-600 py-2 px-3 rounded-lg transition-colors flex justify-between items-center"
           >
             <span>{{ q }}</span>
             <svg

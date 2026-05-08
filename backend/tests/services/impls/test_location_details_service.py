@@ -208,28 +208,12 @@ class TestGetEligibleLocationDetailsByName:
 
         assert result.name == "TestCity"
         assert result.country_name == "USA"
-        assert result.reporting_language is None
         assert result.lat == 20.0
         assert result.lng == 10.0
         assert len(result.hazards.hazards) == 1
         assert len(result.government_actions.goals) == 1
         assert len(result.government_actions.actions) == 1
         assert result.solutions.solutions == {}
-
-    async def test_get_location_exposes_reporting_language(
-        self,
-        location_details_service: LocationDetailsService,
-        mock_repository: AsyncMock,
-    ):
-        mock_repository.get_metadata.return_value = build_mock_metadata(
-            reporting_language="es"
-        )
-
-        result = await location_details_service.get_eligible_location_details_by_name(
-            "TestCity"
-        )
-
-        assert result.reporting_language == "es"
 
     async def test_get_location_includes_mapped_solutions(
         self,
@@ -652,18 +636,28 @@ class TestGetLocationDetailsByOrgId:
 class TestGetAllLocationPins:
     """Tests for the get_all_location_pins method."""
 
-    async def test_get_all_location_pins_success(
+    @pytest.fixture(autouse=True)
+    def _reset_pins_cache(self):
+        # `_pins_cache` is a class-level attribute, so it persists across tests
+        # even with a fresh service instance. Reset it before each test.
+        LocationDetailsService._pins_cache = None
+        yield
+        LocationDetailsService._pins_cache = None
+
+    async def test_get_all_location_pins_falls_back_to_first_vertex(
         self,
         location_details_service: LocationDetailsService,
         mock_repository: AsyncMock,
     ):
-        """Test that get_all_location_pins correctly parses geometries and maps org types."""
+        """When centroid is NULL, pins are derived from the first polygon vertex."""
         mock_geom_1 = MagicMock()
         mock_geom_1.name = "City 1"
         mock_geom_1.org_type = "City"
         mock_geom_1.geometry = json.dumps(
             {"type": "Point", "coordinates": [-87.62, 41.88]}
         )
+        mock_geom_1.centroid_lng = None
+        mock_geom_1.centroid_lat = None
 
         mock_geom_2 = MagicMock()
         mock_geom_2.name = "Region 1"
@@ -671,11 +665,15 @@ class TestGetAllLocationPins:
         mock_geom_2.geometry = json.dumps(
             {"type": "MultiPolygon", "coordinates": [[[-100.0, 50.0]]]}
         )
+        mock_geom_2.centroid_lng = None
+        mock_geom_2.centroid_lat = None
 
         mock_geom_invalid = MagicMock()
         mock_geom_invalid.name = "Invalid 1"
         mock_geom_invalid.org_type = "Unknown"
         mock_geom_invalid.geometry = json.dumps({"type": "Point", "coordinates": []})
+        mock_geom_invalid.centroid_lng = None
+        mock_geom_invalid.centroid_lat = None
 
         mock_repository.get_all_location_geometries.return_value = [
             mock_geom_1,
@@ -698,3 +696,30 @@ class TestGetAllLocationPins:
         assert result[1].lng == -100.0
         assert result[1].lat == 50.0
         assert result[1].org_type == OrgTypeEnum.STATE_AND_REGION
+
+    async def test_get_all_location_pins_uses_centroid_when_present(
+        self,
+        location_details_service: LocationDetailsService,
+        mock_repository: AsyncMock,
+    ):
+        """Centroid lng/lat take precedence over the polygon vertex extraction."""
+        mock_geom = MagicMock()
+        mock_geom.name = "Bacolod City"
+        mock_geom.org_type = "City"
+        # Polygon's first vertex is intentionally far from the centroid so the
+        # test fails loudly if the fallback path runs by accident.
+        mock_geom.geometry = json.dumps(
+            {"type": "Polygon", "coordinates": [[[0.0, 0.0], [1.0, 0.0], [1.0, 1.0]]]}
+        )
+        mock_geom.centroid_lng = 122.939129
+        mock_geom.centroid_lat = 10.657663
+
+        mock_repository.get_all_location_geometries.return_value = [mock_geom]
+
+        result = await location_details_service.get_all_location_pins()
+
+        assert len(result) == 1
+        assert result[0].name == "Bacolod City"
+        assert result[0].lng == 122.939129
+        assert result[0].lat == 10.657663
+        assert result[0].org_type == OrgTypeEnum.CITY

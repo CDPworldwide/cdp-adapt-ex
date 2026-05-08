@@ -14,10 +14,10 @@ export class LanguageService {
 
   readonly languages: Language[] = [
     { code: 'en', label: 'English' },
-    { code: 'es', label: 'Español' },
-    { code: 'ja', label: '日本語' },
-    { code: 'pt', label: 'Português' },
-    { code: 'zh', label: '中文' },
+    { code: 'es', label: 'Español (Beta)' },
+    { code: 'ja', label: '日本語 (Beta)' },
+    { code: 'pt', label: 'Português (Beta)' },
+    { code: 'zh', label: '中文 (Beta)' },
   ];
 
   readonly currentLang = signal('en');

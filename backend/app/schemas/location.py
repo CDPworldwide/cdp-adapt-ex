@@ -344,6 +344,10 @@ class LocationProfile(APIBaseModel):
     lng: float = Field(ge=-180, le=180)
     geometry: dict[str, Any]
     is_reporting_leader: bool = False
+    public_status: str | None = Field(
+        None,
+        description='Disclosure visibility for the org — "Public", "Non-Public", or null when the org has not disclosed (non-discloser).',
+    )
     disclosure_year: int | None = None
     reporting_language: str | None = None
     requesters: list[str] = Field(default_factory=list)

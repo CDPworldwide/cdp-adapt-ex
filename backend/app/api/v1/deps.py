@@ -1,9 +1,13 @@
 from functools import lru_cache
 
 from app.services.clients.database import DatabaseService, database_service
+from app.services.clients.database.disclosure_trends_repository import (
+    DisclosureTrendsRepository,
+)
 from app.services.clients.database.location_details_repository import (
     LocationDetailsRepository,
 )
+from app.services.clients.database.onboarding_repository import OnboardingRepository
 from app.services.clients.earth_engine_client import EarthEngineClient
 from app.services.clients.translate_client import TranslateClient, translate_client
 from app.services.impls.city_resolution_service_impl import CityResolutionServiceImpl
@@ -33,6 +37,16 @@ def get_database_service() -> DatabaseService:
 def get_location_details_repository() -> LocationDetailsRepository:
     """Dependency that provides the LocationDetailsRepository instance."""
     return LocationDetailsRepository(database_service.engine)
+
+
+def get_disclosure_trends_repository() -> DisclosureTrendsRepository:
+    """Dependency that provides the DisclosureTrendsRepository instance."""
+    return DisclosureTrendsRepository(database_service.engine)
+
+
+def get_onboarding_repository() -> OnboardingRepository:
+    """Dependency that provides the OnboardingRepository instance."""
+    return OnboardingRepository(database_service.engine)
 
 
 def get_city_resolution_service() -> CityResolutionService:

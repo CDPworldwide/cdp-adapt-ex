@@ -45,6 +45,12 @@ data/overture/geometry.json
 **/.playwright-mcp/
 .playwright-mcp/
 /*.png
+/test_scripts
 /ai-server/.wrangler
 /node_modules
 /ai-server/org-data
+
+# Local seed data + scripts (not committed; paths vary per developer)
+/cdp_dim_geo_and_ecoregion.csv
+/CSTAR_2025_export
+/scripts/seed_db.py

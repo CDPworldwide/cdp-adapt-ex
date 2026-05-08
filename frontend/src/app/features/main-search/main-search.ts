@@ -16,18 +16,30 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, combineLatest, map, of, startWith } from 'rxjs';
 import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import fuzzysort from 'fuzzysort';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { MapSelectionService } from './map-selection.service';
+import { SEARCH_ALIASES, COUNTRY_ALIASES } from './search-aliases';
+import { STATE_ABBREV_TO_NAME } from './state-abbrev';
 import { Maps } from '../maps/maps';
 import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
-import { ActionStatusEnum } from '@pac-api/client';
-import type { AdaptationAction, Hazard, HazardProfile, LocationPin } from '@pac-api/client';
+import type { Hazard, HazardProfile, LocationPin } from '@pac-api/client';
 import { CdpLogoIconComponent } from '../../shared/icons';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
+import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
+import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
+import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
+
+// `São Paulo` → `sao paulo`. NFD-strip combining marks; preserves length.
+function stripDiacritics(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase();
+}
 
 @Component({
   selector: 'app-main-search',
@@ -41,18 +53,21 @@ import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/di
     MatIconModule,
     ReactiveFormsModule,
     TranslateModule,
-    RouterLink,
     Maps,
     LocationSummaryComponent,
     CdpLogoIconComponent,
     AppHeaderComponent,
     DisclosureTrendsComponent,
+    WelcomeModalComponent,
   ],
 })
 export class MainSearchComponent implements OnInit {
   searchControl = new FormControl('');
   isNotFound = false;
   isOverlayOpen = false;
+  // Session-only: when the user dismisses the intro card it stays gone for the
+  // current page load and reappears on reload. No persistence by design.
+  isInfoCardDismissed = false;
   allLocations: LocationSuggestion[] = [];
   filteredLocations!: Observable<LocationSuggestion[]>;
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
@@ -60,8 +75,11 @@ export class MainSearchComponent implements OnInit {
   selectedLocation: LocationPin | null = null;
   selectedLocationData: LocationData | null = null;
   isLoadingHazardData = false;
+
+  readonly disclosureTrendsYear = 2025;
+  disclosureTrendsSummary!: Observable<DisclosureTrendsSummary>;
   totalHazardsCount = 0;
-  implementedActionsCount = 0;
+  disclosedActionsCount = 0;
   projectsRequiringFundingCount = 0;
   topFourHazards: Hazard[] = [];
 
@@ -74,9 +92,14 @@ export class MainSearchComponent implements OnInit {
     private locationService: LocationService,
     private mapSelectionService: MapSelectionService,
     private router: Router,
+    private disclosureTrendsStatsService: DisclosureTrendsStatsService,
   ) {}
 
   ngOnInit() {
+    this.disclosureTrendsSummary = this.disclosureTrendsStatsService.getSummary(
+      this.disclosureTrendsYear,
+    );
+
     this.filteredLocations = combineLatest([
       this.searchControl.valueChanges.pipe(startWith(this.searchControl.value || '')),
       this.allLocations$,
@@ -101,7 +124,7 @@ export class MainSearchComponent implements OnInit {
           this.selectedLocation = location;
           if (location) {
             this.totalHazardsCount = 0;
-            this.implementedActionsCount = 0;
+            this.disclosedActionsCount = 0;
             this.projectsRequiringFundingCount = 0;
             this.topFourHazards = [];
             this.isLoadingHazardData = true;
@@ -134,13 +157,7 @@ export class MainSearchComponent implements OnInit {
   private processLocationData(data: LocationData): void {
     this.selectedLocationData = data;
     this.totalHazardsCount = data.hazards?.hazards?.length || 0;
-    this.implementedActionsCount =
-      data.governmentActions?.actions?.filter(
-        (action: AdaptationAction) =>
-          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_JURISDICTION_WIDE ||
-          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_MOST_OF_JURISDICTION ||
-          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_TARGETED,
-      ).length || 0;
+    this.disclosedActionsCount = data.governmentActions?.actions?.length || 0;
     this.projectsRequiringFundingCount = data.governmentActions?.projects?.length || 0;
     this.topFourHazards = (data.hazards?.hazards || [])
       .map((hazardProfile: HazardProfile) => hazardProfile.hazard)
@@ -177,6 +194,16 @@ export class MainSearchComponent implements OnInit {
     this.isOverlayOpen = false;
   }
 
+  dismissInfoCard(): void {
+    this.isInfoCardDismissed = true;
+  }
+
+  scrollToTrends(): void {
+    document
+      .querySelector('app-disclosure-trends')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   @HostListener('document:keydown.escape')
   onEscapeKey(): void {
     if (this.isOverlayOpen) {
@@ -195,28 +222,45 @@ export class MainSearchComponent implements OnInit {
     if (!trimmed) {
       return [{ text: name, bold: false }];
     }
-    const idx = name.toLowerCase().indexOf(trimmed.toLowerCase());
+    // Strip-only (no abbrev expansion) so indexes line up with `name`.
+    const strippedName = stripDiacritics(name);
+    const strippedQuery = stripDiacritics(trimmed);
+    const idx = strippedName.indexOf(strippedQuery);
     if (idx === -1) {
       return [{ text: name, bold: false }];
     }
     return [
       { text: name.substring(0, idx), bold: false },
-      { text: name.substring(idx, idx + trimmed.length), bold: true },
-      { text: name.substring(idx + trimmed.length), bold: false },
+      { text: name.substring(idx, idx + strippedQuery.length), bold: true },
+      { text: name.substring(idx + strippedQuery.length), bold: false },
     ];
   }
 
   private static readonly MAX_SUGGESTIONS = 5;
 
   private normalizeForSearch(value: string): string {
-    return value
-      .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '')
+    const base = stripDiacritics(value)
       .replace(/\bst\.?\b/gi, 'saint')
       .replace(/\bste\.?\b/gi, 'sainte')
       .replace(/\bmt\.?\b/gi, 'mount')
       .replace(/\bft\.?\b/gi, 'fort')
-      .toLowerCase();
+      .toLowerCase()
+      .replace(/[.,()'"]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    // Redirect well-known alternate names to their canonical form so e.g.
+    // "NYC" -> "new york", "U.K." -> "united kingdom", "Bombay" -> "mumbai".
+    return SEARCH_ALIASES[base] ?? COUNTRY_ALIASES[base] ?? base;
+  }
+
+  // Append the expanded admin-1 name when an entry ends in ", XX" (US/Canada
+  // codes). Lets queries like "California" or "Ontario" surface "City of Long
+  // Beach, CA" and "City of Toronto, ON" alongside the state-entity entries.
+  private buildSearchHaystack(name: string): string {
+    const normalized = this.normalizeForSearch(name);
+    const m = name.match(/,\s*([A-Z]{2,3})\s*$/);
+    const expansion = m ? STATE_ABBREV_TO_NAME[m[1]] : undefined;
+    return expansion ? `${normalized} ${this.normalizeForSearch(expansion)}` : normalized;
   }
 
   private _filter(
@@ -226,16 +270,19 @@ export class MainSearchComponent implements OnInit {
     if (!value) {
       return locations.slice(0, MainSearchComponent.MAX_SUGGESTIONS);
     }
+    // Search both name and country so a query like "thailand" surfaces every
+    // Thai jurisdiction even though it doesn't appear in their names.
     const prepared = locations.map((loc) => ({
       ...loc,
-      _normalized: this.normalizeForSearch(loc.name),
+      _normalizedName: this.buildSearchHaystack(loc.name),
+      _normalizedCountry: loc.country ? this.normalizeForSearch(loc.country) : '',
     }));
     const results = fuzzysort.go(this.normalizeForSearch(value), prepared, {
-      key: '_normalized',
+      keys: ['_normalizedName', '_normalizedCountry'],
       limit: MainSearchComponent.MAX_SUGGESTIONS,
     });
     return results.map((result) => {
-      const { _normalized, ...rest } = result.obj;
+      const { _normalizedName, _normalizedCountry, ...rest } = result.obj;
       return rest;
     });
   }
@@ -247,8 +294,10 @@ export class MainSearchComponent implements OnInit {
     }
 
     const trimmedQuery = searchQuery.trim();
+    // Accent-insensitive so "Sao Paulo" resolves to "São Paulo".
+    const normalizedQuery = this.normalizeForSearch(trimmedQuery);
     const selectedLocation = this.allLocations.find(
-      (location) => location.name.toLowerCase() === trimmedQuery.toLowerCase(),
+      (location) => this.normalizeForSearch(location.name) === normalizedQuery,
     );
 
     if (selectedLocation) {

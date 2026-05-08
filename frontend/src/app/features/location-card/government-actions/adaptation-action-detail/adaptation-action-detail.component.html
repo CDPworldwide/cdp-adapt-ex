@@ -1,4 +1,4 @@
-<div class="flex flex-col lg:flex-row w-full max-w-full bg-white lg:rounded-2xl overflow-hidden">
+<div class="flex flex-col lg:flex-row w-full max-w-full bg-white lg:rounded-2xl overflow-hidden break-words">
   <!-- Top/Left Side: Hero Image -->
   @if (showHeroImage) {
     <div
@@ -69,16 +69,16 @@
             <h2
               class="text-black text-2xl lg:text-[31px] font-normal font-roboto leading-tight lg:leading-normal break-words"
             >
-              {{ action.title | autoTranslate }}
+              {{ splitTitleAtLastColon(action.title | autoTranslate).main }}
             </h2>
           </div>
           @if (action.status) {
             <div
-              class="mt-[18px] h-5 px-2.5 py-1 rounded-sm inline-flex justify-start items-center overflow-hidden"
+              class="mt-[18px] px-2.5 py-1 rounded-sm inline-flex items-center self-start max-w-full"
               [ngClass]="getStatusBadgeClass(action.status)"
             >
               <div
-                class="text-right text-white font-roboto text-[13px] font-normal leading-[25px] tracking-[1px]"
+                class="text-white font-roboto text-[13px] font-normal leading-tight tracking-[1px]"
               >
                 {{
                   action.status.statusType === 'OTHERS' && action.status.otherStatusDetails

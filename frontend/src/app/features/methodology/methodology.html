@@ -19,11 +19,11 @@
           {{ 'methodology.title' | translate }}
         </h1>
         <div class="w-12 h-[3px] bg-cdp-red mt-2"></div>
-        <p
-          class="text-base md:text-lg leading-relaxed text-cdp-text-secondary max-w-3xl mt-2 font-inter"
-        >
-          {{ 'methodology.intro' | translate }}
-        </p>
+        <div class="max-w-3xl mt-2">
+          <p class="text-base md:text-lg leading-relaxed text-cdp-text-secondary font-inter">
+            {{ 'methodology.intro' | translate }}
+          </p>
+        </div>
       </header>
 
       <!-- CDP Questionnaire -->
@@ -31,9 +31,10 @@
         <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto mb-3 md:mb-4">
           {{ 'methodology.questionnaire.title' | translate }}
         </h2>
-        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          {{ 'methodology.questionnaire.body' | translate }}
-        </p>
+        <p
+          class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+          [innerHTML]="'methodology.questionnaire.body' | translate"
+        ></p>
       </section>
 
       <!-- Hazards -->
@@ -51,9 +52,10 @@
           <h3 class="text-base md:text-lg font-medium text-cdp-dark font-roboto">
             {{ 'methodology.hazards.questionnaireData.title' | translate }}
           </h3>
-          <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-            {{ 'methodology.hazards.questionnaireData.p1' | translate }}
-          </p>
+          <p
+            class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+            [innerHTML]="'methodology.hazards.questionnaireData.p1' | translate"
+          ></p>
           <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
             {{ 'methodology.hazards.questionnaireData.p2' | translate }}
           </p>
@@ -72,9 +74,10 @@
           <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
             {{ 'methodology.hazards.geeData.p3' | translate }}
           </p>
-          <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-            {{ 'methodology.hazards.geeData.p4' | translate }}
-          </p>
+          <p
+            class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+            [innerHTML]="'methodology.hazards.geeData.p4' | translate"
+          ></p>
         </div>
 
         <!-- Hazard layers accordion -->
@@ -123,9 +126,10 @@
           </p>
         </div>
 
-        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          {{ 'methodology.hazards.outro' | translate }}
-        </p>
+        <p
+          class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+          [innerHTML]="'methodology.hazards.outro' | translate"
+        ></p>
       </section>
 
       <!-- Government Actions -->
@@ -138,13 +142,13 @@
         <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
           {{ 'methodology.governmentActions.intro' | translate }}
         </p>
-        <ul
-          class="list-disc pl-6 flex flex-col gap-1 text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+        <ol
+          class="list-decimal pl-6 flex flex-col gap-1 text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
         >
-          <li>{{ 'methodology.governmentActions.listGoals' | translate }}</li>
+          <li [innerHTML]="'methodology.governmentActions.listGoals' | translate"></li>
           <li>{{ 'methodology.governmentActions.listActions' | translate }}</li>
           <li>{{ 'methodology.governmentActions.listProjects' | translate }}</li>
-        </ul>
+        </ol>
         <p
           class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
           [innerHTML]="'methodology.governmentActions.goals' | translate"
@@ -169,12 +173,14 @@
         <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto">
           {{ 'methodology.solutions.title' | translate }}
         </h2>
-        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          {{ 'methodology.solutions.p1' | translate }}
-        </p>
-        <p class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter">
-          {{ 'methodology.solutions.p2' | translate }}
-        </p>
+        <p
+          class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+          [innerHTML]="'methodology.solutions.p1' | translate"
+        ></p>
+        <p
+          class="text-sm md:text-base leading-relaxed text-cdp-text-secondary font-inter"
+          [innerHTML]="'methodology.solutions.p2' | translate"
+        ></p>
       </section>
 
       <!-- Minimum criteria -->
@@ -244,9 +250,10 @@
                       <span class="text-cdp-text-tertiary">—</span>
                     }
                   </td>
-                  <td class="py-4 text-sm leading-relaxed text-cdp-text-secondary font-inter">
-                    {{ 'methodology.minimumCriteria.rows.' + row.id + '.criteria' | translate }}
-                  </td>
+                  <td
+                    class="py-4 text-sm leading-relaxed text-cdp-text-secondary font-inter"
+                    [innerHTML]="'methodology.minimumCriteria.rows.' + row.id + '.criteria' | translate"
+                  ></td>
                 </tr>
               }
             </tbody>

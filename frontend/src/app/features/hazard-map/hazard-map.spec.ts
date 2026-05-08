@@ -20,6 +20,7 @@ describe('HazardMapComponent', () => {
     mockMapInstance = {
       setCenter: jasmine.createSpy('setCenter'),
       fitBounds: jasmine.createSpy('fitBounds'),
+      setOptions: jasmine.createSpy('setOptions'),
       overlayMapTypes: {
         push: jasmine.createSpy('push'),
         clear: jasmine.createSpy('clear'),

@@ -56,6 +56,9 @@ class ChatCompletionRequest(BaseModel):
         return None
 
     def resolved_context_area(self) -> str | None:
+        inferred_area = self.inferred_context_area()
+        if inferred_area is not None:
+            return inferred_area
         if self.context_area is not None:
             return self.context_area
         if self.metadata and self.metadata.get("contextArea") in CONTEXT_AREAS:
@@ -63,7 +66,7 @@ class ChatCompletionRequest(BaseModel):
         location_data = self.resolved_location_data()
         if location_data and location_data.get("contextArea") in CONTEXT_AREAS:
             return location_data["contextArea"]
-        return self.inferred_context_area()
+        return None
 
     def inferred_context_area(self) -> str | None:
         latest_user_message = next(
@@ -84,13 +87,51 @@ class ChatCompletionRequest(BaseModel):
         if any(
             term in latest_user_message
             for term in (
+                "peer solution",
+                "peer action",
+                "best practice",
+                "best practices",
+                "copy from",
+                "learn from",
+                "other cities",
+                "other locations",
+                "similar cities",
+                "similar locations",
+                "solution idea",
+                "solution ideas",
+                "action ideas",
+            )
+        ):
+            return "solutions"
+
+        if any(
+            term in latest_user_message
+            for term in (
                 "vulnerable population",
                 "vulnerable group",
                 "adaptation action",
+                "adaptation actions",
                 "resilience action",
+                "resilience actions",
+                "action source",
+                "action sources",
+                "action reference",
+                "action references",
                 "which actions",
                 "what actions",
+                "actions",
+                "project",
+                "projects",
                 "projects seeking funding",
+                "projects are seeking funding",
+                "project seeking funding",
+                "seeking funding",
+                "seeking finance",
+                "need funding",
+                "needs funding",
+                "funding needed",
+                "funding gap",
+                "funding gaps",
             )
         ):
             return "actions"

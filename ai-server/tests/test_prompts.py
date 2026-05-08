@@ -200,6 +200,30 @@ def test_build_system_prompt_scopes_context_to_actions_tab():
     assert "solutions" not in context
 
 
+def test_build_system_prompt_sorts_projects_by_funding_needed():
+    system_prompt = prompts.build_system_prompt(
+        {
+            "organizationId": 1,
+            "name": "Test City",
+            "governmentActions": {
+                "actions": [],
+                "goals": [],
+                "projects": [
+                    {"title": "Small", "totalNeeded": 50},
+                    {"title": "Large", "totalNeeded": 500},
+                    {"title": "Medium", "totalNeeded": 100},
+                ],
+            },
+        },
+        context_area="actions",
+    )
+    context = json.loads(system_prompt.split("```json\n", 1)[1].removesuffix("\n```"))
+
+    assert [
+        project["title"] for project in context["governmentActions"]["projects"]
+    ] == ["Large", "Medium", "Small"]
+
+
 def test_build_system_prompt_scopes_context_to_solutions_tab():
     system_prompt = prompts.build_system_prompt(
         {
@@ -265,7 +289,46 @@ def test_build_system_prompt_trims_solution_peer_examples():
     assert cards[0]["peerActions"][0]["action"]["description"].endswith(
         "... [truncated]"
     )
-    assert len(cards[0]["peerActions"][0]["action"]["coBenefits"]) == 5
+    assert "coBenefits" not in cards[0]["peerActions"][0]["action"]
+
+
+def test_build_system_prompt_limits_solution_cards_globally_by_priority():
+    system_prompt = prompts.build_system_prompt(
+        {
+            "organizationId": 1,
+            "name": "Test City",
+            "solutions": {
+                "solutions": {
+                    f"CATEGORY_{category_index}": [
+                        {
+                            "solution": f"Solution {category_index}-{card_index}",
+                            "solutionCategory": f"CATEGORY_{category_index}",
+                            "hasLocalAction": category_index == 8,
+                            "pctPeerTakingAction": card_index,
+                            "peerActions": [{"peerName": "Peer", "action": {}}],
+                        }
+                        for card_index in range(4)
+                    ]
+                    for category_index in range(9)
+                }
+            },
+        }
+    )
+    context_json = system_prompt.split("```json\n", 1)[1]
+    context = json.loads(context_json.removesuffix("\n```"))
+    solution_categories = context["solutions"]["solutions"]
+    cards = [
+        card
+        for category_cards in solution_categories.values()
+        for card in category_cards
+    ]
+
+    assert len(cards) == prompts.MAX_SOLUTION_CARDS_TOTAL
+    assert all(
+        len(category_cards) <= prompts.MAX_SOLUTION_CARDS_PER_CATEGORY
+        for category_cards in solution_categories.values()
+    )
+    assert "Solution 8-3" in [card["solution"] for card in cards]
 
 
 def test_system_prompt_contains_review_grounding_guardrails():
@@ -289,6 +352,14 @@ def test_system_prompt_contains_review_grounding_guardrails():
     assert "do not append the generic climate score/ranking refusal" in prompt
     assert "do not list the ordered hazards unless the user explicitly asks" in prompt
     assert "Do not output raw co-benefit or resilience dropdown labels" in prompt
+    assert "For projects seeking funding, show at most 5 projects" in prompt
+    assert "End every project line with a footnote marker" in prompt
+    assert "When users ask about peer solutions" in prompt
+    assert "Keep peer-solution answers under 120 words total" in prompt
+    assert "cite every numbered evidence item" in prompt
+    assert "Do not wait until the final summary sentence" in prompt
+    assert "Never include a `Sources:` block with no inline footnote markers" in prompt
+    assert "always answer with footnotes" in prompt
     assert "If the user did not ask a substantive question" in prompt
     assert "CSTAR Database" not in prompt
     assert "2024 CSTAR disclosure" not in prompt

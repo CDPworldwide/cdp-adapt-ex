@@ -294,6 +294,27 @@ describe('AskCdpAiService', () => {
     });
   });
 
+  describe('parseToHtml', () => {
+    it('removes inline footnote markers and keeps a deduped sources block', () => {
+      const html = service.parseToHtml(
+        [
+          'Urban flooding has caused major losses.[^1]',
+          'Drought creates economic stress.[^1]',
+          '',
+          'Sources:',
+          '[^1]: George Local Municipality 2025 CDP-ICLEI Track disclosure.',
+          '[^2]: George Local Municipality 2025 CDP-ICLEI Track disclosure.',
+        ].join('\n'),
+      );
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      expect(html).not.toContain('[^1]');
+      expect(doc.querySelector('.ai-citation')).toBeNull();
+      expect(doc.querySelector('.ai-sources-title')?.textContent).toBe('Sources');
+      expect(doc.querySelectorAll('.ai-sources li').length).toBe(1);
+    });
+  });
+
   function readRequestBodyAt(index: number): Promise<any> {
     const [request, init] = (window.fetch as jasmine.Spy).calls.argsFor(index) as [
       Request | string,

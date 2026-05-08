@@ -3,21 +3,29 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
+import { CloseIconComponent } from '../../../shared/icons';
 import type { Hazard, LocationPin } from '@pac-api/client';
 
 @Component({
   selector: 'app-location-summary',
   standalone: true,
-  imports: [CommonModule, TranslateModule, MatProgressSpinnerModule, HazardIconComponent],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    MatProgressSpinnerModule,
+    HazardIconComponent,
+    CloseIconComponent,
+  ],
   templateUrl: './location-summary.component.html',
   styleUrls: ['./location-summary.component.css'],
 })
 export class LocationSummaryComponent {
   @Input() location: LocationPin | null = null;
   @Input() isLoading = false;
+  @Input() isReportingLeader = false;
   @Input() totalHazards = 0;
   @Input() topHazards: Hazard[] = [];
-  @Input() implementedActions = 0;
+  @Input() disclosedActions = 0;
   @Input() projectsSeekingFunding = 0;
 
   @Output() close = new EventEmitter<void>();

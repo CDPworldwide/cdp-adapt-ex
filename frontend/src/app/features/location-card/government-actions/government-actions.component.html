@@ -3,19 +3,19 @@
   <div class="space-y-6">
     @if (isAnyEmpty) {
       <div class="mb-8 px-4 lg:px-0">
-        <div class="w-full px-6 py-4 bg-cdp-red flex justify-start items-center gap-6 rounded-lg">
+        <div class="w-full px-6 py-4 bg-cdp-neutral-01 flex justify-start items-center gap-6 rounded-lg">
           <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
-            <app-no-hazards-icon size="44" color="white"></app-no-hazards-icon>
+            <app-no-hazards-icon size="44" color="#333333"></app-no-hazards-icon>
           </div>
           <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
             <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
               <div
-                class="self-stretch justify-start text-white text-base font-semibold font-roboto leading-6 tracking-tight"
+                class="self-stretch justify-start text-cdp-neutral-08 text-base font-semibold font-roboto leading-6 tracking-tight"
               >
                 {{ 'locationCard.govActions.noActionsBanner.title' | translate }}
               </div>
               <div
-                class="self-stretch text-white text-sm font-normal font-roboto leading-5 tracking-tight"
+                class="self-stretch text-cdp-neutral-08 text-sm font-normal font-roboto leading-5 tracking-tight"
                 [innerHTML]="'locationCard.govActions.noActionsBanner.description' | translate"
               ></div>
             </div>
@@ -23,10 +23,10 @@
               <a
                 href="https://data.cdp.net/"
                 target="_blank"
-                class="bg-white rounded inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-gray-100 transition-colors"
+                class="bg-cdp-dark rounded inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-black transition-colors"
               >
                 <div
-                  class="justify-center text-cdp-red text-sm font-medium font-roboto leading-5 tracking-tight"
+                  class="justify-center text-white text-sm font-medium font-roboto leading-5 tracking-tight"
                 >
                   {{ 'locationCard.govActions.noActionsBanner.button' | translate }}
                 </div>
@@ -86,7 +86,7 @@
                   >
                     {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                   </p>
-                  <div class="hazard-chips-scroll flex flex-row gap-2 overflow-x-auto">
+                  <div class="flex flex-row flex-wrap gap-2">
                     @for (hazard of goal.hazardsAddressed; track hazard) {
                       <div class="flex items-center gap-2 p-1 h-5 shrink-0">
                         <app-hazard-icon
@@ -131,8 +131,16 @@
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
           [innerHTML]="
-            'locationCard.govActions.noGoals.description'
-              | translate: { location: locationName || '', year: disclosureYear || '' }
+            (selectedFilter
+              ? 'locationCard.govActions.noGoals.descriptionFiltered'
+              : 'locationCard.govActions.noGoals.description'
+            )
+              | translate
+                : {
+                    location: locationName || '',
+                    country: countryName || '',
+                    year: disclosureYear || '',
+                  }
           "
         ></p>
       }
@@ -170,9 +178,9 @@
                 @if (action.status) {
                   <div
                     [ngClass]="getStatusClass(action.status)"
-                    class="h-[25px] px-2 rounded-sm inline-flex justify-center items-center self-start overflow-hidden"
+                    class="px-2 py-1 rounded-sm inline-flex items-center self-start"
                   >
-                    <span class="text-white text-[13px] font-normal font-roboto truncate">
+                    <span class="text-white text-[13px] font-normal font-roboto leading-tight">
                       {{
                         action.status.statusType === 'OTHERS' && action.status.otherStatusDetails
                           ? action.status.otherStatusDetails
@@ -181,10 +189,18 @@
                     </span>
                   </div>
                 }
+                @let titleParts = splitTitleAtLastColon(action.title | autoTranslate);
+                @if (titleParts.prefix) {
+                  <p
+                    class="text-xs font-normal font-roboto leading-4 tracking-[0.4px] text-cdp-neutral-05 self-stretch line-clamp-1 overflow-hidden text-ellipsis"
+                  >
+                    {{ titleParts.prefix }}
+                  </p>
+                }
                 <h3
                   class="text-[22px] font-normal font-roboto leading-7 tracking-normal text-cdp-border self-stretch line-clamp-2 overflow-hidden text-ellipsis"
                 >
-                  {{ action.title | autoTranslate }}
+                  {{ titleParts.main }}
                 </h3>
               </div>
 
@@ -212,7 +228,7 @@
                   >
                     {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                   </p>
-                  <div class="hazard-chips-scroll flex flex-row gap-2 overflow-x-auto">
+                  <div class="flex flex-row flex-wrap gap-2">
                     @for (hazard of action.hazardsAddressed; track hazard) {
                       <div class="flex items-center gap-2 p-1 h-5 shrink-0">
                         <app-hazard-icon
@@ -242,8 +258,16 @@
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
           [innerHTML]="
-            'locationCard.govActions.noActions.description'
-              | translate: { location: locationName || '', year: disclosureYear || '' }
+            (selectedFilter
+              ? 'locationCard.govActions.noActions.descriptionFiltered'
+              : 'locationCard.govActions.noActions.description'
+            )
+              | translate
+                : {
+                    location: locationName || '',
+                    country: countryName || '',
+                    year: disclosureYear || '',
+                  }
           "
         ></p>
       }
@@ -338,8 +362,16 @@
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
           [innerHTML]="
-            'locationCard.govActions.noProjects.description'
-              | translate: { location: locationName || '', year: disclosureYear || '' }
+            (selectedFilter
+              ? 'locationCard.govActions.noProjects.descriptionFiltered'
+              : 'locationCard.govActions.noProjects.description'
+            )
+              | translate
+                : {
+                    location: locationName || '',
+                    country: countryName || '',
+                    year: disclosureYear || '',
+                  }
           "
         ></p>
       }

@@ -1,11 +1,65 @@
 <div class="flex flex-col gap-4 pb-6">
-  <!-- Hazard Filters -->
-  <section class="mb-6">
-    <h2
-      class="pt-4 pb-6 text-base font-medium font-roboto leading-6 tracking-[0.5px] uppercase text-cdp-dark px-4 lg:px-0"
+  <!-- Intro card -->
+  <div class="mx-4 lg:mx-0 mt-4 bg-white rounded-[10px] px-[14px] py-[11px]">
+    <p
+      class="m-0 text-cdp-border font-inter text-sm italic font-normal leading-5 tracking-cdp-wide"
     >
-      {{ 'locationCard.solutions.hazardFiltersTitle' | translate }}
+      {{ 'locationCard.solutions.intro' | translate }}<a
+        routerLink="/methodology"
+        [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
+        matTooltipPosition="above"
+        [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
+        class="inline-flex items-center justify-center align-middle ml-1.5 p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 not-italic"
+      >
+        <app-info-icon size="14"></app-info-icon>
+      </a>
+    </p>
+  </div>
+
+  <!-- Popular Peer Actions Header -->
+  <section class="flex flex-col items-start px-4 lg:px-0">
+    <h2 class="text-base font-bold font-inter leading-normal text-cdp-border m-0">
+      {{ 'locationCard.solutions.popularSolutionsTitle' | translate }}
     </h2>
+    <div class="flex flex-wrap items-baseline gap-x-1 mt-1 w-full text-left">
+      <span class="text-black text-sm font-bold italic font-roboto leading-5 tracking-cdp-wide">
+        {{ 'locationCard.solutions.sourceLabel' | translate }}
+      </span>
+      <span class="text-black text-sm font-normal italic font-roboto leading-5 tracking-cdp-wide">
+        {{
+          'locationCard.solutions.sourceText'
+            | translate
+              : { year: data?.disclosureYear || ('locationCard.hazardDetail.unknown' | translate) }
+        }}
+      </span>
+      <a
+        routerLink="/methodology"
+        [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
+        matTooltipPosition="above"
+        [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
+        class="self-center inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+      >
+        <app-info-icon size="14"></app-info-icon>
+      </a>
+    </div>
+  </section>
+
+  <!-- Hazard Filters -->
+  <section class="mb-[2px]">
+    <div class="pt-1 pb-4 px-4 lg:px-0 flex items-center gap-2">
+      <h2 class="text-sm font-bold font-inter leading-normal text-cdp-border m-0">
+        {{ 'locationCard.solutions.hazardFiltersTitle' | translate }}
+      </h2>
+      <a
+        routerLink="/methodology"
+        [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
+        matTooltipPosition="above"
+        [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
+        class="inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+      >
+        <app-info-icon size="14"></app-info-icon>
+      </a>
+    </div>
     <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap lg:gap-2 px-4 lg:px-0">
       @for (filter of hazardFilters; track filter.type) {
         <button
@@ -46,43 +100,14 @@
     </div>
   </section>
 
-  <!-- Popular Solutions Header -->
-  <section class="pb-2 flex flex-col items-start px-4 lg:px-0">
-    <h2
-      class="text-base font-semibold font-roboto uppercase leading-6 tracking-[0.5px] text-cdp-dark"
-    >
-      {{ 'locationCard.solutions.popularSolutionsTitle' | translate }}
-    </h2>
-    <div class="flex flex-wrap items-baseline gap-x-1 mt-1 w-full text-left">
-      <span
-        class="text-cdp-text-secondary text-sm font-medium font-roboto leading-5 tracking-[0.25px]"
-      >
-        {{ 'locationCard.solutions.sourceLabel' | translate }}
-      </span>
-      <span
-        class="text-cdp-text-secondary text-sm font-normal font-roboto leading-5 tracking-[0.25px]"
-      >
-        {{
-          'locationCard.solutions.sourceText'
-            | translate
-              : { year: data?.disclosureYear || ('locationCard.hazardDetail.unknown' | translate) }
-        }}
-      </span>
-    </div>
-  </section>
-
   <!-- Categories -->
   @for (category of categories; track category.category) {
     <div class="flex flex-col">
       <header class="pb-4 flex justify-start items-center gap-2 px-4 lg:px-0">
-        <h3
-          class="text-sm font-normal font-roboto uppercase leading-6 tracking-[0.5px] text-cdp-dark"
-        >
+        <h3 class="text-sm font-bold font-inter leading-normal text-cdp-border m-0">
           {{ 'locationCard.solutionCategoryNames.' + category.category | translate }}
         </h3>
-        <div
-          class="flex items-center text-cdp-dark text-sm font-normal font-roboto leading-6 tracking-[0.5px]"
-        >
+        <div class="flex items-center text-cdp-border text-sm font-normal font-inter leading-normal">
           <span>(</span>
           <span>{{ category.solutions.length }}</span>
           <span>)</span>
@@ -183,41 +208,6 @@
                     </div>
                   }
 
-                  <!-- Vertical Divider -->
-                  <div class="w-px self-stretch bg-[#767676]"></div>
-
-                  <!-- Jurisdictions Taking this Action -->
-                  <div class="flex flex-col gap-2">
-                    <span
-                      class="text-white text-sm font-medium font-roboto leading-5 tracking-[0.25px]"
-                    >
-                      {{ 'locationCard.solutions.jurisdictionsTakingAction' | translate }}
-                    </span>
-                    <div class="flex items-center gap-2">
-                      <div
-                        class="w-6 h-6 rounded-full flex-shrink-0"
-                        [style.background]="
-                          'conic-gradient(#2DCF8B ' +
-                          (solution.pctPeerTakingAction || 0) +
-                          '%, #606060 0)'
-                        "
-                        style="
-                          mask-image: radial-gradient(transparent 58%, black 60%);
-                          -webkit-mask-image: radial-gradient(transparent 58%, black 60%);
-                        "
-                      ></div>
-                      <div class="flex items-baseline">
-                        <span
-                          class="text-white text-2xl font-normal font-roboto leading-normal tracking-[1.2px]"
-                          >{{ solution.pctPeerTakingAction || 0 | number: '1.0-2' }}</span
-                        >
-                        <span
-                          class="text-white text-2xl font-normal font-roboto leading-normal tracking-[1.2px]"
-                          >%</span
-                        >
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
                 <!-- Footer: Example Actions -->

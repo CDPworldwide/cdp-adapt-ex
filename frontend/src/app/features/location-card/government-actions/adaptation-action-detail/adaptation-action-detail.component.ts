@@ -20,6 +20,7 @@ import { LocationPinIconComponent } from '../../../../shared/icons/location-pin-
 import { HazardIconComponent } from '../../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../../shared/components/sector-icon/sector-icon.component';
 import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
+import { splitTitleAtLastColon } from '../../../../shared/utils/title.util';
 
 export const DETAIL_HERO_BACKGROUND = `linear-gradient(270deg, rgba(30, 30, 30, 0.20) 0%, rgba(30, 30, 30, 0.50) 54.96%), url(assets/images/solutions-detail-modal.component.images/enviornmental_bkgs_shading.webp) #1B232C center / cover no-repeat`;
 
@@ -47,6 +48,7 @@ export class AdaptationActionDetailComponent {
   @Input() showHeroImage: boolean = true;
 
   readonly heroBackground = DETAIL_HERO_BACKGROUND;
+  splitTitleAtLastColon = splitTitleAtLastColon;
   @Output() closed = new EventEmitter<void>();
 
   @ViewChild('descriptionElement') descriptionElement?: ElementRef<HTMLElement>;

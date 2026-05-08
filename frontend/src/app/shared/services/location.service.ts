@@ -68,6 +68,7 @@ export class LocationService {
             {
               organizationId: location.id,
               name: location.name,
+              country: location.country?.trim() || undefined,
               disclosesToCDP: true,
             },
           ];

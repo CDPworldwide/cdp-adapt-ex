@@ -64,7 +64,7 @@
     },
     "tabs": {
       "hazards": "Peligros",
-      "governmentActions": "acciones del gobierno",
+      "governmentActions": "Acciones del gobierno",
       "solutions": "Soluciones"
     },
     "hazardNames": {
@@ -283,7 +283,7 @@
       "description": "Descripción",
       "sourceLabel": "Fuente:",
       "sourceText": "Agregación y análisis de CDP de las divulgaciones de {{year}} de ciudades similares",
-      "climateHazards": "riesgos climáticos",
+      "climateHazards": "Riesgos climáticos",
       "statusOfAction": "Estado de la acción",
       "coBenefits": "Beneficios colaterales",
       "hazardsAddressed": "Peligros abordados",
