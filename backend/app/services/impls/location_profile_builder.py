@@ -11,6 +11,8 @@ from app.schemas.location import (
     ActionsTab,
     AdaptationAction,
     AdaptationGoal,
+    Hazard,
+    HazardEnum,
     HazardProfile,
     HazardsTab,
     LocationProfile,
@@ -38,7 +40,9 @@ class GeometryData:
         )
 
 
-_A_LIST_PATH = Path(__file__).resolve().parents[2] / "data" / "cdp_a_list_2025.json"
+_DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+_A_LIST_PATH = _DATA_DIR / "cdp_a_list_2025.json"
+_GEE_HAZARDS_PATH = _DATA_DIR / "gee_hazards_2025.json"
 
 
 def _load_a_list() -> frozenset[int]:
@@ -52,7 +56,38 @@ def _load_a_list() -> frozenset[int]:
         return frozenset()
 
 
+def _load_gee_hazards() -> dict[int, list[HazardProfile]]:
+    """Read GEE-derived hazard fallbacks keyed by org id at import time.
+
+    The JSON ships a flat list per org of `{rank, hazardType}`; we lift each
+    entry to a HazardProfile so the builder can drop them straight into the
+    response. Description is intentionally null — the frontend supplies
+    generic per-hazard copy from i18n (`locationCard.hazards.geeSummary.*`).
+    """
+    try:
+        with _GEE_HAZARDS_PATH.open() as f:
+            payload: dict[str, list[dict[str, Any]]] = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logger.warning(
+            "gee_hazards_load_failed", path=str(_GEE_HAZARDS_PATH), error=str(e)
+        )
+        return {}
+
+    return {
+        int(org_id): [
+            HazardProfile(
+                hazard=Hazard(hazard_type=HazardEnum(entry["hazardType"])),
+                hazard_rank=int(entry["rank"]),
+                source="GEE-Derived",
+            )
+            for entry in entries
+        ]
+        for org_id, entries in payload.items()
+    }
+
+
 _A_LIST: frozenset[int] = _load_a_list()
+_GEE_HAZARDS: dict[int, list[HazardProfile]] = _load_gee_hazards()
 
 
 class LocationProfileBuilder:
@@ -78,7 +113,9 @@ class LocationProfileBuilder:
             )
             raise CityNotFoundException(fallback_name)
 
-        geo_data = self.extract_geometry_and_coords(metadata.geometry, metadata.centroid)
+        geo_data = self.extract_geometry_and_coords(
+            metadata.geometry, metadata.centroid
+        )
         if not geo_data.is_valid:
             logger.error(
                 "Data inconsistency: location '%s' (org_id=%s) is missing valid geometry or coordinate data.",
@@ -125,7 +162,11 @@ class LocationProfileBuilder:
                 if metadata.requesting_auth
                 else []
             ),
-            hazards=HazardsTab(hazards=mapped_hazards, statistics=dummy_statistics),
+            hazards=HazardsTab(
+                hazards=mapped_hazards,
+                gee_fallback=_GEE_HAZARDS.get(org_id, []) if not mapped_hazards else [],
+                statistics=dummy_statistics,
+            ),
             government_actions=ActionsTab(
                 goals=mapped_goals,
                 actions=mapped_actions,
