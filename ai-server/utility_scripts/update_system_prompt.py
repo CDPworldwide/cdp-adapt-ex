@@ -1,17 +1,17 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import subprocess
 import sys
+import urllib.error
+import urllib.request
 from pathlib import Path
 
-DEFAULT_PROJECT_ID = "project-bb4fd058-24e7-4ccb-b06"
-DEFAULT_BUCKET = "cdp-ai-server-prompts-project-bb4fd058-24e7-4ccb-b06"
-DEFAULT_KEY = "prompts/system_prompt.md"
-DEFAULT_LOCATION = "US"
-DEFAULT_CONTENT_TYPE = "text/markdown"
-DEFAULT_CACHE_CONTROL = "no-cache, max-age=0"
+DEFAULT_GIST_ID = "fa841de953aed344794b1fc0281069d1"
+DEFAULT_GIST_FILE_NAME = "system_prompt.md"
+DEFAULT_GIST_OWNER = "andrewm-bakerst"
 
 
 def main() -> int:
@@ -21,24 +21,22 @@ def main() -> int:
         print(f"error: prompt file not found: {prompt_file}", file=sys.stderr)
         return 1
 
-    bucket_url = f"gs://{args.bucket}"
-    ensure_bucket(
-        bucket_url=bucket_url,
-        project_id=args.project_id,
-        location=args.location,
-        make_public=not args.skip_public_iam,
-    )
-    upload_prompt(
-        prompt_file=prompt_file,
-        bucket_url=bucket_url,
-        key=args.key,
-        project_id=args.project_id,
-        content_type=args.content_type,
-        cache_control=args.cache_control,
-    )
+    token = args.token or get_github_token()
+    if not token:
+        print(
+            "error: GitHub token required. Set AI_SYSTEM_PROMPT_GIST_TOKEN, "
+            "GIST_TOKEN, GH_TOKEN, or authenticate with gh.",
+            file=sys.stderr,
+        )
+        return 1
 
-    public_url = f"https://storage.googleapis.com/{args.bucket}/{args.key}"
-    print(public_url)
+    update_gist(
+        gist_id=args.gist_id,
+        file_name=args.gist_file_name,
+        content=prompt_file.read_text(encoding="utf-8"),
+        token=token,
+    )
+    print(raw_gist_url(args.gist_owner, args.gist_id, args.gist_file_name))
     return 0
 
 
@@ -46,25 +44,19 @@ def parse_args() -> argparse.Namespace:
     root_dir = Path(__file__).resolve().parents[1]
     default_prompt_file = root_dir / "app" / "prompts" / "system_prompt.md"
     parser = argparse.ArgumentParser(
-        description="Upload the AI system prompt to a stable public GCS URL.",
+        description="Upload the AI system prompt to a stable public Gist raw URL.",
     )
     parser.add_argument(
-        "--project-id",
-        default=os.getenv("GCP_PROJECT_ID")
-        or os.getenv("PROJECT_ID")
-        or DEFAULT_PROJECT_ID,
+        "--gist-id",
+        default=os.getenv("SYSTEM_PROMPT_GIST_ID", DEFAULT_GIST_ID),
     )
     parser.add_argument(
-        "--bucket",
-        default=os.getenv("SYSTEM_PROMPT_BUCKET", DEFAULT_BUCKET),
+        "--gist-file-name",
+        default=os.getenv("SYSTEM_PROMPT_GIST_FILE_NAME", DEFAULT_GIST_FILE_NAME),
     )
     parser.add_argument(
-        "--key",
-        default=os.getenv("SYSTEM_PROMPT_OBJECT", DEFAULT_KEY),
-    )
-    parser.add_argument(
-        "--location",
-        default=os.getenv("SYSTEM_PROMPT_BUCKET_LOCATION", DEFAULT_LOCATION),
+        "--gist-owner",
+        default=os.getenv("SYSTEM_PROMPT_GIST_OWNER", DEFAULT_GIST_OWNER),
     )
     parser.add_argument(
         "--prompt-file",
@@ -72,106 +64,68 @@ def parse_args() -> argparse.Namespace:
         default=Path(os.getenv("PROMPT_FILE", default_prompt_file)),
     )
     parser.add_argument(
-        "--content-type",
-        default=os.getenv("SYSTEM_PROMPT_CONTENT_TYPE", DEFAULT_CONTENT_TYPE),
-    )
-    parser.add_argument(
-        "--cache-control",
-        default=os.getenv("SYSTEM_PROMPT_CACHE_CONTROL", DEFAULT_CACHE_CONTROL),
-    )
-    parser.add_argument(
-        "--skip-public-iam",
-        action="store_true",
-        help="Upload only; do not configure allUsers objectViewer on the bucket.",
+        "--token",
+        default=None,
+        help="GitHub token with gist scope. Defaults to env vars or gh auth.",
     )
     return parser.parse_args()
 
 
-def ensure_bucket(
-    *,
-    bucket_url: str,
-    project_id: str,
-    location: str,
-    make_public: bool,
-) -> None:
-    describe = run(
-        [
-            "gcloud",
-            "storage",
-            "buckets",
-            "describe",
-            bucket_url,
-            "--project",
-            project_id,
-        ],
-        check=False,
-    )
-    if describe.returncode != 0:
-        run(
-            [
-                "gcloud",
-                "storage",
-                "buckets",
-                "create",
-                bucket_url,
-                "--project",
-                project_id,
-                "--location",
-                location,
-                "--uniform-bucket-level-access",
-                "--no-public-access-prevention",
-            ],
+def get_github_token() -> str:
+    for env_var in (
+        "AI_SYSTEM_PROMPT_GIST_TOKEN",
+        "GIST_TOKEN",
+        "GH_TOKEN",
+        "GITHUB_TOKEN",
+    ):
+        token = os.getenv(env_var)
+        if token:
+            return token
+
+    try:
+        completed = subprocess.run(
+            ["gh", "auth", "token"],
+            check=False,
+            capture_output=True,
+            text=True,
         )
-
-    if make_public:
-        run(
-            [
-                "gcloud",
-                "storage",
-                "buckets",
-                "add-iam-policy-binding",
-                bucket_url,
-                "--project",
-                project_id,
-                "--member",
-                "allUsers",
-                "--role",
-                "roles/storage.objectViewer",
-            ],
-        )
+    except FileNotFoundError:
+        return ""
+    if completed.returncode != 0:
+        return ""
+    return completed.stdout.strip()
 
 
-def upload_prompt(
+def update_gist(
     *,
-    prompt_file: Path,
-    bucket_url: str,
-    key: str,
-    project_id: str,
-    content_type: str,
-    cache_control: str,
+    gist_id: str,
+    file_name: str,
+    content: str,
+    token: str,
 ) -> None:
-    run(
-        [
-            "gcloud",
-            "storage",
-            "cp",
-            str(prompt_file),
-            f"{bucket_url}/{key}",
-            "--project",
-            project_id,
-            "--content-type",
-            content_type,
-            "--cache-control",
-            cache_control,
-        ],
+    payload = json.dumps({"files": {file_name: {"content": content}}}).encode()
+    request = urllib.request.Request(
+        f"https://api.github.com/gists/{gist_id}",
+        data=payload,
+        method="PATCH",
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
     )
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            if response.status >= 300:
+                raise RuntimeError(f"GitHub API returned HTTP {response.status}")
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"GitHub API returned HTTP {exc.code}: {body}") from exc
 
 
-def run(command: list[str], *, check: bool = True) -> subprocess.CompletedProcess:
-    completed = subprocess.run(command, check=False)
-    if check and completed.returncode != 0:
-        raise subprocess.CalledProcessError(completed.returncode, command)
-    return completed
+def raw_gist_url(owner: str, gist_id: str, file_name: str) -> str:
+    return f"https://gist.githubusercontent.com/{owner}/{gist_id}/raw/{file_name}"
 
 
 if __name__ == "__main__":

@@ -18,9 +18,7 @@ env:
   REGION: us-central1
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
   SERVICE_NAME: cdp-ai-server
-  SYSTEM_PROMPT_BUCKET: cdp-ai-server-prompts-project-bb4fd058-24e7-4ccb-b06
-  SYSTEM_PROMPT_OBJECT: prompts/system_prompt.md
-  SYSTEM_PROMPT_URL: https://storage.googleapis.com/cdp-ai-server-prompts-project-bb4fd058-24e7-4ccb-b06/prompts/system_prompt.md
+  SYSTEM_PROMPT_URL: https://gist.githubusercontent.com/andrewm-bakerst/fa841de953aed344794b1fc0281069d1/raw/system_prompt.md
 
 jobs:
   deploy:
@@ -52,16 +50,6 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ env.PROJECT_ID }}
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          version: "0.9.18"
-          enable-cache: true
-
-      - name: Upload system prompt
-        working-directory: ai-server
-        run: uv run update-system-prompt
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
