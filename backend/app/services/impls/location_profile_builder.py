@@ -117,6 +117,7 @@ class LocationProfileBuilder:
             lng=geo_data.lng,
             geometry=geo_data.geometry,
             is_reporting_leader=org_id in _A_LIST,
+            public_status=metadata.public_status,
             disclosure_year=metadata.disclosing_year,
             population=metadata.current_pop,
             requesters=(
