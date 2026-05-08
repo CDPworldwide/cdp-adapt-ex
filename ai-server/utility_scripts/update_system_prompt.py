@@ -24,8 +24,8 @@ def main() -> int:
     token = args.token or get_github_token()
     if not token:
         print(
-            "error: GitHub token required. Set AI_SYSTEM_PROMPT_GIST_TOKEN, "
-            "GIST_TOKEN, GH_TOKEN, or authenticate with gh.",
+            "error: GitHub token required. Set GIST_TOKEN, GH_TOKEN, "
+            "or authenticate with gh.",
             file=sys.stderr,
         )
         return 1
@@ -73,7 +73,6 @@ def parse_args() -> argparse.Namespace:
 
 def get_github_token() -> str:
     for env_var in (
-        "AI_SYSTEM_PROMPT_GIST_TOKEN",
         "GIST_TOKEN",
         "GH_TOKEN",
         "GITHUB_TOKEN",

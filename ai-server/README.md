@@ -104,10 +104,10 @@ Upload `app/prompts/system_prompt.md` to that Gist:
 uv run update-system-prompt
 ```
 
-The script updates Gist `fa841de953aed344794b1fc0281069d1` and prints the fixed
-raw URL. Remote prompts are re-fetched after `SYSTEM_PROMPT_CACHE_SECONDS` so
-Gist edits can be picked up without restarting the server.
+The script updates Gist `fa841de953aed344794b1fc0281069d1` using the active
+`gh` auth token and prints the fixed raw URL. Remote prompts are re-fetched
+after `SYSTEM_PROMPT_CACHE_SECONDS` so Gist edits can be picked up without
+restarting the server.
 
-Local runs use `AI_SYSTEM_PROMPT_GIST_TOKEN`, `GIST_TOKEN`, `GH_TOKEN`, or the
-active `gh` auth token. The GitHub Actions prompt sync workflow can run the same
-command when `AI_SYSTEM_PROMPT_GIST_TOKEN` is configured as a repository secret.
+There is no automatic repo-to-Gist sync workflow. For prompt-only edits, update
+the Gist directly or run the script locally.
