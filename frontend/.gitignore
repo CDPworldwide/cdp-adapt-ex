@@ -41,6 +41,8 @@ __screenshots__/
 # Logs
 *environment.development.ts
 *environment.ts
+.env
+!.env.example
 
 # System files
 .DS_Store

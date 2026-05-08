@@ -24,6 +24,16 @@ export class GeometryService {
           return undefined;
         }
 
+        // Return undefined for point geometries so the caller can fall back to
+        // setCenter + zoom.
+        const innerType =
+          geometry['type'] === 'Feature'
+            ? ((geometry['geometry'] as { type?: string } | undefined)?.type ?? null)
+            : (geometry['type'] as string | undefined);
+        if (innerType === 'Point') {
+          return undefined;
+        }
+
         const bounds = new window.google.maps.LatLngBounds();
 
         try {

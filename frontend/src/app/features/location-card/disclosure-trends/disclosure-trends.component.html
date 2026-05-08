@@ -1,0 +1,234 @@
+<section
+  class="bg-cdp-border w-full py-10 px-6 md:py-12 md:px-12 lg:py-14 lg:px-16 xl:py-16 xl:px-24 2xl:py-20 2xl:px-32"
+>
+  <div class="w-full">
+    <!-- Mobile/tablet title (visible below lg) -->
+    <div class="lg:hidden mb-8">
+      <div>
+        <span
+          class="block font-roboto font-normal leading-none text-cdp-red text-4xl sm:text-5xl tracking-tight"
+        >
+          {{ year }}
+        </span>
+        <span
+          class="block font-roboto font-normal leading-none text-white text-4xl sm:text-5xl tracking-tight mt-1"
+        >
+          {{ 'disclosureTrends.title' | translate }}
+        </span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-3.5">
+      <!-- Title + arrows: visible only at lg+, occupies col 1 spanning both rows -->
+      <div
+        class="hidden lg:flex flex-col justify-start lg:col-start-1 lg:row-start-1 lg:row-span-2"
+      >
+        <div class="min-w-0">
+          <span
+            class="block font-roboto font-normal leading-none text-cdp-red text-3xl xl:text-4xl 2xl:text-5xl tracking-tight"
+          >
+            {{ year }}
+          </span>
+          <span
+            class="block font-roboto font-normal leading-tight text-white text-3xl xl:text-4xl 2xl:text-5xl tracking-tight mt-1 break-words"
+          >
+            {{ 'disclosureTrends.title' | translate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Adaptation plan -->
+      <div
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-2 lg:row-start-1"
+      >
+        <app-check-circle-icon size="28"></app-check-circle-icon>
+        <div class="flex flex-col">
+          <span
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
+          >
+            {{ adaptationPlanDisplay() | number: '1.0-0' }}
+          </span>
+          <span
+            class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
+          >
+            {{ 'disclosureTrends.adaptationPlan' | translate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Water security -->
+      <div
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-2 lg:row-start-2"
+      >
+        <app-water-security-icon size="30"></app-water-security-icon>
+        <div class="flex flex-col">
+          <span
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
+          >
+            {{ waterSecurityDisplay() | number: '1.0-0' }}
+          </span>
+          <span
+            class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
+          >
+            {{ 'disclosureTrends.waterSecurityRisks' | translate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Top hazards (sm: full row; lg: cols 3-4 spanning both rows) -->
+      <div
+        class="sm:col-span-2 lg:col-start-3 lg:col-span-2 lg:row-start-1 lg:row-span-2 bg-cdp-neutral-09 px-5 py-6 md:px-6 md:py-7 flex flex-col min-h-[320px] md:min-h-[400px] lg:min-h-0"
+      >
+        <span
+          class="block text-white font-roboto text-[11px] md:text-xs font-normal uppercase leading-none tracking-cdp-eyebrow mb-4"
+        >
+          {{ 'disclosureTrends.topHazards' | translate }}
+        </span>
+        @if (summary.topHazards.length > 0) {
+          <div class="flex justify-center items-center flex-1">
+            <div class="relative h-full w-auto aspect-[29/39] max-w-full">
+              <!-- Rank 1: Large -->
+              @if (summary.topHazards[0]) {
+                <div
+                  class="absolute w-[65%] aspect-square rounded-full bg-cdp-red top-[8%] left-[12.8%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out motion-reduce:transition-none"
+                  [class.scale-0]="!hasEntered()"
+                  [class.scale-100]="hasEntered()"
+                >
+                  <app-hazard-icon
+                    [hazard]="summary.topHazards[0].type"
+                    size="30"
+                    color="white"
+                    [showTooltip]="false"
+                  ></app-hazard-icon>
+                  <span
+                    class="mt-[4.5cqw] text-white font-inter text-[6cqw] font-medium leading-tight text-center px-[4.5cqw]"
+                  >
+                    {{ formatHazardType(summary.topHazards[0].type) }}
+                  </span>
+                  @if (summary.topHazards[0].range) {
+                    <div class="mt-[5cqw] flex items-baseline">
+                      <span class="text-white font-roboto text-[15cqw] font-normal leading-none tabular-nums">{{
+                        hazardNumberDisplays[0]() | number: '1.0-0'
+                      }}</span>
+                      <span class="text-white font-roboto text-[10cqw] font-normal leading-none"
+                        >%</span
+                      >
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- Rank 2: Medium -->
+              @if (summary.topHazards[1]) {
+                <div
+                  class="absolute w-[45%] aspect-square rounded-full bg-cdp-light-text top-[55%] left-0 flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out delay-150 motion-reduce:transition-none motion-reduce:delay-0"
+                  [class.scale-0]="!hasEntered()"
+                  [class.scale-100]="hasEntered()"
+                >
+                  <app-hazard-icon
+                    [hazard]="summary.topHazards[1].type"
+                    size="30"
+                    color="#1E1E1E"
+                    [showTooltip]="false"
+                  ></app-hazard-icon>
+                  <span
+                    class="mt-[4.5cqw] text-cdp-border font-inter text-[6cqw] font-medium leading-tight text-center px-[4.5cqw]"
+                  >
+                    {{ formatHazardType(summary.topHazards[1].type) }}
+                  </span>
+                  @if (summary.topHazards[1].range) {
+                    <div class="mt-[5cqw] flex items-baseline">
+                      <span class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none tabular-nums"
+                        >{{ hazardNumberDisplays[1]() | number: '1.0-0' }}</span
+                      >
+                      <span class="text-cdp-border font-roboto text-[10cqw] font-normal leading-none"
+                        >%</span
+                      >
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- Rank 3: Small -->
+              @if (summary.topHazards[2]) {
+                <div
+                  class="absolute w-[31.7%] aspect-square rounded-full bg-cdp-neutral-04 top-[57%] right-[19%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out delay-300 motion-reduce:transition-none motion-reduce:delay-0"
+                  [class.scale-0]="!hasEntered()"
+                  [class.scale-100]="hasEntered()"
+                >
+                  <app-hazard-icon
+                    [hazard]="summary.topHazards[2].type"
+                    size="30"
+                    color="#1E1E1E"
+                    [showTooltip]="false"
+                  ></app-hazard-icon>
+                  <span
+                    class="mt-[4.5cqw] text-cdp-border font-inter text-[6cqw] font-medium leading-tight text-center px-[4.5cqw]"
+                  >
+                    {{ formatHazardType(summary.topHazards[2].type) }}
+                  </span>
+                  @if (summary.topHazards[2].range) {
+                    <div class="mt-[5cqw] flex items-baseline">
+                      <span class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none tabular-nums"
+                        >{{ hazardNumberDisplays[2]() | number: '1.0-0' }}</span
+                      >
+                      <span class="text-cdp-border font-roboto text-[10cqw] font-normal leading-none"
+                        >%</span
+                      >
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        } @else {
+          <span class="text-white/50 text-sm">{{
+            'disclosureTrends.noHazardsReported' | translate
+          }}</span>
+        }
+      </div>
+
+      <!-- Projects seeking finance -->
+      <div
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-5 lg:row-start-1"
+      >
+        <app-money-circle-icon size="28"></app-money-circle-icon>
+        <div class="flex flex-col">
+          <span
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
+          >
+            {{ projectsSeekingFinanceDisplay() | number: '1.0-0' }}
+          </span>
+          <span
+            class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
+          >
+            {{ 'disclosureTrends.projectsSeekingFinance' | translate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Jurisdictions exposed -->
+      <div
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-5 lg:row-start-2"
+      >
+        <app-earth-icon size="28"></app-earth-icon>
+        <div class="flex flex-col">
+          <span
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
+          >
+            {{
+              summary.jurisdictionsExposedPct != null
+                ? (jurisdictionsExposedPctDisplay() | number: '1.0-1') + '%'
+                : '—'
+            }}
+          </span>
+          <span
+            class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
+          >
+            {{ 'disclosureTrends.populationExposed' | translate }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

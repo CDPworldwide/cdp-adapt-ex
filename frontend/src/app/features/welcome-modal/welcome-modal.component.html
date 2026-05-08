@@ -1,0 +1,108 @@
+@if (isOpen) {
+  <div
+    class="fixed inset-0 z-2000 flex items-center justify-center p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="welcome-modal-title"
+  >
+    <div
+      class="absolute inset-0 bg-black/50"
+      (click)="dismiss()"
+      aria-hidden="true"
+    ></div>
+
+    <div
+      class="relative bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-cdp-card px-6 py-8 md:px-10 md:py-10"
+    >
+      <div class="flex items-center justify-center gap-2 mb-6">
+        <span
+          class="bg-cdp-red/30 text-cdp-red text-xxs font-roboto px-1.5 py-0.5 rounded"
+        >
+          {{ 'homepage.welcomeModal.beta' | translate }}
+        </span>
+        <span class="text-center text-xs leading-5 font-normal text-cdp-neutral-05 font-roboto">
+          {{ 'homepage.welcomeModal.earlyAccess' | translate }}
+          <a
+            href="https://cdp-worldwide.typeform.com/to/CFhsXgBm"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-cdp-red underline hover:text-cdp-dark transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+          >
+            {{ 'homepage.welcomeModal.feedbackWelcome' | translate }}
+          </a>
+        </span>
+      </div>
+
+      <p
+        class="text-center text-xs uppercase tracking-cdp-eyebrow text-cdp-dark font-roboto"
+      >
+        {{ 'homepage.welcomeModal.eyebrow' | translate }}
+      </p>
+
+      <h2
+        id="welcome-modal-title"
+        class="text-center text-2xl font-bold text-cdp-dark font-inter mt-3"
+      >
+        {{ 'homepage.welcomeModal.title' | translate }}
+      </h2>
+
+      <p
+        class="text-center text-base font-normal leading-5 text-cdp-dark font-roboto mt-5 max-w-md mx-auto"
+      >
+        {{ 'homepage.welcomeModal.description' | translate }}
+      </p>
+
+      <p
+        class="lg:hidden text-center text-xs italic font-medium leading-snug text-cdp-red font-roboto mt-4 max-w-md mx-auto"
+      >
+        {{ 'homepage.welcomeModal.mobileNotice' | translate }}
+      </p>
+
+      <div class="border-t border-cdp-neutral-01 mx-auto max-w-md mt-6"></div>
+
+      <p class="text-center text-sm font-bold text-cdp-dark font-inter mt-5">
+        {{ 'homepage.welcomeModal.prompt' | translate }}
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-2.5 mt-[30px]">
+        @for (role of roles; track role.id) {
+          <button
+            type="button"
+            (click)="selectRole(role.id)"
+            [attr.aria-pressed]="selectedRole === role.id"
+            class="flex w-[242px] h-[30px] items-center justify-center gap-2.5 p-2 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+            [ngClass]="
+              selectedRole === role.id
+                ? 'bg-cdp-dark text-white font-semibold font-roboto'
+                : 'bg-cdp-bg text-cdp-dark font-roboto hover:bg-cdp-neutral-01'
+            "
+          >
+            {{ role.labelKey | translate }}
+          </button>
+        }
+      </div>
+
+      <button
+        type="button"
+        class="block mx-auto mt-6 px-4 py-2 text-white text-sm font-medium font-roboto transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+        [ngClass]="
+          selectedRole
+            ? 'bg-cdp-red hover:bg-cdp-dark focus-visible:ring-cdp-red cursor-pointer'
+            : 'bg-cdp-neutral-04 cursor-not-allowed'
+        "
+        [disabled]="!selectedRole"
+        (click)="confirm()"
+      >
+        {{ 'homepage.welcomeModal.startExploring' | translate }}
+      </button>
+
+      <button
+        type="button"
+        class="block mx-auto mt-3 text-xs text-cdp-neutral-05 font-roboto hover:text-cdp-dark transition-colors focus-visible:outline-none focus-visible:underline"
+        (click)="dismiss()"
+      >
+        {{ 'homepage.welcomeModal.skip' | translate }}
+      </button>
+    </div>
+  </div>
+}

@@ -15,12 +15,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { AdaptationAction, ActionStatus } from '@pac-api/client';
 import { CloseIconComponent } from '../../../../shared/icons/close-icon.component';
-import { ImagePlaceholderIconComponent } from '../../../../shared/icons/image-placeholder-icon.component';
 import { InfoIconComponent } from '../../../../shared/icons/info-icon.component';
+import { LocationPinIconComponent } from '../../../../shared/icons/location-pin-icon.component';
 import { HazardIconComponent } from '../../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../../shared/components/sector-icon/sector-icon.component';
 import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
-import { ShowMoreButtonComponent } from 'src/app/shared/components';
+import { splitTitleAtLastColon } from '../../../../shared/utils/title.util';
+
+export const DETAIL_HERO_BACKGROUND = `linear-gradient(270deg, rgba(30, 30, 30, 0.20) 0%, rgba(30, 30, 30, 0.50) 54.96%), url(assets/images/solutions-detail-modal.component.images/enviornmental_bkgs_shading.webp) #1B232C center / cover no-repeat`;
 
 @Component({
   selector: 'app-adaptation-action-detail',
@@ -31,12 +33,11 @@ import { ShowMoreButtonComponent } from 'src/app/shared/components';
     HazardIconComponent,
     SectorIconComponent,
     CloseIconComponent,
-    ImagePlaceholderIconComponent,
     InfoIconComponent,
     MatTooltipModule,
     MatIconModule,
     AutoTranslatePipe,
-    ShowMoreButtonComponent,
+    LocationPinIconComponent,
   ],
   templateUrl: './adaptation-action-detail.component.html',
 })
@@ -45,6 +46,9 @@ export class AdaptationActionDetailComponent {
   @Input() locationName?: string;
   @Input() countryName?: string;
   @Input() showHeroImage: boolean = true;
+
+  readonly heroBackground = DETAIL_HERO_BACKGROUND;
+  splitTitleAtLastColon = splitTitleAtLastColon;
   @Output() closed = new EventEmitter<void>();
 
   @ViewChild('descriptionElement') descriptionElement?: ElementRef<HTMLElement>;
@@ -83,7 +87,7 @@ export class AdaptationActionDetailComponent {
     if (!status) return 'bg-cdp-neutral-05 text-white';
     const s = status.statusType;
     if (s.startsWith('ACTION_IN_OPERATION')) return 'bg-cdp-blue text-white';
-    if (s.startsWith('IMPLEMENTATION')) return 'bg-cdp-green text-cdp-dark';
+    if (s.startsWith('IMPLEMENTATION')) return 'bg-cdp-green-implementation text-white';
     return 'bg-cdp-neutral-05 text-white';
   }
 

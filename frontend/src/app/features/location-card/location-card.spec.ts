@@ -4,6 +4,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import type { LocationProfile } from '@pac-api/client';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { GeometryService } from '../../shared/services/geometry.service';
 import { of } from 'rxjs';
 
@@ -90,6 +91,7 @@ describe('LocationCardComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter([]),
         { provide: GeometryService, useValue: geoSpy },
       ],
     }).compileComponents();

@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { environment } from '@env/environment';
-import { createClient, createConfig } from '@pac-api/client/client';
 import { translateTextsApiV1TranslatePost } from '@pac-api/client';
 import type { TranslateResponse } from '@pac-api/client';
+import { createApiClient } from './api-client';
 import { LanguageService } from './language.service';
 
 interface PendingEntry {
@@ -19,11 +18,7 @@ const MAX_BATCH_SIZE = 50;
 @Injectable({ providedIn: 'root' })
 export class WebTranslationService {
   private languageService = inject(LanguageService);
-  private client = createClient(
-    createConfig({
-      baseUrl: environment.baseUrl,
-    }),
-  );
+  private client = createApiClient();
   private translationCache = new Map<string, string>();
   private pendingBatch = new Map<string, PendingEntry>();
   private batchTimer: ReturnType<typeof setTimeout> | null = null;

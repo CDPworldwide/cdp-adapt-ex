@@ -7,19 +7,14 @@ import {
   type LocationNamesResponse,
 } from '@pac-api/client';
 import type { LocationProfile, LocationResponse } from '@pac-api/client';
-import { createClient, createConfig } from '@pac-api/client/client';
-import { environment } from '@env/environment';
 import { LocationSuggestion } from './location-suggestion';
+import { createApiClient } from './api-client';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LocationService {
-  private client = createClient(
-    createConfig({
-      baseUrl: environment.baseUrl,
-    }),
-  );
+  private client = createApiClient();
 
   getLocation(locationName: string): Observable<LocationProfile> {
     return from(
@@ -73,6 +68,7 @@ export class LocationService {
             {
               organizationId: location.id,
               name: location.name,
+              country: location.country?.trim() || undefined,
               disclosesToCDP: true,
             },
           ];

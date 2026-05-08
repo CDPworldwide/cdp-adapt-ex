@@ -9,7 +9,8 @@ from app.shared.logging import logger
 _HAZARD_SPLIT_REGEX = re.compile(r"[|]")
 
 # Hazard mapping from database strings to enums.
-_HAZARD_MAPPING: Dict[str, HazardEnum] = {
+# Public; also consumed by disclosure-trends aggregation.
+HAZARD_STRING_TO_ENUM: Dict[str, HazardEnum] = {
     "Heat stress": HazardEnum.HEAT_STRESS,
     "Extreme heat": HazardEnum.EXTREME_HEAT,
     "Extreme cold": HazardEnum.EXTREME_COLD,
@@ -64,7 +65,7 @@ class HazardMapper:
                 other_hazard_details=details,
             )
 
-        hazard_type = _HAZARD_MAPPING.get(normalized_string)
+        hazard_type = HAZARD_STRING_TO_ENUM.get(normalized_string)
         if hazard_type is None:
             log_message = f"Unknown hazard: '{db_string}'"
             if org_id:

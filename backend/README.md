@@ -1,14 +1,15 @@
 # CDP Adaptation & Action Explorer - Backend
 
-A FastAPI-based backend providing climate intelligence, hazard data, and AI-powered insights.
+A FastAPI-based backend providing location, hazard, and translation APIs for the CDP Adaptation & Action Explorer platform.
 
 ## Tech Stack
 
 - **Framework:** [FastAPI](https://fastapi.tiangolo.com/)
 - **Database:** [SQLModel](https://sqlmodel.tiangolo.com/) (SQLAlchemy + Pydantic) with PostgreSQL
-- **AI/LLM:** Google Vertex AI (Gemini)
 - **Geospatial:** Google Earth Engine (Hazard data)
 - **Package Management:** [uv](https://github.com/astral-sh/uv)
+
+AI functionality is now owned by the separate `ai-server` service.
 
 ## Architecture Overview
 
@@ -22,19 +23,16 @@ flowchart TB
     subgraph Backend["CDP Adaptation & Action Explorer Backend"]
         subgraph API["API Layer"]
             LOC_API[Location Endpoints]
-            CHAT_API[Chat Endpoints]
             HAZARD_API[Hazard Endpoints]
             TRANS_API[Translate Endpoints]
         end
 
         subgraph Core["Business Logic"]
             LOC_SVC[LocationDetailsService]
-            SUGGEST[Follow-up Suggestions]
         end
 
         subgraph Services["Service Layer"]
             DB_SVC[DatabaseService]
-            GEMINI[GeminiLLMClient]
             TRANSLATE[TranslateClient]
             EE_SVC[EarthEngineClient]
         end
@@ -42,7 +40,6 @@ flowchart TB
 
     subgraph External_Services["External Services"]
         PG[(PostgreSQL)]
-        VERTEX[Google VertexAI]
         EE[Google Earth Engine]
         G_TRANS[Google Translate API]
     end
@@ -53,15 +50,11 @@ flowchart TB
     LOC_API --> LOC_SVC
     LOC_SVC --> DB_SVC
 
-    CHAT_API --> GEMINI
-    SUGGEST --> GEMINI
-
     HAZARD_API --> EE_SVC
 
     TRANS_API --> TRANSLATE
 
     DB_SVC --> PG
-    GEMINI --> VERTEX
     EE_SVC --> EE
     TRANSLATE --> G_TRANS
 ```
@@ -71,18 +64,16 @@ flowchart TB
 ```text
 backend/
 ├── app/
-│   ├── api/v1/         # API routes (chatbot, hazards, locations, etc.)
-│   ├── core/           # Business logic (follow-up suggestions)
+│   ├── api/v1/         # API routes (hazards, locations, translate)
 │   ├── models/         # SQLModel database entities
 │   ├── schemas/        # Pydantic API schemas
 │   ├── services/       # Service clients and implementations
-│   │   ├── clients/    # External API clients (Gemini, Earth Engine)
+│   │   ├── clients/    # External API clients (Earth Engine, Translate)
 │   │   ├── impls/      # Service implementations
 │   │   └── interfaces/ # Service contracts (Protocols)
 │   ├── shared/         # Configuration, logging, and common utilities
-│   └── utils/          # Utilities (prompts, sanitization)
-├── docs/               # Technical documentation & AI Prompts
-│   └── prompts/        # Active system prompts used by the LLM
+│   └── utils/          # Utilities
+├── docs/               # Technical documentation
 ├── scripts/            # Utility and maintenance scripts
 └── tests/              # Pytest suite
 ```

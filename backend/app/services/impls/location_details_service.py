@@ -84,6 +84,20 @@ class LocationDetailsService:
             self.repository.get_solution_examples(org_id),
         )
 
+        # Suppress this org's own disclosed adaptation content for Non-Public
+        # disclosers — their goals/actions/projects are private. Solutions and
+        # peer-actions are NOT suppressed: they're recommendations sourced from
+        # other (Public) peer orgs, so showing them doesn't leak anything about
+        # the Non-Public target. Public orgs and non-disclosers (empty
+        # public_status) pass through; non-disclosers naturally have no
+        # disclosed content today but may receive GEE-derived data later, which
+        # should not be silently suppressed by a broader `!= "Public"`
+        # condition.
+        if metadata is not None and metadata.public_status == "Non-Public":
+            goals = []
+            actions = []
+            projects = []
+
         mapped_hazards = self._map_to_hazard_profiles(hazards, org_id)
         mapped_goals = self._map_to_adaptation_goals(goals, org_id)
         mapped_actions = self._map_to_adaptation_actions(actions, org_id)
@@ -159,6 +173,7 @@ class LocationDetailsService:
                 target_year=g.target_year,
             )
             for g in goals
+            if g.goal_english and g.goal_english.strip()
         ]
 
     def _build_adaptation_action(
@@ -242,8 +257,8 @@ class LocationDetailsService:
 
             funded_percent = None
             if (
-                project.total_cost_usd
-                and project.total_needed_usd
+                project.total_cost_usd is not None
+                and project.total_needed_usd is not None
                 and project.total_cost_usd > 0
             ):
                 funded_percent = (
@@ -416,30 +431,42 @@ class LocationDetailsService:
         return LocationDetailsService._pins_cache
 
     async def _fetch_all_location_pins(self) -> list[LocationPin]:
-        """Fetches and transforms all unique location pins from the repository."""
+        """Fetches and transforms all unique location pins from the repository.
+
+        Prefers the pre-computed `centroid` POINT column when present. Falls back
+        to the legacy "first vertex of polygon" extraction when centroid is NULL,
+        which keeps pins working for rows the upstream backfill hasn't reached.
+        """
         geometries = await self.repository.get_all_location_geometries()
         pins = []
         for location_geom in geometries:
-            geometry = json.loads(location_geom.geometry)
-            coords = self.profile_builder.extract_first_coordinate_pair(geometry)
-
             org_type = location_geom.org_type
             if org_type == "States & Regions":
                 org_type = OrgTypeEnum.STATE_AND_REGION
             elif org_type == "City":
                 org_type = OrgTypeEnum.CITY
 
-            if coords:
-                pins.append(
-                    LocationPin(
-                        name=location_geom.name,
-                        lng=coords[0],
-                        lat=coords[1],
-                        org_type=org_type,
-                    )
-                )
+            if (
+                location_geom.centroid_lng is not None
+                and location_geom.centroid_lat is not None
+            ):
+                lng, lat = location_geom.centroid_lng, location_geom.centroid_lat
             else:
-                logger.error(
-                    f"Geometry data missing: Location '{location_geom.name}' is missing valid geometry or coordinate data."
+                geometry = json.loads(location_geom.geometry)
+                coords = self.profile_builder.extract_first_coordinate_pair(geometry)
+                if not coords:
+                    logger.error(
+                        f"Geometry data missing: Location '{location_geom.name}' is missing valid geometry or coordinate data."
+                    )
+                    continue
+                lng, lat = coords
+
+            pins.append(
+                LocationPin(
+                    name=location_geom.name,
+                    lng=lng,
+                    lat=lat,
+                    org_type=org_type,
                 )
+            )
         return pins

@@ -23,7 +23,6 @@ import { HazardColorPaletteComponent } from './hazard-legend/hazard-color-palett
 import { HazardMapService } from './hazard-map.service';
 import { GoogleMapsLoaderService } from '../../shared/services/google-maps-loader.service';
 import { HazardLayerOptions } from '@pac-api/client';
-import { AskCdpAiComponent } from '../ask-cdp-ai/ask-cdp-ai.component';
 
 export const SUPPORTED_HAZARD_TYPES: HazardEnum[] = [
   HazardEnum.WATER_STRESS,
@@ -45,6 +44,20 @@ const SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
   [ScenarioEnum.SSP585]: 'SSP5 - 8.5',
 };
 
+// WRI Aqueduct flood data is published with RCP scenarios (CMIP5-era), so the
+// flood layers carry the SSP enum from backend but labelled as their
+// RCP equivalents in the UI.
+const FLOOD_HAZARDS = new Set<HazardEnum>([
+  HazardEnum.COASTAL_FLOODING,
+  HazardEnum.RIVER_FLOODING,
+]);
+
+const FLOOD_SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
+  [ScenarioEnum.HISTORICAL]: 'Historical',
+  [ScenarioEnum.SSP245]: 'RCP 4.5',
+  [ScenarioEnum.SSP585]: 'RCP 8.5',
+};
+
 @Component({
   selector: 'app-hazard-map',
   standalone: true,
@@ -56,7 +69,6 @@ const SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
     HazardIconComponent,
     HazardColorPaletteComponent,
     TranslateModule,
-    AskCdpAiComponent,
   ],
   templateUrl: './hazard-map.html',
   styles: [':host { display: block; width: 100%; height: 100%; }'],
@@ -207,7 +219,7 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
   private getInteractivityOptions(): google.maps.MapOptions {
     const isSupported = this.isHazardSupported(this.hazardType);
-    const isInteractive = !this.static && isSupported;
+    const isInteractive = !this.static && isSupported && this.isExpanded;
 
     return {
       zoomControl: isInteractive,
@@ -235,6 +247,9 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
       this.renderer.removeStyle(host, 'z-index');
       this.renderer.removeStyle(host, 'background');
     }
+    if (this.googleMap) {
+      this.googleMap.setOptions(this.getInteractivityOptions());
+    }
     // Trigger map resize after expansion/collapse to ensure proper rendering
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -257,7 +272,7 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
       if (options) {
         this.scenarios = options.scenarios;
         this.selectedScenario = this.scenarios[0];
-        this.palette = ['#CCCCCC', ...(options.palette || [])];
+        this.palette = options.palette || [];
         this.hazardSource = options.source || '';
         this.updateYearRangesForScenario();
         this.renderHazardLayer();
@@ -297,7 +312,9 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     }
 
     if (this.googleMap) {
-      if (this.geometry && (!this.hazardType || this.isHazardSupported(this.hazardType))) {
+      // Render the jurisdiction polygon whenever geometry is present, even if
+      // the currently-selected hazard has no GEE tile.
+      if (this.geometry) {
         this.jurisdictionLayer = new window.google.maps.Data();
         const feature: { type: string; geometry: { [key: string]: unknown } } = {
           type: 'Feature',
@@ -366,6 +383,9 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
   }
 
   formatScenarioLabel(scenario: ScenarioEnum): string {
+    if (this.hazardType && FLOOD_HAZARDS.has(this.hazardType)) {
+      return FLOOD_SCENARIO_LABELS[scenario] ?? SCENARIO_LABELS[scenario] ?? scenario;
+    }
     return SCENARIO_LABELS[scenario] ?? scenario;
   }
 }

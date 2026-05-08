@@ -8,7 +8,7 @@ import type {
   AdaptationAction,
   AdaptationGoal,
   Hazard,
-  ProjectSeekingFundingOutput as ProjectSeekingFunding,
+  ProjectSeekingFunding,
 } from '@pac-api/client';
 
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
@@ -18,6 +18,7 @@ import { AdaptationGoalDetailComponent } from './adaptation-goal-detail/adaptati
 import { ProjectSeekingFundingDetailComponent } from './project-seeking-funding-detail/project-seeking-funding-detail.component';
 import { ActionsSummaryComponent } from './actions-summary/actions-summary.component';
 import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
+import { splitTitleAtLastColon } from '../../../shared/utils/title.util';
 import type { HazardSummaryRow, DetailItemType } from './government-actions.types';
 
 export type { HazardSummaryRow, DetailItemType };
@@ -82,6 +83,8 @@ export class GovernmentActionsComponent implements OnChanges {
     if (!model) return '';
     return Array.isArray(model) ? model.join(', ') : (model as string);
   }
+
+  splitTitleAtLastColon = splitTitleAtLastColon;
 
   ngOnChanges(changes: SimpleChanges): void {
     const dataChanged = !!changes['data'] && !!this.data;

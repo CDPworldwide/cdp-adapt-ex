@@ -2,7 +2,7 @@ name: Deploy Orchestrator
 
 on:
   push:
-    branches: [main, production]
+    branches: [production]
     paths:
       - "backend/**"
       - "frontend/**"
@@ -21,14 +21,16 @@ env:
   REGION: us-central1
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
   NODE_VERSION: "20.x"
-  # Branch-specific environment configuration
-  ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
-  SERVICE_NAME_BACKEND: ${{ github.ref == 'refs/heads/production' && 'cdp-server-prod' || 'cdp-server-dev' }}
-  SERVICE_NAME_FRONTEND: ${{ github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend-dev' }}
+  AI_SERVER_URL: https://cdp-ai-server-pbybuiwoxq-uc.a.run.app
+  # Production is the only long-lived deployment from this workflow.
+  ENVIRONMENT: production
+  SERVICE_NAME_BACKEND: cdp-server-prod
+  # Keep the single public frontend URL on the existing frontend service.
+  SERVICE_NAME_FRONTEND: frontend
 
 jobs:
   deploy-backend:
-    name: Deploy backend (${{ github.ref == 'refs/heads/production' && 'production' || 'development' }})
+    name: Deploy backend (production)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -49,6 +51,13 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ env.PROJECT_ID }}
+
+      - name: Get Backend Secrets from Secret Manager
+        id: backend-secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: |-
+            API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
@@ -87,7 +96,7 @@ jobs:
           image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_BACKEND }}:${{ github.sha }}
           flags: |
             --allow-unauthenticated
-            --add-cloudsql-instances=${{ env.PROJECT_ID }}:${{ env.REGION }}:${{ env.ENVIRONMENT == 'production' && 'cdp-prod' || 'cdp-test' }}
+            --add-cloudsql-instances=${{ env.PROJECT_ID }}:${{ env.REGION }}:cdp-prod
             --min-instances=1
             --max-instances=10
             --memory=2Gi
@@ -99,6 +108,7 @@ jobs:
             commit-sha=${{ github.sha }}
           secrets: |
             POSTGRES_PASSWORD=${{ env.ENVIRONMENT }}-POSTGRES_PASSWORD:latest
+            API_KEY=${{ env.ENVIRONMENT }}-API_KEY:latest
             LLM_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
             GOOGLE_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
             ALLOWED_ORIGINS=${{ env.ENVIRONMENT }}-ALLOWED_ORIGINS:latest
@@ -109,7 +119,7 @@ jobs:
             PROJECT_ID=${{ env.PROJECT_ID }}
             LOCATION=${{ env.REGION }}
             APP_ENV=${{ env.ENVIRONMENT }}
-            DEBUG=${{ env.ENVIRONMENT == 'development' && 'true' || 'false' }}
+            DEBUG=false
             LOG_FORMAT=json
             POSTGRES_PORT=5432
             LLM_MODEL=${{ secrets.LLM_MODEL || 'gemini-2.5-flash' }}
@@ -122,6 +132,8 @@ jobs:
 
       - name: Verify backend revision and health
         id: verify-backend
+        env:
+          BACKEND_API_KEY: ${{ steps.backend-secrets.outputs.API_KEY }}
         run: |
           EXPECTED_SHA="${{ github.sha }}"
           BACKEND_URL=""
@@ -146,7 +158,9 @@ jobs:
           done
 
           HEALTH_URL="$BACKEND_URL/api/v1/health"
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$HEALTH_URL" || echo "000")
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "X-API-Key: $BACKEND_API_KEY" \
+            "$HEALTH_URL" || echo "000")
           if [ "$STATUS" != "200" ]; then
             echo "Backend health check failed: $HEALTH_URL -> HTTP $STATUS"
             exit 1
@@ -158,7 +172,7 @@ jobs:
           echo "Backend ready: $BACKEND_URL"
 
   deploy-frontend:
-    name: Deploy frontend (${{ github.ref == 'refs/heads/production' && 'production' || 'development' }})
+    name: Deploy frontend (production)
     runs-on: ubuntu-latest
     needs: deploy-backend
     permissions:
@@ -202,13 +216,18 @@ jobs:
           version: "0.9.18"
           enable-cache: true
 
+      - name: Install Graphviz
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgraphviz-dev
+
       - name: Generate API client from OpenAPI spec
         working-directory: client
         run: ./scripts/generate.sh
         env:
           API_URL: http://127.0.0.1:4352
 
-      - name: Build client package
+      - name: Verify client package
         working-directory: client
         run: npm run build
 
@@ -222,26 +241,61 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
       - name: Get Frontend Secrets from Secret Manager
         id: frontend-secrets
         uses: google-github-actions/get-secretmanager-secrets@v2
         with:
           secrets: |-
+            API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
             GOOGLE_MAPS_API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
 
       - name: Create production environment.ts
         working-directory: frontend
         run: |
-          cat > src/environments/environment.ts <<EOF
-          export const environment = {
-            production: true,
-            baseUrl: '${{ steps.decode-url.outputs.url }}',
-            isDebugMode: ${{ env.ENVIRONMENT == 'development' }},
-            mapsConfig: {
-              apiKey: '${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}',
-            },
-          };
-          EOF
+          FRONTEND_BASE_URL='${{ steps.decode-url.outputs.url }}' \
+          FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
+          FRONTEND_API_KEY='${{ steps.frontend-secrets.outputs.API_KEY }}' \
+          FRONTEND_AI_SERVER_API_KEY='${{ secrets.AI_SERVER_API_KEY }}' \
+          FRONTEND_DEBUG_MODE='false' \
+          FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
+          bash scripts/write-environment.sh
+
+      - name: Validate generated frontend environment
+        working-directory: frontend
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          text = Path('src/environments/environment.ts').read_text(encoding='utf-8')
+
+          def extract(name: str) -> str:
+              match = re.search(rf"{name}: '([^']*)'", text)
+              return match.group(1) if match else ''
+
+          values = {
+              'baseUrl': extract('baseUrl'),
+              'aiServerUrl': extract('aiServerUrl'),
+              'apiKey': extract('apiKey'),
+              'apiKeyHeaderName': extract('apiKeyHeaderName'),
+              'aiServerApiKey': extract('aiServerApiKey'),
+              'aiServerApiKeyHeaderName': extract('aiServerApiKeyHeaderName'),
+          }
+
+          for key, value in values.items():
+              print(f"{key}_set={'yes' if value else 'no'}")
+              if value:
+                  print(f"{key}_length={len(value)}")
+
+          missing = [key for key in ('baseUrl', 'aiServerUrl', 'apiKey', 'aiServerApiKey') if not values[key]]
+          if missing:
+              raise SystemExit(f"Missing generated frontend environment values: {', '.join(missing)}")
+          PY
 
       - name: Build frontend
         working-directory: frontend
@@ -250,11 +304,6 @@ jobs:
       - name: Run frontend tests
         working-directory: frontend
         run: npm run test:ci
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet

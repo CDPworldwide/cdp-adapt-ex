@@ -19,15 +19,47 @@ repos:
     hooks:
       - id: ruff
         args: [--fix]
-        files: ^backend/
+        files: ^(backend|ai-server)/
       - id: ruff
         args: ["check", "--select", "I", "--fix"]
-        files: ^backend/
+        files: ^(backend|ai-server)/
       - id: ruff-format
-        files: ^backend/
+        files: ^(backend|ai-server)/
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.1.0
     hooks:
       - id: prettier
         files: ^frontend/.*\.(js|ts|json|css|scss|html)$
+
+  - repo: local
+    hooks:
+      - id: client-build
+        name: client build
+        language: system
+        pass_filenames: false
+        files: ^client/.*\.(ts|json)$
+        entry: bash -c 'cd client && npm run build'
+
+      - id: client-verify
+        name: client verify
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        files: ^(client/|backend/)
+        entry: bash -c 'cd client && npm run refresh:verify'
+
+      - id: frontend-build
+        name: frontend build
+        language: system
+        pass_filenames: false
+        files: ^frontend/
+        entry: bash -c 'cd frontend && bash scripts/write-environment.sh && npm run build'
+
+      - id: frontend-verify
+        name: frontend verify
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+        files: ^(frontend/|client/)
+        entry: bash -c 'cd frontend && bash scripts/write-environment.sh && npm run build'

@@ -13,16 +13,7 @@
 
   body {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
-    background-color: #f2f2f2;
-  }
-
-  *:focus-visible {
-    outline: 2px solid #e81647;
-    outline-offset: 2px;
-  }
-
-  .bg-cdp-dark *:focus-visible {
-    outline-color: white;
+    background-color: #F2F2F2;
   }
 }
 
@@ -39,4 +30,98 @@
   border-radius: 1rem; /* Rounds all corners */
   border: 1px solid #d1d5db;
   margin-top: -0.5px;
+}
+
+/* Element still scrolls (mouse wheel / touch / keyboard) but renders no
+   visible scrollbar. The synthetic external bar painted by the component
+   handles the visual indication. */
+.custom-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .gm-bundled-control,
+  .gm-bundled-control-on-bottom {
+    transform: scale(0.75);
+    transform-origin: bottom right;
+  }
+}
+
+/* Hide Google Maps "Map data" / "Terms" attribution on static thumbnails where it obscures the small frame. */
+.static-thumbnail .gm-style-cc {
+  display: none !important;
+}
+
+/*
+ * Help dropdown menu in the app header. Custom shape: white square panel with
+ * a small triangle protruding from the top-right that points up toward the
+ * question-mark trigger button. Material's mat-menu paints the panel inside an
+ * overlay outside the component tree, so these have to be global and !important.
+ */
+.mat-mdc-menu-panel.help-menu-panel {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin-top: 13px;
+  overflow: visible !important;
+  min-width: 0;
+}
+
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-content {
+  background: white;
+  padding: 0;
+  position: relative;
+  border-radius: 0 !important;
+}
+
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-content::before {
+  content: '';
+  position: absolute;
+  top: -13px;
+  /* Flush with the top-right corner of the menu — the triangle's right edge
+     sits at the same x as the menu's right edge so the silhouette reads as
+     one continuous shape. */
+  right: 0;
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 13px solid white;
+}
+
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item {
+  background: white !important;
+  color: #1B232C;
+}
+
+/* Suppress Material's default auto-focus highlight on the first item when
+   the menu opens, so nothing reads as "active" until the user actually
+   hovers. Listed first so the hover rule below wins on tied specificity. */
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item:focus,
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item.cdk-program-focused,
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item.cdk-keyboard-focused,
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item.cdk-focused {
+  background: white !important;
+  color: #1B232C !important;
+}
+
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item:focus .mat-icon,
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item.cdk-program-focused .mat-icon,
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item.cdk-keyboard-focused .mat-icon,
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item.cdk-focused .mat-icon {
+  color: #595959; /* cdp-text-secondary, matches the default trailing icon */
+}
+
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item:hover {
+  background: white !important;
+  color: #E81647 !important;
+}
+
+.mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item:hover .mat-icon {
+  color: #E81647;
 }

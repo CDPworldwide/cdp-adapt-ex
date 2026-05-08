@@ -1,39 +1,72 @@
-<header class="flex items-center justify-between px-4 py-3 md:px-8">
-  <div class="flex items-center gap-3">
-    @if (showMenuButton) {
-      <button
-        type="button"
-        class="p-1 -ml-1 md:hidden"
-        (click)="onMenuToggle()"
-        aria-label="Open menu"
-        [attr.aria-expanded]="menuExpanded"
-        [attr.aria-controls]="menuControlsId"
-      >
-        <mat-icon class="text-gray-700">menu</mat-icon>
-      </button>
-    }
+<div class="flex items-center justify-between px-4 py-3 md:px-8">
+  <a
+    routerLink="/"
+    class="flex items-center gap-4 no-underline text-cdp-dark hover:opacity-80 transition-opacity"
+    aria-label="Home"
+  >
+    <app-cdp-logo-with-text-icon width="70" height="18" color="black"></app-cdp-logo-with-text-icon>
+    <div class="w-px h-6 bg-cdp-neutral-02"></div>
+    <span class="text-sm font-medium leading-none">Adaptation &amp; Action Explorer</span>
+  </a>
 
-    <a routerLink="/" class="flex flex-col cursor-pointer hover:opacity-80 transition-opacity">
-      <app-cdp-logo-with-text-icon
-        width="70"
-        height="18"
-        color="black"
-      ></app-cdp-logo-with-text-icon>
-      <span class="text-xs text-cdp-dark">{{ 'homepage.nav.title' | translate }}</span>
-    </a>
-  </div>
-
-  <div class="flex items-center gap-1">
+  <div class="flex items-center gap-2">
     <button
       type="button"
-      class="p-2 rounded-full hover:bg-gray-100 transition-colors"
+      class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
+      [matMenuTriggerFor]="helpMenu"
+      [attr.aria-label]="'shared.helpMenu.label' | translate"
+    >
+      <mat-icon
+        class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center"
+        >question_mark</mat-icon
+      >
+    </button>
+    <button
+      type="button"
+      class="p-2 rounded-full hover:bg-gray-100 active:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
       [matMenuTriggerFor]="languageMenu"
       [attr.aria-label]="'shared.selectLanguage' | translate"
     >
       <mat-icon class="text-gray-500 !text-xl">language</mat-icon>
     </button>
   </div>
-</header>
+</div>
+
+<mat-menu #helpMenu="matMenu" xPosition="before" [class]="'help-menu-panel'">
+  <a
+    mat-menu-item
+    href="https://www.cdp.net/en/cdp-adaptation-and-action-explorer"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <span class="inline-flex items-center gap-2">
+      {{ 'shared.helpMenu.about' | translate }}
+      <mat-icon
+        class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center text-cdp-text-secondary"
+        [attr.aria-label]="'shared.helpMenu.externalIndicator' | translate"
+        >open_in_new</mat-icon
+      >
+    </span>
+  </a>
+  <a mat-menu-item routerLink="/methodology">
+    {{ 'shared.methodology' | translate }}
+  </a>
+  <a
+    mat-menu-item
+    href="https://cdp-worldwide.typeform.com/to/CFhsXgBm"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <span class="inline-flex items-center gap-2">
+      {{ 'shared.helpMenu.feedback' | translate }}
+      <mat-icon
+        class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center text-cdp-text-secondary"
+        [attr.aria-label]="'shared.helpMenu.externalIndicator' | translate"
+        >open_in_new</mat-icon
+      >
+    </span>
+  </a>
+</mat-menu>
 
 <mat-menu #languageMenu="matMenu">
   @for (lang of languageService.languages; track lang.code) {

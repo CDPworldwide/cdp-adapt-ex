@@ -1,1 +1,3 @@
-/* Hazards Component Styles */
+/* `.custom-scrollbar` styling lives in src/styles.css — Angular's emulated
+   view encapsulation scopes `::-webkit-scrollbar` selectors in a way that
+   prevents them from matching, so the rules are kept global. */

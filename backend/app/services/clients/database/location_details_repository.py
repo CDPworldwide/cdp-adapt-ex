@@ -2,7 +2,7 @@
 
 from typing import List, Optional
 
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -32,7 +32,13 @@ class LocationDetailsRepository:
                 select(FactHazards)
                 .where(
                     FactHazards.cdp_disclosing_org_number == org_id,
-                    FactHazards.public_status == "Public",
+                    # Suppress disclosed Non-Public hazards while keeping Public
+                    # and GEE-derived (NULL public_status) rows. (`!=` alone
+                    # would silently drop NULL rows under SQL three-valued logic.)
+                    or_(
+                        FactHazards.public_status != "Non-Public",
+                        FactHazards.public_status.is_(None),
+                    ),
                 )
                 .order_by(FactHazards.hazard_rank)
             )
@@ -85,19 +91,19 @@ class LocationDetailsRepository:
             org_id: The CDP disclosing organization number.
 
         Returns:
-            The DimCentral record with geometry as GeoJSON string, or None if not found.
+            The DimCentral record with geometry/centroid as GeoJSON strings, or None if not found.
         """
         async with AsyncSession(self.engine) as session:
+            geo_columns = {"geometry", "centroid"}
             columns = [
-                func.ST_AsGeoJSON(DimCentral.geometry).label("geometry")
-                if c.name == "geometry"
+                func.ST_AsGeoJSON(getattr(DimCentral, c.name)).label(c.name)
+                if c.name in geo_columns
                 else getattr(DimCentral, c.name)
                 for c in DimCentral.__table__.columns
             ]
             statement = select(*columns).where(
                 DimCentral.cdp_disclosing_org_number == org_id,
                 DimCentral.has_geometry,
-                DimCentral.public_status == "Public",
             )
             result = (await session.exec(statement)).first()
             if result is None:
@@ -105,11 +111,11 @@ class LocationDetailsRepository:
             return DimCentral(**result._mapping)
 
     async def has_organization(self, org_id: int) -> bool:
-        """Return whether a public organization exists for the provided ID."""
+        """Return whether an organization with geometry exists for the provided ID."""
         async with AsyncSession(self.engine) as session:
             statement = select(DimCentral.cdp_disclosing_org_number).where(
                 DimCentral.cdp_disclosing_org_number == org_id,
-                DimCentral.public_status == "Public",
+                DimCentral.has_geometry,
             )
             return (await session.exec(statement)).first() is not None
 
@@ -137,7 +143,8 @@ class LocationDetailsRepository:
                 func.lower(DimCentral.disclosing_organization)
                 == organization_name.lower(),
                 DimCentral.has_geometry,
-                DimCentral.public_status == "Public",
+                # No public_status filter — Public, Non-Public, and non-disclosers
+                # all need to resolve so search bar clicks reach the detail page.
             )
             results = (await session.exec(statement)).all()
             return [
@@ -153,6 +160,10 @@ class LocationDetailsRepository:
     async def get_all_location_summaries(self) -> List[OrganizationSummary]:
         """Return all organizations with their IDs and names.
 
+        Includes Public disclosers, Non-Public disclosers, and non-disclosers
+        (who have an empty `public_status` as of May 7, schema to be updated later). The search bar surfaces all three
+        buckets.
+
         Returns:
             A list of `OrganizationSummary` objects used for search suggestions.
         """
@@ -166,7 +177,6 @@ class LocationDetailsRepository:
                 )
                 .where(
                     DimCentral.has_geometry,
-                    DimCentral.public_status == "Public",
                 )
                 .distinct()
             )
@@ -186,7 +196,10 @@ class LocationDetailsRepository:
         """Return a list of all unique location names, their geometries, and organization type.
 
         Returns:
-            A list of LocationGeometry objects, where each object contains a location name, its GeoJSON geometry dictionary, and the organization type.
+            A list of LocationGeometry objects, each containing a location name, its
+            GeoJSON polygon, the organization type, and pre-computed centroid lng/lat
+            (NULL until the upstream data is backfilled — the service degrades to
+            polygon-vertex extraction in that case).
         """
         async with AsyncSession(self.engine) as session:
             statement = (
@@ -194,10 +207,14 @@ class LocationDetailsRepository:
                     DimCentral.disclosing_organization.label("name"),
                     func.ST_AsGeoJSON(DimCentral.geometry).label("geometry"),
                     DimCentral.disclosing_org_type.label("org_type"),
+                    func.ST_X(DimCentral.centroid).label("centroid_lng"),
+                    func.ST_Y(DimCentral.centroid).label("centroid_lat"),
                 )
                 .where(
                     DimCentral.has_geometry,
-                    DimCentral.public_status == "Public",
+                    # Disclosers (Public + Non-Public) only — non-disclosers
+                    # (empty public_status as of May 7) appear in search but not on the map.
+                    DimCentral.public_status.in_(["Public", "Non-Public"]),
                 )
                 .distinct(DimCentral.disclosing_organization)
             )

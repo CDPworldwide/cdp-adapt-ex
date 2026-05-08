@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { HazardIconComponent } from '../../../../shared/components/hazard-icon/hazard-icon.component';
 import type { HazardSummaryRow } from '../government-actions.types';
@@ -7,7 +8,7 @@ import type { HazardSummaryRow } from '../government-actions.types';
 @Component({
   selector: 'app-actions-summary',
   standalone: true,
-  imports: [CommonModule, TranslateModule, HazardIconComponent],
+  imports: [CommonModule, MatTooltipModule, TranslateModule, HazardIconComponent],
   templateUrl: './actions-summary.component.html',
 })
 export class ActionsSummaryComponent {
@@ -35,7 +36,12 @@ export class ActionsSummaryComponent {
   }
 
   hazardName(row: HazardSummaryRow): string {
-    return row.hazard.hazardType === 'OTHERS' ? row.hazard.otherHazardDetails ?? '' : '';
+    if (row.hazard.hazardType !== 'OTHERS') return '';
+    return this.toTitleCase(row.hazard.otherHazardDetails ?? '');
+  }
+
+  private toTitleCase(value: string): string {
+    return value.replace(/\b\w/g, (c) => c.toUpperCase());
   }
 
   hazardTranslationKey(row: HazardSummaryRow): string {

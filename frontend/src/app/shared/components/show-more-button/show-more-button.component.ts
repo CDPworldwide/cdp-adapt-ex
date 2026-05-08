@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './show-more-button.component.html',
 })
 export class ShowMoreButtonComponent {
-  @Input() isExpanded = false;
+  @Input() expanded: boolean = false;
   @Output() clicked = new EventEmitter<void>();
 
   onClick(): void {

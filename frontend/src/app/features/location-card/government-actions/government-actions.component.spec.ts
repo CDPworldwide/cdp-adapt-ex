@@ -77,9 +77,15 @@ describe('GovernmentActionsComponent', () => {
         },
         govActions: {
           adaptationGoals: 'Adaptation goals ({{count}} disclosed)',
+          adaptationGoalsTitle: 'Adaptation goals',
           adaptationActions: 'Adaptation actions ({{count}} disclosed)',
+          adaptationActionsTitle: 'Adaptation actions',
           projectsSeekingFundingWithCount: 'Projects seeking funding ({{count}} disclosed)',
+          projectsSeekingFundingTitle: 'Projects seeking funding',
           projectSeekingFunding: 'Project seeking funding',
+          disclosedCount: '({{count}} disclosed)',
+          filterByHazard: 'Filter by hazard',
+          all: 'All',
           noActionsBanner: {
             title: 'Not all information was disclosed',
           },
@@ -277,8 +283,8 @@ describe('GovernmentActionsComponent', () => {
       const compiled = fixture.nativeElement as HTMLElement;
       const summaryText = compiled.querySelector('app-actions-summary')?.textContent || '';
 
-      // Should show the custom otherHazardDetails
-      expect(summaryText).toContain('Unusual volcanic activity');
+      // Should show the custom otherHazardDetails (title-cased)
+      expect(summaryText).toContain('Unusual Volcanic Activity');
       // Should NOT show OTHERS as a translation key
       expect(summaryText).not.toContain('OTHERS');
     });

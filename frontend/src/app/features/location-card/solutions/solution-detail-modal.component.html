@@ -1,159 +1,123 @@
 <div
-  class="flex flex-col lg:flex-row h-full lg:h-[90vh] lg:max-h-200 w-full lg:w-300 lg:max-w-[95vw] overflow-y-auto lg:overflow-hidden rounded-none lg:rounded-2xl shadow-2xl relative bg-white"
+  #outerContainer
+  class="flex flex-col lg:flex-row h-full lg:h-[80vh] w-full lg:w-[80vw] overflow-y-auto lg:overflow-hidden shadow-2xl relative bg-white"
 >
   <!-- Solution Overview -->
   <div
-    class="w-full lg:w-100 relative flex flex-col justify-between p-6 lg:p-12 bg-cdp-dark shrink-0"
+    class="w-full lg:w-1/3 relative flex flex-col justify-between pt-6 pl-6 pr-6 pb-8 lg:pt-[46px] lg:pl-[46px] lg:pr-6 lg:pb-[84px] bg-cdp-dark shrink-0"
+    [style.background]="getBackgroundStyle(data.solution)"
   >
-    <div class="relative z-10 flex flex-col gap-6 lg:gap-12 text-white">
+    <div class="relative z-10 flex flex-col text-white">
       <!-- Close Button for Mobile -->
-      <button (click)="close()" class="lg:hidden absolute -top-2 -right-2 p-2">
+      <button
+        (click)="close()"
+        aria-label="Close"
+        class="lg:hidden absolute top-3 right-3 p-2 rounded-full hover:bg-white/20 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
+      >
         <app-close-icon color="white" size="24"></app-close-icon>
       </button>
 
-      <div class="flex flex-col gap-2">
-        <h2
-          class="text-2xl lg:text-4xl font-bold tracking-wide leading-snug break-words hyphens-auto"
+      <!-- Title -->
+      <h2
+        class="text-2xl lg:text-[31px] font-roboto font-normal leading-normal text-white pr-10 lg:pr-0"
+      >
+        {{ data.solution.solution | autoTranslate }}
+      </h2>
+      @if (data.solution.hasLocalAction) {
+        <div
+          class="flex flex-wrap items-center gap-1 text-xs font-normal tracking-wide opacity-90 mt-1"
         >
-          {{ data.solution.solution | autoTranslate }}
-        </h2>
-        @if (data.solution.hasLocalAction) {
-          <div
-            class="flex flex-wrap items-center gap-1 text-xs font-normal tracking-wide opacity-90"
-          >
-            <span class="font-medium italic">{{ data.location?.name }}</span>
-            <span class="italic">{{
-              'locationCard.solutions.alsoHasLocalAction' | translate
-            }}</span>
-          </div>
-        }
-      </div>
+          <span class="font-medium italic">{{ data.location?.name }}</span>
+          <span class="italic">{{ 'locationCard.solutions.alsoHasLocalAction' | translate }}</span>
+        </div>
+      }
 
-      <div class="flex flex-col gap-4 lg:gap-8">
-        <!-- Hazards Addressed -->
-        @if (data.solution.solutionHazardsAddressed; as hazards) {
-          <div class="flex flex-col gap-3">
-            <span
-              class="text-xs lg:text-sm font-medium leading-5 tracking-tight uppercase opacity-80"
-            >
-              {{ 'locationCard.solutions.hazardsAddressed' | translate }}
-            </span>
-            <div class="flex flex-wrap lg:flex-col gap-2 lg:gap-2">
-              @for (h of hazards | slice: 0 : 6; track h.hazardType) {
-                <div class="flex items-center gap-2">
-                  <app-hazard-icon
-                    [hazard]="h.hazardType"
-                    [size]="'20'"
-                    color="white"
-                  ></app-hazard-icon>
-                  <span class="text-sm lg:text-base font-normal leading-6 tracking-tight">
-                    {{ 'locationCard.hazardNames.' + h.hazardType | translate }}
-                  </span>
-                </div>
-              }
-              @if (hazards.length > 6) {
-                <div class="text-sm font-normal italic opacity-70 mt-1">
-                  + {{ hazards.length - 6 }} {{ 'locationCard.govActions.more' | translate }}
-                </div>
-              }
-            </div>
-          </div>
-        }
-
-        <!-- Jurisdictions Taking this Action -->
-        <div class="flex flex-col gap-3">
-          <span
-            class="text-xs lg:text-sm font-medium leading-5 tracking-tight uppercase opacity-80"
-          >
-            {{ 'locationCard.solutions.jurisdictionsTakingAction' | translate }}
+      <!-- Hazards Addressed -->
+      @if (data.solution.solutionHazardsAddressed; as hazards) {
+        <div class="flex flex-col mt-6 lg:mt-[42px]">
+          <span class="text-white font-inter text-xs font-bold leading-normal">
+            {{ 'locationCard.solutions.hazardsAddressed' | translate }}
           </span>
-          <div class="flex items-center gap-3">
-            <div
-              class="w-6 h-6 lg:w-8 lg:h-8 rounded-full flex-shrink-0"
-              [style.background]="
-                'conic-gradient(#5FE992 ' +
-                (data.solution.pctPeerTakingAction || 0) +
-                '%, #333333 0)'
-              "
-              style="
-                mask-image: radial-gradient(transparent 58%, black 60%);
-                -webkit-mask-image: radial-gradient(transparent 58%, black 60%);
-              "
-            ></div>
-            <div class="flex items-baseline">
-              <span class="text-xl lg:text-3xl font-normal tracking-wide">{{
-                data.solution.pctPeerTakingAction || 0 | number: '1.0-2'
-              }}</span>
-              <span class="text-xl lg:text-3xl font-normal tracking-wide">%</span>
-            </div>
+          <div class="flex flex-wrap gap-2 mt-3">
+            @for (h of hazards | slice: 0 : 6; track h.hazardType) {
+              <app-hazard-icon [hazard]="h.hazardType" size="24" color="white"></app-hazard-icon>
+            }
+            @if (hazards.length > 6) {
+              <div class="text-sm font-normal italic opacity-70">
+                + {{ hazards.length - 6 }} {{ 'locationCard.govActions.more' | translate }}
+              </div>
+            }
           </div>
         </div>
-      </div>
+      }
+
     </div>
 
     <!-- Navigation Controls for Example Actions -->
-    <div class="relative z-10 flex flex-col items-center lg:items-start gap-4 mt-8 lg:mt-0">
-      <!-- Mobile: Floating Pill Design -->
-      <div
-        class="lg:hidden inline-flex items-center justify-center gap-4 px-4 py-2 bg-black/40 backdrop-blur-md rounded-full border border-white/20 text-white"
-      >
-        <button
-          (click)="prevAction()"
-          [disabled]="currentActionIndex === 0"
-          class="p-1 hover:opacity-70 disabled:opacity-30 transition-opacity"
+    @if (totalActions > 1) {
+      <div class="relative z-10 flex flex-col items-center lg:items-start gap-4 mt-8 lg:mt-0">
+        <!-- Mobile: Floating Pill Design -->
+        <div
+          class="lg:hidden inline-flex items-center justify-center gap-4 px-4 py-2 bg-black/40 backdrop-blur-md rounded-full border border-white/20 text-white"
         >
-          <app-arrow-left-icon size="16" color="white"></app-arrow-left-icon>
-        </button>
-        <span class="text-sm font-medium tracking-wider whitespace-nowrap">
-          {{ currentActionIndex + 1 }} of {{ totalActions }}
-        </span>
-        <button
-          (click)="nextAction()"
-          [disabled]="currentActionIndex === totalActions - 1"
-          class="p-1 hover:opacity-70 disabled:opacity-30 transition-opacity"
-        >
-          <app-arrow-right-icon size="16" color="white"></app-arrow-right-icon>
-        </button>
-      </div>
-
-      <!-- Desktop: Standard Design -->
-      <div class="hidden lg:flex items-center gap-6 text-white pb-10">
-        <div class="flex items-center gap-3">
           <button
             (click)="prevAction()"
             [disabled]="currentActionIndex === 0"
-            class="w-10 h-10 rounded-full border border-white flex items-center justify-center hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            class="p-1 hover:opacity-70 disabled:opacity-30 transition-opacity"
           >
-            <app-arrow-left-icon size="20" color="white"></app-arrow-left-icon>
+            <app-arrow-left-icon size="16" color="white"></app-arrow-left-icon>
           </button>
+          <span class="text-sm font-medium tracking-wider whitespace-nowrap">
+            {{ currentActionIndex + 1 }} of {{ totalActions }}
+          </span>
           <button
             (click)="nextAction()"
             [disabled]="currentActionIndex === totalActions - 1"
-            class="w-10 h-10 rounded-full border border-white flex items-center justify-center hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            class="p-1 hover:opacity-70 disabled:opacity-30 transition-opacity"
           >
-            <app-arrow-right-icon size="20" color="white"></app-arrow-right-icon>
+            <app-arrow-right-icon size="16" color="white"></app-arrow-right-icon>
           </button>
         </div>
-        <div class="flex items-center gap-1 text-lg font-normal tracking-wide">
-          <span>{{ currentActionIndex + 1 }}</span>
-          <span>of</span>
-          <span>{{ totalActions }}</span>
+
+        <!-- Desktop: Standard Design -->
+        <div class="hidden lg:flex items-center gap-4 text-white">
+          <div class="flex items-center gap-3">
+            <button
+              (click)="prevAction()"
+              [disabled]="currentActionIndex === 0"
+              aria-label="Previous action"
+              class="w-11 h-11 rounded-full border border-white bg-[rgba(30,30,30,0.40)] flex items-center justify-center enabled:hover:bg-[rgba(30,30,30,0.70)] enabled:active:bg-black disabled:opacity-30 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
+            >
+              <app-arrow-left-long-icon color="white" size="13"></app-arrow-left-long-icon>
+            </button>
+            <button
+              (click)="nextAction()"
+              [disabled]="currentActionIndex === totalActions - 1"
+              aria-label="Next action"
+              class="w-11 h-11 rounded-full border border-white bg-[rgba(30,30,30,0.40)] flex items-center justify-center enabled:hover:bg-[rgba(30,30,30,0.70)] enabled:active:bg-black disabled:opacity-30 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
+            >
+              <app-arrow-right-long-icon color="white" size="16"></app-arrow-right-long-icon>
+            </button>
+          </div>
+          <span class="text-white font-inter text-xs font-normal leading-normal">
+            {{ currentActionIndex + 1 }} of {{ totalActions }}
+          </span>
         </div>
       </div>
-    </div>
+    }
   </div>
 
   <!-- Right/Bottom Side: Action Detail -->
-  <div class="flex-1 bg-white lg:overflow-y-auto">
-    @for (action of [currentAction]; track currentActionIndex) {
-      @if (action) {
+  <div #detailContainer class="flex-1 bg-white lg:overflow-y-auto overflow-x-hidden">
+    @if (currentAction) {
+      <div [class]="'w-full h-full ' + slideClass">
         <app-adaptation-action-detail
-          [action]="action"
+          [action]="currentAction"
           [locationName]="currentPeerName"
           [showHeroImage]="false"
           (closed)="close()"
         ></app-adaptation-action-detail>
-      }
+      </div>
     }
   </div>
 </div>

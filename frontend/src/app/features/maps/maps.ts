@@ -6,38 +6,44 @@ import {
   ElementRef,
   OnDestroy,
   NgZone,
-  Input,
-  OnChanges,
-  SimpleChanges,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
-import { Router } from '@angular/router';
 import { MapSelectionService } from '../main-search/map-selection.service';
-import { SearchService, LocationData } from '../main-search/search.service';
-import { LocationSummaryComponent } from './location-summary/location-summary.component';
 import { LocationPinsService } from './location-pins.service';
-import { ActionStatusEnum, OrgTypeEnum } from '@pac-api/client';
-import type { AdaptationAction, Hazard, HazardProfile, LocationPin } from '@pac-api/client';
-import { Subscription, of } from 'rxjs';
-import { catchError, filter, switchMap, tap } from 'rxjs/operators';
-import { LocationService } from '../../shared/services/location.service';
-import { LocationSuggestion } from '../../shared/services/location-suggestion';
+import { OrgTypeEnum } from '@pac-api/client';
+import type { LocationPin } from '@pac-api/client';
+import { Subscription } from 'rxjs';
 import { GoogleMapsLoaderService } from 'src/app/shared/services/google-maps-loader.service';
 
-const CITY_PIN_ICON_URL = '/assets/icons/cdp_map_pin-red.svg';
-const REGION_PIN_ICON_URL = '/assets/icons/cdp_map_pin-blue.svg';
-const CITY_PIN_SELECTED_ICON_URL = '/assets/icons/cdp_map_pin-red-selected.svg';
-const REGION_PIN_SELECTED_ICON_URL = '/assets/icons/cdp_map_pin-blue-selected.svg';
+// Circle-on-stick pin shape (a filled disc with a vertical bar trailing
+// downward). Single fill — the selected variant uses a darker shade.
+const PIN_PATH =
+  'M4.6665 0.00130224C2.08918 0.00130209 -0.000162543 2.09064 -0.000162601 4.66797' +
+  'C-0.00016266 7.2453 2.08917 9.33464 4.6665 9.33464C7.24383 9.33464 9.33317 7.2453 9.33317 4.66797' +
+  'C9.33317 2.09064 7.24383 0.0013024 4.6665 0.00130224Z' +
+  'M4.6665 4.66797L3.7915 4.66797L3.7915 23.6781L4.6665 23.6781L5.5415 23.6781L5.5415 4.66797L4.6665 4.66797Z';
+const pinDataUrl = (fill: string): string =>
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 24" width="10" height="24"><path d="${PIN_PATH}" fill="${fill}"/></svg>`,
+  );
+
+const CITY_FILL = '#E81647';
+const CITY_FILL_SELECTED = '#A12638';
+const REGION_FILL = '#00A6FF';
+const REGION_FILL_SELECTED = '#0082C7';
+
+const CITY_PIN_ICON_URL = pinDataUrl(CITY_FILL);
+const REGION_PIN_ICON_URL = pinDataUrl(REGION_FILL);
+const CITY_PIN_SELECTED_ICON_URL = pinDataUrl(CITY_FILL_SELECTED);
+const REGION_PIN_SELECTED_ICON_URL = pinDataUrl(REGION_FILL_SELECTED);
 
 @Component({
   selector: 'app-maps',
-  imports: [LocationSummaryComponent],
+  imports: [],
   templateUrl: './maps.html',
   styleUrls: ['../shared-feature-styles.css', './maps.css'],
 })
-export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
-  @Input() pinFilter: 'all' | 'city' | 'region' = 'all';
+export class Maps implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('map', { static: true }) mapElementRef!: ElementRef;
   private googleMap!: google.maps.Map;
   private markers: Map<
@@ -45,23 +51,10 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     { marker: google.maps.marker.AdvancedMarkerElement; orgType: OrgTypeEnum }
   > = new Map();
 
-  selectedLocation: LocationPin | null = null;
-  fullLocationData: LocationData | null = null;
-  totalHazardsCount = 0;
-  implementedActionsCount = 0;
-  projectsRequiringFundingCount = 0;
-  topFourHazards: Hazard[] = [];
-  locationSuggestions: LocationSuggestion[] = [];
-
-  isLoadingHazardData = false;
-
   private subscriptions: Subscription[] = [];
 
   constructor(
     private mapSelectionService: MapSelectionService,
-    private router: Router,
-    private searchService: SearchService,
-    private locationService: LocationService,
     private locationPinsService: LocationPinsService,
     private ngZone: NgZone,
     private googleMapsLoader: GoogleMapsLoaderService,
@@ -71,78 +64,13 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     this.googleMapsLoader.loadApi().subscribe(() => this.initMap());
 
     this.subscriptions.push(
-      this.locationService.getAllLocationNames().subscribe((suggestions) => {
-        this.locationSuggestions = suggestions;
-      }),
-    );
-
-    const locationDetails$ = this.mapSelectionService.selectedMapLocation$.pipe(
-      tap((location) => {
-        this.selectedLocation = location;
+      this.mapSelectionService.selectedMapLocation$.subscribe((location) => {
         if (!location) {
           this.resetMap();
-        } else {
-          this.fullLocationData = null;
-          this.totalHazardsCount = 0;
-          this.implementedActionsCount = 0;
-          this.projectsRequiringFundingCount = 0;
-          this.topFourHazards = [];
-          this.isLoadingHazardData = true;
         }
         this.updateMarkerIcons(location);
       }),
-      filter((location): location is LocationPin => location !== null),
-      switchMap((location) =>
-        this.searchService.searchLocation(location.name).pipe(
-          tap(() => (this.isLoadingHazardData = false)),
-          catchError((err) => {
-            console.error('Error fetching location details:', err);
-            this.isLoadingHazardData = false;
-            return of(null);
-          }),
-        ),
-      ),
     );
-
-    this.subscriptions.push(
-      locationDetails$.subscribe((data) => {
-        if (data) {
-          this.processLocationData(data);
-        }
-      }),
-    );
-  }
-
-  private processLocationData(data: LocationData): void {
-    this.fullLocationData = data;
-    this.totalHazardsCount = data.hazards?.hazards?.length || 0;
-    this.implementedActionsCount =
-      data.governmentActions?.actions?.filter(
-        (action: AdaptationAction) =>
-          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_JURISDICTION_WIDE ||
-          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_MOST_OF_JURISDICTION ||
-          action.status?.statusType === ActionStatusEnum.ACTION_IN_OPERATION_TARGETED,
-      ).length || 0;
-    this.projectsRequiringFundingCount = data.governmentActions?.projects?.length || 0;
-    this.topFourHazards = (data.hazards?.hazards || [])
-      .map((hazardProfile: HazardProfile) => hazardProfile.hazard)
-      .slice(0, 4);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['pinFilter']) {
-      this.applyPinFilter();
-    }
-  }
-
-  private applyPinFilter(): void {
-    this.markers.forEach((markerData) => {
-      const show =
-        this.pinFilter === 'all' ||
-        (this.pinFilter === 'city' && markerData.orgType === OrgTypeEnum.CITY) ||
-        (this.pinFilter === 'region' && markerData.orgType === OrgTypeEnum.STATE_AND_REGION);
-      markerData.marker.map = show ? this.googleMap : null;
-    });
   }
 
   ngAfterViewInit(): void {}
@@ -161,9 +89,9 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
 
   private initMap(): void {
     const isDesktop = this.isDesktop();
-    const initialZoom = isDesktop ? 2.5 : 1.75;
+    const initialZoom = isDesktop ? 1.75 : 1.25;
     const mapOptions: google.maps.MapOptions = {
-      center: { lat: 20, lng: 10 },
+      center: { lat: 20, lng: -20 },
       zoom: initialZoom,
       minZoom: initialZoom,
       maxZoom: 10,
@@ -184,12 +112,6 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     };
     this.googleMap = new window.google.maps.Map(this.mapElementRef.nativeElement, mapOptions);
 
-    this.googleMap.addListener('click', () => {
-      this.ngZone.run(() => {
-        this.mapSelectionService.setMapClicked(true);
-      });
-    });
-
     this.addStaticPins();
   }
 
@@ -205,7 +127,7 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   }
 
   private addPin(location: LocationPin): void {
-    const isSelected = this.selectedLocation?.name === location.name;
+    const isSelected = this.mapSelectionService.getSelectedLocation()?.name === location.name;
     const orgType = location.orgType ?? OrgTypeEnum.CITY;
     const { iconUrl, width, height, zIndex } = this.getPinStyle(orgType, isSelected);
 
@@ -249,31 +171,12 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     });
   }
 
-  goToLocationDetails(): void {
-    if (!this.selectedLocation) {
-      return;
-    }
-
-    const suggestion = this.locationSuggestions.find(
-      (location) => location.name === this.selectedLocation?.name,
-    );
-
-    if (suggestion) {
-      this.mapSelectionService.clearSelection();
-      this.router.navigate(['/org', suggestion.organizationId]);
-    }
-  }
-
-  closeCard(): void {
-    this.mapSelectionService.clearSelection();
-  }
-
   private resetMap(): void {
     if (this.googleMap) {
       const isDesktop = this.isDesktop();
-      const initialZoom = isDesktop ? 2.5 : 1.75;
+      const initialZoom = isDesktop ? 1.75 : 1.25;
 
-      this.googleMap.panTo({ lat: 20, lng: 10 });
+      this.googleMap.panTo({ lat: 20, lng: -20 });
       google.maps.event.addListenerOnce(this.googleMap, 'idle', () => {
         this.googleMap.setZoom(initialZoom);
       });
@@ -293,10 +196,12 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
         ? REGION_PIN_ICON_URL
         : CITY_PIN_ICON_URL;
 
+    // The pin SVG has a 10:24 aspect ratio (circle on top, bar trailing down).
+    const pinHeight = isDesktop ? 32 : 24;
     return {
       iconUrl,
-      width: Math.round((isDesktop ? 32 : 24) * scale),
-      height: Math.round((isDesktop ? 40 : 30) * scale),
+      width: Math.round(((pinHeight * 10) / 24) * scale),
+      height: Math.round(pinHeight * scale),
       // Make sure the selected pin is always on top of other pins
       zIndex: isSelected ? 10000 : 9999,
     };

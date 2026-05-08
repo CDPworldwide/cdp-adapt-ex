@@ -3,6 +3,7 @@
 import json
 from collections import defaultdict
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from app.models.location_details import DimCentral
@@ -37,6 +38,23 @@ class GeometryData:
         )
 
 
+_A_LIST_PATH = Path(__file__).resolve().parents[2] / "data" / "cdp_a_list_2025.json"
+
+
+def _load_a_list() -> frozenset[int]:
+    """Read the curated CDP A-List of org IDs at import time."""
+    try:
+        with _A_LIST_PATH.open() as f:
+            payload = json.load(f)
+        return frozenset(int(x) for x in payload.get("AList", []))
+    except (FileNotFoundError, json.JSONDecodeError, ValueError) as e:
+        logger.warning("a_list_load_failed", path=str(_A_LIST_PATH), error=str(e))
+        return frozenset()
+
+
+_A_LIST: frozenset[int] = _load_a_list()
+
+
 class LocationProfileBuilder:
     def __init__(self, sector_mapper: SectorMapper):
         self.sector_mapper = sector_mapper
@@ -60,7 +78,7 @@ class LocationProfileBuilder:
             )
             raise CityNotFoundException(fallback_name)
 
-        geo_data = self.extract_geometry_and_coords(metadata.geometry)
+        geo_data = self.extract_geometry_and_coords(metadata.geometry, metadata.centroid)
         if not geo_data.is_valid:
             logger.error(
                 "Data inconsistency: location '%s' (org_id=%s) is missing valid geometry or coordinate data.",
@@ -94,10 +112,12 @@ class LocationProfileBuilder:
         return LocationProfile(
             organization_id=org_id,
             name=metadata.disclosing_organization,
-            country_name=metadata.discloser_country_or_area or "Unknown",
+            country_name=metadata.discloser_country_or_area or "",
             lat=geo_data.lat,
             lng=geo_data.lng,
             geometry=geo_data.geometry,
+            is_reporting_leader=org_id in _A_LIST,
+            public_status=metadata.public_status,
             disclosure_year=metadata.disclosing_year,
             population=metadata.current_pop,
             requesters=(
@@ -151,10 +171,17 @@ class LocationProfileBuilder:
         return None
 
     def extract_geometry_and_coords(
-        self, geometry_data: str | dict[str, Any] | None
+        self,
+        geometry_data: str | dict[str, Any] | None,
+        centroid_data: str | dict[str, Any] | None = None,
     ) -> GeometryData:
-        """Parse geometry data and extract a geometry dict and first lng/lat pair."""
-        if not geometry_data:
+        """Parse geometry data and pick a representative (lng, lat).
+
+        Prefers ``centroid_data`` (a GeoJSON Point) for the lng/lat when
+        provided. Falls back to the first vertex of ``geometry_data`` for
+        rows where the centroid hasn't been backfilled.
+        """
+        if not geometry_data and not centroid_data:
             return GeometryData(None, None, None)
 
         try:
@@ -164,14 +191,24 @@ class LocationProfileBuilder:
                 else geometry_data
             )
 
-            coords = (
-                self.extract_first_coordinate_pair(geometry)
-                if isinstance(geometry, dict)
-                else None
-            )
+            coords = None
+            if centroid_data is not None:
+                centroid = (
+                    json.loads(centroid_data)
+                    if isinstance(centroid_data, str)
+                    else centroid_data
+                )
+                if isinstance(centroid, dict):
+                    coords = self.extract_first_coordinate_pair(centroid)
+            if coords is None and isinstance(geometry, dict):
+                coords = self.extract_first_coordinate_pair(geometry)
 
             if coords:
-                return GeometryData(geometry, coords[0], coords[1])
+                return GeometryData(
+                    geometry if isinstance(geometry, dict) else None,
+                    coords[0],
+                    coords[1],
+                )
 
             return GeometryData(
                 geometry if isinstance(geometry, dict) else None, None, None

@@ -1,91 +1,105 @@
-import { Component, DestroyRef, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  HostListener,
+  inject,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, Observable, combineLatest, map, startWith } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map, of, startWith } from 'rxjs';
+import { catchError, filter, switchMap, tap } from 'rxjs/operators';
 import fuzzysort from 'fuzzysort';
 import { Router } from '@angular/router';
 import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { MapSelectionService } from './map-selection.service';
+import { SEARCH_ALIASES, COUNTRY_ALIASES } from './search-aliases';
+import { STATE_ABBREV_TO_NAME } from './state-abbrev';
 import { Maps } from '../maps/maps';
-import { CdpLogoIconComponent, CdpLogoWithTextIconComponent } from '../../shared/icons';
-import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
+import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
+import type { Hazard, HazardProfile, LocationPin } from '@pac-api/client';
+import { CdpLogoIconComponent } from '../../shared/icons';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
+import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
+import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
+import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
+import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
+
+// `São Paulo` → `sao paulo`. NFD-strip combining marks; preserves length.
+function stripDiacritics(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase();
+}
 
 @Component({
   selector: 'app-main-search',
   templateUrl: './main-search.html',
   styleUrls: ['./main-search.css'],
   encapsulation: ViewEncapsulation.None,
-  host: { class: 'flex flex-col flex-1 min-h-0' },
+  host: { class: 'flex flex-col flex-1 min-h-0 overflow-y-auto' },
   imports: [
     CommonModule,
     FormsModule,
-    MatAutocompleteModule,
     MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
     ReactiveFormsModule,
     TranslateModule,
     Maps,
+    LocationSummaryComponent,
     CdpLogoIconComponent,
-    CdpLogoWithTextIconComponent,
-    LoadingSpinner,
     AppHeaderComponent,
+    DisclosureTrendsComponent,
+    WelcomeModalComponent,
   ],
 })
 export class MainSearchComponent implements OnInit {
   searchControl = new FormControl('');
   isNotFound = false;
-  isAutocompleteOpen = false;
-  isLoadingLocation = false;
-  menuOpen = false;
+  isOverlayOpen = false;
+  // Session-only: when the user dismisses the intro card it stays gone for the
+  // current page load and reappears on reload. No persistence by design.
+  isInfoCardDismissed = false;
   allLocations: LocationSuggestion[] = [];
   filteredLocations!: Observable<LocationSuggestion[]>;
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
-  private searchInputHasFocus = false;
-  private pendingAutocompleteOpen = false;
-  private autocompleteTrigger?: MatAutocompleteTrigger;
 
-  hasMapPinSelected = false;
-  isMapClicked = false;
-  pinFilter: 'all' | 'city' | 'region' = 'all';
+  selectedLocation: LocationPin | null = null;
+  selectedLocationData: LocationData | null = null;
+  isLoadingHazardData = false;
 
-  get isMapFocused(): boolean {
-    return this.hasMapPinSelected || this.isMapClicked;
-  }
+  readonly disclosureTrendsYear = 2025;
+  disclosureTrendsSummary!: Observable<DisclosureTrendsSummary>;
+  totalHazardsCount = 0;
+  disclosedActionsCount = 0;
+  projectsRequiringFundingCount = 0;
+  topFourHazards: Hazard[] = [];
+
+  @ViewChild('overlayInput') private overlayInputRef?: ElementRef<HTMLInputElement>;
 
   private destroyRef = inject(DestroyRef);
-
-  togglePinFilter(type: 'city' | 'region') {
-    this.pinFilter = this.pinFilter === type ? 'all' : type;
-  }
-
-  toggleMenu() {
-    this.menuOpen = !this.menuOpen;
-  }
-
-  closeMenu() {
-    this.menuOpen = false;
-  }
 
   constructor(
     private searchService: SearchService,
     private locationService: LocationService,
     private mapSelectionService: MapSelectionService,
     private router: Router,
+    private disclosureTrendsStatsService: DisclosureTrendsStatsService,
   ) {}
 
   ngOnInit() {
+    this.disclosureTrendsSummary = this.disclosureTrendsStatsService.getSummary(
+      this.disclosureTrendsYear,
+    );
+
     this.filteredLocations = combineLatest([
       this.searchControl.valueChanges.pipe(startWith(this.searchControl.value || '')),
       this.allLocations$,
@@ -101,40 +115,100 @@ export class MainSearchComponent implements OnInit {
         next: (names) => {
           this.allLocations = names;
           this.allLocations$.next(names);
-          this.openAutocompleteIfPending();
         },
       });
 
-    combineLatest({
-      location: this.mapSelectionService.selectedMapLocation$,
-      isMapClicked: this.mapSelectionService.isMapClicked$,
-    })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(({ location, isMapClicked }) => {
-        this.hasMapPinSelected = location !== null;
-        this.isMapClicked = isMapClicked;
+    this.mapSelectionService.selectedMapLocation$
+      .pipe(
+        tap((location) => {
+          this.selectedLocation = location;
+          if (location) {
+            this.totalHazardsCount = 0;
+            this.disclosedActionsCount = 0;
+            this.projectsRequiringFundingCount = 0;
+            this.topFourHazards = [];
+            this.isLoadingHazardData = true;
+          }
+        }),
+        filter((location): location is LocationPin => location !== null),
+        switchMap((location) =>
+          this.searchService.searchLocation(location.name).pipe(
+            tap(() => (this.isLoadingHazardData = false)),
+            catchError((err) => {
+              console.error('Error fetching location details:', err);
+              this.isLoadingHazardData = false;
+              return of(null);
+            }),
+          ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((data) => {
+        if (data) {
+          this.processLocationData(data);
+        }
       });
   }
 
-  onSearchInputInteraction(source: 'focus' | 'click', trigger: MatAutocompleteTrigger): void {
-    this.searchInputHasFocus = true;
-    this.autocompleteTrigger = trigger;
-
-    this.logAutocompleteDebug('input_interaction', {
-      source,
-      hasMapPinSelected: this.hasMapPinSelected,
-      isAutocompleteOpen: this.isAutocompleteOpen,
-      currentValue: this.searchControl.value || '',
-      suggestionCount: this._filter(this.searchControl.value || '').length,
-      panelOpen: trigger.panelOpen,
-    });
-
-    this.openAutocomplete(trigger, source);
+  get resolvedYear(): number {
+    return this.selectedLocationData?.disclosureYear ?? new Date().getFullYear();
   }
 
-  onSearchInputBlur(): void {
-    this.searchInputHasFocus = false;
-    this.pendingAutocompleteOpen = false;
+  private processLocationData(data: LocationData): void {
+    this.selectedLocationData = data;
+    this.totalHazardsCount = data.hazards?.hazards?.length || 0;
+    this.disclosedActionsCount = data.governmentActions?.actions?.length || 0;
+    this.projectsRequiringFundingCount = data.governmentActions?.projects?.length || 0;
+    this.topFourHazards = (data.hazards?.hazards || [])
+      .map((hazardProfile: HazardProfile) => hazardProfile.hazard)
+      .slice(0, 4);
+  }
+
+  closeCard(): void {
+    this.mapSelectionService.clearSelection();
+    this.selectedLocationData = null;
+  }
+
+  goToLocationDetails(): void {
+    if (!this.selectedLocation) {
+      return;
+    }
+    const suggestion = this.allLocations.find((loc) => loc.name === this.selectedLocation?.name);
+    if (suggestion) {
+      this.mapSelectionService.clearSelection();
+      this.router.navigate(['/org', suggestion.organizationId]);
+    }
+  }
+
+  openSearchOverlay(): void {
+    if (this.isOverlayOpen) {
+      return;
+    }
+    this.isOverlayOpen = true;
+    requestAnimationFrame(() => {
+      this.overlayInputRef?.nativeElement.focus();
+    });
+  }
+
+  closeSearchOverlay(): void {
+    this.isOverlayOpen = false;
+  }
+
+  dismissInfoCard(): void {
+    this.isInfoCardDismissed = true;
+  }
+
+  scrollToTrends(): void {
+    document
+      .querySelector('app-disclosure-trends')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapeKey(): void {
+    if (this.isOverlayOpen) {
+      this.closeSearchOverlay();
+    }
   }
 
   onInput(): void {
@@ -143,37 +217,74 @@ export class MainSearchComponent implements OnInit {
     }
   }
 
-  onAutocompleteOpened(): void {
-    this.isAutocompleteOpen = true;
-    this.logAutocompleteDebug('panel_opened', {
-      currentValue: this.searchControl.value || '',
-    });
+  splitMatch(name: string, query: string): Array<{ text: string; bold: boolean }> {
+    const trimmed = (query || '').trim();
+    if (!trimmed) {
+      return [{ text: name, bold: false }];
+    }
+    // Strip-only (no abbrev expansion) so indexes line up with `name`.
+    const strippedName = stripDiacritics(name);
+    const strippedQuery = stripDiacritics(trimmed);
+    const idx = strippedName.indexOf(strippedQuery);
+    if (idx === -1) {
+      return [{ text: name, bold: false }];
+    }
+    return [
+      { text: name.substring(0, idx), bold: false },
+      { text: name.substring(idx, idx + strippedQuery.length), bold: true },
+      { text: name.substring(idx + strippedQuery.length), bold: false },
+    ];
   }
 
-  onAutocompleteClosed(): void {
-    this.isAutocompleteOpen = false;
-    this.logAutocompleteDebug('panel_closed', {
-      currentValue: this.searchControl.value || '',
-    });
+  private static readonly MAX_SUGGESTIONS = 5;
+
+  private normalizeForSearch(value: string): string {
+    const base = stripDiacritics(value)
+      .replace(/\bst\.?\b/gi, 'saint')
+      .replace(/\bste\.?\b/gi, 'sainte')
+      .replace(/\bmt\.?\b/gi, 'mount')
+      .replace(/\bft\.?\b/gi, 'fort')
+      .toLowerCase()
+      .replace(/[.,()'"]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    // Redirect well-known alternate names to their canonical form so e.g.
+    // "NYC" -> "new york", "U.K." -> "united kingdom", "Bombay" -> "mumbai".
+    return SEARCH_ALIASES[base] ?? COUNTRY_ALIASES[base] ?? base;
   }
 
-  /*
-   * Filters the location suggestions based on the user's input.
-   * When the input is empty, it returns the first 3 locations from the full list.
-   * When there is input, it performs a fuzzy search and returns the top 3 matches.
-   */
+  // Append the expanded admin-1 name when an entry ends in ", XX" (US/Canada
+  // codes). Lets queries like "California" or "Ontario" surface "City of Long
+  // Beach, CA" and "City of Toronto, ON" alongside the state-entity entries.
+  private buildSearchHaystack(name: string): string {
+    const normalized = this.normalizeForSearch(name);
+    const m = name.match(/,\s*([A-Z]{2,3})\s*$/);
+    const expansion = m ? STATE_ABBREV_TO_NAME[m[1]] : undefined;
+    return expansion ? `${normalized} ${this.normalizeForSearch(expansion)}` : normalized;
+  }
+
   private _filter(
     value: string,
     locations: LocationSuggestion[] = this.allLocations,
   ): LocationSuggestion[] {
     if (!value) {
-      return locations.slice(0, 3);
+      return locations.slice(0, MainSearchComponent.MAX_SUGGESTIONS);
     }
-    const results = fuzzysort.go(value, locations, {
-      key: 'name',
-      limit: 3,
+    // Search both name and country so a query like "thailand" surfaces every
+    // Thai jurisdiction even though it doesn't appear in their names.
+    const prepared = locations.map((loc) => ({
+      ...loc,
+      _normalizedName: this.buildSearchHaystack(loc.name),
+      _normalizedCountry: loc.country ? this.normalizeForSearch(loc.country) : '',
+    }));
+    const results = fuzzysort.go(this.normalizeForSearch(value), prepared, {
+      keys: ['_normalizedName', '_normalizedCountry'],
+      limit: MainSearchComponent.MAX_SUGGESTIONS,
     });
-    return results.map((result) => result.obj);
+    return results.map((result) => {
+      const { _normalizedName, _normalizedCountry, ...rest } = result.obj;
+      return rest;
+    });
   }
 
   onSearch(query?: string) {
@@ -183,11 +294,12 @@ export class MainSearchComponent implements OnInit {
     }
 
     const trimmedQuery = searchQuery.trim();
+    // Accent-insensitive so "Sao Paulo" resolves to "São Paulo".
+    const normalizedQuery = this.normalizeForSearch(trimmedQuery);
     const selectedLocation = this.allLocations.find(
-      (location) => location.name.toLowerCase() === trimmedQuery.toLowerCase(),
+      (location) => this.normalizeForSearch(location.name) === normalizedQuery,
     );
 
-    // Directly open the location if there's a match. Otherwise, perform the search which may lead to a "not found" state.
     if (selectedLocation) {
       this.openLocation(selectedLocation.organizationId);
     } else {
@@ -199,87 +311,27 @@ export class MainSearchComponent implements OnInit {
     this.searchControl.setValue('');
     this.isNotFound = false;
     this.mapSelectionService.clearSelection();
-    this.mapSelectionService.setMapClicked(false);
     this.router.navigate(['/']);
   }
 
   private openLocation(organizationId: number) {
+    this.closeSearchOverlay();
     this.router.navigate(['/org', organizationId]);
-  }
-
-  private openAutocomplete(trigger: MatAutocompleteTrigger, source: 'focus' | 'click'): void {
-    if (this.isAutocompleteOpen) {
-      this.logAutocompleteDebug('skip_open_already_open', {
-        source,
-        panelOpen: trigger.panelOpen,
-      });
-      return;
-    }
-
-    const suggestionCount = this._filter(this.searchControl.value || '').length;
-    if (suggestionCount === 0) {
-      this.pendingAutocompleteOpen = this.searchInputHasFocus;
-      this.logAutocompleteDebug('skip_open_no_suggestions', {
-        source,
-        currentValue: this.searchControl.value || '',
-      });
-      return;
-    }
-
-    this.pendingAutocompleteOpen = false;
-
-    this.logAutocompleteDebug('schedule_open', {
-      source,
-      currentValue: this.searchControl.value || '',
-      suggestionCount,
-      panelOpen: trigger.panelOpen,
-    });
-
-    setTimeout(() => {
-      this.logAutocompleteDebug('attempt_open', {
-        source,
-        currentValue: this.searchControl.value || '',
-        suggestionCount: this._filter(this.searchControl.value || '').length,
-        panelOpenBefore: trigger.panelOpen,
-      });
-      trigger.openPanel();
-      this.logAutocompleteDebug('open_called', {
-        source,
-        panelOpenAfter: trigger.panelOpen,
-      });
-    });
-  }
-
-  private openAutocompleteIfPending(): void {
-    if (!this.pendingAutocompleteOpen || !this.searchInputHasFocus || !this.autocompleteTrigger) {
-      return;
-    }
-
-    this.openAutocomplete(this.autocompleteTrigger, 'focus');
-  }
-
-  private logAutocompleteDebug(event: string, details: Record<string, unknown>): void {
-    console.debug('[MainSearch autocomplete]', {
-      event,
-      ...details,
-    });
   }
 
   private loadLocation(locationName: string) {
     this.mapSelectionService.clearSelection();
-    this.isLoadingLocation = true;
     this.isNotFound = false;
     this.searchService
       .searchLocation(locationName)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
-          this.isLoadingLocation = false;
           this.openLocation(data.organizationId);
         },
         error: () => {
-          this.isLoadingLocation = false;
           this.isNotFound = true;
+          this.closeSearchOverlay();
         },
       });
   }
