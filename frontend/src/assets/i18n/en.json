@@ -84,6 +84,7 @@
     "header": {
       "estimatedPopulation": "Estimated Population:",
       "populationTooltip": "Population estimates from {{location}}'s CDP disclosure",
+      "populationTooltipNonDiscloser": "Population estimates sourced from openly available data in Overture Maps or Wikidata.",
       "reportingLeader": "CDP Reporting Leader"
     },
     "footer": {
