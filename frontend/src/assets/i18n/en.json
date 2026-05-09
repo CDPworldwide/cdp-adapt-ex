@@ -120,6 +120,11 @@
         "description": "This jurisdiction does not currently report information through the CDP questionnaire. <strong>All hazard information displayed on this page is sourced from CDP analysis.</strong><br><br>To learn more about cities, states, and regions that report to CDP, visit our website.",
         "button": "Learn more about reporting"
       },
+      "geeOverview": {
+        "title": "Top 4 hazards",
+        "sourceLabel": "Source:",
+        "sourceText": "CDP analysis"
+      },
       "geeCard": {
         "exploreHazardMap": "Explore Hazard Map",
         "sourceLabel": "Source:",

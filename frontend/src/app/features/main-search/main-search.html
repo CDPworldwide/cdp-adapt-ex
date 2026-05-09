@@ -190,7 +190,7 @@
     >
       <app-maps class="block h-full w-full"></app-maps>
 
-      <div class="absolute left-6 bottom-6 z-10">
+      <div class="absolute left-6 right-6 bottom-6 z-10 md:right-auto">
         @if (selectedLocation) {
           <app-location-summary
             [location]="selectedLocation"
@@ -202,14 +202,11 @@
             [projectsSeekingFunding]="projectsRequiringFundingCount"
             (close)="closeCard()"
             (learnMore)="goToLocationDetails()"
-            class="block w-120 shadow-cdp-card"
+            class="block w-full md:w-120 shadow-cdp-card"
           ></app-location-summary>
         } @else if (!isInfoCardDismissed) {
           <div class="relative bg-white shadow-cdp-card pl-7 pr-5 py-5 w-80">
-            <span
-              aria-hidden="true"
-              class="absolute left-3 top-3 bottom-3 w-1 bg-cdp-red"
-            ></span>
+            <span aria-hidden="true" class="absolute left-3 top-3 bottom-3 w-1 bg-cdp-red"></span>
             <p class="text-sm text-cdp-dark leading-snug font-roboto m-0">
               {{ 'homepage.description.text' | translate }}
             </p>
@@ -249,12 +246,11 @@
         }
       </div>
 
-      <!-- Scroll-down indicator. Sits barely inside the map canvas. -->
       <button
         type="button"
         (click)="scrollToTrends()"
         [attr.aria-label]="'homepage.scrollDownAria' | translate"
-        class="absolute left-1/2 -translate-x-1/2 bottom-4 z-10 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-full transition-opacity"
+        class="absolute left-1/2 -translate-x-1/2 bottom-4 z-0 hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-full transition-opacity"
       >
         <svg
           width="44"
@@ -271,7 +267,6 @@
           <circle cx="21.7693" cy="21.7693" r="21.2693" stroke="#1E1E1E" />
         </svg>
       </button>
-
     </div>
   </div>
 

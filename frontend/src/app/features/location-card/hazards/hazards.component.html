@@ -220,47 +220,49 @@
       </div>
     }
 
-    <!-- CRVA Banner -->
-    <div
-      class="mb-4 bg-white flex flex-col lg:flex-row items-stretch lg:items-center lg:h-[104px] px-4 lg:px-6 py-4 gap-3 lg:gap-6"
-    >
-      <div class="flex-1 flex flex-col gap-1 min-w-0">
-        <span
-          class="text-cdp-dark font-roboto text-sm lg:text-base font-semibold leading-5 lg:leading-6 tracking-cdp-medium"
-          >{{ 'locationCard.hazardDetail.crvaTitle' | translate }}</span
-        >
-        <p class="break-words">
-          <span class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide">{{
-            'locationCard.hazardDetail.crvaSource' | translate
-          }}</span>
-          <span class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide">
-            {{
-              'locationCard.hazardOverview.disclosureLine'
-                | translate
-                  : {
-                      location: data.name,
-                      country: data.countryName,
-                      year:
-                        data.disclosureYear || ('locationCard.hazardDetail.unknown' | translate),
-                    }
-            }}
-          </span>
-        </p>
-      </div>
-      <div class="shrink-0 flex items-center">
-        <a
-          href="https://data.cdp.net/"
-          target="_blank"
-          class="bg-zinc-100 rounded border border-cdp-neutral-05 px-4 py-2.5 flex justify-center items-center hover:bg-zinc-200 transition-colors cursor-pointer no-underline w-full lg:w-auto"
-        >
+    @if (bannerVariant === null) {
+      <div
+        class="mb-4 bg-white flex flex-col lg:flex-row items-stretch lg:items-center lg:h-[104px] px-4 lg:px-6 py-4 gap-3 lg:gap-6"
+      >
+        <div class="flex-1 flex flex-col gap-1 min-w-0">
           <span
-            class="justify-center text-cdp-dark text-sm font-medium font-roboto leading-5 tracking-tight text-center"
+            class="text-cdp-dark font-roboto text-sm lg:text-base font-semibold leading-5 lg:leading-6 tracking-cdp-medium"
+            >{{ 'locationCard.hazardDetail.crvaTitle' | translate }}</span
           >
-            {{ 'locationCard.hazardDetail.crvaVisitPortal' | translate }}
-          </span>
-        </a>
+          <p class="break-words">
+            <span
+              class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide"
+              >{{ 'locationCard.hazardDetail.crvaSource' | translate }}</span
+            >
+            <span class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide">
+              {{
+                'locationCard.hazardOverview.disclosureLine'
+                  | translate
+                    : {
+                        location: data.name,
+                        country: data.countryName,
+                        year:
+                          data.disclosureYear || ('locationCard.hazardDetail.unknown' | translate),
+                      }
+              }}
+            </span>
+          </p>
+        </div>
+        <div class="shrink-0 flex items-center">
+          <a
+            href="https://data.cdp.net/"
+            target="_blank"
+            class="bg-zinc-100 rounded border border-cdp-neutral-05 px-4 py-2.5 flex justify-center items-center hover:bg-zinc-200 transition-colors cursor-pointer no-underline w-full lg:w-auto"
+          >
+            <span
+              class="justify-center text-cdp-dark text-sm font-medium font-roboto leading-5 tracking-tight text-center"
+            >
+              {{ 'locationCard.hazardDetail.crvaVisitPortal' | translate }}
+            </span>
+          </a>
+        </div>
       </div>
-    </div>
+    }
 
     <!-- Hazard Detail Section (Loop) -->
     <div
@@ -278,8 +280,13 @@
           isHazardExpanded(hazard.hazard) ? cardMaxHeightPx(hazard.hazard) : '556px'
         "
       >
-        <!-- RIGHT column (desktop) / TOP (mobile): Map + source caption -->
-        <div class="lg:w-1/3 lg:order-2 lg:flex lg:flex-col">
+        <!-- RIGHT column (desktop) / TOP (mobile): Map + source caption.
+             Hidden on mobile when there's no GEE tile layer for this hazard
+             (avoids a stretch of grey "No map data" placeholder). -->
+        <div
+          class="lg:w-1/3 lg:order-2 lg:flex lg:flex-col"
+          [class.hidden]="!hasMapData(hazard.hazard)"
+        >
           <div
             class="h-48 lg:relative lg:h-auto lg:flex-1 overflow-hidden lg:rounded-tr-lg lg:rounded-br-lg"
           >
@@ -318,21 +325,25 @@
           class="lg:w-2/3 lg:order-1 lg:flex lg:flex-col lg:min-h-0"
           [ngClass]="isHazardExpanded(hazard.hazard) ? 'lg:overflow-visible' : 'lg:overflow-hidden'"
         >
-          <!-- Hazard Header -->
-          <div class="flex items-center gap-3 px-6 pt-6 pb-6">
-            <app-hazard-icon
-              [hazard]="hazard.hazard.hazardType"
-              [otherHazardDetails]="hazard.hazard.otherHazardDetails"
-              size="24"
-            ></app-hazard-icon>
-            <h3 class="text-cdp-dark font-roboto text-[28px] font-normal leading-9 tracking-normal">
-              {{
-                hazard.hazard.hazardType === 'OTHERS'
-                  ? hazard.hazard.otherHazardDetails
-                  : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
-              }}
-            </h3>
-            <div class="ml-auto flex items-center gap-[29px]">
+          <!-- Hazard Header: stacks vertically on mobile, single row on desktop. -->
+          <div class="flex flex-col gap-3 px-6 pt-6 pb-6 lg:flex-row lg:items-center">
+            <div class="flex items-center gap-3">
+              <app-hazard-icon
+                [hazard]="hazard.hazard.hazardType"
+                [otherHazardDetails]="hazard.hazard.otherHazardDetails"
+                size="24"
+              ></app-hazard-icon>
+              <h3
+                class="text-cdp-dark font-roboto text-[28px] font-normal leading-9 tracking-normal"
+              >
+                {{
+                  hazard.hazard.hazardType === 'OTHERS'
+                    ? hazard.hazard.otherHazardDetails
+                    : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
+                }}
+              </h3>
+            </div>
+            <div class="flex items-center lg:ml-auto">
               <p>
                 <span
                   class="text-black font-roboto text-sm font-semibold leading-5 tracking-cdp-tight"
@@ -700,6 +711,54 @@
     }
 
     @if (bannerVariant !== null && data.hazards.geeFallback?.length) {
+      <h2
+        class="mt-4 px-4 lg:px-0 text-cdp-dark font-roboto text-base font-medium leading-6 tracking-cdp-widest uppercase"
+      >
+        {{ 'locationCard.hazardOverview.title' | translate }}
+      </h2>
+      <p
+        class="mt-1 mb-2 px-4 lg:px-0 text-black font-roboto text-sm italic leading-5 tracking-[0.25px]"
+      >
+        <span class="font-bold">{{
+          'locationCard.hazards.geeOverview.sourceLabel' | translate
+        }}</span>
+        {{ 'locationCard.hazards.geeOverview.sourceText' | translate }}
+      </p>
+
+      <div
+        class="bg-cdp-dark p-4 lg:p-6 lg:rounded-sm mb-3.5 flex flex-col gap-4 lg:gap-5 mx-4 lg:mx-0"
+      >
+        <h3
+          class="text-white font-roboto text-sm lg:text-base font-bold leading-6 tracking-cdp-medium"
+        >
+          {{ 'locationCard.hazards.geeOverview.title' | translate }}
+        </h3>
+        <div class="flex flex-wrap items-center gap-x-9 gap-y-3">
+          @for (hazard of data.hazards.geeFallback; track hazard.hazardRank) {
+            <div class="flex items-center gap-2">
+              <app-hazard-icon
+                [hazard]="hazard.hazard.hazardType"
+                [otherHazardDetails]="hazard.hazard.otherHazardDetails"
+                size="28"
+                color="white"
+              ></app-hazard-icon>
+              <span class="text-white font-roboto text-sm font-normal leading-5">
+                {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <p
+        class="mb-3.5 px-4 lg:px-0 text-black font-roboto text-sm italic leading-5 tracking-[0.25px]"
+      >
+        <span class="font-bold">{{
+          'locationCard.hazards.geeOverview.sourceLabel' | translate
+        }}</span>
+        {{ 'locationCard.hazards.geeOverview.sourceText' | translate }}
+      </p>
+
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 px-4 lg:px-0 mb-8">
         @for (hazard of data.hazards.geeFallback; track hazard.hazardRank) {
           <div class="bg-white flex flex-col overflow-hidden">
