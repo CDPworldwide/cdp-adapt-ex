@@ -250,8 +250,8 @@ describe('HazardsComponent', () => {
       };
       fixture.detectChanges();
 
-      const section = fixture.nativeElement.querySelector('.px-6.pb-6.flex.flex-col');
-      expect(section).toBeNull();
+      const host = fixture.nativeElement as HTMLElement;
+      expect(host.textContent).not.toContain('Data disclosure requested by');
     });
   });
 
