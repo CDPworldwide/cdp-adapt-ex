@@ -38,6 +38,9 @@ jobs:
       id-token: write
     outputs:
       backend-url: ${{ steps.backend-url.outputs.url }}
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_I18N_CHANNEL_ID: ${{ secrets.SLACK_I18N_CHANNEL_ID }}
 
     steps:
       - name: Checkout repository
@@ -93,8 +96,56 @@ jobs:
         run: npm ci
 
       - name: Check translation coverage
+        id: i18n-coverage
         working-directory: frontend
-        run: npm run i18n:coverage -- --fail-under 50.96
+        run: |
+          set +e
+          npm run i18n:coverage -- --fail-under 50.96 2>&1 | tee i18n-coverage.txt
+          status=${PIPESTATUS[0]}
+          report="$(awk '/^Translation coverage/{flag=1} /^Run with --show-keys/{flag=0} flag{print}' i18n-coverage.txt)"
+
+          {
+            echo "report<<EOF"
+            printf '%s\n' "$report"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          exit "$status"
+
+      - name: Prepare translation coverage Slack payload
+        if: always() && steps.i18n-coverage.outputs.report != '' && env.SLACK_BOT_TOKEN != '' && env.SLACK_I18N_CHANNEL_ID != ''
+        env:
+          I18N_COVERAGE_REPORT: ${{ steps.i18n-coverage.outputs.report }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          sha = os.environ["GITHUB_SHA"][:7]
+          run_url = (
+              f'{os.environ["GITHUB_SERVER_URL"]}/'
+              f'{os.environ["GITHUB_REPOSITORY"]}/actions/runs/{os.environ["GITHUB_RUN_ID"]}'
+          )
+          text = (
+              f'Translation coverage for `{os.environ["GITHUB_REF_NAME"]}` (`{sha}`):\n'
+              f'```{os.environ["I18N_COVERAGE_REPORT"]}```\n'
+              f'<{run_url}|View GitHub Actions run>'
+          )
+          payload = {
+              "channel": os.environ["SLACK_I18N_CHANNEL_ID"],
+              "text": text,
+          }
+          Path("frontend/i18n-slack-payload.json").write_text(json.dumps(payload), encoding="utf-8")
+          PY
+
+      - name: Post translation coverage to Slack
+        if: always() && steps.i18n-coverage.outputs.report != '' && env.SLACK_BOT_TOKEN != '' && env.SLACK_I18N_CHANNEL_ID != ''
+        uses: slackapi/slack-github-action@v3.0.3
+        with:
+          method: chat.postMessage
+          token: ${{ env.SLACK_BOT_TOKEN }}
+          payload-file-path: frontend/i18n-slack-payload.json
 
       # - name: Install integration test dependencies
       #   if: github.event_name == 'pull_request'
