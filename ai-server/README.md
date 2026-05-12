@@ -92,9 +92,22 @@ PGPASSWORD="$POSTGRES_PASSWORD" psql \
 
 ## Update Remote System Prompt
 
-Upload `app/prompts/system_prompt.md` to the stable public R2 object used by
-`SYSTEM_PROMPT`:
+The deployed AI server reads `SYSTEM_PROMPT` from this stable public Gist URL:
+
+```text
+https://gist.githubusercontent.com/andrewm-bakerst/fa841de953aed344794b1fc0281069d1/raw/system_prompt.md
+```
+
+Upload `app/prompts/system_prompt.md` to that Gist:
 
 ```bash
-script/update-system-prompt
+uv run update-system-prompt
 ```
+
+The script updates Gist `fa841de953aed344794b1fc0281069d1` using the active
+`gh` auth token and prints the fixed raw URL. Remote prompts are re-fetched
+after `SYSTEM_PROMPT_CACHE_SECONDS` so Gist edits can be picked up without
+restarting the server.
+
+There is no automatic repo-to-Gist sync workflow. For prompt-only edits, update
+the Gist directly or run the script locally.

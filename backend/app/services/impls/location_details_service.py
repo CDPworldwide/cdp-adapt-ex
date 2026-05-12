@@ -376,7 +376,9 @@ class LocationDetailsService:
                     hazard_filter=self._map_hazard_filter(
                         s.hazard_filter, s.target_org_id
                     ),
-                    has_local_action=s.has_local_action,
+                    has_local_action=s.has_local_action
+                    if s.has_local_action is not None
+                    else False,
                 )
             )
         return solution_cards
