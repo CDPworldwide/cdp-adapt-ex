@@ -10,11 +10,11 @@ The platform uses a fully serverless architecture on **Google Cloud Platform (GC
 
 ### Architecture Overview
 
-Both the frontend (Angular) and backend (FastAPI) are containerized and deployed to **Cloud Run**.
+The frontend (Angular), backend (FastAPI), and AI server are containerized and deployed to **Cloud Run**.
 
 ```mermaid
 flowchart TB
-    subgraph GitHub["GitHub (CDPworldwide/pac-api)"]
+    subgraph GitHub["GitHub (CDPworldwide/cdp-adapt-ex)"]
         Actions[GitHub Actions]
         SecretsGH[GitHub Secrets]
     end
@@ -24,6 +24,7 @@ flowchart TB
         AR[Artifact Registry]
         CR_FE[Cloud Run: Frontend]
         CR_BE[Cloud Run: Backend]
+        CR_AI[Cloud Run: AI Server]
         SM[Secret Manager]
         SQL[(Cloud SQL: PostgreSQL)]
     end
@@ -32,9 +33,12 @@ flowchart TB
     Actions -->|Push Images| AR
     Actions -->|Deploy| CR_FE
     Actions -->|Deploy| CR_BE
+    Actions -->|Deploy| CR_AI
     CR_BE -->|Fetch Sensitive Config| SM
     CR_FE -->|Fetch API Keys at Build| SM
+    CR_FE -->|Calls Ask CDP endpoints| CR_AI
     CR_BE -->|Query| SQL
+    CR_AI -->|Fetch LLM config| SM
     SecretsGH -->|Infra Config| Actions
 ```
 
@@ -42,11 +46,11 @@ flowchart TB
 
 We maintain separate environments for development, staging (previews), and production.
 
-| Branch | Environment | Backend Service | Frontend Service | Cloud SQL Instance | Secret Prefix |
-|--------|-------------|-----------------|------------------|-------------------|---------------|
-| `main` | `development` | `cdp-server-dev` | `frontend-dev` | `cdp-test` | `development-` |
-| `production` | `production` | `cdp-server-prod` | `frontend-prod` | `cdp-prod` | `production-` |
-| `PR Previews` | `preview` | `cdp-server-preview-pr-X` | `frontend-preview-pr-X` | `cdp-test` | `development-` |
+| Workflow / Branch | Environment | Backend Service | Frontend Service | AI Service | Cloud SQL Instance | Secret Prefix |
+|--------|-------------|-----------------|------------------|------------|-------------------|---------------|
+| `deploy.yml` on `production` | `production` | `cdp-server-prod` | `frontend` | `cdp-ai-server` | `cdp-prod` | `production-` |
+| PR previews | `development` / preview | `cdp-server-preview-pr-X` | `frontend-preview-pr-X` | shared `cdp-ai-server` | `cdp-test` | `development-` |
+| Manual backend workflow on `main` | `development` | `cdp-server-dev` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
 
 ### 🛠 One-Time Infrastructure Setup
 
@@ -85,6 +89,7 @@ Sensitive variables must be defined in Secret Manager with the appropriate envir
 | `POSTGRES_USER` | Database username. |
 | `API_KEY` | Shared API key required by protected backend endpoints. |
 | `LLM_API_KEY` | API Key for Vertex AI / Gemini. |
+| `AI_SERVER_API_KEY` | GitHub secret passed to the frontend build and AI server runtime. |
 | `ALLOWED_ORIGINS` | CORS origins (comma-separated). |
 | `GOOGLE_MAPS_API_KEY` | Google Maps API Key. |
 
@@ -127,6 +132,7 @@ The following repository secrets must be configured in GitHub (**Settings > Secr
 |-------------|-------------|
 | `GCP_PROJECT_ID` | Your Google Cloud Project ID. |
 | `GCP_WORKLOAD_IDENTITY_PROVIDER` | The full resource name of the WIF provider (e.g., `projects/123/locations/global/workloadIdentityPools/github-actions/providers/github`). |
+| `AI_SERVER_API_KEY` | Shared API key injected into the AI server and frontend build. |
 | `BASE_URL` | (Optional) The production URL of the backend, used if auto-detection fails. |
 
 ### Pipeline Flow
@@ -159,13 +165,19 @@ sequenceDiagram
         GA->>CR: Deploy frontend to Cloud Run
     end
 
+    rect rgb(240, 230, 210)
+        Note over GA,CR: AI Server Deployment
+        GA->>GCP: Push AI server Docker image
+        GA->>CR: Deploy cdp-ai-server
+    end
+
     GA-->>GH: Report status
     GH-->>Dev: Show result
 ```
 
-### 1. Production & Development (`deploy.yml`)
-Triggered on **push** to `main` or `production` branches.
-- **Orchestration**: Deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the correct `baseUrl` injected at compile time.
+### 1. Production (`deploy.yml`)
+Triggered on **push** to the `production` branch or by manual dispatch.
+- **Orchestration**: Deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, and Google Maps key injected at compile time.
 - **Verification**: Automatically rolls back if the backend health check fails.
 
 ### 2. PR Previews (`backend-deploy.yml` & `frontend.yml`)
@@ -173,6 +185,12 @@ Triggered on **pull request** updates.
 - **Isolation**: Each PR gets a unique service name (`*-pr-{NUMBER}`).
 - **Database**: Uses the `development` database and secrets.
 - **Cleanup**: Previews are automatically deleted when PRs are closed.
+
+### 3. AI Server (`ai-server-deploy.yml`)
+Triggered on pushes to `main` or `production` that touch `ai-server/**`, excluding prompt-only edits to `app/prompts/system_prompt.md`.
+- **Runtime**: Deploys the shared `cdp-ai-server` Cloud Run service.
+- **Prompt source**: The deployed service reads `SYSTEM_PROMPT` from a stable Gist URL and refreshes it after `SYSTEM_PROMPT_CACHE_SECONDS`.
+- **Frontend contract**: The Angular app calls `/v1/chat/completions` and `/v1/suggest-follow-ups` on this service directly.
 
 ---
 
@@ -186,7 +204,7 @@ gcloud run services delete [SERVICE_NAME] --region us-central1
 ```
 
 ### Permission Denied (WIF)
-Ensure the repository path in the IAM binding matches exactly: `CDPworldwide/pac-api`.
+Ensure the repository path in the IAM binding matches exactly: `CDPworldwide/cdp-adapt-ex`.
 
 ### Frontend connecting to wrong backend
 The frontend build injects the backend URL at compile time. Ensure the `deploy-backend` job in `deploy.yml` finishes successfully and outputs the correct URL to the `deploy-frontend` job.
