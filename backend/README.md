@@ -9,7 +9,7 @@ A FastAPI-based backend providing location, hazard, and translation APIs for the
 - **Geospatial:** Google Earth Engine (Hazard data)
 - **Package Management:** [uv](https://github.com/astral-sh/uv)
 
-AI functionality is now owned by the separate `ai-server` service.
+AI functionality is owned by the separate `ai-server` service. Canonical service docs live under [`../docs/backend`](../docs/backend) and [`../docs/ai server`](../docs/ai%20server).
 
 ## Architecture Overview
 
@@ -73,7 +73,7 @@ backend/
 │   │   └── interfaces/ # Service contracts (Protocols)
 │   ├── shared/         # Configuration, logging, and common utilities
 │   └── utils/          # Utilities
-├── docs/               # Technical documentation
+├── ../docs/backend/    # Canonical backend technical documentation
 ├── scripts/            # Utility and maintenance scripts
 └── tests/              # Pytest suite
 ```
@@ -108,8 +108,8 @@ make test-backend
 
 ## Documentation
 
-Detailed technical guides are available in the [docs/](./docs/) directory:
+Detailed technical guides are available in the root [docs/backend](../docs/backend) directory:
 
-- [Database Layer](./docs/database.md): SQLModel entities, repositories, and connection pooling.
-- [LLM Integration](./docs/llm-integration.md): Gemini API, follow-up suggestions, and chat completions.
-- [Hazard Data Service](./docs/hazard-service.md): Earth Engine integration for geospatial layers.
+- [Database Layer](../docs/backend/database.md): SQLModel entities, repositories, and connection pooling.
+- [Hazard Data Service](../docs/backend/hazard-service.md): Earth Engine integration for geospatial layers.
+- [AI Server](../docs/ai%20server/README.md): Gemini-backed Ask CDP AI routes, prompt workflow, and follow-up generation.

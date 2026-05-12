@@ -132,7 +132,7 @@ Constraints:
 
 The `TranslateClient` class wraps Google Cloud Translate v3. It uses thread-safe lazy initialization and runs via `run_in_threadpool` in the async route handler to avoid blocking the event loop.
 
-Requires `GCP_PROJECT_ID` to be set. If not configured, translations are skipped and original text is returned.
+Requires `PROJECT_ID` to be set. If not configured, translations are skipped and original text is returned.
 
 ### Frontend
 
@@ -190,7 +190,7 @@ The pipe skips translation when the current language is English or unsupported.
 
 ### UI
 
-The language selector lives in the app header (`frontend/src/app/shared/app-header/`). It's a Material menu button with a language icon that lists all available languages.
+The language selector lives in the app header (`frontend/src/app/core/header/`). It's a Material menu button with a language icon that lists all available languages.
 
 ### LanguageService
 

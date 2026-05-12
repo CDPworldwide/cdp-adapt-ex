@@ -1,0 +1,40 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "CDP Adaptation & Action Explorer",
+  "colors": {
+    "primary": "#1E6B5C",
+    "light": "#F7FAF8",
+    "dark": "#0F2F2A"
+  },
+  "navigation": {
+    "directory": "card",
+    "groups": [
+      {
+        "group": "Overview",
+        "pages": [
+          "index",
+          "data",
+          "deployment",
+          "translation",
+          "recommended-additions"
+        ]
+      },
+      {
+        "group": "Backend",
+        "root": "backend/index",
+        "pages": [
+          "backend/database",
+          "backend/hazard-service"
+        ]
+      },
+      {
+        "group": "AI Server",
+        "root": "ai server/index",
+        "pages": [
+          "ai server/testing"
+        ]
+      }
+    ]
+  }
+}
