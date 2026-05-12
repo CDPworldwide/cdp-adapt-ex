@@ -92,6 +92,10 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Check translation coverage
+        working-directory: frontend
+        run: npm run i18n:coverage -- --fail-under 50.96
+
       # - name: Install integration test dependencies
       #   if: github.event_name == 'pull_request'
       #   working-directory: test

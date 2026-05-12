@@ -29,7 +29,8 @@
     "docs:dev": "bash scripts/run-mintlify.sh dev --no-open",
     "docs:validate": "bash scripts/run-mintlify.sh validate",
     "frontend:verify": "cd frontend && bash scripts/write-environment.sh && npm run build",
-    "sync:org-data": "npm run client:build && node scripts/sync-org-data.mjs"
+    "sync:org-data": "npm run client:build && node scripts/sync-org-data.mjs",
+    "i18n:coverage": "cd frontend && npm run i18n:coverage"
   },
   "dependencies": {
     "fuzzysort": "^3.1.0"
