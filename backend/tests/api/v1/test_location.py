@@ -1,9 +1,9 @@
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from app.api.v1.deps import get_location_details_service
 from app.main import app
-from app.models.location_details import OrganizationSummary
+from app.models.location_details import DimCentral, OrganizationSummary, PeerSolutions
 from app.schemas.location import (
     ActionsTab,
     HazardsTab,
@@ -115,6 +115,58 @@ async def test_get_location_by_org_id_success(client, mock_location_details_serv
     mock_location_details_service.get_location_details_by_org_id.assert_called_once_with(
         867355
     )
+    app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_get_location_by_org_id_handles_null_has_local_action(client):
+    repository = AsyncMock()
+    repository.has_organization.return_value = True
+    repository.get_metadata.return_value = DimCentral(
+        cdp_disclosing_org_number=834406,
+        disclosing_organization="Null Local Action City",
+        discloser_country_or_area="Test Country",
+        cdp_requesting_org_number=834406,
+        has_geometry=True,
+        geometry='{"type":"Point","coordinates":[10.0,20.0]}',
+    )
+    repository.get_hazards.return_value = []
+    repository.get_goals.return_value = []
+    repository.get_actions.return_value = []
+    repository.get_projects.return_value = []
+    repository.get_solutions.return_value = [
+        PeerSolutions(
+            disclosing_year=2025,
+            target_org_id=834406,
+            hazard_filter="All",
+            solution_category="Engineered and built environment actions",
+            solution="Install green roofs",
+            action_rank=1,
+            action_english="Install green roofs",
+            action_index=1,
+            hazard_addressed="Urban flooding",
+            peer_org_cnt=1,
+            action_count=1,
+            pct_peers=50,
+            has_local_action=None,
+        )
+    ]
+    repository.get_solution_examples.return_value = []
+
+    location_details_service = LocationDetailsService(repository, AsyncMock())
+    app.dependency_overrides[get_location_details_service] = (
+        lambda: location_details_service
+    )
+
+    response = await client.get("/api/v1/locations/id/834406")
+
+    assert response.status_code == 200
+    response_body = response.json()
+    solution_cards = response_body["location"]["solutions"]["solutions"][
+        "ENGINEERED_BUILT_ENVIRONMENT"
+    ]
+    assert solution_cards[0]["hasLocalAction"] is False
+    repository.has_organization.assert_awaited_once_with(834406)
     app.dependency_overrides.clear()
 
 

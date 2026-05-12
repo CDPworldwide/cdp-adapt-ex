@@ -157,14 +157,11 @@ jobs:
             sleep 5
           done
 
-          HEALTH_URL="$BACKEND_URL/api/v1/health"
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "X-API-Key: $BACKEND_API_KEY" \
-            "$HEALTH_URL" || echo "000")
-          if [ "$STATUS" != "200" ]; then
-            echo "Backend health check failed: $HEALTH_URL -> HTTP $STATUS"
-            exit 1
-          fi
+          BACKEND_URL="$BACKEND_URL" \
+          BACKEND_API_KEY="$BACKEND_API_KEY" \
+          SMOKE_TEST_LOCATION_ORG_ID="834406" \
+          SMOKE_TEST_LOCATION_EXPECTED_STATUS="${{ env.ENVIRONMENT == 'production' && '200' || '' }}" \
+          bash backend/scripts/smoke_test_deployment.sh
 
           # Encode the URL without newlines to bypass GHA secret suppression
           ENCODED_URL=$(printf "%s" "$BACKEND_URL" | base64 -w 0)
