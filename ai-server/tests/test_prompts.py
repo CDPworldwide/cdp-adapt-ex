@@ -54,6 +54,29 @@ def test_remote_system_prompt_fetch_is_cached(monkeypatch):
     assert calls == 1
 
 
+def test_remote_system_prompt_refetches_after_cache_ttl(monkeypatch):
+    calls = 0
+    now = 100.0
+
+    def stub_get(url, timeout):
+        nonlocal calls
+        calls += 1
+        return StubResponse(f"# Remote system prompt {calls}")
+
+    monkeypatch.setenv("SYSTEM_PROMPT", "https://pub.example.com/system_prompt.md")
+    monkeypatch.setenv("SYSTEM_PROMPT_CACHE_SECONDS", "5")
+    monkeypatch.setattr(prompts.httpx, "get", stub_get)
+    monkeypatch.setattr(prompts.time, "monotonic", lambda: now)
+    prompts.load_system_prompt.cache_clear()
+
+    assert prompts.load_system_prompt() == "# Remote system prompt 1"
+    now = 103.0
+    assert prompts.load_system_prompt() == "# Remote system prompt 1"
+    now = 106.0
+    assert prompts.load_system_prompt() == "# Remote system prompt 2"
+    assert calls == 2
+
+
 def test_local_system_prompt_file_reloads_without_cache():
     prompt_path = (
         prompts.Path(__file__).parents[1] / "app" / "prompts" / "_tmp_test_prompt.md"
@@ -81,8 +104,38 @@ def test_system_prompt_url_does_not_override_named_prompt(monkeypatch):
     assert "follow-up" in prompt
 
 
-def test_system_prompt_env_requires_http_url(monkeypatch):
-    monkeypatch.setenv("SYSTEM_PROMPT", "app/prompts/system_prompt.md")
+def test_system_prompt_env_accepts_file_path(monkeypatch):
+    prompt_path = (
+        prompts.Path(__file__).parents[1] / "app" / "prompts" / "_tmp_env_prompt.md"
+    )
+    prompt_path.write_text("file prompt", encoding="utf-8")
+    monkeypatch.setenv("SYSTEM_PROMPT", str(prompt_path))
+    prompts.load_system_prompt.cache_clear()
+
+    try:
+        assert prompts.load_system_prompt() == "file prompt"
+    finally:
+        prompt_path.unlink(missing_ok=True)
+
+
+def test_system_prompt_env_file_path_reloads_without_cache(monkeypatch):
+    prompt_path = (
+        prompts.Path(__file__).parents[1] / "app" / "prompts" / "_tmp_env_prompt.md"
+    )
+    prompt_path.write_text("first prompt", encoding="utf-8")
+    monkeypatch.setenv("SYSTEM_PROMPT", str(prompt_path))
+    prompts.load_system_prompt.cache_clear()
+
+    try:
+        assert prompts.load_system_prompt() == "first prompt"
+        prompt_path.write_text("second prompt", encoding="utf-8")
+        assert prompts.load_system_prompt() == "second prompt"
+    finally:
+        prompt_path.unlink(missing_ok=True)
+
+
+def test_system_prompt_env_rejects_unsupported_scheme(monkeypatch):
+    monkeypatch.setenv("SYSTEM_PROMPT", "ftp://pub.example.com/system_prompt.md")
     prompts.load_system_prompt.cache_clear()
 
     with pytest.raises(ValueError, match="SYSTEM_PROMPT must be an http"):
@@ -94,7 +147,9 @@ def test_build_system_prompt_uses_remote_system_prompt(monkeypatch):
     monkeypatch.setattr(
         prompts.httpx,
         "get",
-        lambda url, timeout: StubResponse("Remote prompt"),
+        lambda url, timeout: StubResponse(
+            f"Remote prompt\n{prompts.LOCATION_CONTEXT_PLACEHOLDER}"
+        ),
     )
     prompts.load_system_prompt.cache_clear()
 
@@ -105,6 +160,13 @@ def test_build_system_prompt_uses_remote_system_prompt(monkeypatch):
     assert system_prompt.startswith("Remote prompt")
     assert '"name":"Mumbai"' in system_prompt
     assert "geometry" not in system_prompt
+
+
+def test_build_system_prompt_renders_empty_context_placeholder_without_location():
+    system_prompt = prompts.build_system_prompt(None)
+
+    assert prompts.LOCATION_CONTEXT_PLACEHOLDER not in system_prompt
+    assert "```json\nnull\n```" in system_prompt
 
 
 def test_build_system_prompt_labels_platform_context_and_strips_internal_fields():
@@ -126,6 +188,7 @@ def test_build_system_prompt_labels_platform_context_and_strips_internal_fields(
 
     assert "endpoint-shaped platform data" in system_prompt
     assert "Aggregate statistics" in system_prompt
+    assert prompts.LOCATION_CONTEXT_PLACEHOLDER not in system_prompt
     assert "dataProvenance" in context_json
     assert "hazardRank" not in context_json
     assert "geometry" not in context_json
@@ -360,6 +423,7 @@ def test_system_prompt_contains_review_grounding_guardrails():
     assert "Do not wait until the final summary sentence" in prompt
     assert "Never include a `Sources:` block with no inline footnote markers" in prompt
     assert "always answer with footnotes" in prompt
+    assert prompts.LOCATION_CONTEXT_PLACEHOLDER in prompt
     assert "If the user did not ask a substantive question" in prompt
     assert "CSTAR Database" not in prompt
     assert "2024 CSTAR disclosure" not in prompt

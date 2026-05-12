@@ -5,6 +5,7 @@ on:
     branches: [main, production]
     paths:
       - "ai-server/**"
+      - "!ai-server/app/prompts/system_prompt.md"
       - ".github/workflows/ai-server-deploy.yml"
   workflow_dispatch:
 
@@ -17,6 +18,7 @@ env:
   REGION: us-central1
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
   SERVICE_NAME: cdp-ai-server
+  SYSTEM_PROMPT_URL: https://gist.githubusercontent.com/andrewm-bakerst/fa841de953aed344794b1fc0281069d1/raw/system_prompt.md
 
 jobs:
   deploy:
@@ -87,6 +89,8 @@ jobs:
           env_vars: |
             AI_SERVER_API_KEY=${{ secrets.AI_SERVER_API_KEY }}
             LLM_MODEL=gemini-2.5-flash
+            SYSTEM_PROMPT=${{ env.SYSTEM_PROMPT_URL }}
+            SYSTEM_PROMPT_CACHE_SECONDS=60
           env_vars_update_strategy: overwrite
 
       - name: Verify deployment health

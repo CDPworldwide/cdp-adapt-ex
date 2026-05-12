@@ -157,8 +157,9 @@ Common fix locations:
 
 Local prompt files are re-read on each request, so edits to
 `app/prompts/system_prompt.md` should affect the next local API call without a
-server restart. Remote prompts loaded through the `SYSTEM_PROMPT` URL remain
-cached to avoid repeated network fetches.
+server restart. Remote prompts loaded through the `SYSTEM_PROMPT` URL are
+cached only for `SYSTEM_PROMPT_CACHE_SECONDS`, so hosted markdown edits are
+picked up by a running server after that refresh window.
 
 Examples:
 
