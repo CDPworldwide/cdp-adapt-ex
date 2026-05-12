@@ -13,7 +13,7 @@ def test_translate_texts_preserves_acronyms_and_source_language(monkeypatch):
         translations=[
             SimpleNamespace(
                 translated_text=(
-                    "Plan de calor para [[PAC_ACRONYM_0]] con mejoras de [[PAC_ACRONYM_1]] y [[PAC_ACRONYM_2]]"
+                    "Plan de calor para {PACACRONYM0} con mejoras de {PACACRONYM1} y {PACACRONYM2}"
                 )
             )
         ]
@@ -31,7 +31,7 @@ def test_translate_texts_preserves_acronyms_and_source_language(monkeypatch):
     assert result == ["Plan de calor para CDP con mejoras de HVAC y M.O.S.E."]
     mock_client.translate_text.assert_called_once_with(
         contents=[
-            "Plan de calor para [[PAC_ACRONYM_0]] con mejoras de [[PAC_ACRONYM_1]] y [[PAC_ACRONYM_2]]"
+            "Plan de calor para {PACACRONYM0} con mejoras de {PACACRONYM1} y {PACACRONYM2}"
         ],
         target_language_code="en",
         source_language_code="es",
