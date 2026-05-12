@@ -270,6 +270,27 @@ class TestGetEligibleLocationDetailsByName:
         ]
         assert solution_cards[0].has_local_action is True
 
+    async def test_get_location_defaults_null_has_local_action_to_false(
+        self,
+        location_details_service: LocationDetailsService,
+        mock_repository: AsyncMock,
+    ):
+        mock_repository.get_solutions.return_value = [
+            build_mock_solution(has_local_action=None)
+        ]
+        mock_repository.get_solution_examples.return_value = [
+            build_mock_solution_example()
+        ]
+
+        result = await location_details_service.get_eligible_location_details_by_name(
+            "TestCity"
+        )
+
+        solution_cards = result.solutions.solutions[
+            SolutionCategoryEnum.ENGINEERED_BUILT_ENVIRONMENT
+        ]
+        assert solution_cards[0].has_local_action is False
+
     async def test_get_location_with_missing_metadata(
         self,
         location_details_service: LocationDetailsService,

@@ -349,6 +349,7 @@ class LocationProfile(APIBaseModel):
         description='Disclosure visibility for the org — "Public", "Non-Public", or null when the org has not disclosed (non-discloser).',
     )
     disclosure_year: int | None = None
+    reporting_language: str | None = None
     requesters: list[str] = Field(default_factory=list)
     population: float | None = None
 

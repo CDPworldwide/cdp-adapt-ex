@@ -126,6 +126,7 @@ Constraints:
 | `backend/app/api/v1/translate.py` | Route handler |
 | `backend/app/api/v1/deps.py` | `get_translate_client` dependency |
 | `backend/app/services/clients/translate_client.py` | Google Cloud Translate v3 wrapper |
+| `backend/app/services/clients/translation_text_processor.py` | Acronym protection/restoration helpers |
 | `backend/app/schemas/translate.py` | Pydantic request/response models |
 
 #### Google Cloud Translate client
@@ -133,6 +134,10 @@ Constraints:
 The `TranslateClient` class wraps Google Cloud Translate v3. It uses thread-safe lazy initialization and runs via `run_in_threadpool` in the async route handler to avoid blocking the event loop.
 
 Requires `PROJECT_ID` to be set. If not configured, translations are skipped and original text is returned.
+
+Before sending text to Google Cloud Translate, the client replaces acronyms with stable placeholders and restores the original tokens after translation. This protects all-caps and dotted acronyms such as `MOSE`, `M.O.S.E.`, `EPA`, and `HVAC/CDP` from being expanded, localized, or otherwise corrupted.
+
+The BigQuery ETL notebook applies the same placeholder/restore approach around `ML.TRANSLATE` so batch English normalization and runtime translation behavior stay aligned.
 
 ### Frontend
 
@@ -145,12 +150,12 @@ Handles batching, caching, and API calls using the auto-generated TypeScript SDK
 **Batching:**
 - Translation requests are queued into a pending batch
 - After 50ms (or when 50 items accumulate), the batch is flushed
-- Requests are grouped by target language and chunked into groups of 50
+- Requests are grouped by source/target language pair and chunked into groups of 50
 
 **Caching (two-tier):**
 - In-memory `Map` (max 500 entries, LRU eviction)
 - `sessionStorage` (persists across page navigations within the session)
-- Cache key format: `{targetLang}:{text}`
+- Cache key format: `{sourceLang}:{targetLang}:{text}`
 
 **Error handling:** returns original text on failure.
 
@@ -208,7 +213,7 @@ Central service managing the current language:
 1. `LanguageService.switchLanguage(code)` is called
 2. `currentLang` signal updates — triggers `autoTranslate` pipes to re-evaluate
 3. `TranslateService.use(code)` fires — loads new i18n JSON and updates all `| translate` pipes
-4. `WebTranslationService` clears its cache for fresh translations
+4. `WebTranslationService` looks up translations using source/target-aware cache keys
 5. Dynamic content re-translates through the batching pipeline
 
 ## Environment Setup

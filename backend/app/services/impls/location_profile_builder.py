@@ -119,6 +119,7 @@ class LocationProfileBuilder:
             is_reporting_leader=org_id in _A_LIST,
             public_status=metadata.public_status,
             disclosure_year=metadata.disclosing_year,
+            reporting_language=metadata.reporting_language,
             population=metadata.current_pop,
             requesters=(
                 [r.strip() for r in metadata.requesting_auth.split("|") if r.strip()]
