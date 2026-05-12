@@ -127,9 +127,37 @@ jobs:
               f'{os.environ["GITHUB_SERVER_URL"]}/'
               f'{os.environ["GITHUB_REPOSITORY"]}/actions/runs/{os.environ["GITHUB_RUN_ID"]}'
           )
+          rows = []
+
+          for line in os.environ["I18N_COVERAGE_REPORT"].splitlines():
+              parts = line.split()
+              if len(parts) >= 8 and parts[0] not in {"Locale", "------", "Translation"}:
+                  rows.append(
+                      {
+                          "locale": parts[0],
+                          "coverage": parts[1],
+                          "covered": parts[2],
+                          "missing": parts[3],
+                          "extra": parts[6],
+                          "same_as_master": parts[7],
+                      }
+                  )
+
+          summary = ", ".join(
+              f'{row["locale"]} {row["coverage"]} ({row["covered"]})' for row in rows
+          )
+          details = "\n".join(
+              (
+                  f'• `{row["locale"]}`: {row["coverage"]} translated '
+                  f'({row["covered"]}); {row["missing"]} missing, {row["extra"]} extra'
+              )
+              for row in rows
+          )
+          fallback = os.environ["I18N_COVERAGE_REPORT"]
           text = (
-              f'Translation coverage for `{os.environ["GITHUB_REF_NAME"]}` (`{sha}`):\n'
-              f'```{os.environ["I18N_COVERAGE_REPORT"]}```\n'
+              f'*Translation coverage* for `{os.environ["GITHUB_REF_NAME"]}` (`{sha}`)\n'
+              f'{summary or "Coverage report generated."}\n\n'
+              f'{details or f"```{fallback}```"}\n\n'
               f'<{run_url}|View GitHub Actions run>'
           )
           payload = {
