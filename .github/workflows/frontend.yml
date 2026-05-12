@@ -140,12 +140,20 @@ jobs:
           PY
 
       - name: Post translation coverage to Slack
+        id: slack-i18n-coverage
         if: always() && steps.i18n-coverage.outputs.report != '' && env.SLACK_BOT_TOKEN != '' && env.SLACK_I18N_CHANNEL_ID != ''
         uses: slackapi/slack-github-action@v3.0.3
         with:
+          errors: true
           method: chat.postMessage
           token: ${{ env.SLACK_BOT_TOKEN }}
           payload-file-path: frontend/i18n-slack-payload.json
+
+      - name: Log Slack coverage post result
+        if: always() && steps.slack-i18n-coverage.outputs.ok != ''
+        run: |
+          echo "Slack post ok: ${{ steps.slack-i18n-coverage.outputs.ok }}"
+          echo "Slack message timestamp: ${{ steps.slack-i18n-coverage.outputs.ts }}"
 
       # - name: Install integration test dependencies
       #   if: github.event_name == 'pull_request'
