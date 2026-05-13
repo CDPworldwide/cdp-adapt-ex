@@ -53,10 +53,7 @@
                 ></app-info-icon>
               </div>
             </div>
-            <div
-              #topHazardsGrid
-              class="grid grid-cols-2 gap-3 lg:gap-4 lg:gap-y-6 lg:mt-auto"
-            >
+            <div #topHazardsGrid class="grid grid-cols-2 gap-3 lg:gap-4 lg:gap-y-6 lg:mt-auto">
               <div
                 *ngFor="let hazard of data.hazards.hazards | slice: 0 : 4; let i = index"
                 class="flex items-center gap-2 transition-[opacity,transform] duration-500 ease-out"
@@ -140,10 +137,7 @@
                     class="flex flex-col gap-2 overflow-y-auto custom-scrollbar h-full pb-10"
                     (scroll)="onSectorListScroll()"
                   >
-                    <div
-                      *ngFor="let sector of vulnerableSectors"
-                      class="flex items-center gap-2"
-                    >
+                    <div *ngFor="let sector of vulnerableSectors" class="flex items-center gap-2">
                       <app-sector-icon
                         [sector]="sector.sectorType"
                         [otherSectorDetails]="sector.otherSectorDetails"
@@ -226,47 +220,49 @@
       </div>
     }
 
-    <!-- CRVA Banner -->
-    <div
-      class="mb-4 bg-white flex flex-col lg:flex-row items-stretch lg:items-center lg:h-[104px] px-4 lg:px-6 py-4 gap-3 lg:gap-6"
-    >
-      <div class="flex-1 flex flex-col gap-1 min-w-0">
-        <span
-          class="text-cdp-dark font-roboto text-sm lg:text-base font-semibold leading-5 lg:leading-6 tracking-cdp-medium"
-          >{{ 'locationCard.hazardDetail.crvaTitle' | translate }}</span
-        >
-        <p class="break-words">
-          <span class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide">{{
-            'locationCard.hazardDetail.crvaSource' | translate
-          }}</span>
-          <span class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide">
-            {{
-              'locationCard.hazardOverview.disclosureLine'
-                | translate
-                  : {
-                      location: data.name,
-                      country: data.countryName,
-                      year:
-                        data.disclosureYear || ('locationCard.hazardDetail.unknown' | translate),
-                    }
-            }}
-          </span>
-        </p>
-      </div>
-      <div class="shrink-0 flex items-center">
-        <a
-          href="https://data.cdp.net/"
-          target="_blank"
-          class="bg-zinc-100 rounded border border-cdp-neutral-05 px-4 py-2.5 flex justify-center items-center hover:bg-zinc-200 transition-colors cursor-pointer no-underline w-full lg:w-auto"
-        >
+    @if (bannerVariant === null) {
+      <div
+        class="mb-4 bg-white flex flex-col lg:flex-row items-stretch lg:items-center lg:h-[104px] px-4 lg:px-6 py-4 gap-3 lg:gap-6"
+      >
+        <div class="flex-1 flex flex-col gap-1 min-w-0">
           <span
-            class="justify-center text-cdp-dark text-sm font-medium font-roboto leading-5 tracking-tight text-center"
+            class="text-cdp-dark font-roboto text-sm lg:text-base font-semibold leading-5 lg:leading-6 tracking-cdp-medium"
+            >{{ 'locationCard.hazardDetail.crvaTitle' | translate }}</span
           >
-            {{ 'locationCard.hazardDetail.crvaVisitPortal' | translate }}
-          </span>
-        </a>
+          <p class="break-words">
+            <span
+              class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide"
+              >{{ 'locationCard.hazardDetail.crvaSource' | translate }}</span
+            >
+            <span class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide">
+              {{
+                'locationCard.hazardOverview.disclosureLine'
+                  | translate
+                    : {
+                        location: data.name,
+                        country: data.countryName,
+                        year:
+                          data.disclosureYear || ('locationCard.hazardDetail.unknown' | translate),
+                      }
+              }}
+            </span>
+          </p>
+        </div>
+        <div class="shrink-0 flex items-center">
+          <a
+            href="https://data.cdp.net/"
+            target="_blank"
+            class="bg-zinc-100 rounded border border-cdp-neutral-05 px-4 py-2.5 flex justify-center items-center hover:bg-zinc-200 transition-colors cursor-pointer no-underline w-full lg:w-auto"
+          >
+            <span
+              class="justify-center text-cdp-dark text-sm font-medium font-roboto leading-5 tracking-tight text-center"
+            >
+              {{ 'locationCard.hazardDetail.crvaVisitPortal' | translate }}
+            </span>
+          </a>
+        </div>
       </div>
-    </div>
+    }
 
     <!-- Hazard Detail Section (Loop) -->
     <div
@@ -284,8 +280,13 @@
           isHazardExpanded(hazard.hazard) ? cardMaxHeightPx(hazard.hazard) : '556px'
         "
       >
-        <!-- RIGHT column (desktop) / TOP (mobile): Map + source caption -->
-        <div class="lg:w-1/3 lg:order-2 lg:flex lg:flex-col">
+        <!-- RIGHT column (desktop) / TOP (mobile): Map + source caption.
+             Hidden on mobile when there's no GEE tile layer for this hazard
+             (avoids a stretch of grey "No map data" placeholder). -->
+        <div
+          class="lg:w-1/3 lg:order-2 lg:flex lg:flex-col"
+          [class.hidden]="!hasMapData(hazard.hazard)"
+        >
           <div
             class="h-48 lg:relative lg:h-auto lg:flex-1 overflow-hidden lg:rounded-tr-lg lg:rounded-br-lg"
           >
@@ -322,31 +323,35 @@
         <!-- LEFT column (desktop) / BOTTOM (mobile): Description + Data fields -->
         <div
           class="lg:w-2/3 lg:order-1 lg:flex lg:flex-col lg:min-h-0"
-          [ngClass]="
-            isHazardExpanded(hazard.hazard) ? 'lg:overflow-visible' : 'lg:overflow-hidden'
-          "
+          [ngClass]="isHazardExpanded(hazard.hazard) ? 'lg:overflow-visible' : 'lg:overflow-hidden'"
         >
-          <!-- Hazard Header -->
-          <div class="flex items-center gap-3 px-6 pt-6 pb-6">
-            <app-hazard-icon
-              [hazard]="hazard.hazard.hazardType"
-              [otherHazardDetails]="hazard.hazard.otherHazardDetails"
-              size="24"
-            ></app-hazard-icon>
-            <h3 class="text-cdp-dark font-roboto text-[28px] font-normal leading-9 tracking-normal">
-              {{
-                hazard.hazard.hazardType === 'OTHERS'
-                  ? hazard.hazard.otherHazardDetails
-                  : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
-              }}
-            </h3>
-            <div class="ml-auto flex items-center gap-[29px]">
+          <!-- Hazard Header: stacks vertically on mobile, single row on desktop. -->
+          <div class="flex flex-col gap-3 px-6 pt-6 pb-6 lg:flex-row lg:items-center">
+            <div class="flex items-center gap-3">
+              <app-hazard-icon
+                [hazard]="hazard.hazard.hazardType"
+                [otherHazardDetails]="hazard.hazard.otherHazardDetails"
+                size="24"
+              ></app-hazard-icon>
+              <h3
+                class="text-cdp-dark font-roboto text-[28px] font-normal leading-9 tracking-normal"
+              >
+                {{
+                  hazard.hazard.hazardType === 'OTHERS'
+                    ? hazard.hazard.otherHazardDetails
+                    : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
+                }}
+              </h3>
+            </div>
+            <div class="flex items-center lg:ml-auto">
               <p>
                 <span
                   class="text-black font-roboto text-sm font-semibold leading-5 tracking-cdp-tight"
                   >{{ 'locationCard.hazardDetail.crvaSource' | translate }}
                 </span>
-                <span class="text-black font-roboto text-sm font-normal leading-5 tracking-cdp-tight">
+                <span
+                  class="text-black font-roboto text-sm font-normal leading-5 tracking-cdp-tight"
+                >
                   {{
                     'locationCard.hazardDetail.cdpDisclosureLine'
                       | translate
@@ -598,8 +603,7 @@
       </div>
     }
 
-    <!-- Empty state: red banner per Figma -->
-    @if (!data.hazards.hazards?.length) {
+    @if (bannerVariant === 'no-hazards') {
       <div class="mb-8 px-4 lg:px-0">
         <div class="w-full px-6 py-4 bg-cdp-red flex justify-start items-center gap-6">
           <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
@@ -634,6 +638,194 @@
           </div>
         </div>
       </div>
+    } @else if (bannerVariant === 'non-public') {
+      <div class="mb-8 px-4 lg:px-0">
+        <div class="w-full px-6 py-4 bg-cdp-neutral-01 flex justify-start items-center gap-6">
+          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
+            <app-no-hazards-icon size="44" color="black"></app-no-hazards-icon>
+          </div>
+          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
+            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
+              <div
+                class="self-stretch text-cdp-dark text-base font-semibold font-roboto leading-6 tracking-tight"
+              >
+                {{ 'locationCard.hazards.reportNotPublicBanner.title' | translate }}
+              </div>
+              <div
+                class="self-stretch text-cdp-dark text-sm font-light font-roboto leading-5 tracking-tight"
+                [innerHTML]="'locationCard.hazards.reportNotPublicBanner.description' | translate"
+              ></div>
+            </div>
+            <div class="h-12 flex justify-center items-center shrink-0">
+              <a
+                href="https://www.cdp.net/en/cities"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline border border-cdp-dark hover:bg-cdp-dark transition-colors group"
+              >
+                <div
+                  class="justify-center text-cdp-dark group-hover:text-white text-sm font-normal font-roboto leading-5 tracking-tight transition-colors"
+                >
+                  {{ 'locationCard.hazards.reportNotPublicBanner.button' | translate }}
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else if (bannerVariant === 'no-report') {
+      <div class="mb-8 px-4 lg:px-0">
+        <div class="w-full px-6 py-4 bg-cdp-red flex justify-start items-center gap-6">
+          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
+            <app-no-hazards-icon size="44" color="white"></app-no-hazards-icon>
+          </div>
+          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
+            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
+              <div
+                class="self-stretch text-white text-base font-semibold font-roboto leading-6 tracking-tight"
+              >
+                {{ 'locationCard.hazards.noReportAvailableBanner.title' | translate }}
+              </div>
+              <div
+                class="self-stretch text-white text-sm font-light font-roboto leading-5 tracking-tight"
+                [innerHTML]="'locationCard.hazards.noReportAvailableBanner.description' | translate"
+              ></div>
+            </div>
+            <div class="h-12 flex justify-center items-center shrink-0">
+              <a
+                href="https://www.cdp.net/en/cities"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-white inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-gray-100 transition-colors"
+              >
+                <div
+                  class="justify-center text-cdp-red text-sm font-normal font-roboto leading-5 tracking-tight"
+                >
+                  {{ 'locationCard.hazards.noReportAvailableBanner.button' | translate }}
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (bannerVariant !== null && data.hazards.geeFallback?.length) {
+      <h2
+        class="mt-4 px-4 lg:px-0 text-cdp-dark font-roboto text-base font-medium leading-6 tracking-cdp-widest uppercase"
+      >
+        {{ 'locationCard.hazardOverview.title' | translate }}
+      </h2>
+      <p
+        class="mt-1 mb-2 px-4 lg:px-0 text-black font-roboto text-sm italic leading-5 tracking-[0.25px]"
+      >
+        <span class="font-bold">{{
+          'locationCard.hazards.geeOverview.sourceLabel' | translate
+        }}</span>
+        {{ 'locationCard.hazards.geeOverview.sourceText' | translate }}
+      </p>
+
+      <div
+        class="bg-cdp-dark p-4 lg:p-6 lg:rounded-sm mb-3.5 flex flex-col gap-4 lg:gap-5 mx-4 lg:mx-0"
+      >
+        <h3
+          class="text-white font-roboto text-sm lg:text-base font-bold leading-6 tracking-cdp-medium"
+        >
+          {{ 'locationCard.hazards.geeOverview.title' | translate }}
+        </h3>
+        <div class="flex flex-wrap items-center gap-x-9 gap-y-3">
+          @for (hazard of data.hazards.geeFallback; track hazard.hazardRank) {
+            <div class="flex items-center gap-2">
+              <app-hazard-icon
+                [hazard]="hazard.hazard.hazardType"
+                [otherHazardDetails]="hazard.hazard.otherHazardDetails"
+                size="28"
+                color="white"
+              ></app-hazard-icon>
+              <span class="text-white font-roboto text-sm font-normal leading-5">
+                {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <p
+        class="mb-3.5 px-4 lg:px-0 text-black font-roboto text-sm italic leading-5 tracking-[0.25px]"
+      >
+        <span class="font-bold">{{
+          'locationCard.hazards.geeOverview.sourceLabel' | translate
+        }}</span>
+        {{ 'locationCard.hazards.geeOverview.sourceText' | translate }}
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 px-4 lg:px-0 mb-8">
+        @for (hazard of data.hazards.geeFallback; track hazard.hazardRank) {
+          <div class="bg-white flex flex-col overflow-hidden">
+            <div class="px-6 pt-6 pb-4">
+              <div class="flex items-center gap-3 mb-2">
+                <app-hazard-icon
+                  [hazard]="hazard.hazard.hazardType"
+                  [otherHazardDetails]="hazard.hazard.otherHazardDetails"
+                  size="24"
+                ></app-hazard-icon>
+                <h3
+                  class="text-cdp-dark font-inter text-2xl font-medium leading-tight tracking-tight"
+                >
+                  {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+                </h3>
+              </div>
+              <p
+                class="min-h-10 text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-tight"
+              >
+                {{
+                  hazard.description ??
+                    ('locationCard.hazards.geeSummary.' + hazard.hazard.hazardType | translate)
+                }}
+              </p>
+            </div>
+            <div class="relative h-[400px] overflow-hidden">
+              <app-hazard-map
+                #geeMap
+                class="block h-full"
+                [lat]="data.lat"
+                [lng]="data.lng"
+                [geometry]="data.geometry"
+                [calculatedBounds]="jurisdictionBounds"
+                [locationName]="data.name"
+                [zoom]="10"
+                [hazardType]="hazard.hazard.hazardType"
+                [showExpand]="false"
+              ></app-hazard-map>
+              <button
+                type="button"
+                (click)="geeMap.toggleExpand()"
+                class="absolute top-4 right-4 inline-flex items-center gap-2 bg-cdp-dark text-white px-4 py-2 rounded-[5px] text-sm font-roboto font-medium hover:bg-black transition-colors cursor-pointer z-10"
+              >
+                {{ 'locationCard.hazards.geeCard.exploreHazardMap' | translate }}
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M7 17L17 7M17 7H8M17 7V16" />
+                </svg>
+              </button>
+              <p
+                class="absolute bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs italic text-black font-roboto leading-4 z-10 pointer-events-none"
+              >
+                <span class="font-medium not-italic">{{
+                  'locationCard.hazards.geeCard.sourceLabel' | translate
+                }}</span>
+                {{ 'locationCard.hazards.geeCard.sourceText' | translate }}
+              </p>
+            </div>
+          </div>
+        }
+      </div>
     }
 
     <!-- Data Disclosure Requesters -->
@@ -657,7 +849,9 @@
             *ngFor="let requester of requesters"
             class="px-2 py-1 bg-cdp-dark rounded-sm flex justify-center items-center gap-2"
           >
-            <span class="text-cdp-neutral-01 text-sm font-medium font-roboto leading-5 tracking-tight">
+            <span
+              class="text-cdp-neutral-01 text-sm font-medium font-roboto leading-5 tracking-tight"
+            >
               {{ requester }}
             </span>
           </div>

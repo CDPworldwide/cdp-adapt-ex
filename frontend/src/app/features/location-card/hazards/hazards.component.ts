@@ -82,12 +82,19 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
       .filter(Boolean);
   }
 
+  get bannerVariant(): 'no-report' | 'non-public' | 'no-hazards' | null {
+    if (!this.data || (this.data.hazards?.hazards?.length ?? 0) > 0) {
+      return null;
+    }
+    if (this.data.publicStatus == null) return 'no-report';
+    if (this.data.publicStatus === 'Non-Public') return 'non-public';
+    return 'no-hazards';
+  }
+
   ngAfterViewInit(): void {
     setTimeout(() => this.measureCards());
     this.dataFieldContents.changes.subscribe(() => setTimeout(() => this.measureCards()));
-    this.topHazardsGrids.changes.subscribe(() =>
-      setTimeout(() => this.observeTopHazardsGrid()),
-    );
+    this.topHazardsGrids.changes.subscribe(() => setTimeout(() => this.observeTopHazardsGrid()));
     this.sectorLists.changes.subscribe(() =>
       setTimeout(() => {
         this.observeSectorList();

@@ -2,29 +2,6 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PROMPT_FILE="${PROMPT_FILE:-$ROOT_DIR/app/prompts/system_prompt.md}"
+cd "$ROOT_DIR"
 
-CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-6a7efe766f2293634e2147aa85838c87}"
-R2_BUCKET="${R2_BUCKET:-cdp-assets}"
-R2_KEY="${R2_KEY:-prompts/system_prompt.md}"
-R2_PUBLIC_BASE_URL="${R2_PUBLIC_BASE_URL:-https://pub-f0c8154c8d9d45bb942e8312f265900f.r2.dev}"
-CONTENT_TYPE="${CONTENT_TYPE:-text/markdown}"
-
-if ! command -v wrangler >/dev/null 2>&1; then
-  echo "error: wrangler CLI is required but was not found on PATH" >&2
-  exit 1
-fi
-
-if [[ ! -f "$PROMPT_FILE" ]]; then
-  echo "error: prompt file not found: $PROMPT_FILE" >&2
-  exit 1
-fi
-
-export CLOUDFLARE_ACCOUNT_ID
-
-wrangler r2 object put "$R2_BUCKET/$R2_KEY" \
-  --file "$PROMPT_FILE" \
-  --content-type "$CONTENT_TYPE" \
-  --remote >/dev/null
-
-echo "${R2_PUBLIC_BASE_URL%/}/$R2_KEY"
+exec uv run update-system-prompt "$@"
