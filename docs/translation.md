@@ -126,7 +126,7 @@ Constraints:
 | `backend/app/api/v1/translate.py` | Route handler |
 | `backend/app/api/v1/deps.py` | `get_translate_client` dependency |
 | `backend/app/services/clients/translate_client.py` | Google Cloud Translate v3 wrapper |
-| `backend/app/services/clients/translation_text_processor.py` | Acronym protection/restoration helpers |
+| `backend/app/services/clients/translation_text_processor.py` | Acronym protection/restoration/validation helpers |
 | `backend/app/schemas/translate.py` | Pydantic request/response models |
 
 #### Google Cloud Translate client
@@ -137,7 +137,9 @@ Requires `PROJECT_ID` to be set. If not configured, translations are skipped and
 
 Before sending text to Google Cloud Translate, the client replaces acronyms with stable placeholders and restores the original tokens after translation. This protects all-caps and dotted acronyms such as `MOSE`, `M.O.S.E.`, `EPA`, and `HVAC/CDP` from being expanded, localized, or otherwise corrupted.
 
-The BigQuery ETL notebook applies the same placeholder/restore approach around `ML.TRANSLATE` so batch English normalization and runtime translation behavior stay aligned.
+After restoration, the client validates that protected tokens were restored exactly once and were not mutated into close variants. If validation fails, it logs `translation_acronym_validation_failed` with counts and returns the original text for that item.
+
+BigQuery processed tables remain the source data and audit surface for stored English-normalized content. The frontend/runtime fix does not rely on BigQuery-side placeholder wrapping around `ML.TRANSLATE`.
 
 ### Frontend
 
@@ -155,7 +157,8 @@ Handles batching, caching, and API calls using the auto-generated TypeScript SDK
 **Caching (two-tier):**
 - In-memory `Map` (max 500 entries, LRU eviction)
 - `sessionStorage` (persists across page navigations within the session)
-- Cache key format: `{sourceLang}:{targetLang}:{text}`
+- Cache storage prefix: `translation:v2:`
+- Cache key format after the prefix: `{sourceLang}:{targetLang}:{text}`
 
 **Error handling:** returns original text on failure.
 
@@ -182,7 +185,10 @@ The pipe skips translation when the current language is English or unsupported.
 | Pipe | Use for | Example |
 |------|---------|---------|
 | `translate` | Static UI strings with known keys | `{{ 'locationCard.govActions.all' \| translate }}` |
-| `autoTranslate` | Dynamic data from the API | `{{ hazard.description \| autoTranslate }}` |
+| `autoTranslate` | Dynamic data from the API when plain text is required | `{{ hazard.description \| autoTranslate }}` |
+| `protectedTranslationHtml` | Rendered dynamic translated text that may contain acronyms | `<span [innerHTML]="hazard.description \| autoTranslate \| protectedTranslationHtml"></span>` |
+
+Use `protectedTranslationHtml` for user-visible translated dynamic fields whenever the template can render sanitized HTML. It escapes the full text first, then wraps protected tokens in `<span translate="no" class="notranslate">...</span>` so browser/page translation does not alter acronyms.
 
 ### Where autoTranslate is used
 

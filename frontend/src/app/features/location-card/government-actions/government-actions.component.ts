@@ -18,6 +18,7 @@ import { AdaptationGoalDetailComponent } from './adaptation-goal-detail/adaptati
 import { ProjectSeekingFundingDetailComponent } from './project-seeking-funding-detail/project-seeking-funding-detail.component';
 import { ActionsSummaryComponent } from './actions-summary/actions-summary.component';
 import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
+import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
 import { splitTitleAtLastColon } from '../../../shared/utils/title.util';
 import type { HazardSummaryRow, DetailItemType } from './government-actions.types';
 
@@ -36,6 +37,7 @@ export type { HazardSummaryRow, DetailItemType };
     ProjectSeekingFundingDetailComponent,
     ActionsSummaryComponent,
     AutoTranslatePipe,
+    ProtectedTranslationHtmlPipe,
     A11yModule,
   ],
   templateUrl: './government-actions.component.html',

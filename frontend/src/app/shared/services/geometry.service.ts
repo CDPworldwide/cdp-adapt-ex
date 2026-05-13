@@ -19,7 +19,11 @@ export class GeometryService {
     [key: string]: unknown;
   }): Observable<google.maps.LatLngBounds | undefined> {
     return this.googleMapsLoader.loadApi().pipe(
-      map(() => {
+      map((loaded) => {
+        if (!loaded) {
+          return undefined;
+        }
+
         if (!geometry) {
           return undefined;
         }

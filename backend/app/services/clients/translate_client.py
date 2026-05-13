@@ -5,6 +5,7 @@ from google.cloud import translate_v3 as translate
 from app.services.clients.translation_text_processor import (
     protect_acronyms,
     restore_acronyms,
+    validate_restored_acronyms,
 )
 from app.shared.config import settings
 from app.shared.logging import logger
@@ -60,12 +61,34 @@ class TranslateClient:
                 mime_type="text/plain",
             )
 
-            return [
-                restore_acronyms(translation.translated_text, prepared.placeholders)
-                for translation, prepared in zip(
-                    response.translations, prepared_texts, strict=False
+            translations: list[str] = []
+            for index, (translation, prepared, original_text) in enumerate(
+                zip(response.translations, prepared_texts, texts, strict=False)
+            ):
+                restored = restore_acronyms(
+                    translation.translated_text, prepared.placeholders
                 )
-            ]
+                validation = validate_restored_acronyms(original_text, restored)
+                if validation.is_valid:
+                    translations.append(restored)
+                    continue
+
+                logger.warning(
+                    "translation_acronym_validation_failed",
+                    source_language=source_language,
+                    target_language=target_language,
+                    index=index,
+                    missing_count=len(validation.missing),
+                    duplicated_count=len(validation.duplicated),
+                    mutated_count=len(validation.mutated),
+                    failure_type=_validation_failure_type(validation),
+                )
+                translations.append(original_text)
+
+            if len(translations) < len(texts):
+                translations.extend(texts[len(translations) :])
+
+            return translations
 
         except Exception as e:
             logger.error(
@@ -81,3 +104,11 @@ class TranslateClient:
 
 
 translate_client = TranslateClient()
+
+
+def _validation_failure_type(validation) -> str:
+    if validation.missing:
+        return "missing"
+    if validation.duplicated:
+        return "duplicated"
+    return "mutated"

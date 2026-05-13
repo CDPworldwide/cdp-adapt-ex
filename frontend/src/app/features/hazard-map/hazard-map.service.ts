@@ -58,7 +58,11 @@ export class HazardMapService {
   // Preload all historical hazard layers to show as the default layer
   preloadHazardLayers(): Observable<void> {
     return this.googleMapsLoader.loadApi().pipe(
-      switchMap(() => {
+      switchMap((loaded) => {
+        if (!loaded) {
+          return of(void 0);
+        }
+
         const observables = SUPPORTED_HAZARD_TYPES.map((hazardType) =>
           this.getHazardLayer(hazardType, ScenarioEnum.HISTORICAL),
         );
@@ -95,7 +99,7 @@ export class HazardMapService {
       map((response) => {
         const hazardData = (response.data as HazardLayerResponse)?.layer?.hazard_data;
         if (!this.isTileHazardLayerData(hazardData)) {
-          console.error(`Unsupported hazard data type or missing data for ${hazardType}`);
+          console.warn(`No tile hazard layer available for ${hazardType}`);
           return null;
         }
 

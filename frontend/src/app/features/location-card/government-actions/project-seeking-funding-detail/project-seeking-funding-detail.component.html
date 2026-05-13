@@ -24,7 +24,7 @@
 
     <!-- Title -->
     <h2 class="text-[22px] font-normal font-roboto text-black leading-7">
-      {{ project.title | autoTranslate }}
+      <span [innerHTML]="project.title | autoTranslate | protectedTranslationHtml"></span>
     </h2>
   </div>
 
@@ -66,7 +66,7 @@
           </div>
           <div class="lg:flex-1">
             <p class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-              {{ project.description | autoTranslate }}
+              <span [innerHTML]="project.description | autoTranslate | protectedTranslationHtml"></span>
             </p>
           </div>
         </div>
@@ -102,7 +102,7 @@
           </div>
           <div class="flex-1">
             <p class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-              {{ project.projectArea | autoTranslate }}
+              <span [innerHTML]="project.projectArea | autoTranslate | protectedTranslationHtml"></span>
             </p>
           </div>
         </div>
@@ -120,7 +120,9 @@
           </div>
           <div class="flex-1">
             <p class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-              {{ project.financeModel }}
+              <span
+                [innerHTML]="financeModels.join(', ') | autoTranslate | protectedTranslationHtml"
+              ></span>
             </p>
           </div>
         </div>
@@ -138,7 +140,7 @@
           </div>
           <div class="flex-1">
             <p class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-              {{ project.financeStatus | autoTranslate }}
+              <span [innerHTML]="project.financeStatus | autoTranslate | protectedTranslationHtml"></span>
             </p>
           </div>
         </div>

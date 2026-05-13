@@ -8,6 +8,13 @@ describe('normalizeTranslationLanguage', () => {
     expect(normalizeTranslationLanguage('zh-Hant')).toBe('zh');
   });
 
+  it('normalizes regional locale tags to supported base languages', () => {
+    expect(normalizeTranslationLanguage('en-US')).toBe('en');
+    expect(normalizeTranslationLanguage('es_419')).toBe('es');
+    expect(normalizeTranslationLanguage('pt-BR')).toBe('pt');
+    expect(normalizeTranslationLanguage('ja-JP')).toBe('ja');
+  });
+
   it('defaults blank values to English', () => {
     expect(normalizeTranslationLanguage(null)).toBe('en');
     expect(normalizeTranslationLanguage('   ')).toBe('en');

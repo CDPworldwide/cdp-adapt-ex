@@ -1,6 +1,7 @@
 from app.services.clients.translation_text_processor import (
     protect_acronyms,
     restore_acronyms,
+    validate_restored_acronyms,
 )
 
 
@@ -56,3 +57,20 @@ def test_restore_acronyms_replaces_placeholders_with_original_tokens():
         )
         == "Protección M.O.S.E. con guía de EPA"
     )
+
+
+def test_validate_restored_acronyms_detects_missing_and_mutated_tokens():
+    validation = validate_restored_acronyms(
+        "EPA funds M.O.S.E. and HVAC/CDP upgrades",
+        "EPA funds MOSE and HVAC-CDP upgrades",
+    )
+
+    assert not validation.is_valid
+    assert validation.missing == ["M.O.S.E.", "HVAC/CDP"]
+    assert validation.mutated == ["MOSE", "HVAC-CDP"]
+
+
+def test_validate_restored_acronyms_accepts_repeated_tokens():
+    validation = validate_restored_acronyms("EPA and EPA", "EPA y EPA")
+
+    assert validation.is_valid

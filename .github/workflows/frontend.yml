@@ -102,12 +102,12 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Check translation coverage
+      - name: Check translation parity
         id: i18n-coverage
         working-directory: frontend
         run: |
           set +e
-          npm run i18n:coverage -- --fail-under 50.96 2>&1 | tee i18n-coverage.txt
+          npm run i18n:coverage -- --fail-on-missing 2>&1 | tee i18n-coverage.txt
           status=${PIPESTATUS[0]}
           report="$(awk '/^Translation coverage/{flag=1} /^Run with --show-keys/{flag=0} flag{print}' i18n-coverage.txt)"
 
@@ -145,6 +145,8 @@ jobs:
                           "coverage": parts[1],
                           "covered": parts[2],
                           "missing": parts[3],
+                          "empty": parts[4],
+                          "type": parts[5],
                           "extra": parts[6],
                           "same_as_master": parts[7],
                       }
@@ -156,13 +158,15 @@ jobs:
           details = "\n".join(
               (
                   f'• `{row["locale"]}`: {row["coverage"]} translated '
-                  f'({row["covered"]}); {row["missing"]} missing, {row["extra"]} extra'
+                  f'({row["covered"]}); {row["missing"]} missing, '
+                  f'{row["empty"]} empty, {row["type"]} type mismatches, '
+                  f'{row["extra"]} extra, {row["same_as_master"]} same as master'
               )
               for row in rows
           )
           fallback = os.environ["I18N_COVERAGE_REPORT"]
           text = (
-              f'*Translation coverage* for `{os.environ["GITHUB_REF_NAME"]}` (`{sha}`)\n'
+              f'*Translation parity* for `{os.environ["GITHUB_REF_NAME"]}` (`{sha}`)\n'
               f'{summary or "Coverage report generated."}\n\n'
               f'{details or f"```{fallback}```"}\n\n'
               f'<{run_url}|View GitHub Actions run>'
