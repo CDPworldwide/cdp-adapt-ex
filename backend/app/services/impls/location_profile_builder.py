@@ -155,6 +155,11 @@ class LocationProfileBuilder:
             geometry=geo_data.geometry,
             is_reporting_leader=org_id in _A_LIST,
             public_status=metadata.public_status,
+            has_climate_risk_assessment=(
+                True if (metadata.climate_assess_yn or "").startswith("Yes")
+                else False if (metadata.climate_assess_yn or "").startswith("No")
+                else None
+            ),
             disclosure_year=metadata.disclosing_year,
             population=metadata.current_pop,
             requesters=(

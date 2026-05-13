@@ -68,6 +68,7 @@ class DimCentral(SQLModel, table=True):
     ranked_sectors: str | None = None
     requesting_auth: str | None = None
     has_geometry: bool | None = None
+    climate_assess_yn: str | None = None
     disclosing_year: int = Field(primary_key=True)
     geometry: Any = Field(
         sa_column=Column(SafeGeometry()),

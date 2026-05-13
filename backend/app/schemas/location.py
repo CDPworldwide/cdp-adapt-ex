@@ -356,6 +356,10 @@ class LocationProfile(APIBaseModel):
         None,
         description='Disclosure visibility for the org — "Public", "Non-Public", or null when the org has not disclosed (non-discloser).',
     )
+    has_climate_risk_assessment: bool | None = Field(
+        None,
+        description="Whether the org has conducted a climate risk and vulnerability assessment (CRVA).",
+    )
     disclosure_year: int | None = None
     requesters: list[str] = Field(default_factory=list)
     population: float | None = None
