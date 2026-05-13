@@ -79,7 +79,7 @@ gcloud artifacts repositories create cdp \
 Secrets are split between GitHub (for CI/CD infrastructure) and GCP Secret Manager (for application runtime).
 
 #### GCP Secret Manager
-Sensitive variables must be defined in Secret Manager with the appropriate environment prefix. These are accessed by the application at runtime (Backend) or during the build process (Frontend).
+Sensitive variables must be defined in Secret Manager with the appropriate environment prefix, except shared services such as `cdp-ai-server`, which use a `shared-` prefix. These are accessed by the application at runtime (Backend/AI server) or during the build process (Frontend).
 
 | Secret Name | Description |
 |-------------|-------------|
@@ -89,7 +89,7 @@ Sensitive variables must be defined in Secret Manager with the appropriate envir
 | `POSTGRES_USER` | Database username. |
 | `API_KEY` | Shared API key required by protected backend endpoints. |
 | `LLM_API_KEY` | API Key for Vertex AI / Gemini. |
-| `AI_SERVER_API_KEY` | GitHub secret passed to the frontend build and AI server runtime. |
+| `shared-AI_SERVER_API_KEY` | Shared key for the `cdp-ai-server` Cloud Run service and frontend builds that call it directly. |
 | `ALLOWED_ORIGINS` | CORS origins (comma-separated). |
 | `GOOGLE_MAPS_API_KEY` | Google Maps API Key. |
 
@@ -132,7 +132,6 @@ The following repository secrets must be configured in GitHub (**Settings > Secr
 |-------------|-------------|
 | `GCP_PROJECT_ID` | Your Google Cloud Project ID. |
 | `GCP_WORKLOAD_IDENTITY_PROVIDER` | The full resource name of the WIF provider (e.g., `projects/123/locations/global/workloadIdentityPools/github-actions/providers/github`). |
-| `AI_SERVER_API_KEY` | Shared API key injected into the AI server and frontend build. |
 | `BASE_URL` | (Optional) The production URL of the backend, used if auto-detection fails. |
 
 ### Pipeline Flow

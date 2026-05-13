@@ -51,6 +51,13 @@ jobs:
         with:
           project_id: ${{ env.PROJECT_ID }}
 
+      - name: Get AI Server Secrets from Secret Manager
+        id: ai-server-secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: |-
+            AI_SERVER_API_KEY:${{ env.PROJECT_ID }}/shared-AI_SERVER_API_KEY
+
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
 
@@ -86,8 +93,8 @@ jobs:
           secrets: |
             LLM_API_KEY=development-LLM_API_KEY:latest
             ALLOWED_ORIGINS=development-ALLOWED_ORIGINS:latest
+            AI_SERVER_API_KEY=shared-AI_SERVER_API_KEY:latest
           env_vars: |
-            AI_SERVER_API_KEY=${{ secrets.AI_SERVER_API_KEY }}
             LLM_MODEL=gemini-2.5-flash
             SYSTEM_PROMPT=${{ env.SYSTEM_PROMPT_URL }}
             SYSTEM_PROMPT_CACHE_SECONDS=60
@@ -99,8 +106,8 @@ jobs:
           echo "Checking health of $URL..."
           for i in {1..12}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-              -H "Authorization: Bearer ${{ secrets.AI_SERVER_API_KEY }}" \
-              -H "X-API-Key: ${{ secrets.AI_SERVER_API_KEY }}" \
+              -H "Authorization: Bearer ${{ steps.ai-server-secrets.outputs.AI_SERVER_API_KEY }}" \
+              -H "X-API-Key: ${{ steps.ai-server-secrets.outputs.AI_SERVER_API_KEY }}" \
               "$URL/v1/models" || echo "000")
             if [ "$STATUS" = "200" ]; then
               echo "AI server deployment is healthy (HTTP $STATUS)"
