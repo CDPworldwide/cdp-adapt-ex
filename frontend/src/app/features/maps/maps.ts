@@ -61,7 +61,11 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.googleMapsLoader.loadApi().subscribe(() => this.initMap());
+    this.googleMapsLoader.loadApi().subscribe((loaded) => {
+      if (loaded) {
+        this.initMap();
+      }
+    });
 
     this.subscriptions.push(
       this.mapSelectionService.selectedMapLocation$.subscribe((location) => {

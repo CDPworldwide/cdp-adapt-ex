@@ -37,5 +37,11 @@ export function normalizeTranslationLanguage(value: string | null | undefined): 
     return 'en';
   }
 
-  return LANGUAGE_ALIASES[normalized] ?? normalized;
+  const alias = LANGUAGE_ALIASES[normalized];
+  if (alias) {
+    return alias;
+  }
+
+  const baseLanguage = normalized.split('-')[0];
+  return LANGUAGE_ALIASES[baseLanguage] ?? normalized;
 }
