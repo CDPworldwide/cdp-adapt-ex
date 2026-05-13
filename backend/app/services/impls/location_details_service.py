@@ -39,6 +39,7 @@ from app.services.impls.location_profile_builder import LocationProfileBuilder
 from app.services.impls.sector_mapper import SectorMapper
 from app.services.impls.solution_category_mapper import SolutionCategoryMapper
 from app.services.impls.status_mapper import StatusMapper
+from app.services.impls.text_cleanup import clean_disclosed_text
 from app.services.interfaces.city_resolution_service import CityResolutionService
 from app.shared.exceptions import CityNotFoundException
 from app.shared.logging import logger
@@ -190,7 +191,7 @@ class LocationDetailsService:
         org_id: int,
     ) -> AdaptationAction:
         return AdaptationAction(
-            title=title,
+            title=clean_disclosed_title(title),
             hazards_addressed=self.hazard_mapper.split_and_map_hazards(
                 hazard_addressed_english, org_id=org_id
             )
@@ -210,7 +211,7 @@ class LocationDetailsService:
             if total_cost_usd is not None
             else None,
             timeframe=timeframe_english,
-            description=description_english,
+            description=clean_disclosed_text(description_english),
             resilience_enhanced=[
                 r.strip() for r in resilience_enhanced_english.split("|") if r.strip()
             ]
@@ -289,9 +290,9 @@ class LocationDetailsService:
 
             result.append(
                 ProjectSeekingFunding(
-                    title=project.project_title_english,
+                    title=clean_disclosed_title(project.project_title_english),
                     status=status,
-                    description=project.project_descirption_english,
+                    description=clean_disclosed_text(project.project_descirption_english),
                     project_area=project.project_area_english,
                     finance_status=project.finance_status_english,
                     finance_model=finance_models,
