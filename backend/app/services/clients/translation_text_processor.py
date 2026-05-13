@@ -16,6 +16,14 @@ class PreparedText:
     placeholders: dict[str, str]
 
 
+@dataclass(frozen=True)
+class AcronymValidationResult:
+    is_valid: bool
+    missing: list[str]
+    duplicated: list[str]
+    mutated: list[str]
+
+
 def protect_acronyms(text: str) -> PreparedText:
     placeholders: dict[str, str] = {}
     has_lowercase = bool(LOWERCASE_PATTERN.search(text))
@@ -41,3 +49,46 @@ def restore_acronyms(text: str, placeholders: dict[str, str]) -> str:
     for placeholder, original in placeholders.items():
         restored = restored.replace(placeholder, original)
     return restored
+
+
+def extract_protected_acronyms(text: str) -> list[str]:
+    return list(protect_acronyms(text).placeholders.values())
+
+
+def validate_restored_acronyms(
+    original_text: str, translated_text: str
+) -> AcronymValidationResult:
+    expected = extract_protected_acronyms(original_text)
+    missing: list[str] = []
+    duplicated: list[str] = []
+
+    for token in expected:
+        count = translated_text.count(token)
+        if count == 0:
+            missing.append(token)
+        elif count > expected.count(token):
+            duplicated.append(token)
+
+    translated_acronyms = extract_protected_acronyms(translated_text)
+    expected_unique = set(expected)
+    mutated = [
+        token
+        for token in translated_acronyms
+        if token not in expected_unique and _looks_like_mutated_acronym(token, expected_unique)
+    ]
+
+    return AcronymValidationResult(
+        is_valid=not missing and not duplicated and not mutated,
+        missing=missing,
+        duplicated=duplicated,
+        mutated=mutated,
+    )
+
+
+def _looks_like_mutated_acronym(token: str, expected: set[str]) -> bool:
+    normalized = _normalize_acronym(token)
+    return any(normalized == _normalize_acronym(candidate) for candidate in expected)
+
+
+def _normalize_acronym(token: str) -> str:
+    return re.sub(r"[^A-Z0-9]", "", token.upper())

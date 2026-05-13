@@ -12,7 +12,7 @@ interface PendingEntry {
   targetLang: string;
 }
 
-const CACHE_KEY_PREFIX = 'translation:';
+const CACHE_KEY_PREFIX = 'translation:v2:';
 const MAX_CACHE_ENTRIES = 500;
 const BATCH_DELAY_MS = 50;
 const MAX_BATCH_SIZE = 50;

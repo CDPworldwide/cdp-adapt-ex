@@ -28,6 +28,7 @@ import {
   CloseIconComponent,
 } from '../../../shared/icons';
 import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
+import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
 
 @Component({
   selector: 'app-solution-detail-modal',
@@ -44,6 +45,7 @@ import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
     ArrowLeftLongIconComponent,
     CloseIconComponent,
     AutoTranslatePipe,
+    ProtectedTranslationHtmlPipe,
   ],
   templateUrl: './solution-detail-modal.component.html',
   styleUrl: './solution-detail-modal.component.css',
