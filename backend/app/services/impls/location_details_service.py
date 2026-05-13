@@ -191,7 +191,7 @@ class LocationDetailsService:
         org_id: int,
     ) -> AdaptationAction:
         return AdaptationAction(
-            title=clean_disclosed_title(title),
+            title=clean_disclosed_text(title),
             hazards_addressed=self.hazard_mapper.split_and_map_hazards(
                 hazard_addressed_english, org_id=org_id
             )
@@ -290,7 +290,7 @@ class LocationDetailsService:
 
             result.append(
                 ProjectSeekingFunding(
-                    title=clean_disclosed_title(project.project_title_english),
+                    title=clean_disclosed_text(project.project_title_english),
                     status=status,
                     description=clean_disclosed_text(project.project_descirption_english),
                     project_area=project.project_area_english,
