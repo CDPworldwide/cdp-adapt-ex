@@ -129,6 +129,53 @@
       "solutions": "解决方案",
       "ariaLabel": "地点卡片标签页"
     },
+    "hazards": {
+      "sectionTitle": "区域脆弱性",
+      "populationLabel": "暴露于主要风险的人口",
+      "gdpLabel": "面临风险的GDP总额（美元）",
+      "sectorsLabel": "脆弱经济行业",
+      "noHazardsBanner": {
+        "title": "未披露风险",
+        "description": "该司法管辖区未在其CDP报告中报告任何风险。<strong>本页显示的所有风险信息均来自CDP分析</strong>。<br><br>如需查看更多该司法管辖区报告的内容，请从CDP开放数据门户下载完整问卷。",
+        "button": "CDP开放数据门户"
+      },
+      "noHazardsContent": {
+        "title": "{{location}}截至{{year}}年CDP披露尚未披露其辖区的风险信息",
+        "description": "目前，{{location}}的{{year}}年CDP披露中没有任何风险信息。这可能有多种原因，但出于信任、准确性和质量考虑，我们不会显示其他信息。<br><br>随着该项目逐渐成熟，我们希望在存在往年披露的情况下纳入这些信息。我们还希望应用方法论和可信的外部风险数据来源，计算可能影响该地点以及全球其他地点的风险。您可以在<a class=\"gov-actions-link text-cdp-red font-medium cursor-pointer hover:underline\">政府行动</a>标签页中查看该地点的其他披露数据，包括{{location}}的目标、行动和其他项目。"
+      },
+      "reportNotPublicBanner": {
+        "title": "报告不可公开查看",
+        "description": "此辖区的CDP报告无法显示。<strong>本页面显示的所有灾害信息均来自CDP分析。</strong><br><br>如需了解更多向CDP报告的城市、州和地区，请访问我们的网站。",
+        "button": "了解更多报告信息"
+      },
+      "noReportAvailableBanner": {
+        "title": "暂无可用报告",
+        "description": "此辖区目前未通过CDP问卷报告信息。<strong>本页面显示的所有灾害信息均来自CDP分析。</strong><br><br>如需了解更多向CDP报告的城市、州和地区，请访问我们的网站。",
+        "button": "了解更多报告信息"
+      },
+      "geeOverview": {
+        "title": "前4项灾害",
+        "sourceLabel": "来源：",
+        "sourceText": "CDP分析"
+      },
+      "geeCard": {
+        "exploreHazardMap": "探索灾害地图",
+        "sourceLabel": "来源：",
+        "sourceText": "NEX-GDDP-CMIP6降尺度气候预测"
+      },
+      "geeSummary": {
+        "EXTREME_HEAT": "危险高温时期，会对人类健康、生态系统和基础设施造成风险。包括城市热岛效应。",
+        "HEAT_STRESS": "危险高温时期，会对人类健康、生态系统和基础设施造成风险。包括城市热岛效应。",
+        "EXTREME_COLD": "异常低温事件，可能损害基础设施、农业和人类健康。",
+        "HEAVY_PRECIPITATION": "强降雨或降雪事件，可能使排水系统不堪重负，并引发洪水或滑坡。",
+        "WATER_STRESS": "可用淡水资源不足以满足人类需求的程度。水胁迫灾害可能包括水资源可用性、水质和取水便利性。",
+        "COASTAL_FLOODING": "由风暴潮、潮汐和长期海平面上升导致的低洼沿海地区淹没。",
+        "RIVER_FLOODING": "由于过量降水或融雪，河道水流溢出到周边土地。",
+        "FIRE_WEATHER": "高温、低湿度和风等会促进野火点燃和蔓延的大气条件。",
+        "SOIL_DEGRADATION_EROSION": "土壤不稳定或流失，增加滑坡和大规模地表移动事件的可能性。",
+        "OTHERS": "局地气候灾害可能持续给社区和基础设施带来风险。"
+      }
+    },
     "hazardNames": {
       "HEAT_STRESS": "热应激",
       "EXTREME_HEAT": "极端高温",
@@ -413,21 +460,6 @@
       "noSolutionsContent": {
         "title": "{{location}}截至{{year}}年CDP披露尚未披露其辖区的风险信息",
         "description": "目前，{{location}}的{{year}}年CDP披露中没有任何风险信息。这可能有多种原因，但出于信任、准确性和质量考虑，我们不会显示其他信息。<br><br>由于没有风险数据，我们无法计算受类似环境风险影响的可比地点。这里可能显示的内容，以及本产品中其他地点在解决方案部分显示的内容，是一组在全球其他具有类似风险概况的地点实施的解决方案类别。<br><br>解决方案是经过分类的行动，可能适用于全球其他地点，使用户能够查看自己的地点，并了解其他地方正在做什么、哪些做法可能可在此应用或实施。"
-      }
-    },
-    "hazards": {
-      "sectionTitle": "区域脆弱性",
-      "populationLabel": "暴露于主要风险的人口",
-      "gdpLabel": "面临风险的GDP总额（美元）",
-      "sectorsLabel": "脆弱经济行业",
-      "noHazardsBanner": {
-        "title": "未披露风险",
-        "description": "该司法管辖区未在其CDP报告中报告任何风险。<strong>本页显示的所有风险信息均来自CDP分析</strong>。<br><br>如需查看更多该司法管辖区报告的内容，请从CDP开放数据门户下载完整问卷。",
-        "button": "CDP开放数据门户"
-      },
-      "noHazardsContent": {
-        "title": "{{location}}截至{{year}}年CDP披露尚未披露其辖区的风险信息",
-        "description": "目前，{{location}}的{{year}}年CDP披露中没有任何风险信息。这可能有多种原因，但出于信任、准确性和质量考虑，我们不会显示其他信息。<br><br>随着该项目逐渐成熟，我们希望在存在往年披露的情况下纳入这些信息。我们还希望应用方法论和可信的外部风险数据来源，计算可能影响该地点以及全球其他地点的风险。您可以在<a class=\"gov-actions-link text-cdp-red font-medium cursor-pointer hover:underline\">政府行动</a>标签页中查看该地点的其他披露数据，包括{{location}}的目标、行动和其他项目。"
       }
     },
     "geeHazardLabels": {

@@ -129,6 +129,53 @@
       "solutions": "Soluciones",
       "ariaLabel": "Pestañas de la tarjeta de ubicación"
     },
+    "hazards": {
+      "sectionTitle": "Vulnerabilidades regionales",
+      "populationLabel": "Población expuesta a los peligros principales",
+      "gdpLabel": "PIB total en riesgo en USD",
+      "sectorsLabel": "Sectores económicos vulnerables",
+      "noHazardsBanner": {
+        "title": "No se divulgaron peligros",
+        "description": "Esta jurisdicción no informó ningún peligro en su informe de CDP. <strong>Toda la información sobre peligros que se muestra en esta página proviene del análisis de CDP</strong>.<br><br>Para ver más sobre lo que informó esta jurisdicción, descargue el cuestionario completo desde el portal de datos abiertos de CDP.",
+        "button": "Portal de datos abiertos de CDP"
+      },
+      "noHazardsContent": {
+        "title": "{{location}} no ha divulgado información sobre peligros para su jurisdicción en la divulgación de CDP de {{year}}",
+        "description": "Actualmente no hay información sobre peligros en la divulgación de CDP de {{year}} de {{location}}. Puede haber varias razones, pero por confianza, precisión y calidad no mostramos otra información.<br><br>A medida que este proyecto madure, esperamos incorporar divulgaciones de años anteriores si existen. También queremos aplicar metodologías y fuentes externas confiables de datos de peligros para calcular los peligros que podrían afectar a esta ubicación, así como a otras ubicaciones del mundo. Puede ver otros datos divulgados para esta ubicación en la pestaña <a class=\"gov-actions-link text-cdp-red font-medium cursor-pointer hover:underline\">Acciones del gobierno</a>, incluidos objetivos, acciones y otros proyectos de {{location}}."
+      },
+      "reportNotPublicBanner": {
+        "title": "Informe no disponible para visualización pública",
+        "description": "El informe de CDP de esta jurisdicción no está disponible para mostrar. <strong>Toda la información sobre peligros que se muestra en esta página proviene del análisis de CDP.</strong><br><br>Para obtener más información sobre ciudades, estados y regiones que reportan a CDP, visite nuestro sitio web.",
+        "button": "Más información sobre la presentación de informes"
+      },
+      "noReportAvailableBanner": {
+        "title": "No hay informe disponible",
+        "description": "Esta jurisdicción no informa actualmente a través del cuestionario de CDP. <strong>Toda la información sobre peligros que se muestra en esta página proviene del análisis de CDP.</strong><br><br>Para obtener más información sobre ciudades, estados y regiones que reportan a CDP, visite nuestro sitio web.",
+        "button": "Más información sobre la presentación de informes"
+      },
+      "geeOverview": {
+        "title": "Los 4 principales peligros",
+        "sourceLabel": "Fuente:",
+        "sourceText": "Análisis de CDP"
+      },
+      "geeCard": {
+        "exploreHazardMap": "Explorar mapa de peligros",
+        "sourceLabel": "Fuente:",
+        "sourceText": "Proyecciones climáticas reducidas de NEX-GDDP-CMIP6"
+      },
+      "geeSummary": {
+        "EXTREME_HEAT": "Períodos de temperaturas peligrosamente altas que suponen riesgos para la salud humana, los ecosistemas y la infraestructura. Incluye el efecto de isla de calor urbana.",
+        "HEAT_STRESS": "Períodos de temperaturas peligrosamente altas que suponen riesgos para la salud humana, los ecosistemas y la infraestructura. Incluye el efecto de isla de calor urbana.",
+        "EXTREME_COLD": "Episodios de temperaturas anormalmente bajas que pueden dañar la infraestructura, la agricultura y la salud humana.",
+        "HEAVY_PRECIPITATION": "Eventos de lluvia o nieve intensa que pueden sobrecargar los sistemas de drenaje y provocar inundaciones o deslizamientos.",
+        "WATER_STRESS": "El grado en que los recursos de agua dulce disponibles son insuficientes para satisfacer la demanda humana. Los peligros de estrés hídrico pueden incluir disponibilidad, calidad y accesibilidad del agua.",
+        "COASTAL_FLOODING": "Inundación de zonas costeras bajas causada por marejadas, mareas y aumento del nivel del mar a largo plazo.",
+        "RIVER_FLOODING": "Desbordamiento de cauces fluviales hacia terrenos circundantes debido a exceso de precipitación o deshielo.",
+        "FIRE_WEATHER": "Condiciones atmosféricas — calor, baja humedad y viento — que favorecen la ignición y propagación de incendios forestales.",
+        "SOIL_DEGRADATION_EROSION": "La desestabilización o pérdida del suelo, que aumenta la probabilidad de deslizamientos y movimientos de masa.",
+        "OTHERS": "Los peligros climáticos localizados pueden suponer riesgos continuos para las comunidades y la infraestructura."
+      }
+    },
     "hazardNames": {
       "HEAT_STRESS": "Estrés por calor",
       "EXTREME_HEAT": "Calor extremo",
@@ -413,21 +460,6 @@
       "noSolutionsContent": {
         "title": "{{location}} no ha divulgado información sobre peligros para su jurisdicción en la divulgación de CDP de {{year}}",
         "description": "Actualmente no hay información sobre peligros en la divulgación de CDP de {{year}} de {{location}}. Puede haber varias razones, pero por confianza, precisión y calidad no mostramos otra información.<br><br>Como no tenemos datos de peligros, no podemos calcular ubicaciones comparables afectadas por peligros ambientales similares. Lo que podría ver aquí, y lo que otras ubicaciones de este producto muestran en soluciones, es una lista de categorías de soluciones implementadas en otros lugares del mundo que comparten perfiles de peligro similares.<br><br>Las soluciones son acciones categorizadas que podrían aplicarse en otras ubicaciones del mundo, lo que permite a los usuarios ver su ubicación y entender qué están haciendo otros lugares que podría aplicarse o implementarse aquí."
-      }
-    },
-    "hazards": {
-      "sectionTitle": "Vulnerabilidades regionales",
-      "populationLabel": "Población expuesta a los peligros principales",
-      "gdpLabel": "PIB total en riesgo en USD",
-      "sectorsLabel": "Sectores económicos vulnerables",
-      "noHazardsBanner": {
-        "title": "No se divulgaron peligros",
-        "description": "Esta jurisdicción no informó ningún peligro en su informe de CDP. <strong>Toda la información sobre peligros que se muestra en esta página proviene del análisis de CDP</strong>.<br><br>Para ver más sobre lo que informó esta jurisdicción, descargue el cuestionario completo desde el portal de datos abiertos de CDP.",
-        "button": "Portal de datos abiertos de CDP"
-      },
-      "noHazardsContent": {
-        "title": "{{location}} no ha divulgado información sobre peligros para su jurisdicción en la divulgación de CDP de {{year}}",
-        "description": "Actualmente no hay información sobre peligros en la divulgación de CDP de {{year}} de {{location}}. Puede haber varias razones, pero por confianza, precisión y calidad no mostramos otra información.<br><br>A medida que este proyecto madure, esperamos incorporar divulgaciones de años anteriores si existen. También queremos aplicar metodologías y fuentes externas confiables de datos de peligros para calcular los peligros que podrían afectar a esta ubicación, así como a otras ubicaciones del mundo. Puede ver otros datos divulgados para esta ubicación en la pestaña <a class=\"gov-actions-link text-cdp-red font-medium cursor-pointer hover:underline\">Acciones del gobierno</a>, incluidos objetivos, acciones y otros proyectos de {{location}}."
       }
     },
     "geeHazardLabels": {
