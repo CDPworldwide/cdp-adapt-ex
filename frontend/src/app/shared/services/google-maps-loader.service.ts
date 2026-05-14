@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject, of } from 'rxjs';
 import { environment } from '@env/environment';
 
 declare global {
@@ -14,10 +14,19 @@ declare global {
 export class GoogleMapsLoaderService {
   private apiLoaded: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   private isApiLoading = false;
+  private hasWarnedMissingApiKey = false;
 
   constructor() {}
 
   public loadApi(): Observable<boolean> {
+    if (!environment.mapsConfig.apiKey) {
+      if (!this.hasWarnedMissingApiKey) {
+        console.warn('Google Maps API key is not configured; map rendering is disabled.');
+        this.hasWarnedMissingApiKey = true;
+      }
+      return of(false);
+    }
+
     if (this.isApiLoading) {
       return this.apiLoaded.asObservable();
     }

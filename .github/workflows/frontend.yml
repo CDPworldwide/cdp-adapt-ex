@@ -1,6 +1,13 @@
 name: Frontend CI/CD
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - "test/**"
+      - "client/**"
+      - ".github/workflows/frontend.yml"
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches: [main, production]
@@ -23,7 +30,7 @@ env:
   # Dynamic service name: production, dev, or PR-specific preview
   SERVICE_NAME: >-
     ${{ github.event_name == 'pull_request' && format('frontend-preview-pr-{0}', github.event.pull_request.number) ||
-        (github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend') }}
+        (github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend-dev') }}
   IS_PREVIEW: ${{ github.event_name == 'pull_request' }}
   ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
   NODE_VERSION: "20.x"
@@ -38,6 +45,9 @@ jobs:
       id-token: write
     outputs:
       backend-url: ${{ steps.backend-url.outputs.url }}
+    env:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_I18N_CHANNEL_ID: ${{ secrets.SLACK_I18N_CHANNEL_ID }}
 
     steps:
       - name: Checkout repository
@@ -92,6 +102,98 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Check translation parity
+        id: i18n-coverage
+        working-directory: frontend
+        run: |
+          set +e
+          npm run i18n:coverage -- --fail-on-missing 2>&1 | tee i18n-coverage.txt
+          status=${PIPESTATUS[0]}
+          report="$(awk '/^Translation coverage/{flag=1} /^Run with --show-keys/{flag=0} flag{print}' i18n-coverage.txt)"
+
+          {
+            echo "report<<EOF"
+            printf '%s\n' "$report"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          exit "$status"
+
+      - name: Prepare translation coverage Slack payload
+        if: always() && steps.i18n-coverage.outputs.report != '' && env.SLACK_BOT_TOKEN != '' && env.SLACK_I18N_CHANNEL_ID != ''
+        env:
+          I18N_COVERAGE_REPORT: ${{ steps.i18n-coverage.outputs.report }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          sha = os.environ["GITHUB_SHA"][:7]
+          run_url = (
+              f'{os.environ["GITHUB_SERVER_URL"]}/'
+              f'{os.environ["GITHUB_REPOSITORY"]}/actions/runs/{os.environ["GITHUB_RUN_ID"]}'
+          )
+          rows = []
+
+          for line in os.environ["I18N_COVERAGE_REPORT"].splitlines():
+              parts = line.split()
+              if len(parts) >= 8 and parts[0] not in {"Locale", "------", "Translation"}:
+                  rows.append(
+                      {
+                          "locale": parts[0],
+                          "coverage": parts[1],
+                          "covered": parts[2],
+                          "missing": parts[3],
+                          "empty": parts[4],
+                          "type": parts[5],
+                          "extra": parts[6],
+                          "same_as_master": parts[7],
+                      }
+                  )
+
+          summary = ", ".join(
+              f'{row["locale"]} {row["coverage"]} ({row["covered"]})' for row in rows
+          )
+          details = "\n".join(
+              (
+                  f'• `{row["locale"]}`: {row["coverage"]} translated '
+                  f'({row["covered"]}); {row["missing"]} missing, '
+                  f'{row["empty"]} empty, {row["type"]} type mismatches, '
+                  f'{row["extra"]} extra, {row["same_as_master"]} same as master'
+              )
+              for row in rows
+          )
+          fallback = os.environ["I18N_COVERAGE_REPORT"]
+          text = (
+              f'*Translation parity* for `{os.environ["GITHUB_REF_NAME"]}` (`{sha}`)\n'
+              f'{summary or "Coverage report generated."}\n\n'
+              f'{details or f"```{fallback}```"}\n\n'
+              f'<{run_url}|View GitHub Actions run>'
+          )
+          payload = {
+              "channel": os.environ["SLACK_I18N_CHANNEL_ID"],
+              "text": text,
+          }
+          Path("frontend/i18n-slack-payload.json").write_text(json.dumps(payload), encoding="utf-8")
+          PY
+
+      - name: Post translation coverage to Slack
+        id: slack-i18n-coverage
+        if: always() && steps.i18n-coverage.outputs.report != '' && env.SLACK_BOT_TOKEN != '' && env.SLACK_I18N_CHANNEL_ID != ''
+        uses: slackapi/slack-github-action@v3.0.3
+        with:
+          errors: true
+          method: chat.postMessage
+          token: ${{ env.SLACK_BOT_TOKEN }}
+          payload-file-path: frontend/i18n-slack-payload.json
+
+      - name: Log Slack coverage post result
+        if: always() && steps.slack-i18n-coverage.outputs.ok != ''
+        run: |
+          echo "Slack post ok: ${{ steps.slack-i18n-coverage.outputs.ok }}"
+          echo "Slack message timestamp: ${{ steps.slack-i18n-coverage.outputs.ts }}"
+
       # - name: Install integration test dependencies
       #   if: github.event_name == 'pull_request'
       #   working-directory: test
@@ -145,6 +247,7 @@ jobs:
         with:
           secrets: |-
             API_KEY:${{ secrets.GCP_PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
+            AI_SERVER_API_KEY:${{ secrets.GCP_PROJECT_ID }}/shared-AI_SERVER_API_KEY
             GOOGLE_MAPS_API_KEY:${{ secrets.GCP_PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
 
       - name: Create environment.ts
@@ -153,7 +256,7 @@ jobs:
           FRONTEND_BASE_URL='${{ steps.backend-url.outputs.url }}' \
           FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
           FRONTEND_API_KEY='${{ steps.frontend-secrets.outputs.API_KEY }}' \
-          FRONTEND_AI_SERVER_API_KEY='${{ secrets.AI_SERVER_API_KEY }}' \
+          FRONTEND_AI_SERVER_API_KEY='${{ steps.frontend-secrets.outputs.AI_SERVER_API_KEY }}' \
           FRONTEND_AUTH_DISABLED='false' \
           FRONTEND_DEBUG_MODE='${{ env.ENVIRONMENT == 'development' }}' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
@@ -463,3 +566,82 @@ jobs:
             ## 🧹 Frontend Preview Environment Cleaned Up
 
             The preview deployment `frontend-preview-pr-${{ github.event.pull_request.number }}` has been deleted.
+
+  deploy-dev:
+    name: Deploy to Cloud Run (development)
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build-${{ github.sha }}
+          path: frontend/dist/frontend/browser
+
+      - name: Build and push Docker image
+        working-directory: frontend
+        run: |
+          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}"
+          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:latest"
+
+          docker build -t $IMAGE_TAG -t $IMAGE_LATEST .
+          docker push $IMAGE_TAG
+          docker push $IMAGE_LATEST
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ env.REGION }}
+          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          flags: |
+            --allow-unauthenticated
+            --min-instances=0
+            --max-instances=2
+            --memory=512Mi
+            --cpu=1
+            --timeout=60
+            --port=8080
+          labels: |
+            environment=${{ env.ENVIRONMENT }}
+            managed-by=github-actions
+            commit-sha=${{ github.sha }}
+
+      - name: Verify deployment health
+        run: |
+          URL="${{ steps.deploy.outputs.url }}"
+          echo "Checking health of $URL..."
+          for i in {1..10}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $URL || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "✓ Development deployment is healthy (HTTP $STATUS)"
+              exit 0
+            fi
+            echo "Attempt $i/10: HTTP $STATUS, waiting 5s..."
+            sleep 5
+          done
+          echo "⚠️ Warning: Development deployment may not be healthy"
+          exit 1

@@ -2,7 +2,7 @@
 
 A unified platform to synthesize fragmented environmental hazard data and siloed resilience best practices, empowering subnational governments to drive Earth-positive action.
 
-> TODO: Insert tool link after it is launched.
+Deployment URLs are managed in Google Cloud Run. See [docs/deployment.md](docs/deployment.md) for the current deployment topology.
 
 ## 📱 Preview
 
@@ -18,17 +18,18 @@ Please see **[SETUP.md](SETUP.md)** for detailed installation instructions.
 ### Overall App Structure
 
 ```
-pac-api/
+cdp-adapt-ex/
 ├── backend/           # FastAPI (Python 3.13)
 │   ├── app/
 │   │   ├── api/v1/    # Endpoint definitions & Pydantic schemas
-│   │   ├── services/  # Business logic & LLM clients
+│   │   ├── services/  # Business logic and external service clients
 │   │   │   └── clients/database/ # Data Access Layer (Repositories)
 │   │   ├── models/    # SQLModel database models
-│   │   ├── core/      # Config, security, logging
+│   │   ├── shared/    # Config, security, logging
 │   │   └── main.py    # FastAPI entry point
 │   ├── pyproject.toml # Package management via `uv`
 │   └── tests/         # Pytest suite
+├── ai-server/         # Standalone OpenAI-compatible Ask CDP AI service
 ├── client/            # Auto-generated TypeScript API client
 │   ├── scripts/       # Generation & patching scripts
 │   └── src/           # Generated models and services
@@ -38,7 +39,8 @@ pac-api/
 │   │   ├── features/  # Domain features (Map, Chat, Hazard, etc.)
 │   │   └── shared/    # Reusable components & UI building blocks
 │   └── tailwind.config.js
-├── data/              # Seed data & migration sources
+├── data/              # Seed data, migration sources, and climate layer scripts
+├── docs/              # Canonical handoff and technical documentation
 └── Makefile           # Project automation (install, test, lint)
 ```
 
@@ -46,14 +48,14 @@ pac-api/
 
 The platform is built on Google Cloud Platform (GCP).
 
-- **Compute (Cloud Run)**: Both the FastAPI backend and Angular frontend are  hosted on Cloud Run.
-- **Database (Cloud SQL)**: A managed PostgreSQL instance stores all environmental hazards, organizational data, and user sessions.
-- **AI & LLM (Vertex AI)**: Integrates with Google's Gemini models to power the chat interface and synthesize complex hazard data.
-- **Geospatial (Google Maps)**: Provides the map-based visualization for hazards and adaptation actions.
+- **Compute (Cloud Run)**: The Angular frontend, FastAPI backend, and standalone AI server are containerized and hosted on Cloud Run.
+- **Database (Cloud SQL)**: PostgreSQL stores CSTAR analytical tables plus app-owned onboarding telemetry.
+- **AI & LLM**: Ask CDP AI is served by the standalone `ai-server`, which exposes OpenAI-compatible chat and follow-up endpoints backed by Gemini.
+- **Geospatial**: Google Maps powers the UI map, while Google Earth Engine provides hazard layer tiles through the backend.
 
 ## 🚀 Deployment
 
-For detailed information on automatic CI/CD pipelines and manual deployment steps, please refer to the **[Deployment Documentation](docs/deployment/README.md)**.
+For detailed information on automatic CI/CD pipelines and manual deployment steps, please refer to the **[Deployment Documentation](docs/deployment.md)**.
 
 ## 📚 Documentation Index
 
@@ -61,10 +63,12 @@ For detailed information on automatic CI/CD pipelines and manual deployment step
 |-------|-------------|
 | 🛠 **[SETUP.md](SETUP.md)** | Step-by-step local development environment setup. |
 | 🤝 **[CONTRIBUTING.md](CONTRIBUTING.md)** | Guidelines for reporting bugs, suggesting features, and PR workflows. |
-| 🚀 **[Deployment Guide](docs/deployment/README.md)** | CI/CD pipelines, Cloud Run configuration, and manual deployment. |
+| 📚 **[Docs Index](docs/README.md)** | Canonical documentation map for backend, AI server, data, deployment, and translation. |
+| 🚀 **[Deployment Guide](docs/deployment.md)** | CI/CD pipelines, Cloud Run configuration, and manual deployment. |
 | 🧪 **[Testing](SETUP.md#-testing)** | Overview of testing strategies, or module-specific details in [Backend Tests](backend/tests/README.md) and [Frontend Tests](frontend/README.md#-testing). |
-| ⚙️ **[Backend Docs](backend/README.md)** | FastAPI architecture, services, and database repository pattern. |
-| 📊 **[Data & DB Docs](backend/docs/database.md)** | Database schema, seed data, and data management details. |
+| ⚙️ **[Backend Docs](docs/backend/README.md)** | FastAPI architecture, services, and database repository pattern. |
+| 🤖 **[AI Server Docs](docs/ai%20server/README.md)** | Ask CDP AI routes, prompt workflow, and testing notes. |
+| 📊 **[Data & DB Docs](docs/data.md)** | Database schema, seed data, and data management details. |
 | 🎨 **[Frontend Docs](frontend/README.md)** | Angular 20 structure, Tailwind CSS usage, and component patterns. |
 | 🔒 **[SECURITY.md](SECURITY.md)** | Vulnerability reporting and security policies. |
 | 📄 **[LICENSE](LICENSE)** | Project licensing information. |

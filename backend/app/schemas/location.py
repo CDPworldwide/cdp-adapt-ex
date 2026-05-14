@@ -357,6 +357,7 @@ class LocationProfile(APIBaseModel):
         description="Whether the org has conducted a climate risk and vulnerability assessment (CRVA).",
     )
     disclosure_year: int | None = None
+    reporting_language: str | None = None
     requesters: list[str] = Field(default_factory=list)
     population: float | None = None
 

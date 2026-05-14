@@ -23,7 +23,7 @@
 
     <!-- Title -->
     <h2 class="text-[22px] font-normal font-roboto text-black leading-7">
-      {{ goal.title | autoTranslate }}
+      <span [innerHTML]="goal.title | autoTranslate | protectedTranslationHtml"></span>
     </h2>
   </div>
 
@@ -51,7 +51,7 @@
                 >
                   {{
                     hazard.hazardType === 'OTHERS'
-                      ? hazard.otherHazardDetails
+                      ? (hazard.otherHazardDetails | autoTranslate)
                       : ('locationCard.hazardNames.' + hazard.hazardType | translate)
                   }}
                 </span>

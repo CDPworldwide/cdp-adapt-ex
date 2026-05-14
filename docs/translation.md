@@ -126,13 +126,20 @@ Constraints:
 | `backend/app/api/v1/translate.py` | Route handler |
 | `backend/app/api/v1/deps.py` | `get_translate_client` dependency |
 | `backend/app/services/clients/translate_client.py` | Google Cloud Translate v3 wrapper |
+| `backend/app/services/clients/translation_text_processor.py` | Acronym protection/restoration/validation helpers |
 | `backend/app/schemas/translate.py` | Pydantic request/response models |
 
 #### Google Cloud Translate client
 
 The `TranslateClient` class wraps Google Cloud Translate v3. It uses thread-safe lazy initialization and runs via `run_in_threadpool` in the async route handler to avoid blocking the event loop.
 
-Requires `GCP_PROJECT_ID` to be set. If not configured, translations are skipped and original text is returned.
+Requires `PROJECT_ID` to be set. If not configured, translations are skipped and original text is returned.
+
+Before sending text to Google Cloud Translate, the client replaces acronyms with stable placeholders and restores the original tokens after translation. This protects all-caps and dotted acronyms such as `MOSE`, `M.O.S.E.`, `EPA`, and `HVAC/CDP` from being expanded, localized, or otherwise corrupted.
+
+After restoration, the client validates that protected tokens were restored exactly once and were not mutated into close variants. If validation fails, it logs `translation_acronym_validation_failed` with counts and returns the original text for that item.
+
+BigQuery processed tables remain the source data and audit surface for stored English-normalized content. The frontend/runtime fix does not rely on BigQuery-side placeholder wrapping around `ML.TRANSLATE`.
 
 ### Frontend
 
@@ -145,12 +152,13 @@ Handles batching, caching, and API calls using the auto-generated TypeScript SDK
 **Batching:**
 - Translation requests are queued into a pending batch
 - After 50ms (or when 50 items accumulate), the batch is flushed
-- Requests are grouped by target language and chunked into groups of 50
+- Requests are grouped by source/target language pair and chunked into groups of 50
 
 **Caching (two-tier):**
 - In-memory `Map` (max 500 entries, LRU eviction)
 - `sessionStorage` (persists across page navigations within the session)
-- Cache key format: `{targetLang}:{text}`
+- Cache storage prefix: `translation:v2:`
+- Cache key format after the prefix: `{sourceLang}:{targetLang}:{text}`
 
 **Error handling:** returns original text on failure.
 
@@ -177,7 +185,10 @@ The pipe skips translation when the current language is English or unsupported.
 | Pipe | Use for | Example |
 |------|---------|---------|
 | `translate` | Static UI strings with known keys | `{{ 'locationCard.govActions.all' \| translate }}` |
-| `autoTranslate` | Dynamic data from the API | `{{ hazard.description \| autoTranslate }}` |
+| `autoTranslate` | Dynamic data from the API when plain text is required | `{{ hazard.description \| autoTranslate }}` |
+| `protectedTranslationHtml` | Rendered dynamic translated text that may contain acronyms | `<span [innerHTML]="hazard.description \| autoTranslate \| protectedTranslationHtml"></span>` |
+
+Use `protectedTranslationHtml` for user-visible translated dynamic fields whenever the template can render sanitized HTML. It escapes the full text first, then wraps protected tokens in `<span translate="no" class="notranslate">...</span>` so browser/page translation does not alter acronyms.
 
 ### Where autoTranslate is used
 
@@ -190,7 +201,7 @@ The pipe skips translation when the current language is English or unsupported.
 
 ### UI
 
-The language selector lives in the app header (`frontend/src/app/shared/app-header/`). It's a Material menu button with a language icon that lists all available languages.
+The language selector lives in the app header (`frontend/src/app/core/header/`). It's a Material menu button with a language icon that lists all available languages.
 
 ### LanguageService
 
@@ -208,7 +219,7 @@ Central service managing the current language:
 1. `LanguageService.switchLanguage(code)` is called
 2. `currentLang` signal updates — triggers `autoTranslate` pipes to re-evaluate
 3. `TranslateService.use(code)` fires — loads new i18n JSON and updates all `| translate` pipes
-4. `WebTranslationService` clears its cache for fresh translations
+4. `WebTranslationService` looks up translations using source/target-aware cache keys
 5. Dynamic content re-translates through the batching pipeline
 
 ## Environment Setup

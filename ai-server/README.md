@@ -2,11 +2,14 @@
 
 Standalone OpenAI-compatible AI server for Ask CDP AI.
 
+Canonical handoff docs live in [`../docs/ai server`](../docs/ai%20server). Keep this service README focused on local commands and route contracts.
+
 ## Routes
 
 - `GET /healthz`
 - `GET /v1/models`
 - `POST /v1/chat/completions`
+- `POST /v1/suggest-follow-ups`
 
 `/v1/chat/completions` supports non-streaming OpenAI-style JSON responses and
 OpenAI-compatible Server-Sent Event chunks when `stream: true`.
@@ -57,7 +60,7 @@ curl -N http://127.0.0.1:8088/v1/chat/completions \
 ```bash
 LLM_API_KEY=... \
 AI_SERVER_API_KEY=... \
-LLM_MODEL=gemini-3-flash-preview \
+LLM_MODEL=gemini-2.5-flash \
 uv run uvicorn app.main:app --host 0.0.0.0 --port 8080
 ```
 

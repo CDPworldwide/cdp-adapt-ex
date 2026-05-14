@@ -5,14 +5,14 @@ The hazard data service integrates with **Google Earth Engine (GEE)** to provide
 ## Features
 
 ### 1. Layer Configuration
-The `/hazards/layer-config` endpoint returns the metadata for all supported hazard layers, including:
+The `/api/v1/hazards/layer-config` endpoint returns the metadata for all supported hazard layers, including:
 - Available scenarios (e.g., historical, SSP126, SSP245, SSP370, SSP585)
 - Year ranges for projected data
 - Color scales (palettes) and legends
 - Data source information (e.g., NASA NEX-GDDP-CMIP6, WRI Aqueduct)
 
 ### 2. Geospatial Data Retrieval
-The `/hazards/{hazard_type}` endpoint retrieves the specific Earth Engine asset for a hazard. It handles:
+The `/api/v1/hazards/{hazard_type}` endpoint retrieves the specific Earth Engine asset for a hazard. It handles:
 - **Scenarios:** Filtering by climate scenario (e.g., Historical, SSP245, SSP585).
 - **Time Periods:** Selecting the appropriate year range for projected data.
 - **Tiling:** Providing a `tile_url` format for the frontend to render GEE tiles directly.

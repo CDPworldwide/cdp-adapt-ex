@@ -3,15 +3,15 @@
 This guide will help you set up the CDP Adaptation & Action Explorer project locally.
 
 ## 📋 Table of Contents
-- [Prerequisites](#-prerequisites)
+- [Before you start](#-before-you-start)
 - [Quick Start (Recommended)](#-quick-start-recommended)
 - [Manual Setup](#-manual-setup)
   - [1. Database Setup](#1-database-setup)
   - [2. Backend Setup](#2-backend-setup)
   - [3. API Client Generation](#3-api-client-generation)
   - [4. Frontend Setup](#4-frontend-setup)
+  - [5. AI Server Setup](#5-ai-server-setup)
 - [Environment Variables](#-environment-variables)
-- [Running the Application](#-running-the-application)
 - [Testing](#-testing)
 - [Troubleshooting](#-troubleshooting)
 
@@ -26,7 +26,7 @@ Ensure you have the following installed on your system:
 - **uv**: Python package manager. [Download](https://docs.astral.sh/uv/getting-started/installation/)
 - **Node.js v20+**: [Download](https://nodejs.org/)
 - **PostgreSQL**: [Download](https://www.postgresql.org/download/)
-- **Google Cloud SDK**: [Download](https://cloud.google.com/sdk/docs/install) (required if you want a working "Ask CDP" chat functionality -- uses Gemini integration.)
+- **Google Cloud SDK**: [Download](https://cloud.google.com/sdk/docs/install) (required for Google Earth Engine, Translation, Cloud SQL proxy, and real Ask CDP AI/Gemini runs.)
 - **Make**: Build automation tool (usually pre-installed on Linux/macOS).
 
 ### System Dependencies (Linux/Debian)
@@ -40,8 +40,8 @@ The project includes a `Makefile` to automate the setup process. Run `make help`
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/CDPworldwide/pac-api.git
-   cd pac-api
+   git clone https://github.com/CDPworldwide/cdp-adapt-ex.git
+   cd cdp-adapt-ex
    ```
 
 2. **Initialize all components**:
@@ -61,6 +61,14 @@ The project includes a `Makefile` to automate the setup process. Run `make help`
    ```bash
    make run-backend     # Terminal 1
    make run-frontend    # Terminal 2
+   ```
+
+   Ask CDP AI is served by the separate `ai-server` service. For local chat, start it in a third terminal:
+   ```bash
+   cd ai-server
+   AI_SERVER_MOCK_RESPONSE='Mock response for {location}' \
+   AI_SERVER_API_KEY=local-ai-key \
+   uv run uvicorn app.main:app --host 127.0.0.1 --port 8088
    ```
 
 ### Common Makefile Commands
@@ -138,6 +146,16 @@ npm run build
      ```
    The application will be available at `http://localhost:4200`.
 
+### 5. AI Server Setup
+The Ask CDP AI panel calls the standalone AI server directly. The backend is still used to load the selected location profile, but chat and follow-up requests go to `aiServerUrl`.
+
+```bash
+cd ai-server
+uv sync
+cp .env.example .env
+uv run uvicorn app.main:app --host 127.0.0.1 --port 8088
+```
+
 ## 🔑 Environment Variables
 
 ### Backend (`backend/.env`)
@@ -146,14 +164,14 @@ Initialize the environment file:
 cd backend && cp .env-example .env
 ```
 
-Required variables for LLM and Google Cloud features:
+Common backend variables:
 
 | Variable | Description |
 |----------|-------------|
 | `PROJECT_ID` | Your Google Cloud Project ID. Required for Google Earth Engine (maps) and Translation services. |
 | `LOCATION` | GCP region (e.g., `us-central1`). Primarily used for Cloud Run deployment and infrastructure management. |
-| `LLM_API_KEY` | API key for Gemini/VertexAI. |
-| `DATABASE_URL` | PostgreSQL connection string. |
+| `API_KEY` | Optional shared API key required on protected `/api/v1` backend requests when configured. |
+| `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | PostgreSQL connection settings. |
 
 ### Frontend (`frontend/src/environments/environment.development.ts`)
 Initialize the environment file:
@@ -166,7 +184,22 @@ Required variables:
 | Variable | Description |
 |----------|-------------|
 | `baseUrl` | API base URL (default: `http://localhost:8000`). |
+| `apiKey` | Backend API key, if `backend/.env` sets `API_KEY`. |
+| `aiServerUrl` | AI server URL (default local mock: `http://127.0.0.1:8088`). |
+| `aiServerApiKey` | AI server API key, if `AI_SERVER_API_KEY` is configured. |
 | `mapsConfig.apiKey` | Your Google Maps API key for loading the map interface. |
+
+### AI Server (`ai-server/.env`)
+
+Common AI server variables:
+
+| Variable | Description |
+|----------|-------------|
+| `AI_SERVER_API_KEY` | Optional shared key accepted as `Authorization: Bearer ...` or `X-API-Key`. |
+| `LLM_API_KEY` | Gemini API key for real model calls. |
+| `LLM_MODEL` | Internal Gemini model name. |
+| `AI_SERVER_MOCK_RESPONSE` | Local mock response template for UI wiring without a real LLM. |
+| `SYSTEM_PROMPT` | Inline prompt text or URL used by the deployed AI server. |
 
 ---
 
@@ -189,6 +222,11 @@ make test
   cd frontend
   npm run test:ci
   ```
+- **AI Server (pytest)**:
+  ```bash
+  cd ai-server
+  uv run pytest
+  ```
 - **Integration (Vitest)**:
   ```bash
   cd test
@@ -201,10 +239,11 @@ make test
 
 | Layer | Test Type | Coverage |
 |-------|-----------|----------|
-| Backend API | pytest | Authentication, Location, Suggestions |
-| Backend Services | pytest | Database, LLM, Business Logic |
+| Backend API | pytest | Authentication, Location, Hazard layers, Translation, Disclosure trends, Onboarding |
+| Backend Services | pytest | Database repositories and business mapping |
+| AI Server | pytest | OpenAI-compatible chat, follow-ups, prompt behavior, Gemini provider error mapping |
 | Frontend | Karma/Jasmine | Components, Services, Integration |
-| Integration | Vitest | End-to-end API flows with LLM |
+| Integration | Vitest | End-to-end API and chat evaluation flows |
 
 ---
 
@@ -219,7 +258,7 @@ If you encounter errors related to `pygraphviz` during backend installation:
 If the frontend fails to find `@pac-api/client`:
 1. Run `make build-client` from the root.
 2. Ensure `client/dist` exists.
-3. Run `pnpm install` in the `frontend` directory again.
+3. Run `npm install` in the `frontend` directory again.
 
 ### Port Conflicts
 If port 8000 or 4200 is already in use:

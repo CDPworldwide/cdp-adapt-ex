@@ -117,8 +117,10 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
       this.updateHazardOptions();
     });
 
-    this.googleMapsLoader.loadApi().subscribe(() => {
-      this.initMap();
+    this.googleMapsLoader.loadApi().subscribe((loaded) => {
+      if (loaded) {
+        this.initMap();
+      }
     });
   }
 

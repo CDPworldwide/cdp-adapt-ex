@@ -1,0 +1,7 @@
+version: "3"
+
+tasks:
+  docs:
+    desc: Run the Mintlify docs site
+    cmds:
+      - bash scripts/run-mintlify.sh dev --no-open

@@ -2,6 +2,11 @@ import threading
 
 from google.cloud import translate_v3 as translate
 
+from app.services.clients.translation_text_processor import (
+    protect_acronyms,
+    restore_acronyms,
+    validate_restored_acronyms,
+)
 from app.shared.config import settings
 from app.shared.logging import logger
 
@@ -44,16 +49,46 @@ class TranslateClient:
             )
             return list(texts)
 
+        prepared_texts = [protect_acronyms(text) for text in texts]
+        contents = [prepared.text for prepared in prepared_texts]
+
         try:
             response = self.client.translate_text(
-                contents=texts,
+                contents=contents,
                 target_language_code=target_language,
                 source_language_code=source_language,
                 parent=self.parent,
                 mime_type="text/plain",
             )
 
-            return [t.translated_text for t in response.translations]
+            translations: list[str] = []
+            for index, (translation, prepared, original_text) in enumerate(
+                zip(response.translations, prepared_texts, texts, strict=False)
+            ):
+                restored = restore_acronyms(
+                    translation.translated_text, prepared.placeholders
+                )
+                validation = validate_restored_acronyms(original_text, restored)
+                if validation.is_valid:
+                    translations.append(restored)
+                    continue
+
+                logger.warning(
+                    "translation_acronym_validation_failed",
+                    source_language=source_language,
+                    target_language=target_language,
+                    index=index,
+                    missing_count=len(validation.missing),
+                    duplicated_count=len(validation.duplicated),
+                    mutated_count=len(validation.mutated),
+                    failure_type=_validation_failure_type(validation),
+                )
+                translations.append(original_text)
+
+            if len(translations) < len(texts):
+                translations.extend(texts[len(translations) :])
+
+            return translations
 
         except Exception as e:
             logger.error(
@@ -62,7 +97,18 @@ class TranslateClient:
                 target_language=target_language,
                 text_count=len(texts),
             )
-            return list(texts)
+            return [
+                restore_acronyms(prepared.text, prepared.placeholders)
+                for prepared in prepared_texts
+            ]
 
 
 translate_client = TranslateClient()
+
+
+def _validation_failure_type(validation) -> str:
+    if validation.missing:
+        return "missing"
+    if validation.duplicated:
+        return "duplicated"
+    return "mutated"

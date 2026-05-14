@@ -157,14 +157,11 @@ jobs:
             sleep 5
           done
 
-          HEALTH_URL="$BACKEND_URL/api/v1/health"
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "X-API-Key: $BACKEND_API_KEY" \
-            "$HEALTH_URL" || echo "000")
-          if [ "$STATUS" != "200" ]; then
-            echo "Backend health check failed: $HEALTH_URL -> HTTP $STATUS"
-            exit 1
-          fi
+          BACKEND_URL="$BACKEND_URL" \
+          BACKEND_API_KEY="$BACKEND_API_KEY" \
+          SMOKE_TEST_LOCATION_ORG_ID="834406" \
+          SMOKE_TEST_LOCATION_EXPECTED_STATUS="${{ env.ENVIRONMENT == 'production' && '200' || '' }}" \
+          bash backend/scripts/smoke_test_deployment.sh
 
           # Encode the URL without newlines to bypass GHA secret suppression
           ENCODED_URL=$(printf "%s" "$BACKEND_URL" | base64 -w 0)
@@ -252,6 +249,7 @@ jobs:
         with:
           secrets: |-
             API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
+            AI_SERVER_API_KEY:${{ env.PROJECT_ID }}/shared-AI_SERVER_API_KEY
             GOOGLE_MAPS_API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
 
       - name: Create production environment.ts
@@ -260,7 +258,7 @@ jobs:
           FRONTEND_BASE_URL='${{ steps.decode-url.outputs.url }}' \
           FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
           FRONTEND_API_KEY='${{ steps.frontend-secrets.outputs.API_KEY }}' \
-          FRONTEND_AI_SERVER_API_KEY='${{ secrets.AI_SERVER_API_KEY }}' \
+          FRONTEND_AI_SERVER_API_KEY='${{ steps.frontend-secrets.outputs.AI_SERVER_API_KEY }}' \
           FRONTEND_DEBUG_MODE='false' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
           bash scripts/write-environment.sh
