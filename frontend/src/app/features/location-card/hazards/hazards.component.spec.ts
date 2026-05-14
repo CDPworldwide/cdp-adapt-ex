@@ -20,6 +20,7 @@ describe('HazardsComponent', () => {
       coordinates: [[[-17.9302, -43.7908]]],
     },
     isReportingLeader: true,
+    publicStatus: 'Public',
     disclosureYear: 2025,
     requesters: ['C40 Cities', 'WWF'],
     population: 53000000,

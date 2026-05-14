@@ -30,6 +30,7 @@ describe('ProjectSeekingFundingDetailComponent', () => {
     const translate = TestBed.inject(TranslateService);
     translate.setTranslation('en', {
       shared: {
+        close: 'Close',
         showMore: 'Show more',
         showLess: 'Show less',
       },
