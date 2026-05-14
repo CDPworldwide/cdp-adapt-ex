@@ -25,7 +25,7 @@
       "statesAndRegions": "Estados e Regiões"
     },
     "nav": {
-      "title": "Adaptation & action explorer",
+      "title": "Explorador de adaptação e ação",
       "explore": "Explorar",
       "compare": "Comparar",
       "fund": "Fundo"
@@ -66,12 +66,18 @@
       "scenario": "Cenários",
       "timeframe": "Prazos disponíveis"
     },
+    "scenarios": {
+      "historical": "Histórico"
+    },
     "loading": "Carregando dados de riscos...",
     "primaryClimateHazards": "Principais riscos climáticos",
     "topFourHazards": "4 principais riscos",
     "disclosedActions": "Ações de adaptação divulgadas"
   },
   "shared": {
+    "cdp": "CDP",
+    "appTitle": "Explorador de adaptação e ação",
+    "home": "Início",
     "showMore": "Mostrar mais",
     "showLess": "Mostrar menos",
     "showMoreHazards": "Mostrar mais perigos",
@@ -79,13 +85,28 @@
     "expandMap": "Expandir mapa",
     "collapseMap": "Recolher mapa",
     "close": "Fechar",
+    "previousAction": "Ação anterior",
+    "nextAction": "Próxima ação",
+    "paginationOf": "{{current}} de {{total}}",
+    "mainNavigation": "Navegação principal",
+    "siteFooter": "Rodapé do site",
     "methodology": "Metodologia",
+    "legacyNav": {
+      "main": "Principal",
+      "maps": "Mapas",
+      "chat": "Chat"
+    },
     "helpMenu": {
       "label": "Ajuda",
       "about": "Sobre esta ferramenta",
       "feedback": "Enviar feedback",
       "externalIndicator": "(abre em uma nova aba)"
     }
+  },
+  "notFound": {
+    "title": "404 - Não encontrado",
+    "description": "A página que você está procurando não existe.",
+    "homeLink": "Ir para a página inicial"
   },
   "locationCard": {
     "backToMap": "Voltar ao mapa",
@@ -422,6 +443,7 @@
   },
   "askCdpAi": {
     "buttonText": "Pergunte ao Explorador de IA",
+    "sources": "Fontes",
     "input": {
       "placeholder": "Pergunte ao Explorador de IA..."
     },

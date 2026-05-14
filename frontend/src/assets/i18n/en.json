@@ -62,22 +62,43 @@
       "source": "Source",
       "scenario": "Scenario",
       "timeframe": "Time frame"
+    },
+    "scenarios": {
+      "historical": "Historical"
     }
   },
   "shared": {
+    "cdp": "CDP",
+    "appTitle": "Adaptation & Action Explorer",
+    "home": "Home",
     "close": "Close",
+    "previousAction": "Previous action",
+    "nextAction": "Next action",
+    "paginationOf": "{{current}} of {{total}}",
+    "mainNavigation": "Main navigation",
+    "siteFooter": "Site footer",
     "showMore": "Show more",
     "selectLanguage": "Select language",
     "expandMap": "Expand map",
     "collapseMap": "Collapse map",
     "showLess": "Show less",
     "methodology": "Methodology",
+    "legacyNav": {
+      "main": "Main",
+      "maps": "Maps",
+      "chat": "Chat"
+    },
     "helpMenu": {
       "label": "Help",
       "about": "About this tool",
       "feedback": "Give feedback",
       "externalIndicator": "(opens in a new tab)"
     }
+  },
+  "notFound": {
+    "title": "404 - Not Found",
+    "description": "The page you are looking for does not exist.",
+    "homeLink": "Go to Home Page"
   },
   "locationCard": {
     "backToMap": "Back to map",
@@ -416,6 +437,7 @@
   },
   "askCdpAi": {
     "buttonText": "Ask the AI Explorer",
+    "sources": "Sources",
     "betaDisclaimer": "Beta: Trained on CDP disclosure data from cities, states, and regions. Results may be inaccurate and are not guaranteed.",
     "emptyState": {
       "title": "Ask a question about {{location}}.",

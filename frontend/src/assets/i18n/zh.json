@@ -25,7 +25,7 @@
       "statesAndRegions": "州和地区"
     },
     "nav": {
-      "title": "Adaptation & action explorer",
+      "title": "适应与行动探索器",
       "explore": "探索",
       "compare": "比较",
       "fund": "基金"
@@ -66,12 +66,18 @@
       "scenario": "场景",
       "timeframe": "可用时间范围"
     },
+    "scenarios": {
+      "historical": "历史"
+    },
     "loading": "正在加载风险数据...",
     "primaryClimateHazards": "主要气候风险",
     "topFourHazards": "前4项风险",
     "disclosedActions": "已披露的适应行动"
   },
   "shared": {
+    "cdp": "CDP",
+    "appTitle": "适应与行动探索器",
+    "home": "主页",
     "showMore": "显示更多",
     "showLess": "显示更少",
     "showMoreHazards": "显示更多灾害",
@@ -79,13 +85,28 @@
     "expandMap": "展开地图",
     "collapseMap": "收起地图",
     "close": "关闭",
+    "previousAction": "上一项行动",
+    "nextAction": "下一项行动",
+    "paginationOf": "{{current}}/{{total}}",
+    "mainNavigation": "主导航",
+    "siteFooter": "网站页脚",
     "methodology": "方法论",
+    "legacyNav": {
+      "main": "主页",
+      "maps": "地图",
+      "chat": "聊天"
+    },
     "helpMenu": {
       "label": "帮助",
       "about": "关于此工具",
       "feedback": "提供反馈",
       "externalIndicator": "（在新标签页中打开）"
     }
+  },
+  "notFound": {
+    "title": "404 - 未找到",
+    "description": "你要查找的页面不存在。",
+    "homeLink": "返回主页"
   },
   "locationCard": {
     "backToMap": "返回地图",
@@ -422,6 +443,7 @@
   },
   "askCdpAi": {
     "buttonText": "向人工智能探索者提问",
+    "sources": "来源",
     "input": {
       "placeholder": "向人工智能探索者提问..."
     },

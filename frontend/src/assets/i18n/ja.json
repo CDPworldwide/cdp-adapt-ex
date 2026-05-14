@@ -25,7 +25,7 @@
       "statesAndRegions": "州・地域"
     },
     "nav": {
-      "title": "Adaptation & action explorer",
+      "title": "適応とアクションエクスプローラー",
       "explore": "探索する",
       "compare": "比較する",
       "fund": "資金源"
@@ -66,12 +66,18 @@
       "scenario": "想定される状況",
       "timeframe": "利用可能な期間"
     },
+    "scenarios": {
+      "historical": "過去"
+    },
     "loading": "ハザードデータを読み込み中...",
     "primaryClimateHazards": "主要な気候ハザード",
     "topFourHazards": "上位4件のハザード",
     "disclosedActions": "開示された適応行動"
   },
   "shared": {
+    "cdp": "CDP",
+    "appTitle": "適応とアクションエクスプローラー",
+    "home": "ホーム",
     "showMore": "もっと見る",
     "showLess": "表示を減らす",
     "showMoreHazards": "その他のハザードを表示",
@@ -79,13 +85,28 @@
     "expandMap": "地図を展開",
     "collapseMap": "地図を縮小",
     "close": "閉じる",
+    "previousAction": "前のアクション",
+    "nextAction": "次のアクション",
+    "paginationOf": "{{current}}/{{total}}",
+    "mainNavigation": "メインナビゲーション",
+    "siteFooter": "サイトフッター",
     "methodology": "方法論",
+    "legacyNav": {
+      "main": "メイン",
+      "maps": "マップ",
+      "chat": "チャット"
+    },
     "helpMenu": {
       "label": "ヘルプ",
       "about": "このツールについて",
       "feedback": "フィードバックを送る",
       "externalIndicator": "（新しいタブで開きます）"
     }
+  },
+  "notFound": {
+    "title": "404 - 見つかりません",
+    "description": "お探しのページは存在しません。",
+    "homeLink": "ホームページへ移動"
   },
   "locationCard": {
     "backToMap": "地図に戻る",
@@ -423,6 +444,7 @@
   },
   "askCdpAi": {
     "buttonText": "AIエクスプローラーに質問する",
+    "sources": "出典",
     "input": {
       "placeholder": "AIエクスプローラーに質問する..."
     },

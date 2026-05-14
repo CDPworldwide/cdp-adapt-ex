@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { NotFound } from './not-found';
 
@@ -18,7 +19,7 @@ describe('NotFound', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NotFound],
+      imports: [NotFound, TranslateModule.forRoot()],
       providers: [
         provideRouter([
           { path: '', component: DummyHomeComponent },

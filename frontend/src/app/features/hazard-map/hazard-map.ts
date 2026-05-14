@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HazardEnum, ScenarioEnum, YearRange } from '@pac-api/client';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -37,7 +37,6 @@ export const SUPPORTED_HAZARD_TYPES: HazardEnum[] = [
 ];
 
 const SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
-  [ScenarioEnum.HISTORICAL]: 'Historical',
   [ScenarioEnum.SSP126]: 'SSP1 - 2.6',
   [ScenarioEnum.SSP245]: 'SSP2 - 4.5',
   [ScenarioEnum.SSP370]: 'SSP3 - 7.0',
@@ -53,7 +52,6 @@ const FLOOD_HAZARDS = new Set<HazardEnum>([
 ]);
 
 const FLOOD_SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
-  [ScenarioEnum.HISTORICAL]: 'Historical',
   [ScenarioEnum.SSP245]: 'RCP 4.5',
   [ScenarioEnum.SSP585]: 'RCP 8.5',
 };
@@ -109,6 +107,7 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     private renderer: Renderer2,
     private hazardMapService: HazardMapService,
     private googleMapsLoader: GoogleMapsLoaderService,
+    private translateService: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -385,6 +384,10 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
   }
 
   formatScenarioLabel(scenario: ScenarioEnum): string {
+    if (scenario === ScenarioEnum.HISTORICAL) {
+      return this.translateService.instant('maps.scenarios.historical');
+    }
+
     if (this.hazardType && FLOOD_HAZARDS.has(this.hazardType)) {
       return FLOOD_SCENARIO_LABELS[scenario] ?? SCENARIO_LABELS[scenario] ?? scenario;
     }
