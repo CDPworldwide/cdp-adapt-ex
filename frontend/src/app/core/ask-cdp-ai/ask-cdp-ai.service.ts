@@ -514,13 +514,14 @@ export class AskCdpAiService {
 
       if (uniqueSources.length) {
         formattedContent = content.slice(0, sourcesMatch.index ?? 0).trimEnd();
+        const sourcesLabel = this.translateService.instant('askCdpAi.sources');
         const sourceItems = uniqueSources.map(
           (source) =>
             `<li>${this.linkifySourceText(source.text)}</li>`,
         );
         sourcesHtml = [
-          '<section class="ai-sources" aria-label="Sources">',
-          '<p class="ai-sources-title">Sources</p>',
+          `<section class="ai-sources" aria-label="${this.escapeHtml(sourcesLabel)}">`,
+          `<p class="ai-sources-title">${this.escapeHtml(sourcesLabel)}</p>`,
           `<ul>${sourceItems.join('')}</ul>`,
           '</section>',
         ].join('');

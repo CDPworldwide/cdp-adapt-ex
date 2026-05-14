@@ -1,11 +1,11 @@
 <div class="feature-container">
   <mat-card class="feature-card">
     <mat-card-header>
-      <mat-card-title>404 - Not Found</mat-card-title>
+      <mat-card-title>{{ 'notFound.title' | translate }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <p>The page you are looking for does not exist.</p>
-      <a [routerLink]="['']">Go to Home Page</a>
+      <p>{{ 'notFound.description' | translate }}</p>
+      <a [routerLink]="['']">{{ 'notFound.homeLink' | translate }}</a>
     </mat-card-content>
   </mat-card>
 </div>

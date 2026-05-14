@@ -11,7 +11,7 @@
       <!-- Close Button for Mobile -->
       <button
         (click)="close()"
-        aria-label="Close"
+        [attr.aria-label]="'shared.close' | translate"
         class="lg:hidden absolute top-3 right-3 p-2 rounded-full hover:bg-white/20 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
       >
         <app-close-icon color="white" size="24"></app-close-icon>
@@ -70,7 +70,10 @@
             <app-arrow-left-icon size="16" color="white"></app-arrow-left-icon>
           </button>
           <span class="text-sm font-medium tracking-wider whitespace-nowrap">
-            {{ currentActionIndex + 1 }} of {{ totalActions }}
+            {{
+              'shared.paginationOf'
+                | translate: { current: currentActionIndex + 1, total: totalActions }
+            }}
           </span>
           <button
             (click)="nextAction()"
@@ -87,7 +90,7 @@
             <button
               (click)="prevAction()"
               [disabled]="currentActionIndex === 0"
-              aria-label="Previous action"
+              [attr.aria-label]="'shared.previousAction' | translate"
               class="w-11 h-11 rounded-full border border-white bg-[rgba(30,30,30,0.40)] flex items-center justify-center enabled:hover:bg-[rgba(30,30,30,0.70)] enabled:active:bg-black disabled:opacity-30 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
             >
               <app-arrow-left-long-icon color="white" size="13"></app-arrow-left-long-icon>
@@ -95,14 +98,17 @@
             <button
               (click)="nextAction()"
               [disabled]="currentActionIndex === totalActions - 1"
-              aria-label="Next action"
+              [attr.aria-label]="'shared.nextAction' | translate"
               class="w-11 h-11 rounded-full border border-white bg-[rgba(30,30,30,0.40)] flex items-center justify-center enabled:hover:bg-[rgba(30,30,30,0.70)] enabled:active:bg-black disabled:opacity-30 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
             >
               <app-arrow-right-long-icon color="white" size="16"></app-arrow-right-long-icon>
             </button>
           </div>
           <span class="text-white font-inter text-xs font-normal leading-normal">
-            {{ currentActionIndex + 1 }} of {{ totalActions }}
+            {{
+              'shared.paginationOf'
+                | translate: { current: currentActionIndex + 1, total: totalActions }
+            }}
           </span>
         </div>
       </div>
