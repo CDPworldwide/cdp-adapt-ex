@@ -233,7 +233,11 @@ class HazardsTab(APIBaseModel):
     statistics: RegionalStatistics
     hazards: list[HazardProfile] = Field(
         default_factory=list,
-        description="List of hazard profiles, ordered by hazard_rank.",
+        description=(
+            "List of hazard profiles, ordered by hazard_rank. Each profile's "
+            "`source` field distinguishes disclosed rows from GEE-derived rows; "
+            "the frontend can filter on it for any visual distinction."
+        ),
     )
 
 
@@ -347,6 +351,10 @@ class LocationProfile(APIBaseModel):
     public_status: str | None = Field(
         None,
         description='Disclosure visibility for the org — "Public", "Non-Public", or null when the org has not disclosed (non-discloser).',
+    )
+    has_climate_risk_assessment: bool | None = Field(
+        None,
+        description="Whether the org has conducted a climate risk and vulnerability assessment (CRVA).",
     )
     disclosure_year: int | None = None
     reporting_language: str | None = None

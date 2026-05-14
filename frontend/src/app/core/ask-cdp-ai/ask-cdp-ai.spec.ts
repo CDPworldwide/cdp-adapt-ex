@@ -295,6 +295,15 @@ describe('AskCdpAiService', () => {
   });
 
   describe('parseToHtml', () => {
+    beforeEach(() => {
+      translate.setTranslation('en', {
+        askCdpAi: {
+          sources: 'Sources',
+        },
+      });
+      translate.use('en');
+    });
+
     it('removes inline footnote markers and keeps a deduped sources block', () => {
       const html = service.parseToHtml(
         [

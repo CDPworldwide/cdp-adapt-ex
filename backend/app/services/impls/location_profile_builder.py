@@ -38,7 +38,8 @@ class GeometryData:
         )
 
 
-_A_LIST_PATH = Path(__file__).resolve().parents[2] / "data" / "cdp_a_list_2025.json"
+_DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+_A_LIST_PATH = _DATA_DIR / "cdp_a_list_2025.json"
 
 
 def _load_a_list() -> frozenset[int]:
@@ -78,7 +79,9 @@ class LocationProfileBuilder:
             )
             raise CityNotFoundException(fallback_name)
 
-        geo_data = self.extract_geometry_and_coords(metadata.geometry, metadata.centroid)
+        geo_data = self.extract_geometry_and_coords(
+            metadata.geometry, metadata.centroid
+        )
         if not geo_data.is_valid:
             logger.error(
                 "Data inconsistency: location '%s' (org_id=%s) is missing valid geometry or coordinate data.",
@@ -118,6 +121,12 @@ class LocationProfileBuilder:
             geometry=geo_data.geometry,
             is_reporting_leader=org_id in _A_LIST,
             public_status=metadata.public_status,
+            has_climate_risk_assessment=(
+                None if metadata.public_status == "Non-Public"
+                else True if (metadata.climate_assess_yn or "").startswith("Yes")
+                else False if (metadata.climate_assess_yn or "").startswith("No")
+                else None
+            ),
             disclosure_year=metadata.disclosing_year,
             reporting_language=metadata.reporting_language,
             population=metadata.current_pop,
@@ -126,7 +135,10 @@ class LocationProfileBuilder:
                 if metadata.requesting_auth
                 else []
             ),
-            hazards=HazardsTab(hazards=mapped_hazards, statistics=dummy_statistics),
+            hazards=HazardsTab(
+                hazards=mapped_hazards,
+                statistics=dummy_statistics,
+            ),
             government_actions=ActionsTab(
                 goals=mapped_goals,
                 actions=mapped_actions,

@@ -6,6 +6,15 @@ shopt -s nullglob
 PROJECT_ID="${PROJECT_ID:-project-bb4fd058-24e7-4ccb-b06}"
 SOURCE_DATASET="${SOURCE_DATASET:-CSTAR_2025_processed}"
 CHUNK_ROWS="${CHUNK_ROWS:-50000}"
+
+# BigQuery source table names
+SRC_DIM_CENTRAL="${SRC_DIM_CENTRAL:-dim_cdp_geo_and_ecoregion_TEST}"
+SRC_FACT_HAZARD="${SRC_FACT_HAZARD:-fact_hazard_final_TEST}"
+SRC_FACT_GOAL="${SRC_FACT_GOAL:-fact_goal_final_TEST}"
+SRC_FACT_ACTION="${SRC_FACT_ACTION:-fact_action_final_TEST}"
+SRC_FACT_FUNDING_GAP="${SRC_FACT_FUNDING_GAP:-fact_funding_gap_final_TEST}"
+SRC_PEER_SOLUTIONS="${SRC_PEER_SOLUTIONS:-peer_solutions_final_TEST}"
+SRC_SOLUTION_EXAMPLES="${SRC_SOLUTION_EXAMPLES:-solution_examples_TEST}"
 TARGET_ENV="${1:-development}"
 PREFLIGHT_ONLY=false
 
@@ -67,6 +76,13 @@ if [[ "$PREFLIGHT_ONLY" != true ]]; then
 fi
 
 secret() {
+  # Local override: if SECRET_<name> is set in the environment, use it instead
+  # of hitting Secret Manager. Useful for developers without secretAccessor.
+  local override_var="SECRET_$1"
+  if [[ -n "${!override_var:-}" ]]; then
+    printf '%s' "${!override_var}"
+    return 0
+  fi
   gcloud secrets versions access latest \
     --project "$PROJECT_ID" \
     --secret "${SECRET_PREFIX}-$1"
@@ -360,7 +376,7 @@ SELECT
   ecoregion,
   ST_ASTEXT(geometry) AS geom_wkt,
   ST_ASTEXT(centroid) AS centroid_wkt
-FROM \`${PROJECT_ID}.${SOURCE_DATASET}.dim_cdp_geo_and_ecoregion_TEST\`
+FROM \`${PROJECT_ID}.${SOURCE_DATASET}.${SRC_DIM_CENTRAL}\`
 " 1000
 
 export_csv "fact_hazard" "cdp_disclosing_org_number, hazard_rank, disclosing_year" "
@@ -381,7 +397,7 @@ SELECT
   summary_text,
   hazard_rank,
   2025 AS disclosing_year
-FROM \`${PROJECT_ID}.${SOURCE_DATASET}.fact_hazard_final_TEST\`
+FROM \`${PROJECT_ID}.${SOURCE_DATASET}.${SRC_FACT_HAZARD}\`
 "
 
 export_csv "fact_goal" "cdp_disclosing_org_number, disclosing_year, goal_index" "
@@ -398,7 +414,7 @@ SELECT
   comment_english,
   disclosing_year,
   goal_index
-FROM \`${PROJECT_ID}.${SOURCE_DATASET}.fact_goal_final_TEST\`
+FROM \`${PROJECT_ID}.${SOURCE_DATASET}.${SRC_FACT_GOAL}\`
 "
 
 export_csv "fact_action" "cdp_disclosing_org_number, disclosing_year, action_index" "
@@ -419,7 +435,7 @@ SELECT
   total_cost_usd,
   action_index,
   disclosing_year
-FROM \`${PROJECT_ID}.${SOURCE_DATASET}.fact_action_final_TEST\`
+FROM \`${PROJECT_ID}.${SOURCE_DATASET}.${SRC_FACT_ACTION}\`
 "
 
 export_csv "fact_funding_gap" "cdp_disclosing_org_number, disclosing_year, project_area_index, project_index" "
@@ -439,7 +455,7 @@ SELECT
   disclosing_year,
   project_area_index,
   project_index
-FROM \`${PROJECT_ID}.${SOURCE_DATASET}.fact_funding_gap_final_TEST\`
+FROM \`${PROJECT_ID}.${SOURCE_DATASET}.${SRC_FACT_FUNDING_GAP}\`
 "
 
 export_csv "peer_solutions" "disclosing_year, target_org_id, hazard_filter, action_index" "
@@ -457,7 +473,7 @@ SELECT
   action_count,
   pct_peers,
   has_local_action
-FROM \`${PROJECT_ID}.${SOURCE_DATASET}.peer_solutions_final_TEST\`
+FROM \`${PROJECT_ID}.${SOURCE_DATASET}.${SRC_PEER_SOLUTIONS}\`
 "
 
 export_csv "solution_examples" "disclosing_year, target_org_id, hazard_filter, peer_org_id, action_index" "
@@ -479,7 +495,7 @@ SELECT
   action_status_english,
   total_cost_usd,
   completeness_score
-FROM \`${PROJECT_ID}.${SOURCE_DATASET}.solution_examples_TEST\`
+FROM \`${PROJECT_ID}.${SOURCE_DATASET}.${SRC_SOLUTION_EXAMPLES}\`
 "
 
 log "Recreating staging tables"

@@ -20,6 +20,7 @@ describe('HazardsComponent', () => {
       coordinates: [[[-17.9302, -43.7908]]],
     },
     isReportingLeader: true,
+    publicStatus: 'Public',
     disclosureYear: 2025,
     requesters: ['C40 Cities', 'WWF'],
     population: 53000000,
@@ -250,8 +251,8 @@ describe('HazardsComponent', () => {
       };
       fixture.detectChanges();
 
-      const section = fixture.nativeElement.querySelector('.px-6.pb-6.flex.flex-col');
-      expect(section).toBeNull();
+      const host = fixture.nativeElement as HTMLElement;
+      expect(host.textContent).not.toContain('Data disclosure requested by');
     });
   });
 

@@ -58,6 +58,13 @@ class HazardMapper:
 
         if normalized_string.startswith("Other:"):
             details = normalized_string.removeprefix("Other:").strip()
+            # Strip leading list-marker punctuation a few rows have: "- ", "• ",
+            # "* ", em/en dashes etc., then force the first letter uppercase so
+            # entries like "Other: - risk of disruption..." render as
+            # "Risk of disruption...".
+            details = re.sub(r"^[-–—*•·]+\s*", "", details)
+            if details:
+                details = details[0].upper() + details[1:]
             if not details:
                 return None  # Ignore "Other:" if no details are provided
             return Hazard(
