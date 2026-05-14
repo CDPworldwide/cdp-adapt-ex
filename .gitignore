@@ -54,3 +54,5 @@ data/overture/geometry.json
 /cdp_dim_geo_and_ecoregion.csv
 /CSTAR_2025_export
 /scripts/seed_db.py
+/hazards-updated-050726.csv
+backend/app/data/gee_hazards_2025.json

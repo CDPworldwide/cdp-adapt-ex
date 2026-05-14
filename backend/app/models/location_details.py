@@ -64,10 +64,12 @@ class DimCentral(SQLModel, table=True):
     discloser_country_or_area: str | None = None
     public_status: str | None = None
     current_pop: float | None = None
+    reporting_language: str | None = None
     ranked_hazards: str | None = None
     ranked_sectors: str | None = None
     requesting_auth: str | None = None
     has_geometry: bool | None = None
+    climate_assess_yn: str | None = None
     disclosing_year: int = Field(primary_key=True)
     geometry: Any = Field(
         sa_column=Column(SafeGeometry()),

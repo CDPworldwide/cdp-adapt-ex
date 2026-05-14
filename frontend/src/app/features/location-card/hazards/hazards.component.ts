@@ -23,7 +23,7 @@ import {
   NoHazardsIconComponent,
 } from '../../../shared/icons';
 import { ShowMoreButtonComponent } from '../../../shared/components/show-more-button/show-more-button.component';
-import type { AdaptationAction, Hazard, LocationProfile } from '@pac-api/client';
+import type { AdaptationAction, Hazard, HazardProfile, LocationProfile } from '@pac-api/client';
 
 @Component({
   selector: 'app-hazards',
@@ -82,12 +82,31 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
       .filter(Boolean);
   }
 
+  get bannerVariant(): 'no-report' | 'non-public' | 'no-hazards' | null {
+    if (!this.data || (this.data.hazards?.hazards?.length ?? 0) > 0) {
+      return null;
+    }
+    if (this.data.publicStatus == null) return 'no-report';
+    if (this.data.publicStatus === 'Non-Public') return 'non-public';
+    return 'no-hazards';
+  }
+
+  // Public orgs surface their own disclosed hazards
+  get disclosedHazards(): HazardProfile[] {
+    if (this.data?.publicStatus !== 'Public') return [];
+    return (this.data?.hazards?.hazards ?? []).filter((h) => h.source !== 'GEE-Derived');
+  }
+
+  // Non-Public orgs and non-disclosers show GEE-derived hazards in different blocks
+  get geeFallback(): HazardProfile[] {
+    if (this.data?.publicStatus === 'Public') return [];
+    return (this.data?.hazards?.hazards ?? []).filter((h) => h.source === 'GEE-Derived');
+  }
+
   ngAfterViewInit(): void {
     setTimeout(() => this.measureCards());
     this.dataFieldContents.changes.subscribe(() => setTimeout(() => this.measureCards()));
-    this.topHazardsGrids.changes.subscribe(() =>
-      setTimeout(() => this.observeTopHazardsGrid()),
-    );
+    this.topHazardsGrids.changes.subscribe(() => setTimeout(() => this.observeTopHazardsGrid()));
     this.sectorLists.changes.subscribe(() =>
       setTimeout(() => {
         this.observeSectorList();

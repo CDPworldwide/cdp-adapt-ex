@@ -17,6 +17,7 @@ import { ProjectSeekingFunding } from '@pac-api/client';
 import { CloseIconComponent } from '../../../../shared/icons/close-icon.component';
 import { ImagePlaceholderIconComponent } from '../../../../shared/icons/image-placeholder-icon.component';
 import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
+import { ProtectedTranslationHtmlPipe } from '../../../../shared/pipes/protected-translation-html.pipe';
 
 @Component({
   selector: 'app-project-seeking-funding-detail',
@@ -27,6 +28,7 @@ import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe'
     CloseIconComponent,
     ImagePlaceholderIconComponent,
     AutoTranslatePipe,
+    ProtectedTranslationHtmlPipe,
   ],
   templateUrl: './project-seeking-funding-detail.component.html',
 })

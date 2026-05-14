@@ -9,7 +9,7 @@
       <button
         type="button"
         (click)="close()"
-        aria-label="Close"
+        [attr.aria-label]="'shared.close' | translate"
         class="lg:hidden absolute top-4 right-4 p-2 flex justify-center items-center rounded-full bg-white/50 backdrop-blur-sm hover:bg-white/80 transition-colors"
       >
         <app-close-icon color="white" size="18"></app-close-icon>
@@ -25,7 +25,7 @@
     <button
       type="button"
       (click)="close()"
-      aria-label="Close"
+      [attr.aria-label]="'shared.close' | translate"
       class="hidden lg:flex absolute top-4 right-4 w-[42px] h-[42px] justify-center items-center rounded-full bg-cdp-border hover:bg-cdp-neutral-08 transition-colors z-10"
     >
       <app-close-icon color="white" size="18"></app-close-icon>
@@ -69,7 +69,11 @@
             <h2
               class="text-black text-2xl lg:text-[31px] font-normal font-roboto leading-tight lg:leading-normal break-words"
             >
-              {{ splitTitleAtLastColon(action.title | autoTranslate).main }}
+              <span
+                [innerHTML]="
+                  splitTitleAtLastColon(action.title | autoTranslate).main | protectedTranslationHtml
+                "
+              ></span>
             </h2>
           </div>
           @if (action.status) {
@@ -82,7 +86,7 @@
               >
                 {{
                   action.status.statusType === 'OTHERS' && action.status.otherStatusDetails
-                    ? action.status.otherStatusDetails
+                    ? (action.status.otherStatusDetails | autoTranslate)
                     : ('locationCard.actionStatuses.' + action.status.statusType | translate)
                 }}
               </div>
@@ -175,7 +179,7 @@
           {{ 'locationCard.govActions.detail.description' | translate }}
         </div>
         <div class="self-stretch text-cdp-border font-roboto text-sm font-normal leading-5">
-          {{ action.description | autoTranslate }}
+          <span [innerHTML]="action.description | autoTranslate | protectedTranslationHtml"></span>
         </div>
       </div>
 
@@ -199,7 +203,7 @@
                   <div class="text-cdp-border font-roboto text-sm font-normal leading-5">
                     {{
                       hazard.hazardType === 'OTHERS'
-                        ? hazard.otherHazardDetails
+                        ? (hazard.otherHazardDetails | autoTranslate)
                         : ('locationCard.hazardNames.' + hazard.hazardType | translate)
                     }}
                   </div>
@@ -220,7 +224,7 @@
             <div class="flex-1 text-cdp-border font-roboto text-sm font-normal leading-5">
               {{
                 action.status.statusType === 'OTHERS' && action.status.otherStatusDetails
-                  ? action.status.otherStatusDetails
+                  ? (action.status.otherStatusDetails | autoTranslate)
                   : ('locationCard.actionStatusesFull.' + action.status.statusType | translate)
               }}
             </div>
@@ -238,7 +242,7 @@
             <div class="flex-1 text-cdp-border font-roboto text-sm font-normal leading-5">
               @for (benefit of action.coBenefits; track $index) {
                 <div class="flex flex-col">
-                  {{ benefit | autoTranslate }}
+                  <span [innerHTML]="benefit | autoTranslate | protectedTranslationHtml"></span>
                 </div>
               }
             </div>
@@ -256,7 +260,7 @@
             <div class="flex-1 text-cdp-border font-roboto text-sm font-normal leading-5">
               @for (attribute of action.resilienceEnhanced; track $index) {
                 <div class="flex flex-col">
-                  {{ attribute | autoTranslate }}
+                  <span [innerHTML]="attribute | autoTranslate | protectedTranslationHtml"></span>
                 </div>
               }
             </div>
@@ -282,8 +286,8 @@
                   <div class="text-cdp-border font-roboto text-sm font-normal leading-5">
                     {{
                       sector.sectorType === 'OTHERS'
-                        ? (sector.otherSectorDetails ??
-                          ('locationCard.sectorNames.OTHERS' | translate))
+                        ? ((sector.otherSectorDetails ??
+                            ('locationCard.sectorNames.OTHERS' | translate)) | autoTranslate)
                         : ('locationCard.sectorNames.' + sector.sectorType | translate)
                     }}
                   </div>

@@ -1,7 +1,7 @@
 <div class="flex flex-1 flex-col min-h-0 bg-cdp-bg text-cdp-dark">
   @if (isLoading) {
     <div class="flex flex-1 flex-col min-h-0">
-      <nav aria-label="Main navigation" class="bg-cdp-bg flex-shrink-0">
+      <nav [attr.aria-label]="'shared.mainNavigation' | translate" class="bg-cdp-bg flex-shrink-0">
         <app-header></app-header>
       </nav>
 
@@ -196,7 +196,7 @@
         [ngClass]="{ 'w-full': !isAiOpen, 'lg:w-3/4': isAiOpen }"
       >
         <div class="flex-1 overflow-y-auto">
-          <nav aria-label="Main navigation" class="bg-cdp-bg flex-shrink-0">
+          <nav [attr.aria-label]="'shared.mainNavigation' | translate" class="bg-cdp-bg flex-shrink-0">
             <app-header></app-header>
           </nav>
           <div id="page-content" tabindex="-1" class="relative focus:outline-none">

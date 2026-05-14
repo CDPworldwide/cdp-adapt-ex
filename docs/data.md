@@ -34,7 +34,7 @@ Download the data archive (7 CSV files) from (**TODO: ADD LINK**).
 
   If you are using Cloud SQL for the backend:
 * **Create Instance:** Set up a Cloud SQL for PostgreSQL instance.
-* **Define Schema:** Use the [this SQL script](create_empty_tables.sql) to initialize your tables according to the Table Schema Summary. Ensure all Primary Keys are correctly defined during this step.
+* **Define Schema:** Use `scripts/create_empty_tables.sql` to initialize your tables according to the Table Schema Summary. Ensure all Primary Keys are correctly defined during this step.
 * **Staging:** Upload the downloaded CSV files to your Google Cloud Storage bucket.
 
 * ### Local Database
@@ -44,7 +44,7 @@ Download the data archive (7 CSV files) from (**TODO: ADD LINK**).
   ```bash
   psql -U postgres -c "CREATE DATABASE cdp;"
   ```
-* **Define Schema:** Use the [this SQL script](create_empty_tables.sql) to initialize your tables according to the Table Schema Summary. Ensure all Primary Keys are correctly defined during this step.
+* **Define Schema:** Use `scripts/create_empty_tables.sql` to initialize your tables according to the Table Schema Summary. Ensure all Primary Keys are correctly defined during this step.
 
 ## 3\. Import Data
 
@@ -73,10 +73,10 @@ Download the data archive (7 CSV files) from (**TODO: ADD LINK**).
     | perl -ne 'print "$1\n" if /^password:\s*(.+)$/')"
 
   psql "host=localhost port=55432 dbname=cdp user=postgres sslmode=disable" \
-    -f docs/create_empty_tables.sql
+    -f scripts/create_empty_tables.sql
   ```
 
-  If the source data is already staged in BigQuery, export each table to CSV with columns in the same order as `docs/create_empty_tables.sql`, then load through the proxy with `psql`:
+  If the source data is already staged in BigQuery, export each table to CSV with columns in the same order as `scripts/create_empty_tables.sql`, then load through the proxy with `psql`:
 
   ```bash
   mkdir -p /tmp/cstar_2025_processed
@@ -158,4 +158,4 @@ For users preferring BigQuery, you can load the CSV files directly into your dat
 
 # Support and Documentation
 
-For detailed information on configuring the dashboard application to point to your new database instance, please refer to the technical documentation at `docs/deployment/README.md`.
+For detailed information on configuring the dashboard application to point to your new database instance, please refer to [docs/deployment.md](deployment.md).

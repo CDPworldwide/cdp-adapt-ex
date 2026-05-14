@@ -47,6 +47,7 @@ The system uses several SQLModel entities mapped to the CSTAR datasets.
 - **`FactProjects`**: Projects seeking funding (Funding Gap).
 - **`PeerSolutions`**: Adaptation actions taken by similar jurisdictions.
 - **`SolutionsExamples`**: Detailed examples of peer solutions.
+- **`UserRoleSelection`**: App-owned onboarding telemetry table that is auto-created by the backend on startup.
 
 ## Repositories
 
@@ -63,6 +64,7 @@ This is the primary repository for retrieving jurisdiction-level data.
 | `get_goals(org_id)` | Returns adaptation goals. |
 | `get_projects(org_id)` | Returns projects seeking funding. |
 | `get_all_location_summaries()` | Used for search suggestions. |
+| `get_all_location_geometries()` | Used for map pins. |
 
 ## Usage Pattern
 
@@ -91,6 +93,6 @@ Environment variables for database connection:
 | `POSTGRES_PORT` | Database port | `5432` |
 | `POSTGRES_DB` | Database name | `cdp` |
 | `POSTGRES_USER` | Database user | `postgres` |
-| `POSTGRES_PASSWORD` | Database password | `postgres` |
+| `POSTGRES_PASSWORD` | Database password | empty string |
 | `POSTGRES_POOL_SIZE` | Connection pool size | `20` |
 | `POSTGRES_MAX_OVERFLOW` | Max overflow connections | `10` |

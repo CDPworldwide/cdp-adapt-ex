@@ -248,6 +248,7 @@ jobs:
         with:
           secrets: |-
             API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
+            AI_SERVER_API_KEY:${{ env.PROJECT_ID }}/shared-AI_SERVER_API_KEY
             GOOGLE_MAPS_API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
 
       - name: Create production environment.ts

@@ -2,11 +2,11 @@
   <a
     routerLink="/"
     class="flex items-center gap-4 no-underline text-cdp-dark hover:opacity-80 transition-opacity"
-    aria-label="Home"
+    [attr.aria-label]="'shared.home' | translate"
   >
     <app-cdp-logo-with-text-icon width="70" height="18" color="black"></app-cdp-logo-with-text-icon>
     <div class="w-px h-6 bg-cdp-neutral-02"></div>
-    <span class="text-sm font-medium leading-none">Adaptation &amp; Action Explorer</span>
+    <span class="text-sm font-medium leading-none">{{ 'shared.appTitle' | translate }}</span>
   </a>
 
   <div class="flex items-center gap-2">

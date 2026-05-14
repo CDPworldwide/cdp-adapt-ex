@@ -7,7 +7,7 @@
     <button
       type="button"
       (click)="close()"
-      aria-label="Close"
+      [attr.aria-label]="'shared.close' | translate"
       class="relative cursor-pointer p-1 rounded-full hover:bg-white/20 active:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
     >
       <app-close-icon color="white"></app-close-icon>
@@ -23,7 +23,7 @@
 
     <!-- Title -->
     <h2 class="text-[22px] font-normal font-roboto text-black leading-7">
-      {{ goal.title | autoTranslate }}
+      <span [innerHTML]="goal.title | autoTranslate | protectedTranslationHtml"></span>
     </h2>
   </div>
 
@@ -51,7 +51,7 @@
                 >
                   {{
                     hazard.hazardType === 'OTHERS'
-                      ? hazard.otherHazardDetails
+                      ? (hazard.otherHazardDetails | autoTranslate)
                       : ('locationCard.hazardNames.' + hazard.hazardType | translate)
                   }}
                 </span>
