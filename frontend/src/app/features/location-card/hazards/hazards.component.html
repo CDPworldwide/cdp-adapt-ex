@@ -1,7 +1,7 @@
 @if (data && data.hazards) {
   <div>
     <!-- Hazard Overview Section -->
-    @if (data.hazards.hazards?.length) {
+    @if (disclosedHazards?.length) {
       <div>
         <div class="flex flex-col items-start gap-1 w-full mt-4 px-4 lg:px-0">
           <h2
@@ -55,7 +55,7 @@
             </div>
             <div #topHazardsGrid class="grid grid-cols-2 gap-3 lg:gap-4 lg:gap-y-6 lg:mt-auto">
               <div
-                *ngFor="let hazard of data.hazards.hazards | slice: 0 : 4; let i = index"
+                *ngFor="let hazard of disclosedHazards | slice: 0 : 4; let i = index"
                 class="flex items-center gap-2 transition-[opacity,transform] duration-500 ease-out"
                 [class.opacity-0]="!topHazardsRevealed"
                 [class.translate-y-1]="!topHazardsRevealed"
@@ -185,16 +185,16 @@
     }
 
     <!-- DISCLOSED HAZARDS Header -->
-    @if (data.hazards.hazards && data.hazards.hazards.length > 0) {
+    @if (disclosedHazards && disclosedHazards.length > 0) {
       <div class="flex flex-wrap items-center pt-6 pb-6 gap-2 px-4 lg:px-0">
         <div class="flex items-center gap-2">
-          @if (showAllHazards && data.hazards.hazards.length > 4) {
+          @if (showAllHazards && disclosedHazards.length > 4) {
             <h2
               class="text-cdp-dark font-roboto text-base font-medium leading-6 tracking-cdp-widest uppercase"
             >
               {{
                 'locationCard.hazardDetail.nHazardsDisclosed'
-                  | translate: { count: data.hazards.hazards.length }
+                  | translate: { count: disclosedHazards.length }
               }}
             </h2>
           } @else {
@@ -204,7 +204,7 @@
               {{
                 'locationCard.hazardDetail.topNHazards'
                   | translate
-                    : { count: data.hazards.hazards.length < 4 ? data.hazards.hazards.length : 4 }
+                    : { count: disclosedHazards.length < 4 ? disclosedHazards.length : 4 }
               }}
             </h2>
             <span
@@ -212,7 +212,7 @@
             >
               {{
                 'locationCard.hazardDetail.hazardsDisclosedCount'
-                  | translate: { count: data.hazards.hazards.length }
+                  | translate: { count: disclosedHazards.length }
               }}
             </span>
           }
@@ -267,7 +267,7 @@
     <!-- Hazard Detail Section (Loop) -->
     <div
       *ngFor="
-        let hazard of showAllHazards ? data.hazards.hazards : (data.hazards.hazards | slice: 0 : 4);
+        let hazard of showAllHazards ? disclosedHazards : (disclosedHazards | slice: 0 : 4);
         let last = last
       "
       class="mb-6 bg-white overflow-hidden lg:rounded-lg"
@@ -585,7 +585,7 @@
     </div>
 
     <!-- Show All / Collapse Hazards Button -->
-    @if (data.hazards.hazards && data.hazards.hazards.length > 4) {
+    @if (disclosedHazards && disclosedHazards.length > 4) {
       <div class="flex justify-center pt-2 pb-0">
         <button
           type="button"
@@ -710,7 +710,7 @@
       </div>
     }
 
-    @if (bannerVariant !== null && data.hazards.geeFallback?.length) {
+    @if (geeFallback.length) {
       <h2
         class="mt-4 px-4 lg:px-0 text-cdp-dark font-roboto text-base font-medium leading-6 tracking-cdp-widest uppercase"
       >
@@ -734,7 +734,7 @@
           {{ 'locationCard.hazards.geeOverview.title' | translate }}
         </h3>
         <div class="flex flex-wrap items-center gap-x-9 gap-y-3">
-          @for (hazard of data.hazards.geeFallback; track hazard.hazardRank) {
+          @for (hazard of geeFallback; track hazard.hazardRank) {
             <div class="flex items-center gap-2">
               <app-hazard-icon
                 [hazard]="hazard.hazard.hazardType"
@@ -743,7 +743,11 @@
                 color="white"
               ></app-hazard-icon>
               <span class="text-white font-roboto text-sm font-normal leading-5">
-                {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+                {{
+                  hazard.hazard.hazardType === 'OTHERS'
+                    ? hazard.hazard.otherHazardDetails
+                    : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
+                }}
               </span>
             </div>
           }
@@ -760,7 +764,7 @@
       </p>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 px-4 lg:px-0 mb-8">
-        @for (hazard of data.hazards.geeFallback; track hazard.hazardRank) {
+        @for (hazard of geeFallback; track hazard.hazardRank) {
           <div class="bg-white flex flex-col overflow-hidden">
             <div class="px-6 pt-6 pb-4">
               <div class="flex items-center gap-3 mb-2">
@@ -772,7 +776,11 @@
                 <h3
                   class="text-cdp-dark font-inter text-2xl font-medium leading-tight tracking-tight"
                 >
-                  {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+                  {{
+                    hazard.hazard.hazardType === 'OTHERS'
+                      ? hazard.hazard.otherHazardDetails
+                      : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
+                  }}
                 </h3>
               </div>
               <p

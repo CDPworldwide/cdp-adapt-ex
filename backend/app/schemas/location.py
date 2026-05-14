@@ -233,14 +233,10 @@ class HazardsTab(APIBaseModel):
     statistics: RegionalStatistics
     hazards: list[HazardProfile] = Field(
         default_factory=list,
-        description="List of hazard profiles, ordered by hazard_rank.",
-    )
-    gee_fallback: list[HazardProfile] = Field(
-        default_factory=list,
         description=(
-            "GEE-derived hazard profiles surfaced only when the jurisdiction "
-            "has no disclosed hazards (non-discloser, Non-Public, or Public "
-            "with zero disclosed hazards). Always 4 rows when populated."
+            "List of hazard profiles, ordered by hazard_rank. Each profile's "
+            "`source` field distinguishes disclosed rows from GEE-derived rows; "
+            "the frontend can filter on it for any visual distinction."
         ),
     )
 

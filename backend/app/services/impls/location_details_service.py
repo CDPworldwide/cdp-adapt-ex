@@ -132,7 +132,8 @@ class LocationDetailsService:
             HazardProfile(
                 hazard=mapped_hazard,
                 hazard_rank=h.hazard_rank,
-                source=None,
+                # Surface "GEE-Derived" rows for different handling
+                source="GEE-Derived" if h.public_status == "GEE-Derived" else None,
                 description=h.summary_text,
                 vulnerable_groups=[
                     group.strip()
