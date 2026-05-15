@@ -7,13 +7,16 @@ on:
       - "backend/**"
       - "frontend/**"
       - "client/**"
+      - ".github/actions/setup-frontend-build/**"
       - ".github/workflows/deploy.yml"
       - ".github/workflows/backend-deploy.yml"
       - ".github/workflows/frontend.yml"
+      - ".github/workflows/frontend-dev-deploy.yml"
+      - ".github/workflows/frontend-preview.yml"
   workflow_dispatch:
 
 concurrency:
-  group: deploy-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -30,7 +33,7 @@ env:
 
 jobs:
   deploy-backend:
-    name: Deploy backend (production)
+    name: Production / deploy backend
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -160,6 +163,8 @@ jobs:
           BACKEND_URL="$BACKEND_URL" \
           BACKEND_API_KEY="$BACKEND_API_KEY" \
           SMOKE_TEST_LOCATION_ORG_ID="834406" \
+          SMOKE_TEST_TRANSLATION_ORG_ID="59677" \
+          SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE="es" \
           SMOKE_TEST_LOCATION_EXPECTED_STATUS="${{ env.ENVIRONMENT == 'production' && '200' || '' }}" \
           bash backend/scripts/smoke_test_deployment.sh
 
@@ -169,7 +174,7 @@ jobs:
           echo "Backend ready: $BACKEND_URL"
 
   deploy-frontend:
-    name: Deploy frontend (production)
+    name: Production / deploy frontend
     runs-on: ubuntu-latest
     needs: deploy-backend
     permissions:
@@ -189,48 +194,10 @@ jobs:
           # Optional: Mask it locally so it doesn't leak in frontend logs
           echo "::add-mask::$DECODED_URL"
 
-      - name: Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
+      - name: Setup frontend build
+        uses: ./.github/actions/setup-frontend-build
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
-          cache-dependency-path: |
-            client/package-lock.json
-            frontend/package-lock.json
-
-      - name: Install client dependencies
-        working-directory: client
-        run: npm ci
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version-file: "backend/.python-version"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          version: "0.9.18"
-          enable-cache: true
-
-      - name: Install Graphviz
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgraphviz-dev
-
-      - name: Generate API client from OpenAPI spec
-        working-directory: client
-        run: ./scripts/generate.sh
-        env:
-          API_URL: http://127.0.0.1:4352
-
-      - name: Verify client package
-        working-directory: client
-        run: npm run build
-
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm ci
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2

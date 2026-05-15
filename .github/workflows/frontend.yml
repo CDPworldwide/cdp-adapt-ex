@@ -1,4 +1,4 @@
-name: Frontend CI/CD
+name: Frontend CI
 
 on:
   push:
@@ -7,37 +7,33 @@ on:
       - "frontend/**"
       - "test/**"
       - "client/**"
+      - ".github/actions/setup-frontend-build/**"
       - ".github/workflows/frontend.yml"
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened]
     branches: [main, production]
     paths:
       - "frontend/**"
       - "test/**"
       - "client/**"
+      - ".github/actions/setup-frontend-build/**"
       - ".github/workflows/frontend.yml"
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: us-central1
-  ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
   AI_SERVER_URL: https://cdp-ai-server-pbybuiwoxq-uc.a.run.app
-  # Dynamic service name: production, dev, or PR-specific preview
-  SERVICE_NAME: >-
-    ${{ github.event_name == 'pull_request' && format('frontend-preview-pr-{0}', github.event.pull_request.number) ||
-        (github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend-dev') }}
-  IS_PREVIEW: ${{ github.event_name == 'pull_request' }}
   ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
   NODE_VERSION: "20.x"
 
 jobs:
   build-and-test:
-    name: Build and test frontend
+    name: Frontend CI / build, lint, test
     runs-on: ubuntu-latest
     if: github.event.action != 'closed' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     permissions:
@@ -53,54 +49,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v4
+      - name: Setup frontend build
+        uses: ./.github/actions/setup-frontend-build
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
-          cache-dependency-path: |
-            client/package-lock.json
-            frontend/package-lock.json
-
-      - name: Install client dependencies
-        working-directory: client
-        run: npm ci
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version-file: "backend/.python-version"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          version: "0.9.18"
-          enable-cache: true
-
-      - name: Install Graphviz
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgraphviz-dev
-
-      - name: Generate API client from OpenAPI spec
-        working-directory: client
-        run: ./scripts/generate.sh
-        env:
-          API_URL: http://127.0.0.1:4352
-
-      - name: Verify client package
-        working-directory: client
-        run: npm run build
 
       - name: Cache client build
         uses: actions/cache@v4
         with:
           path: client/dist
           key: client-build-${{ github.sha }}
-
-      - name: Install frontend dependencies
-        working-directory: frontend
-        run: npm ci
 
       - name: Check translation parity
         id: i18n-coverage
@@ -362,295 +320,3 @@ jobs:
       #     name: chat-eval-summary-${{ github.sha }}
       #     path: test/artifacts/chat-eval-summary.json
       #     retention-days: 7
-
-  wait-for-backend-preview:
-    name: Wait for backend preview
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
-    permissions:
-      actions: read
-      contents: read
-
-    steps:
-      - name: Wait for backend deploy workflow to finish
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const workflowId = 'backend-deploy.yml'
-            const headSha = context.payload.pull_request.head.sha
-            const branch = context.payload.pull_request.head.ref
-
-            for (let attempt = 1; attempt <= 60; attempt++) {
-              const { data } = await github.rest.actions.listWorkflowRuns({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                workflow_id: workflowId,
-                event: 'pull_request',
-                head_sha: headSha,
-                branch,
-                per_page: 10,
-              })
-
-              const run = data.workflow_runs.find((candidate) => candidate.head_sha === headSha)
-
-              if (run) {
-                core.info(`Backend workflow run ${run.id}: status=${run.status} conclusion=${run.conclusion}`)
-
-                if (run.status === 'completed') {
-                  if (run.conclusion === 'success') {
-                    return
-                  }
-
-                  core.setFailed(`Backend workflow finished with conclusion: ${run.conclusion}`)
-                  return
-                }
-              } else {
-                core.info(`No backend workflow run found yet for ${headSha}`)
-              }
-
-              await new Promise((resolve) => setTimeout(resolve, 10000))
-            }
-
-            core.setFailed('Timed out waiting for backend deploy workflow to finish')
-
-  deploy-preview:
-    name: Deploy to Cloud Run (${{ github.ref == 'refs/heads/production' && 'production' || 'development' }})
-    runs-on: ubuntu-latest
-    needs:
-      - build-and-test
-      - wait-for-backend-preview
-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
-    permissions:
-      contents: read
-      id-token: write
-      pull-requests: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-
-      - name: Determine backend URL
-        id: backend-url
-        run: |
-          BACKEND_SERVICE="cdp-server-preview-pr-${{ github.event.pull_request.number }}"
-          BACKEND_URL=$(gcloud run services describe $BACKEND_SERVICE \
-            --region=us-central1 \
-            --format='value(status.url)' 2>/dev/null || echo "")
-
-          if [ -z "$BACKEND_URL" ]; then
-            echo "❌ Backend service $BACKEND_SERVICE not found"
-            exit 1
-          fi
-
-          echo "url=$BACKEND_URL" >> $GITHUB_OUTPUT
-          echo "Backend URL: $BACKEND_URL"
-
-      - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-build-${{ github.sha }}
-          path: frontend/dist/frontend/browser
-
-      - name: Build and push Docker image
-        working-directory: frontend
-        run: |
-          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}"
-          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:latest"
-
-          docker build -t $IMAGE_TAG -t $IMAGE_LATEST .
-          docker push $IMAGE_TAG
-          docker push $IMAGE_LATEST
-
-      - name: Deploy to Cloud Run
-        id: deploy
-        uses: google-github-actions/deploy-cloudrun@v2
-        with:
-          service: ${{ env.SERVICE_NAME }}
-          region: ${{ env.REGION }}
-          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}
-          flags: |
-            --allow-unauthenticated
-            --min-instances=0
-            --max-instances=2
-            --memory=512Mi
-            --cpu=1
-            --timeout=60
-            --port=8080
-          labels: |
-            environment=preview
-            managed-by=github-actions
-            commit-sha=${{ github.sha }}
-            pr-number=${{ github.event.pull_request.number }}
-
-      - name: Verify deployment health
-        run: |
-          URL="${{ steps.deploy.outputs.url }}"
-          echo "Checking health of $URL..."
-          for i in {1..10}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $URL || echo "000")
-            if [ "$STATUS" = "200" ]; then
-              echo "✓ Deployment is healthy (HTTP $STATUS)"
-              exit 0
-            fi
-            echo "Attempt $i/10: HTTP $STATUS, waiting 5s..."
-            sleep 5
-          done
-          echo "⚠️ Warning: Deployment may not be healthy"
-          exit 1
-
-      - name: Comment PR with preview URL
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## 🚀 Frontend Preview Deployed
-
-            **URL:** ${{ steps.deploy.outputs.url }}
-            **Commit:** `${{ github.sha }}`
-            **Environment:** preview (PR #${{ github.event.pull_request.number }})
-            **Backend:** ${{ steps.backend-url.outputs.url }}
-            **AI Server:** ${{ env.AI_SERVER_URL }}
-
-            ### Test Credentials
-            Use these credentials to login to the preview:
-            - **Email:** `test@example.com`
-            - **Password:** `TestPassword123!`
-
-            ### Quick Test
-            ```bash
-            # Open the preview
-            open ${{ steps.deploy.outputs.url }}
-            ```
-
-            > This preview environment is isolated per PR and will remain active until the PR is closed.
-
-  cleanup-preview:
-    name: Cleanup Preview Environment
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    permissions:
-      contents: read
-      id-token: write
-      pull-requests: write
-
-    steps:
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-
-      - name: Delete preview service
-        run: |
-          SERVICE_NAME="frontend-preview-pr-${{ github.event.pull_request.number }}"
-          gcloud run services delete $SERVICE_NAME \
-            --region=us-central1 \
-            --quiet || echo "Service already deleted or not found"
-
-      - name: Comment PR about cleanup
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## 🧹 Frontend Preview Environment Cleaned Up
-
-            The preview deployment `frontend-preview-pr-${{ github.event.pull_request.number }}` has been deleted.
-
-  deploy-dev:
-    name: Deploy to Cloud Run (development)
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-      id-token: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-
-      - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-build-${{ github.sha }}
-          path: frontend/dist/frontend/browser
-
-      - name: Build and push Docker image
-        working-directory: frontend
-        run: |
-          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}"
-          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:latest"
-
-          docker build -t $IMAGE_TAG -t $IMAGE_LATEST .
-          docker push $IMAGE_TAG
-          docker push $IMAGE_LATEST
-
-      - name: Deploy to Cloud Run
-        id: deploy
-        uses: google-github-actions/deploy-cloudrun@v2
-        with:
-          service: ${{ env.SERVICE_NAME }}
-          region: ${{ env.REGION }}
-          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}
-          flags: |
-            --allow-unauthenticated
-            --min-instances=0
-            --max-instances=2
-            --memory=512Mi
-            --cpu=1
-            --timeout=60
-            --port=8080
-          labels: |
-            environment=${{ env.ENVIRONMENT }}
-            managed-by=github-actions
-            commit-sha=${{ github.sha }}
-
-      - name: Verify deployment health
-        run: |
-          URL="${{ steps.deploy.outputs.url }}"
-          echo "Checking health of $URL..."
-          for i in {1..10}; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" $URL || echo "000")
-            if [ "$STATUS" = "200" ]; then
-              echo "✓ Development deployment is healthy (HTTP $STATUS)"
-              exit 0
-            fi
-            echo "Attempt $i/10: HTTP $STATUS, waiting 5s..."
-            sleep 5
-          done
-          echo "⚠️ Warning: Development deployment may not be healthy"
-          exit 1

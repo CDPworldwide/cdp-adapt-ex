@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -22,7 +22,7 @@ env:
 
 jobs:
   deploy:
-    name: Deploy ai-server
+    name: AI server / deploy
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -6,15 +6,21 @@ on:
     branches: [main, production]
     paths:
       - "backend/**"
+      - ".github/workflows/backend-ci.yml"
   pull_request:
     branches: [main, production]
     paths:
       - "backend/**"
+      - ".github/workflows/backend-ci.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   # Lints, compiles, and tests the backend
   lint-and-test:
-    name: Lint, compile & test backend
+    name: Backend CI / lint, compile, test
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +30,7 @@ jobs:
 
       # Sets up a specific version of Python
       - name: Set up Python 3.13
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version-file: "backend/.python-version"
 
