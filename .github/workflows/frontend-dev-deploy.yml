@@ -60,10 +60,24 @@ jobs:
             AI_SERVER_API_KEY:${{ env.PROJECT_ID }}/shared-AI_SERVER_API_KEY
             GOOGLE_MAPS_API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
 
+      - name: Determine backend URL
+        id: backend-url
+        run: |
+          BACKEND_SERVICE="cdp-server-dev"
+          BACKEND_URL=$(gcloud run services describe "$BACKEND_SERVICE" \
+            --region="${{ env.REGION }}" \
+            --format='value(status.url)')
+          if [ -z "$BACKEND_URL" ]; then
+            echo "Could not resolve URL for Cloud Run service $BACKEND_SERVICE in ${{ env.REGION }}"
+            exit 1
+          fi
+          echo "url=$BACKEND_URL" >> "$GITHUB_OUTPUT"
+          echo "Resolved backend URL: $BACKEND_URL"
+
       - name: Create environment.ts
         working-directory: frontend
         run: |
-          FRONTEND_BASE_URL='${{ secrets.BASE_URL }}' \
+          FRONTEND_BASE_URL='${{ steps.backend-url.outputs.url }}' \
           FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
           FRONTEND_API_KEY='${{ steps.frontend-secrets.outputs.API_KEY }}' \
           FRONTEND_AI_SERVER_API_KEY='${{ steps.frontend-secrets.outputs.AI_SERVER_API_KEY }}' \
