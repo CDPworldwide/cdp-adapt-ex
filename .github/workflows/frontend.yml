@@ -235,11 +235,20 @@ jobs:
               exit 1
             fi
 
-            echo "url=$BACKEND_URL" >> $GITHUB_OUTPUT
-            echo "Final backend URL: $BACKEND_URL"
+          elif [ "${{ github.ref }}" = "refs/heads/production" ]; then
+            BACKEND_SERVICE="cdp-server-prod"
+            BACKEND_URL=$(gcloud run services describe $BACKEND_SERVICE \
+              --region=us-central1 \
+              --format='value(status.url)')
           else
-            echo "url=${{ secrets.BASE_URL }}" >> $GITHUB_OUTPUT
+            BACKEND_SERVICE="cdp-server-dev"
+            BACKEND_URL=$(gcloud run services describe $BACKEND_SERVICE \
+              --region=us-central1 \
+              --format='value(status.url)')
           fi
+
+          echo "url=$BACKEND_URL" >> $GITHUB_OUTPUT
+          echo "Final backend URL: $BACKEND_URL"
 
       - name: Get Frontend Secrets from Secret Manager
         id: frontend-secrets
