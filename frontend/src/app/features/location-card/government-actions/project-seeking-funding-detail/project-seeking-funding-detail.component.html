@@ -24,7 +24,7 @@
 
     <!-- Title -->
     <h2 class="text-[22px] font-normal font-roboto text-black leading-7">
-      <span [innerHTML]="project.title | autoTranslate | protectedTranslationHtml"></span>
+      <span [innerHTML]="project.title | protectedTranslationHtml"></span>
     </h2>
   </div>
 
@@ -66,7 +66,7 @@
           </div>
           <div class="lg:flex-1">
             <p class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-              <span [innerHTML]="project.description | autoTranslate | protectedTranslationHtml"></span>
+              <span [innerHTML]="project.description | protectedTranslationHtml"></span>
             </p>
           </div>
         </div>
@@ -102,7 +102,7 @@
           </div>
           <div class="flex-1">
             <p class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-              <span [innerHTML]="project.projectArea | autoTranslate | protectedTranslationHtml"></span>
+              <span [innerHTML]="project.projectArea | protectedTranslationHtml"></span>
             </p>
           </div>
         </div>
@@ -121,7 +121,7 @@
           <div class="flex-1">
             <p class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]">
               <span
-                [innerHTML]="financeModels.join(', ') | autoTranslate | protectedTranslationHtml"
+                [innerHTML]="financeModels.join(', ') | protectedTranslationHtml"
               ></span>
             </p>
           </div>
@@ -140,7 +140,7 @@
           </div>
           <div class="flex-1">
             <p class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-              <span [innerHTML]="project.financeStatus | autoTranslate | protectedTranslationHtml"></span>
+              <span [innerHTML]="project.financeStatus | protectedTranslationHtml"></span>
             </p>
           </div>
         </div>

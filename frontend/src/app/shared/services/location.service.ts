@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Observable, from, map, catchError, of, throwError } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable, from, map, catchError, of } from 'rxjs';
 import {
   getLocationApiV1LocationsLocationNameGet,
   getLocationByOrgIdApiV1LocationsIdOrganizationIdGet,
@@ -9,25 +9,30 @@ import {
 import type { LocationProfile, LocationResponse } from '@pac-api/client';
 import { LocationSuggestion } from './location-suggestion';
 import { createApiClient } from './api-client';
+import { LanguageService } from './language.service';
+import { normalizeTranslationLanguage } from './translation-language.util';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LocationService {
   private client = createApiClient();
+  private languageService = inject(LanguageService);
 
   getLocation(locationName: string): Observable<LocationProfile> {
     return from(
       getLocationApiV1LocationsLocationNameGet({
         client: this.client,
         path: { location_name: locationName },
-      }),
+        query: this.locationTranslationQuery(),
+      } as unknown as Parameters<typeof getLocationApiV1LocationsLocationNameGet>[0]),
     ).pipe(
       map((response) => {
-        if (response.error) {
-          throw response;
+        const result = response as { data?: LocationResponse; error?: unknown };
+        if (result.error) {
+          throw result;
         }
-        return (response.data as LocationResponse).location as LocationProfile;
+        return result.data!.location as LocationProfile;
       }),
     );
   }
@@ -37,13 +42,15 @@ export class LocationService {
       getLocationByOrgIdApiV1LocationsIdOrganizationIdGet({
         client: this.client,
         path: { organization_id: Number(organizationId) },
-      }),
+        query: this.locationTranslationQuery(),
+      } as unknown as Parameters<typeof getLocationByOrgIdApiV1LocationsIdOrganizationIdGet>[0]),
     ).pipe(
       map((response) => {
-        if (response.error) {
-          throw response;
+        const result = response as { data?: LocationResponse; error?: unknown };
+        if (result.error) {
+          throw result;
         }
-        return (response.data as LocationResponse).location as LocationProfile;
+        return result.data!.location as LocationProfile;
       }),
     );
   }
@@ -79,5 +86,11 @@ export class LocationService {
         return of([]);
       }),
     );
+  }
+
+  private locationTranslationQuery(): { target_language: string } {
+    return {
+      target_language: normalizeTranslationLanguage(this.languageService.currentLang()),
+    };
   }
 }

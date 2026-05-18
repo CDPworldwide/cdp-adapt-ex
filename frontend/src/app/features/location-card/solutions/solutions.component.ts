@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { HazardEnum, LocationProfile, SolutionCard, SolutionCategoryEnum } from '@pac-api/client';
 import { SolutionDetailModalComponent } from './solution-detail-modal.component';
+import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
 
 @Component({
   selector: 'app-solutions',
@@ -22,6 +23,7 @@ import { SolutionDetailModalComponent } from './solution-detail-modal.component'
     MatTooltipModule,
     MatDialogModule,
     RouterLink,
+    ProtectedTranslationHtmlPipe,
   ],
   templateUrl: './solutions.component.html',
 })

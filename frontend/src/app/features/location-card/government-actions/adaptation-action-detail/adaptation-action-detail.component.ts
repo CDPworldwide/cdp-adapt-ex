@@ -19,7 +19,6 @@ import { InfoIconComponent } from '../../../../shared/icons/info-icon.component'
 import { LocationPinIconComponent } from '../../../../shared/icons/location-pin-icon.component';
 import { HazardIconComponent } from '../../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../../shared/components/sector-icon/sector-icon.component';
-import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
 import { ProtectedTranslationHtmlPipe } from '../../../../shared/pipes/protected-translation-html.pipe';
 import { splitTitleAtLastColon } from '../../../../shared/utils/title.util';
 
@@ -37,7 +36,6 @@ export const DETAIL_HERO_BACKGROUND = `linear-gradient(270deg, rgba(30, 30, 30, 
     InfoIconComponent,
     MatTooltipModule,
     MatIconModule,
-    AutoTranslatePipe,
     ProtectedTranslationHtmlPipe,
     LocationPinIconComponent,
   ],

@@ -18,13 +18,13 @@ export class AutoTranslatePipe implements PipeTransform {
   private lastLang = '';
   private lastSourceLang = '';
 
-  transform(value: string | null | undefined, sourceLang: string | null | undefined = 'en'): string {
+  transform(value: string | null | undefined, sourceLang?: string | null): string {
     if (!value) {
       return value ?? '';
     }
 
     const lang = normalizeTranslationLanguage(this.languageService.currentLang());
-    const normalizedSourceLang = normalizeTranslationLanguage(sourceLang);
+    const normalizedSourceLang = normalizeTranslationLanguage(sourceLang ?? lang);
 
     if (lang === 'en' || lang === normalizedSourceLang || !this.webTranslation.isSupported) {
       return value;
@@ -41,7 +41,7 @@ export class AutoTranslatePipe implements PipeTransform {
     this.lastInput = value;
     this.lastLang = lang;
     this.lastSourceLang = normalizedSourceLang;
-    this.currentValue = value;
+    this.currentValue = '';
 
     const requestedLang = lang;
     const requestedSourceLang = normalizedSourceLang;

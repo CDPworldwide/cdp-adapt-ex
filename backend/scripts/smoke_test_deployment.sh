@@ -6,6 +6,8 @@ set -euo pipefail
 
 SMOKE_TEST_LOCATION_ORG_ID="${SMOKE_TEST_LOCATION_ORG_ID:-834406}"
 SMOKE_TEST_LOCATION_EXPECTED_STATUS="${SMOKE_TEST_LOCATION_EXPECTED_STATUS:-}"
+SMOKE_TEST_TRANSLATION_ORG_ID="${SMOKE_TEST_TRANSLATION_ORG_ID:-$SMOKE_TEST_LOCATION_ORG_ID}"
+SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE="${SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE:-}"
 BACKEND_URL="${BACKEND_URL%/}"
 
 request_status() {
@@ -50,4 +52,37 @@ if [ -n "$SMOKE_TEST_LOCATION_EXPECTED_STATUS" ] &&
   exit 1
 fi
 
-echo "Backend deployment smoke tests passed: health=${health_status}, location=${location_status}"
+if [ -n "$SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE" ]; then
+  translation_url="${BACKEND_URL}/api/v1/locations/id/${SMOKE_TEST_TRANSLATION_ORG_ID}?target_language=${SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE}"
+  translation_body="$(mktemp)"
+  translation_status="$(request_status "$translation_url" "$translation_body")"
+
+  if [ "$translation_status" != "200" ]; then
+    echo "Translated location smoke test failed: ${translation_url} -> HTTP ${translation_status}"
+    sed -n '1,80p' "$translation_body"
+    exit 1
+  fi
+
+  python3 - "$translation_body" "$SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE" <<'PY'
+import json
+import sys
+
+body_path, expected_language = sys.argv[1], sys.argv[2]
+with open(body_path, encoding="utf-8") as body:
+    payload = json.load(body)
+
+reporting_language = payload.get("location", {}).get("reportingLanguage")
+if reporting_language != expected_language:
+    print(
+        "Translated location smoke test returned reportingLanguage="
+        f"{reporting_language!r}, expected {expected_language!r}"
+    )
+    sys.exit(1)
+PY
+fi
+
+if [ -n "$SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE" ]; then
+  echo "Backend deployment smoke tests passed: health=${health_status}, location=${location_status}, translated_location=${translation_status}"
+else
+  echo "Backend deployment smoke tests passed: health=${health_status}, location=${location_status}"
+fi

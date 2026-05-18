@@ -134,7 +134,9 @@
                 <h4
                   class="text-white text-2xl font-light font-roboto leading-normal tracking-[1.2px] line-clamp-2 break-words"
                 >
-                  {{ solution.solution }}
+                  <span
+                    [innerHTML]="solution.solution | protectedTranslationHtml"
+                  ></span>
                 </h4>
                 @if (solution.hasLocalAction) {
                   <div

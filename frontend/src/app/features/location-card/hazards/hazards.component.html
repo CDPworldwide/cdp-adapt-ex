@@ -71,12 +71,18 @@
                 ></app-hazard-icon>
                 <span
                   class="text-white font-roboto text-xs font-normal leading-4 tracking-cdp-widest"
-                  >{{
-                    hazard.hazard.hazardType === 'OTHERS'
-                      ? hazard.hazard.otherHazardDetails
-                      : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
-                  }}</span
                 >
+                  @if (hazard.hazard.hazardType === 'OTHERS') {
+                    <span
+                      [innerHTML]="
+                        (hazard.hazard.otherHazardDetails ?? '')
+                          | protectedTranslationHtml
+                      "
+                    ></span>
+                  } @else {
+                    {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+                  }
+                </span>
               </div>
             </div>
           </div>
@@ -147,12 +153,18 @@
                       ></app-sector-icon>
                       <span
                         class="text-white font-roboto text-xs font-normal leading-4 tracking-cdp-widest whitespace-nowrap"
-                        >{{
-                          sector.sectorType === 'OTHERS'
-                            ? sector.otherSectorDetails
-                            : ('locationCard.sectorNames.' + sector.sectorType | translate)
-                        }}</span
                       >
+                        @if (sector.sectorType === 'OTHERS') {
+                          <span
+                            [innerHTML]="
+                              (sector.otherSectorDetails ?? '')
+                                | protectedTranslationHtml
+                            "
+                          ></span>
+                        } @else {
+                          {{ 'locationCard.sectorNames.' + sector.sectorType | translate }}
+                        }
+                      </span>
                     </div>
                   </div>
                   <!-- Fading effect at the bottom -->
@@ -336,11 +348,16 @@
               <h3
                 class="text-cdp-dark font-roboto text-[28px] font-normal leading-9 tracking-normal"
               >
-                {{
-                  hazard.hazard.hazardType === 'OTHERS'
-                    ? hazard.hazard.otherHazardDetails
-                    : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
-                }}
+                @if (hazard.hazard.hazardType === 'OTHERS') {
+                  <span
+                    [innerHTML]="
+                      (hazard.hazard.otherHazardDetails ?? '')
+                        | protectedTranslationHtml
+                    "
+                  ></span>
+                } @else {
+                  {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+                }
               </h3>
             </div>
             <div class="flex items-center lg:ml-auto">
@@ -371,7 +388,7 @@
             <p
               class="text-black font-roboto text-base font-normal leading-6 tracking-cdp-widest px-6 pb-4"
             >
-              {{ hazard.description }}
+              <span [innerHTML]="hazard.description | protectedTranslationHtml"></span>
             </p>
           }
 
@@ -476,7 +493,9 @@
                     <ul
                       class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-1/2 space-y-1"
                     >
-                      <li *ngFor="let group of hazard.vulnerableGroups">{{ group }}</li>
+                      <li *ngFor="let group of hazard.vulnerableGroups">
+                        <span [innerHTML]="group | protectedTranslationHtml"></span>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -496,7 +515,10 @@
                       class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-1/2"
                     >
                       @if (parseImpact(hazard.impact); as parsed) {
-                        <span class="whitespace-pre-line">{{ parsed.text }}</span>
+                        <span
+                          class="whitespace-pre-line"
+                          [innerHTML]="parsed.text | protectedTranslationHtml"
+                        ></span>
                       }
                     </div>
                   </div>
@@ -517,11 +539,16 @@
                       class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-1/2 space-y-1"
                     >
                       <li *ngFor="let sector of hazard.mostExposedSectors">
-                        {{
-                          sector.sectorType === 'OTHERS'
-                            ? sector.otherSectorDetails
-                            : ('locationCard.sectorNames.' + sector.sectorType | translate)
-                        }}
+                        @if (sector.sectorType === 'OTHERS') {
+                          <span
+                            [innerHTML]="
+                              (sector.otherSectorDetails ?? '')
+                                | protectedTranslationHtml
+                            "
+                          ></span>
+                        } @else {
+                          {{ 'locationCard.sectorNames.' + sector.sectorType | translate }}
+                        }
                       </li>
                     </ul>
                   </div>
@@ -743,11 +770,16 @@
                 color="white"
               ></app-hazard-icon>
               <span class="text-white font-roboto text-sm font-normal leading-5">
-                {{
-                  hazard.hazard.hazardType === 'OTHERS'
-                    ? hazard.hazard.otherHazardDetails
-                    : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
-                }}
+                @if (hazard.hazard.hazardType === 'OTHERS') {
+                  <span
+                    [innerHTML]="
+                      (hazard.hazard.otherHazardDetails ?? '')
+                        | protectedTranslationHtml
+                    "
+                  ></span>
+                } @else {
+                  {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+                }
               </span>
             </div>
           }
@@ -776,20 +808,28 @@
                 <h3
                   class="text-cdp-dark font-inter text-2xl font-medium leading-tight tracking-tight"
                 >
-                  {{
-                    hazard.hazard.hazardType === 'OTHERS'
-                      ? hazard.hazard.otherHazardDetails
-                      : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
-                  }}
+                  @if (hazard.hazard.hazardType === 'OTHERS') {
+                    <span
+                      [innerHTML]="
+                        (hazard.hazard.otherHazardDetails ?? '')
+                          | protectedTranslationHtml
+                      "
+                    ></span>
+                  } @else {
+                    {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+                  }
                 </h3>
               </div>
               <p
                 class="min-h-10 text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-tight"
               >
-                {{
-                  hazard.description ??
-                    ('locationCard.hazards.geeSummary.' + hazard.hazard.hazardType | translate)
-                }}
+                @if (hazard.description) {
+                  <span
+                    [innerHTML]="hazard.description | protectedTranslationHtml"
+                  ></span>
+                } @else {
+                  {{ 'locationCard.hazards.geeSummary.' + hazard.hazard.hazardType | translate }}
+                }
               </p>
             </div>
             <div class="relative h-[400px] overflow-hidden">

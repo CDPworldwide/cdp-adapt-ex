@@ -17,6 +17,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { HazardMapComponent, SUPPORTED_HAZARD_TYPES } from '../../hazard-map/hazard-map';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../shared/components/sector-icon/sector-icon.component';
+import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
 import {
   InfoIconComponent,
   ArrowRightIconComponent,
@@ -35,6 +36,7 @@ import type { AdaptationAction, Hazard, HazardProfile, LocationProfile } from '@
     HazardMapComponent,
     HazardIconComponent,
     SectorIconComponent,
+    ProtectedTranslationHtmlPipe,
     InfoIconComponent,
     ArrowRightIconComponent,
     NoHazardsIconComponent,
