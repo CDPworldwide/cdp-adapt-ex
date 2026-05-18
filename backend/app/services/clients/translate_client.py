@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import threading
 import time
 from collections import OrderedDict
@@ -6,6 +8,8 @@ from dataclasses import dataclass
 from google.cloud import translate_v3 as translate
 
 from app.services.clients.translation_text_processor import (
+    PLACEHOLDER_PATTERN,
+    PreparedText,
     protect_acronyms,
     restore_acronyms,
     validate_restored_acronyms,
@@ -146,6 +150,32 @@ class TranslateClient:
                         mutated_count=len(validation.mutated),
                         failure_type=_validation_failure_type(validation),
                     )
+                    repaired = self._translate_around_acronyms(
+                        prepared=prepared,
+                        source_language=source_language,
+                        target_language=target_language,
+                    )
+                    if repaired is not None:
+                        repaired_validation = validate_restored_acronyms(
+                            original_text, repaired
+                        )
+                        if repaired_validation.is_valid:
+                            self._store_cached(cache_key, repaired)
+                            for original_index in pending_indexes_by_key[cache_key]:
+                                translations[original_index] = repaired
+                            continue
+
+                        logger.warning(
+                            "translation_acronym_repair_failed",
+                            source_language=source_language,
+                            target_language=target_language,
+                            index=pending_indexes_by_key[cache_key][0],
+                            missing_count=len(repaired_validation.missing),
+                            duplicated_count=len(repaired_validation.duplicated),
+                            mutated_count=len(repaired_validation.mutated),
+                            failure_type=_validation_failure_type(repaired_validation),
+                        )
+
                     for original_index in pending_indexes_by_key[cache_key]:
                         translations[original_index] = original_text
 
@@ -175,6 +205,133 @@ class TranslateClient:
             translation if translation is not None else text
             for translation, text in zip(translations, texts, strict=False)
         ]
+
+    def _translate_around_acronyms(
+        self,
+        *,
+        prepared: PreparedText,
+        source_language: str,
+        target_language: str,
+    ) -> str | None:
+        if not prepared.placeholders:
+            return None
+
+        segments = self._split_acronym_segments(prepared)
+        translatable_segments = [
+            segment for segment in segments if isinstance(segment, _TranslatableSegment)
+        ]
+        if not translatable_segments:
+            return restore_acronyms(prepared.text, prepared.placeholders)
+
+        try:
+            translated_segments = self._translate_plain_segments(
+                [segment.text for segment in translatable_segments],
+                source_language=source_language,
+                target_language=target_language,
+            )
+        except Exception as e:
+            logger.warning(
+                "translation_acronym_repair_request_failed",
+                error=str(e),
+                source_language=source_language,
+                target_language=target_language,
+            )
+            return None
+
+        translated_by_index = dict(
+            zip(
+                (segment.index for segment in translatable_segments),
+                translated_segments,
+                strict=False,
+            )
+        )
+
+        restored_parts: list[str] = []
+        for index, segment in enumerate(segments):
+            if isinstance(segment, _TranslatableSegment):
+                translated = translated_by_index.get(index, segment.text)
+                restored_parts.append(f"{segment.leading}{translated}{segment.trailing}")
+            else:
+                restored_parts.append(segment)
+
+        return "".join(restored_parts)
+
+    def _split_acronym_segments(
+        self,
+        prepared: PreparedText,
+    ) -> list[str | "_TranslatableSegment"]:
+        segments: list[str | _TranslatableSegment] = []
+        cursor = 0
+
+        for match in PLACEHOLDER_PATTERN.finditer(prepared.text):
+            if match.start() > cursor:
+                self._append_translatable_segment(
+                    segments,
+                    prepared.text[cursor : match.start()],
+                )
+
+            placeholder = match.group(0)
+            segments.append(prepared.placeholders.get(placeholder, placeholder))
+            cursor = match.end()
+
+        if cursor < len(prepared.text):
+            self._append_translatable_segment(segments, prepared.text[cursor:])
+
+        return segments
+
+    def _append_translatable_segment(
+        self,
+        segments: list[str | "_TranslatableSegment"],
+        text: str,
+    ) -> None:
+        if not text:
+            return
+
+        stripped = text.strip()
+        if not stripped:
+            segments.append(text)
+            return
+
+        leading = text[: len(text) - len(text.lstrip())]
+        trailing = text[len(text.rstrip()) :]
+        segments.append(
+            _TranslatableSegment(
+                index=len(segments),
+                text=stripped,
+                leading=leading,
+                trailing=trailing,
+            )
+        )
+
+    def _translate_plain_segments(
+        self,
+        segments: list[str],
+        *,
+        source_language: str,
+        target_language: str,
+    ) -> list[str]:
+        translations: list[str] = []
+        prepared_segments = [_PlainPreparedSegment(text=segment) for segment in segments]
+
+        for batch_start, batch_end in self._request_ranges(prepared_segments):
+            batch_segments = prepared_segments[batch_start:batch_end]
+            response = self.client.translate_text(
+                contents=[segment.text for segment in batch_segments],
+                target_language_code=target_language,
+                source_language_code=source_language,
+                parent=self.parent,
+                mime_type="text/plain",
+            )
+            translations.extend(
+                translation.translated_text for translation in response.translations
+            )
+            if len(response.translations) < len(batch_segments):
+                translations.extend(
+                    segment.text
+                    for segment in batch_segments[len(response.translations) :]
+                )
+
+        return translations
 
     def _request_ranges(self, prepared_texts) -> list[tuple[int, int]]:
         ranges: list[tuple[int, int]] = []
@@ -244,3 +401,16 @@ def _validation_failure_type(validation) -> str:
     if validation.duplicated:
         return "duplicated"
     return "mutated"
+
+
+@dataclass(frozen=True)
+class _TranslatableSegment:
+    index: int
+    text: str
+    leading: str = ""
+    trailing: str = ""
+
+
+@dataclass(frozen=True)
+class _PlainPreparedSegment:
+    text: str

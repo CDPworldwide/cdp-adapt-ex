@@ -43,24 +43,77 @@ def test_translate_texts_preserves_acronyms_and_source_language(monkeypatch):
     )
 
 
-def test_translate_texts_falls_back_when_acronym_validation_fails(monkeypatch):
+def test_translate_texts_repairs_missing_acronyms_by_translating_around_them(
+    monkeypatch,
+):
     monkeypatch.setattr(settings, "GCP_PROJECT_ID", "test-project")
 
     mock_client = MagicMock()
-    mock_client.translate_text.return_value = SimpleNamespace(
-        translations=[SimpleNamespace(translated_text="Plan for MOSE and HVAC-CDP")]
-    )
+    mock_client.translate_text.side_effect = [
+        SimpleNamespace(
+            translations=[
+                SimpleNamespace(
+                    translated_text=(
+                        "Los hogares de bajos ingresos tienen menos información "
+                        "de emergencia."
+                    )
+                )
+            ]
+        ),
+        SimpleNamespace(
+            translations=[
+                SimpleNamespace(translated_text="Nuestra"),
+                SimpleNamespace(
+                    translated_text=(
+                        "contiene vegetación que aumenta el riesgo de incendios."
+                    )
+                ),
+            ]
+        ),
+    ]
 
     client = TranslateClient()
     client._client = mock_client
 
     result = client.translate_texts(
-        ["Plan for M.O.S.E. and HVAC/CDP"],
+        ["Our LGA contains vegetation that increases fire risk."],
         target_language="es",
         source_language="en",
     )
 
-    assert result == ["Plan for M.O.S.E. and HVAC/CDP"]
+    assert result == [
+        "Nuestra LGA contiene vegetación que aumenta el riesgo de incendios."
+    ]
+    assert mock_client.translate_text.call_args_list[0].kwargs["contents"] == [
+        "Our X_PAC_0_X contains vegetation that increases fire risk."
+    ]
+    assert mock_client.translate_text.call_args_list[1].kwargs["contents"] == [
+        "Our",
+        "contains vegetation that increases fire risk.",
+    ]
+
+
+def test_translate_texts_falls_back_when_acronym_repair_fails(monkeypatch):
+    monkeypatch.setattr(settings, "GCP_PROJECT_ID", "test-project")
+
+    mock_client = MagicMock()
+    mock_client.translate_text.side_effect = [
+        SimpleNamespace(translations=[SimpleNamespace(translated_text="Plan for MOSE")]),
+        SimpleNamespace(
+            translations=[SimpleNamespace(translated_text="Plan para MOSE")]
+        ),
+    ]
+
+    client = TranslateClient()
+    client._client = mock_client
+
+    result = client.translate_texts(
+        ["Plan for M.O.S.E."],
+        target_language="es",
+        source_language="en",
+    )
+
+    assert result == ["Plan for M.O.S.E."]
 
 
 def test_translate_texts_reuses_cached_translations(monkeypatch):

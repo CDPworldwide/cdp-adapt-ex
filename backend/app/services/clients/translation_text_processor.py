@@ -8,6 +8,7 @@ ACRONYM_PATTERN = re.compile(
 LOWERCASE_PATTERN = re.compile(r"[a-z]")
 UPPERCASE_WORD_PATTERN = re.compile(r"\b[A-Z]{2,}\b")
 PLACEHOLDER_TEMPLATE = "X_PAC_{index}_X"
+PLACEHOLDER_PATTERN = re.compile(r"\bX_PAC_\d+_X\b")
 
 
 @dataclass(frozen=True)
