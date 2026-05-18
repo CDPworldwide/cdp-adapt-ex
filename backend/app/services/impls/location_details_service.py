@@ -86,14 +86,7 @@ class LocationDetailsService:
         )
 
         # Suppress this org's own disclosed adaptation content for Non-Public
-        # disclosers — their goals/actions/projects are private. Solutions and
-        # peer-actions are NOT suppressed: they're recommendations sourced from
-        # other (Public) peer orgs, so showing them doesn't leak anything about
-        # the Non-Public target. Public orgs and non-disclosers (empty
-        # public_status) pass through; non-disclosers naturally have no
-        # disclosed content today but may receive GEE-derived data later, which
-        # should not be silently suppressed by a broader `!= "Public"`
-        # condition.
+        # disclosers 
         if metadata is not None and metadata.public_status == "Non-Public":
             goals = []
             actions = []
@@ -308,33 +301,55 @@ class LocationDetailsService:
     def _map_peers_actions(
         self, solution_examples: list[SolutionsExamples]
     ) -> list[PeerAction]:
-        """Transform solution examples into PeerAction objects."""
-        peer_actions: list[PeerAction] = []
+        """Transform solution examples into PeerAction objects.
 
+        De-dupe into one PeerAction per
+        (peer_org_id, action_index), merging hazard_addressed_english across
+        the matching rows.
+        """
+        grouped: dict[tuple[int, int], list[SolutionsExamples]] = defaultdict(list)
         for example in solution_examples:
+            grouped[(example.peer_org_id, example.action_index)].append(example)
+
+        peer_actions: list[PeerAction] = []
+        for rows in grouped.values():
+            first = rows[0]
             action: AdaptationAction | None = None
-            if example.action_english:
+            if first.action_english:
                 action = self._build_adaptation_action(
-                    title=example.action_english,
-                    hazard_addressed_english=example.hazard_addressed_english,
-                    status_text=example.action_status_english,
-                    cobenefit_realized_english=example.cobenefit_realized_english,
-                    total_cost_usd=example.total_cost_usd,
-                    timeframe_english=example.timeframe_english,
-                    description_english=example.action_description_english,
-                    resilience_enhanced_english=example.resilience_enhanced_english,
-                    sectors_applied_english=example.sectors_applied_english,
-                    org_id=example.peer_org_id,
+                    title=first.action_english,
+                    hazard_addressed_english=self._merge_hazard_addressed(rows),
+                    status_text=first.action_status_english,
+                    cobenefit_realized_english=first.cobenefit_realized_english,
+                    total_cost_usd=first.total_cost_usd,
+                    timeframe_english=first.timeframe_english,
+                    description_english=first.action_description_english,
+                    resilience_enhanced_english=first.resilience_enhanced_english,
+                    sectors_applied_english=first.sectors_applied_english,
+                    org_id=first.peer_org_id,
                 )
 
             peer_actions.append(
                 PeerAction(
-                    peer_name=example.peer_org_name,
+                    peer_name=first.peer_org_name,
                     action=action,
                 )
             )
 
         return peer_actions
+
+    @staticmethod
+    def _merge_hazard_addressed(rows: list[SolutionsExamples]) -> str | None:
+        """Union the pipe-separated hazard_addressed_english values, preserving order."""
+        seen: list[str] = []
+        for row in rows:
+            if not row.hazard_addressed_english:
+                continue
+            for token in row.hazard_addressed_english.split("|"):
+                token = token.strip()
+                if token and token not in seen:
+                    seen.append(token)
+        return " | ".join(seen) if seen else None
 
     def _map_solution_cards(
         self,
@@ -343,19 +358,23 @@ class LocationDetailsService:
     ) -> list[SolutionCard]:
         """Transform solution rows into a list of SolutionCard objects."""
 
+        # Join key intentionally excludes hazard_filter: peer_solutions
+        # carries an "All" aggregate row, while solution_examples for
+        # GEE-fallback orgs is only emitted per-hazard. Matching by
+        # (target, action_index, year) lets the "All" solution pick up its
+        # per-hazard examples; _map_peers_actions then collapses duplicates.
         examples_by_solution = defaultdict(list)
         for example in solution_examples:
             key = (
                 example.target_org_id,
                 example.action_index,
                 example.disclosing_year,
-                example.hazard_filter,
             )
             examples_by_solution[key].append(example)
 
         solution_cards: list[SolutionCard] = []
         for s in solutions:
-            key = (s.target_org_id, s.action_index, s.disclosing_year, s.hazard_filter)
+            key = (s.target_org_id, s.action_index, s.disclosing_year)
             filtered_examples = examples_by_solution.get(key, [])
 
             peer_actions = self._map_peers_actions(filtered_examples)
