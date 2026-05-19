@@ -31,6 +31,7 @@ HAZARD_STRING_TO_ENUM: Dict[str, HazardEnum] = {
     "Mass movement": HazardEnum.MASS_MOVEMENT,
     "Loss of green space/green cover": HazardEnum.LOSS_OF_GREEN_SPACE,
     "Soil degradation/erosion": HazardEnum.SOIL_DEGRADATION_EROSION,
+    "Other: Landslides": HazardEnum.SOIL_DEGRADATION_EROSION,
     "Other forms of climate-induced landscape shift/degradation": HazardEnum.LANDSCAPE_SHIFT_DEGRADATION,
     "Infectious disease": HazardEnum.INFECTIOUS_DISEASE,
     "Biodiversity loss": HazardEnum.BIODIVERSITY_LOSS,
