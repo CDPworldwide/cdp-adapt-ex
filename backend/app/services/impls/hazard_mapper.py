@@ -31,6 +31,7 @@ HAZARD_STRING_TO_ENUM: Dict[str, HazardEnum] = {
     "Mass movement": HazardEnum.MASS_MOVEMENT,
     "Loss of green space/green cover": HazardEnum.LOSS_OF_GREEN_SPACE,
     "Soil degradation/erosion": HazardEnum.SOIL_DEGRADATION_EROSION,
+    "Other: Landslides": HazardEnum.SOIL_DEGRADATION_EROSION,
     "Other forms of climate-induced landscape shift/degradation": HazardEnum.LANDSCAPE_SHIFT_DEGRADATION,
     "Infectious disease": HazardEnum.INFECTIOUS_DISEASE,
     "Biodiversity loss": HazardEnum.BIODIVERSITY_LOSS,
@@ -56,6 +57,14 @@ class HazardMapper:
         if not normalized_string:
             return None
 
+        # Explicit mappings take precedence, including curated "Other: …"
+        # entries like "Other: Landslides" that we want bucketed under a known
+        # enum (e.g. MASS_MOVEMENT) rather than falling through to the OTHERS
+        # free-text path below.
+        hazard_type = HAZARD_STRING_TO_ENUM.get(normalized_string)
+        if hazard_type is not None:
+            return Hazard(hazard_type=hazard_type)
+
         if normalized_string.startswith("Other:"):
             details = normalized_string.removeprefix("Other:").strip()
             # Strip leading list-marker punctuation a few rows have: "- ", "• ",
@@ -72,15 +81,11 @@ class HazardMapper:
                 other_hazard_details=details,
             )
 
-        hazard_type = HAZARD_STRING_TO_ENUM.get(normalized_string)
-        if hazard_type is None:
-            log_message = f"Unknown hazard: '{db_string}'"
-            if org_id:
-                log_message += f" for org_id={org_id}"
-            logger.warning(log_message)
-            return None
-
-        return Hazard(hazard_type=hazard_type)
+        log_message = f"Unknown hazard: '{db_string}'"
+        if org_id:
+            log_message += f" for org_id={org_id}"
+        logger.warning(log_message)
+        return None
 
     def split_and_map_hazards(
         self, hazards_field: Optional[str], org_id: Optional[int] = None

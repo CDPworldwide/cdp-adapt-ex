@@ -99,9 +99,9 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
     return (this.data?.hazards?.hazards ?? []).filter((h) => h.source !== 'GEE-Derived');
   }
 
-  // Non-Public orgs and non-disclosers show GEE-derived hazards in different blocks
+  // Public orgs that disclosed valid hazards show their own; else, falls back to GEE-derived.
   get geeFallback(): HazardProfile[] {
-    if (this.data?.publicStatus === 'Public') return [];
+    if (this.data?.publicStatus === 'Public' && this.disclosedHazards.length > 0) return [];
     return (this.data?.hazards?.hazards ?? []).filter((h) => h.source === 'GEE-Derived');
   }
 

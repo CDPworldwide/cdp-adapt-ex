@@ -80,7 +80,6 @@ class LocationDetailsRepository:
         async with AsyncSession(self.engine) as session:
             statement = select(SolutionsExamples).where(
                 SolutionsExamples.target_org_id == org_id,
-                SolutionsExamples.hazard_filter == "All",
             )
             return list((await session.exec(statement)).all())
 
