@@ -54,6 +54,7 @@ TRANSLATION_FIELDS: tuple[str, ...] = (
     "government_actions.goals[].comment",
     "government_actions.actions[].title",
     "government_actions.actions[].description",
+    "government_actions.actions[].timeframe",
     "government_actions.actions[].status.other_status_details",
     "government_actions.actions[].co_benefits[]",
     "government_actions.actions[].resilience_enhanced[]",
@@ -70,6 +71,7 @@ TRANSLATION_FIELDS: tuple[str, ...] = (
     "solutions.solutions.*[].peer_actions[].peer_name",
     "solutions.solutions.*[].peer_actions[].action.title",
     "solutions.solutions.*[].peer_actions[].action.description",
+    "solutions.solutions.*[].peer_actions[].action.timeframe",
     "solutions.solutions.*[].peer_actions[].action.status.other_status_details",
     "solutions.solutions.*[].peer_actions[].action.co_benefits[]",
     "solutions.solutions.*[].peer_actions[].action.resilience_enhanced[]",
@@ -100,9 +102,12 @@ class LocationProfileTranslationService:
         target_language: str,
     ) -> LocationProfile:
         target_language = normalize_translation_language(target_language)
-        source_language = normalize_translation_language(profile.reporting_language)
+        # LocationProfile content is built from English-normalized CSTAR columns
+        # (for example action_english, summary_text, *_english fields), regardless
+        # of the jurisdiction's original reporting language.
+        source_language = "en"
 
-        if target_language == "en" or target_language == source_language:
+        if target_language == source_language:
             return profile
 
         if not getattr(self.translate_client, "available", True):

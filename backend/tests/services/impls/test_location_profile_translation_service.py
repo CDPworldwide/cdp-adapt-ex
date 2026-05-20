@@ -149,6 +149,7 @@ async def test_translate_profile_translates_manifest_fields_once():
                         )
                     ],
                     description="Provide cooling centers during heat waves.",
+                    timeframe="Medium-term (2026-2050)",
                     resilience_enhanced=["Community resilience"],
                     impacted_sectors=[
                         Sector(
@@ -191,6 +192,7 @@ async def test_translate_profile_translates_manifest_fields_once():
                                 "action": {
                                     "title": "Install green roofs",
                                     "description": "Add vegetation to public buildings.",
+                                    "timeframe": "Medium-term",
                                     "status": {
                                         "status_type": "OTHERS",
                                         "other_status_details": "Being scoped",
@@ -239,6 +241,9 @@ async def test_translate_profile_translates_manifest_fields_once():
     assert translated.government_actions.actions[0].status.other_status_details == (
         "es:In local review"
     )
+    assert translated.government_actions.actions[0].timeframe == (
+        "es:Medium-term (2026-2050)"
+    )
     assert translated.government_actions.projects[0].finance_model == [
         "es:Grant funding"
     ]
@@ -248,6 +253,7 @@ async def test_translate_profile_translates_manifest_fields_once():
     assert solution.peer_actions[0].action.description == (
         "es:Add vegetation to public buildings."
     )
+    assert solution.peer_actions[0].action.timeframe == "es:Medium-term"
     assert profile.hazards.hazards[0].description == (
         "Mountain View faces a high drought risk."
     )
@@ -383,6 +389,56 @@ async def test_translate_profile_returns_original_when_target_matches_source():
 
     assert translated is profile
     assert translate_client.calls == []
+
+
+@pytest.mark.asyncio
+async def test_translate_profile_translates_english_normalized_fields_for_japanese_reporters():
+    translate_client = StubTranslateClient()
+    service = LocationProfileTranslationService(translate_client)
+    profile = LocationProfile(
+        organization_id=3203,
+        name="City of Sapporo",
+        country_name="Japan",
+        lat=43.0618,
+        lng=141.3545,
+        geometry={"type": "Point", "coordinates": [141.3545, 43.0618]},
+        reporting_language="Japanese",
+        hazards=HazardsTab(
+            statistics=RegionalStatistics(),
+            hazards=[
+                HazardProfile(
+                    hazard=Hazard(hazard_type="EXTREME_HEAT"),
+                    hazard_rank=1,
+                    description="Sapporo faces a high risk of extreme heat.",
+                    vulnerable_groups=["Elderly", "Outdoor workers"],
+                )
+            ],
+        ),
+        government_actions=ActionsTab(),
+        solutions=SolutionsTab(),
+    )
+
+    translated = await service.translate_profile(profile, "ja")
+
+    assert translated.reporting_language == "ja"
+    assert translated.hazards.hazards[0].description == (
+        "ja:Sapporo faces a high risk of extreme heat."
+    )
+    assert translated.hazards.hazards[0].vulnerable_groups == [
+        "ja:Elderly",
+        "ja:Outdoor workers",
+    ]
+    assert translate_client.calls == [
+        {
+            "texts": [
+                "Sapporo faces a high risk of extreme heat.",
+                "Elderly",
+                "Outdoor workers",
+            ],
+            "target_language": "ja",
+            "source_language": "en",
+        }
+    ]
 
 
 def test_normalize_translation_language_handles_supported_aliases():
