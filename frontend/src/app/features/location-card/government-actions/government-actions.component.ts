@@ -60,9 +60,6 @@ export class GovernmentActionsComponent implements OnChanges {
     return this.totalGoals === 0 && this.totalActions === 0 && this.totalProjects === 0;
   }
 
-  get isAnyEmpty(): boolean {
-    return this.totalGoals === 0 || this.totalActions === 0 || this.totalProjects === 0;
-  }
   selectedType: DetailItemType | null = null;
   selectedItem: AdaptationGoal | AdaptationAction | ProjectSeekingFunding | null = null;
   private previousFocus: HTMLElement | null = null;
