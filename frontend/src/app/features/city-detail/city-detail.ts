@@ -15,6 +15,7 @@ import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { AskCdpAiLogoIconComponent } from '../../shared/icons/ask-cdp-ai-logo-icon.component';
 import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { LanguageService } from '../../shared/services/language.service';
+import { FeedbackService } from '../../shared/services/feedback.service';
 
 const DEFAULT_TAB: LocationCardTabKey = 'hazards';
 const VALID_TABS: readonly LocationCardTabKey[] = ['hazards', 'actions', 'solutions'];
@@ -46,6 +47,7 @@ export class CityDetailPageComponent implements OnInit {
 
   private destroyRef = inject(DestroyRef);
   private languageService = inject(LanguageService);
+  private feedbackService = inject(FeedbackService);
 
   constructor(
     private locationService: LocationService,
@@ -117,6 +119,7 @@ export class CityDetailPageComponent implements OnInit {
             return;
           }
           this.locationData = data;
+          this.updateFeedbackContext();
           this.isLoading = false;
           this.prefetchStarterQuestions();
         },
@@ -147,6 +150,7 @@ export class CityDetailPageComponent implements OnInit {
       return;
     }
 
+    this.updateFeedbackContext();
     this.askCdpAiService.setLocationContext(this.locationData, this.activeTab);
     this.askCdpAiService
       .loadStarterQuestions()
@@ -160,5 +164,13 @@ export class CityDetailPageComponent implements OnInit {
     }
 
     return DEFAULT_TAB;
+  }
+
+  private updateFeedbackContext(): void {
+    this.feedbackService.setLocationContext({
+      locationId: this.organizationId,
+      locationName: this.locationData?.name,
+      activeTab: this.activeTab,
+    });
   }
 }
