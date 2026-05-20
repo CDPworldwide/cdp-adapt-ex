@@ -68,9 +68,21 @@
     @if (scenarios.length > 1 || yearRanges.length > 0) {
       <div class="mt-4 grid grid-cols-1 gap-1">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1 uppercase">{{
-            'maps.hazardLegend.scenario' | translate
-          }}</label>
+          <div class="flex items-center mb-1">
+            <label class="block text-sm font-medium text-gray-700 uppercase">{{
+              'maps.hazardLegend.scenario' | translate
+            }}</label>
+            <div
+              [matTooltip]="'maps.hazardLegend.scenarioTooltip' | translate"
+              matTooltipPosition="above"
+              class="flex items-center justify-center cursor-pointer group ml-1"
+            >
+              <app-info-icon
+                size="10"
+                class="text-cdp-neutral-05 group-hover:text-cdp-dark transition-colors"
+              ></app-info-icon>
+            </div>
+          </div>
           <div class="flex flex-wrap items-center gap-3">
             <button
               *ngFor="let scenario of scenarios"
