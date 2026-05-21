@@ -70,7 +70,7 @@ jobs:
           rows = []
           for line in Path("i18n-coverage.txt").read_text(encoding="utf-8").splitlines():
               parts = line.split()
-              if len(parts) >= 8 and parts[0] not in {"Locale", "------", "Translation"}:
+              if len(parts) >= 8 and parts[1].endswith("%") and parts[3].isdigit():
                   rows.append(
                       {
                           "locale": parts[0],
@@ -117,7 +117,7 @@ jobs:
 
           for line in os.environ["I18N_COVERAGE_REPORT"].splitlines():
               parts = line.split()
-              if len(parts) >= 8 and parts[0] not in {"Locale", "------", "Translation"}:
+              if len(parts) >= 8 and parts[1].endswith("%") and parts[3].isdigit():
                   rows.append(
                       {
                           "locale": parts[0],
