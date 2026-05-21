@@ -86,9 +86,6 @@ describe('GovernmentActionsComponent', () => {
           disclosedCount: '({{count}} disclosed)',
           filterByHazard: 'Filter by hazard',
           all: 'All',
-          noActionsBanner: {
-            title: 'Not all information was disclosed',
-          },
           noGoals: {
             description: 'No goals description',
           },
@@ -110,18 +107,17 @@ describe('GovernmentActionsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show "Not all information was disclosed" banner when everything is empty', () => {
+  it('should show empty-state descriptions when everything is empty', () => {
     fixture.componentRef.setInput('data', { goals: [], actions: [], projects: [] });
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('Not all information was disclosed');
     expect(compiled.textContent).toContain('No goals description');
     expect(compiled.textContent).toContain('No actions description');
     expect(compiled.textContent).toContain('No projects description');
   });
 
-  it('should show banner when only one section is empty', () => {
+  it('should show the relevant empty-state description when only one section is empty', () => {
     fixture.componentRef.setInput('data', {
       goals: [{ title: 'Goal 1', hazardsAddressed: [] }],
       actions: [{ title: 'Action 1', hazardsAddressed: [] }],
@@ -130,7 +126,6 @@ describe('GovernmentActionsComponent', () => {
     fixture.detectChanges();
 
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('Not all information was disclosed');
     expect(compiled.textContent).toContain('No projects description');
   });
 
