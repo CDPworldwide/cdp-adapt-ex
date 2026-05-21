@@ -32,6 +32,7 @@ import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/di
 import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
 import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
 import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
+import { Footer } from '../../core/footer/footer';
 
 // `São Paulo` → `sao paulo`. NFD-strip combining marks; preserves length.
 function stripDiacritics(value: string): string {
@@ -59,6 +60,7 @@ function stripDiacritics(value: string): string {
     AppHeaderComponent,
     DisclosureTrendsComponent,
     WelcomeModalComponent,
+    Footer,
   ],
 })
 export class MainSearchComponent implements OnInit {

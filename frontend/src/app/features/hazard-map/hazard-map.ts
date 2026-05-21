@@ -14,11 +14,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HazardEnum, ScenarioEnum, YearRange } from '@pac-api/client';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HazardIconComponent } from '../../shared/components/hazard-icon/hazard-icon.component';
+import { InfoIconComponent } from '../../shared/icons/info-icon.component';
 import { HazardColorPaletteComponent } from './hazard-legend/hazard-color-palette.component';
 import { HazardMapService } from './hazard-map.service';
 import { GoogleMapsLoaderService } from '../../shared/services/google-maps-loader.service';
@@ -64,8 +66,10 @@ const FLOOD_SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
     FormsModule,
     MatCardModule,
     MatIcon,
+    MatTooltipModule,
     HazardIconComponent,
     HazardColorPaletteComponent,
+    InfoIconComponent,
     TranslateModule,
   ],
   templateUrl: './hazard-map.html',

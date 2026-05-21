@@ -457,7 +457,8 @@
               #dataFieldContent
               class="transition-[padding-bottom] duration-500 ease-in-out"
               [ngClass]="{
-                'h-full overflow-hidden': !isHazardExpanded(hazard.hazard),
+                'h-full overflow-hidden max-h-[400px] lg:max-h-none':
+                  !isHazardExpanded(hazard.hazard),
                 'h-auto pb-20': isHazardExpanded(hazard.hazard),
               }"
             >
@@ -904,6 +905,10 @@
             </span>
           </div>
         </div>
+        <p
+          class="self-stretch pt-3 text-cdp-dark font-roboto text-xs font-bold leading-4 tracking-cdp-wide"
+          [innerHTML]="'locationCard.hazardDetail.requestersAttribution' | translate"
+        ></p>
       </div>
     }
   </div>

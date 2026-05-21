@@ -61,6 +61,7 @@
     "hazardLegend": {
       "source": "Source",
       "scenario": "Scenario",
+      "scenarioTooltip": "Scenarios show how a hazard may change under different climate futures. \"Historical\" reflects past conditions. Other options represent possible future pathways, such as from lower emissions to higher emissions. Choose a scenario to see how risk levels could shift over time. See methodology for more information.",
       "timeframe": "Time frame"
     },
     "scenarios": {
@@ -275,6 +276,7 @@
       "crvaVisitPortal": "Visit the CDP Open Data Portal",
       "requestersTitle": "Data disclosure requested by",
       "requestersTooltip": "These are organizations that have requested disclosure from this jurisdiction. This list is not exhaustive and does not indicate government compliance or the specific purpose for which information was disclosed.",
+      "requestersAttribution": "Location data from <a href=\"https://docs.overturemaps.org/attribution/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Overture Maps Foundation</a> pursuant to the <a href=\"https://opendatacommons.org/licenses/odbl/1-0/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Open Database License (ODbL)</a>",
       "unknown": "Unknown",
       "mostExposedSectors": "Exposed sectors",
       "showMoreHazards": "Show more hazards",

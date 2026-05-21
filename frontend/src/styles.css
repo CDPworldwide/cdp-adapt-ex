@@ -6,6 +6,9 @@
   html,
   body {
     height: 100%;
+    /* Use the dynamic viewport so iOS/Android browser chrome (URL bar,
+       bottom nav) doesn't clip the top/bottom of the layout. */
+    height: 100dvh;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -55,6 +58,12 @@
 /* Hide Google Maps "Map data" / "Terms" attribution on static thumbnails where it obscures the small frame. */
 .static-thumbnail .gm-style-cc {
   display: none !important;
+}
+
+/* Keep Material overlays (tooltips, menus, dialogs) above the expanded hazard
+   map, which promotes itself to z-index 9999 to cover the page chrome. */
+.cdk-overlay-container {
+  z-index: 10000;
 }
 
 /*

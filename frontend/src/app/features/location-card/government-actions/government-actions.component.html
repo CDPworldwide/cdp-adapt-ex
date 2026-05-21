@@ -1,42 +1,6 @@
 @if (data) {
   <!-- List View -->
   <div class="space-y-6">
-    @if (isAnyEmpty) {
-      <div class="mb-8 px-4 lg:px-0">
-        <div class="w-full px-6 py-4 bg-cdp-neutral-01 flex justify-start items-center gap-6 rounded-lg">
-          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
-            <app-no-hazards-icon size="44" color="#333333"></app-no-hazards-icon>
-          </div>
-          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
-            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
-              <div
-                class="self-stretch justify-start text-cdp-neutral-08 text-base font-semibold font-roboto leading-6 tracking-tight"
-              >
-                {{ 'locationCard.govActions.noActionsBanner.title' | translate }}
-              </div>
-              <div
-                class="self-stretch text-cdp-neutral-08 text-sm font-normal font-roboto leading-5 tracking-tight"
-                [innerHTML]="'locationCard.govActions.noActionsBanner.description' | translate"
-              ></div>
-            </div>
-            <div class="h-12 flex justify-center items-center shrink-0">
-              <a
-                href="https://data.cdp.net/"
-                target="_blank"
-                class="bg-cdp-dark rounded inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-black transition-colors"
-              >
-                <div
-                  class="justify-center text-white text-sm font-medium font-roboto leading-5 tracking-tight"
-                >
-                  {{ 'locationCard.govActions.noActionsBanner.button' | translate }}
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    }
-
     <app-actions-summary
       [summaryRows]="summaryRows"
       [totalGoals]="totalGoals"
@@ -86,7 +50,7 @@
                   >
                     {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                   </p>
-                  <div class="flex flex-row flex-wrap gap-2">
+                  <div class="flex flex-row gap-2 overflow-x-auto min-w-0">
                     @for (hazard of goal.hazardsAddressed; track hazard) {
                       <div class="flex items-center gap-2 p-1 h-5 shrink-0">
                         <app-hazard-icon
@@ -232,7 +196,7 @@
                   >
                     {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                   </p>
-                  <div class="flex flex-row flex-wrap gap-2">
+                  <div class="flex flex-row gap-2 overflow-x-auto min-w-0">
                     @for (hazard of action.hazardsAddressed; track hazard) {
                       <div class="flex items-center gap-2 p-1 h-5 shrink-0">
                         <app-hazard-icon
