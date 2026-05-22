@@ -24,7 +24,13 @@ import {
   NoHazardsIconComponent,
 } from '../../../shared/icons';
 import { ShowMoreButtonComponent } from '../../../shared/components/show-more-button/show-more-button.component';
-import type { AdaptationAction, Hazard, HazardProfile, LocationProfile } from '@pac-api/client';
+import {
+  HazardEnum,
+  type AdaptationAction,
+  type Hazard,
+  type HazardProfile,
+  type LocationProfile,
+} from '@pac-api/client';
 
 @Component({
   selector: 'app-hazards',
@@ -93,10 +99,19 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
     return 'no-hazards';
   }
 
-  // Public orgs surface their own disclosed hazards
+  // Public orgs surface their own disclosed hazards. If every disclosed row is
+  // 'Other:', surface the GEE-Derived synthesized rows also.
   get disclosedHazards(): HazardProfile[] {
     if (this.data?.publicStatus !== 'Public') return [];
-    return (this.data?.hazards?.hazards ?? []).filter((h) => h.source !== 'GEE-Derived');
+    const all = this.data?.hazards?.hazards ?? [];
+    const disclosed = all.filter((h) => h.source !== 'GEE-Derived');
+    const allOtherType =
+      disclosed.length > 0 &&
+      disclosed.every((h) => h.hazard?.hazardType === HazardEnum.OTHERS);
+    if (allOtherType) {
+      return [...disclosed, ...all.filter((h) => h.source === 'GEE-Derived')];
+    }
+    return disclosed;
   }
 
   // Public orgs that disclosed valid hazards show their own; else, falls back to GEE-derived.

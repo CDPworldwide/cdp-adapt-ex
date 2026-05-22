@@ -140,7 +140,7 @@ class FactHazards(SQLModel, table=True):
     time_frame: str | None = None
     summary_text: str | None = None
     population_range: str | None = None
-    public_status: str | None = None
+    public_status: str = Field(primary_key=True)
     disclosing_year: int = Field(primary_key=True)
 
 

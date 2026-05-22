@@ -28,10 +28,11 @@ HAZARD_STRING_TO_ENUM: Dict[str, HazardEnum] = {
     "Extreme wind": HazardEnum.EXTREME_WIND,
     "Storm": HazardEnum.STORM,
     "Heavy precipitation": HazardEnum.HEAVY_PRECIPITATION,
-    "Mass movement": HazardEnum.MASS_MOVEMENT,
+    "Mass movement": HazardEnum.SOIL_DEGRADATION_EROSION,
     "Loss of green space/green cover": HazardEnum.LOSS_OF_GREEN_SPACE,
     "Soil degradation/erosion": HazardEnum.SOIL_DEGRADATION_EROSION,
     "Other: Landslides": HazardEnum.SOIL_DEGRADATION_EROSION,
+    "Other: Landslide": HazardEnum.SOIL_DEGRADATION_EROSION, # Some report with no 's'
     "Other forms of climate-induced landscape shift/degradation": HazardEnum.LANDSCAPE_SHIFT_DEGRADATION,
     "Infectious disease": HazardEnum.INFECTIOUS_DISEASE,
     "Biodiversity loss": HazardEnum.BIODIVERSITY_LOSS,
@@ -57,10 +58,7 @@ class HazardMapper:
         if not normalized_string:
             return None
 
-        # Explicit mappings take precedence, including curated "Other: …"
-        # entries like "Other: Landslides" that we want bucketed under a known
-        # enum (e.g. MASS_MOVEMENT) rather than falling through to the OTHERS
-        # free-text path below.
+        # Explicit mappings take precedence
         hazard_type = HAZARD_STRING_TO_ENUM.get(normalized_string)
         if hazard_type is not None:
             return Hazard(hazard_type=hazard_type)
@@ -68,9 +66,6 @@ class HazardMapper:
         if normalized_string.startswith("Other:"):
             details = normalized_string.removeprefix("Other:").strip()
             # Strip leading list-marker punctuation a few rows have: "- ", "• ",
-            # "* ", em/en dashes etc., then force the first letter uppercase so
-            # entries like "Other: - risk of disruption..." render as
-            # "Risk of disruption...".
             details = re.sub(r"^[-–—*•·]+\s*", "", details)
             if details:
                 details = details[0].upper() + details[1:]
