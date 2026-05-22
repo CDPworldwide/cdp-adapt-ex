@@ -102,6 +102,7 @@ jobs:
           PY
 
       - name: Prepare translation coverage Slack payload
+        id: prepare-slack-payload
         if: always() && steps.i18n-coverage.outputs.report != '' && env.SLACK_BOT_TOKEN != '' && env.SLACK_I18N_CHANNEL_ID != ''
         env:
           I18N_COVERAGE_REPORT: ${{ steps.i18n-coverage.outputs.report }}
@@ -167,7 +168,7 @@ jobs:
 
       - name: Post translation coverage to Slack
         id: slack-i18n-coverage
-        if: always() && steps.i18n-coverage.outputs.report != '' && env.SLACK_BOT_TOKEN != '' && env.SLACK_I18N_CHANNEL_ID != ''
+        if: steps.prepare-slack-payload.outcome == 'success'
         uses: slackapi/slack-github-action@v3.0.3
         with:
           errors: true
