@@ -642,9 +642,9 @@ BEGIN
 
   SELECT COUNT(*) INTO invalid_count
   FROM (
-    SELECT cdp_disclosing_org_number, hazard_rank, disclosing_year
+    SELECT cdp_disclosing_org_number, hazard_rank, disclosing_year, public_status
     FROM "_cstar_2025_fact_hazard_stage"
-    GROUP BY 1, 2, 3
+    GROUP BY 1, 2, 3, 4
     HAVING COUNT(*) > 1
   ) d;
   IF invalid_count <> 0 THEN RAISE EXCEPTION 'hazard duplicate primary keys: %', invalid_count; END IF;
