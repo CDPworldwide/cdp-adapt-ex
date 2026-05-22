@@ -139,7 +139,7 @@ jobs:
                   )
 
           summary = ", ".join(
-              f'{row["locale"]} {row["coverage"]} ({row["covered"]})' for row in rows
+              f'{row["locale"]} {row["coverage"]} ({row["translated"]})' for row in rows
           )
           details = "\n".join(
               (
