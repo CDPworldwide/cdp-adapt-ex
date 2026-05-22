@@ -70,29 +70,32 @@ jobs:
           rows = []
           for line in Path("i18n-coverage.txt").read_text(encoding="utf-8").splitlines():
               parts = line.split()
-              if len(parts) >= 8 and parts[1].endswith("%") and parts[3].isdigit():
+              if len(parts) >= 11 and parts[1].endswith("%") and parts[3].isdigit():
                   rows.append(
                       {
                           "locale": parts[0],
                           "coverage": parts[1],
-                          "covered": parts[2],
-                          "missing": int(parts[3]),
-                          "empty": int(parts[4]),
-                          "type": int(parts[5]),
-                          "extra": int(parts[6]),
+                          "translated": parts[2],
+                          "needs_translation": int(parts[3]),
+                          "needs_translation_pct": parts[4],
+                          "missing": int(parts[5]),
+                          "empty": int(parts[6]),
                           "same_as_master": int(parts[7]),
+                          "type": int(parts[8]),
+                          "issues": int(parts[9]),
+                          "extra": int(parts[10]),
                       }
                   )
 
           warning_rows = [
               row
               for row in rows
-              if row["missing"] > 0 or row["empty"] > 0 or row["type"] > 0
+              if row["needs_translation"] > 0 or row["type"] > 0
           ]
           if warning_rows:
               summary = ", ".join(
-                  f'{row["locale"]}: {row["missing"]} missing, '
-                  f'{row["empty"]} empty, {row["type"]} type mismatches'
+                  f'{row["locale"]}: {row["needs_translation_pct"]} needs translation '
+                  f'({row["needs_translation"]} keys; {row["same_as_master"]} same as master)'
                   for row in warning_rows
               )
               print(f"::warning title=Translations need updates::{summary}")
@@ -117,17 +120,20 @@ jobs:
 
           for line in os.environ["I18N_COVERAGE_REPORT"].splitlines():
               parts = line.split()
-              if len(parts) >= 8 and parts[1].endswith("%") and parts[3].isdigit():
+              if len(parts) >= 11 and parts[1].endswith("%") and parts[3].isdigit():
                   rows.append(
                       {
                           "locale": parts[0],
                           "coverage": parts[1],
-                          "covered": parts[2],
-                          "missing": parts[3],
-                          "empty": parts[4],
-                          "type": parts[5],
-                          "extra": parts[6],
+                          "translated": parts[2],
+                          "needs_translation": parts[3],
+                          "needs_translation_pct": parts[4],
+                          "missing": parts[5],
+                          "empty": parts[6],
                           "same_as_master": parts[7],
+                          "type": parts[8],
+                          "issues": parts[9],
+                          "extra": parts[10],
                       }
                   )
 
@@ -137,9 +143,11 @@ jobs:
           details = "\n".join(
               (
                   f'- `{row["locale"]}`: {row["coverage"]} translated '
-                  f'({row["covered"]}); {row["missing"]} missing, '
-                  f'{row["empty"]} empty, {row["type"]} type mismatches, '
-                  f'{row["extra"]} extra, {row["same_as_master"]} same as master'
+                  f'({row["translated"]}); {row["needs_translation_pct"]} needs translation '
+                  f'({row["needs_translation"]} keys), {row["missing"]} missing keys, '
+                  f'{row["empty"]} empty, '
+                  f'{row["same_as_master"]} same as master, {row["type"]} type mismatches, '
+                  f'{row["issues"]} total issues, {row["extra"]} extra'
               )
               for row in rows
           )

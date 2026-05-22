@@ -37,7 +37,7 @@
       "feedbackWelcome": "欢迎反馈",
       "mobileNotice": "注意：此体验尚未针对移动设备优化。为获得最佳效果，请在桌面端使用 CDP Adaptation & Action Explorer。",
       "eyebrow": "欢迎使用",
-      "title": "CDP Adaptation & Action Explorer",
+      "title": "CDP 适应与行动探索器",
       "description": "一个开源工具，帮助城市、州和地区了解气候风险、探索韧性解决方案，并向合作伙伴和资助方沟通进展。更多功能即将推出。",
       "prompt": "以下哪项最符合您的身份？",
       "roles": {
@@ -513,154 +513,154 @@
     "populationExposed": "已经面临重大气候风险的司法管辖区"
   },
   "methodology": {
-    "lastUpdated": "Last updated: {{date}}",
-    "lastUpdatedDate": "April 2026",
-    "title": "Methodology",
-    "intro": "This platform draws from both CDP's annual questionnaire for reporting by governments and supplemental hazard data to cover the climate hazards that cities, states, and regions face and how they are addressing them. It also surfaces insights from around the globe by identifying relevant solutions and actions across cities with similar characteristics.",
+    "lastUpdated": "最后更新：{{date}}",
+    "lastUpdatedDate": "2026年4月",
+    "title": "方法论",
+    "intro": "该平台利用气候数据平台（CDP）的年度政府报告问卷和补充灾害数据，涵盖城市、州和地区面临的气候灾害及其应对措施。它还通过识别具有相似特征的城市中相关的解决方案和行动，展现全球范围内的洞见。",
     "questionnaire": {
-      "title": "CDP's Annual Questionnaire",
-      "body": "Cities, states and regions are invited to complete CDP's annual questionnaire through the CDP-ICLEI Track disclosure portal. The questionnaire captures qualitative and quantitative information on topics including governance, climate risk and vulnerability assessments, greenhouse gas emissions inventories, energy consumption, sectoral data, adaptation and mitigation goals, and climate planning and actions. Jurisdictions can update their disclosures through questionnaires released yearly. The Explorer currently displays data from 2025 public disclosures. Additional information and most recent questions can be found <a href=\"https://www.cdp.net/en/disclose\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">here</a>."
+      "title": "CDP年度问卷调查",
+      "body": "城市、州和地区受邀通过 CDP-ICLEI Track 信息披露门户网站填写 CDP 的年度问卷。该问卷收集有关治理、气候风险和脆弱性评估、温室气体排放清单、能源消耗、部门数据、适应和减缓目标以及气候规划和行动等主题的定性和定量信息。各辖区可通过每年发布的问卷更新其信息披露。“探索者”目前显示 2025 年的公开披露数据。更多信息和最新问卷请点击<a href=\"https://www.cdp.net/en/disclose\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">此处</a>查看。"
     },
     "hazards": {
-      "title": "Hazards",
-      "intro": "For jurisdictions that have disclosed information through the questionnaire, hazard data is primarily drawn from this disclosure. Additional hazard information and data for visualization is sourced from remote sensing and model-derived data accessed through Google Earth Engine.",
+      "title": "危险",
+      "intro": "对于已通过问卷调查披露信息的地区，灾害数据主要来源于这些信息披露。其他灾害信息和可视化数据则来源于遥感数据和通过谷歌地球引擎访问的模型衍生数据。",
       "questionnaireData": {
-        "title": "Cities, States, and Regions Questionnaire Data",
-        "p1": "Cities, states, and regions are asked to share details on the most significant climate hazards facing their jurisdiction (Question 2.2 in the 2025 <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">questionnaire</a>). The self-disclosed hazard data may contain information about vulnerable population and sectoral exposure, hazard probability, magnitude of impact, expected hazard changes in intensity or frequency, and the timeframe of expected change. Probability and magnitude responses are given along a five category scale: low, medium-low, medium, medium-high, and high.",
-        "p2": "For each jurisdiction, up to four top hazards are displayed on the platform, primarily ranked based on the average value of their reported probability and magnitude. Proportion of the population exposed to the hazard is used where data is incomplete."
+        "title": "城市、州和地区问卷调查数据",
+        "p1": "城市、州和地区需提供其管辖范围内面临的最重大气候灾害的详细信息（2025 年<a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">问卷调查</a>中的第 2.2 题）。自行披露的灾害数据可能包含有关弱势群体和行业暴露情况、灾害概率、影响程度、预期灾害强度或频率变化以及预期变化的时间范围等信息。概率和影响程度的回答采用五级量表：低、中低、中、中高和高。",
+        "p2": "每个辖区最多会在平台上显示四项主要灾害，主要根据其报告的概率和强度的平均值进行排名。如果数据不完整，则使用暴露于该灾害的人口比例。"
       },
       "geeData": {
-        "title": "Google Earth Engine and External Data",
-        "p1": "To provide additional context and better understand the dynamics of a hazard in a given jurisdiction, geospatial hazard data layers were developed from datasets available on Google Earth Engine and other data portals, including from specific risk indices or hazard forecasting models, as well as directly from downscaled climate projections.",
-        "p2": "Earth Engine and other external hazard data were rescaled to values ranging from 0 to 5, aligning it for easier comparison with the five-category, low to high questionnaire response format scale. A value of 0 represents when a hazard is not expected to impact the jurisdiction within the next 5 years. Jurisdictions without any exposure to the given hazard were omitted in this calculation, allowing the analysis to better reflect comparisons across areas actually experiencing the hazard.",
-        "p3": "Many hazard layers are available for both historical baseline conditions as well as future projections. Projected values are provided for two-decade ranges, centered on three milestone years: 2030, 2050, and 2080. Hazard projections are provided under four combined, widely used socioeconomic-climate scenarios. These scenarios represent increasingly extreme warming pathways: SSP1–RCP2.6, SSP2-4.5, SSP3–RCP7.0, and SSP5–RCP8.5. There are a few exceptions: soil erosion is only available for historical conditions, and flooding hazards are available for historical conditions, RCP 4.5, and RCP 8.5 scenarios (former climate scenario characterizations). Water stress includes three of the four scenarios, omitting SSP2-4.5.",
-        "p4": "For fire weather, extreme heat/heat stress, extreme cold, and extreme precipitation, downscaled climate projections from <a href=\"https://www.nccs.nasa.gov/data-collections/nex-gddp-cmip6/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">NEX-GDDP-CMIP6</a> were used. Hazard values were calculated for ~28-km grid cells for each year under the various scenarios. A multi-model ensemble (MME) median value was calculated for each cell using all available climate models. This provides a central, representative value across diverse climate model projections and reduces the effects of variation between models."
+        "title": "Google Earth Engine 和外部数据",
+        "p1": "为了提供更多背景信息并更好地了解特定辖区内灾害的动态，我们利用 Google Earth Engine 和其他数据门户网站上的数据集（包括特定风险指数或灾害预测模型，以及直接来自降尺度气候预测的数据）开发了地理空间灾害数据层。",
+        "p2": "为了便于与五级分类（从低到高）的问卷调查结果进行比较，地球引擎和其他外部灾害数据被重新调整为0到5之间的数值。数值0表示预计该灾害在未来5年内不会对辖区造成影响。未受该灾害影响的辖区在计算中被排除在外，从而使分析能够更好地反映实际遭受该灾害影响的地区之间的比较。",
+        "p3": "许多灾害图层可用于历史基线条件和未来预测。预测值以2030年、2050年和2080年这三个里程碑年份为中心，涵盖二十年的时间范围。灾害预测基于四种广泛使用的社会经济-气候综合情景。这些情景代表了日益极端的升温路径：SSP1-RCP2.6、SSP2-4.5、SSP3-RCP7.0和SSP5-RCP8.5。少数例外情况：土壤侵蚀仅适用于历史条件，而洪水灾害适用于历史条件、RCP 4.5和RCP 8.5情景（之前的气候情景特征）。水资源压力涵盖了四种情景中的三种，但不包括SSP2-4.5情景。",
+        "p4": "对于火灾天气、极端高温/热应激、极端低温和极端降水，我们使用了来自<a href=\"https://www.nccs.nasa.gov/data-collections/nex-gddp-cmip6/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">NEX-GDDP-CMIP6</a>的降尺度气候预测数据。针对不同情景，我们计算了每年约28公里网格单元的危险值。利用所有可用的气候模型，我们计算了每个网格单元的多模型集合（MME）中值。这提供了一个涵盖不同气候模型预测的中心代表性值，并减少了模型间差异的影响。"
       },
       "layers": {
-        "title": "Learn more about the data used for each hazard layer:",
-        "footnote": "Additional hazard layers may be added over time."
+        "title": "了解每个灾害层所使用的数据详情：",
+        "footnote": "随着时间的推移，可能会增加额外的危险层。"
       },
-      "outro": "To display hazard maps and assign hazard values for each jurisdiction, global hazard layers from Google Earth Engine were filtered by a jurisdiction's administrative boundaries and spatially averaged within them. Administrative boundaries were obtained primarily through data from <a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation</a>. When unavailable, boundaries were obtained from <a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a> or datasets available on the <a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">UN OCHA Humanitarian Data Exchange</a>. When no appropriate jurisdiction boundary was found, pseudo-boundaries were created using the jurisdiction's geographic center (sourced from the above or manually in <a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google Maps</a>) and their reported land area."
+      "outro": "为了显示灾害地图并为每个辖区分配灾害值，我们使用 Google Earth Engine 中的全球灾害图层，根据辖区的行政边界进行筛选，并在辖区内进行空间平均。行政边界主要来自<a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation 的数据。如果 Overture Maps Foundation 的</a>数据不可用，则从<a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a>或<a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">联合国人道主义事务协调厅 (OCHA) 人道主义数据交换平台</a>提供的数据集中获取边界。如果找不到合适的辖区边界，则使用该辖区的地理中心（来自上述数据或在<a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google 地图</a>中手动定位）及其报告的土地面积创建伪边界。"
     },
     "hazardLayers": {
       "waterStress": {
-        "title": "Water stress",
-        "description": "Global water risk data was sourced from the World Resources Institute (WRI) Aqueduct Water Risk Atlas 4.0 framework and aggregated to the HydroBASINS Level 6 unit. The values are provided from WRI in the scale of 0-5."
+        "title": "水胁迫",
+        "description": "全球水风险数据来源于世界资源研究所 (WRI) 的 Aqueduct 水风险图集 4.0 框架，并汇总至 HydroBASINS 6 级单位。数值由 WRI 提供，等级为 0-5。"
       },
       "flooding": {
-        "title": "Fluvial (riverine) and coastal flooding",
-        "description": "Fluvial and coastal flood depth was sourced from the World Resources Institute Aqueduct Flood Hazard Map dataset. Data is provided at a 1-km resolution for 100-year (i.e. 1 in 100 probability of occurring in a given year) floods, under a high sea level rise scenario and accounting for subsidence. These were calculated under RCPs (representative concentration pathways), which were the formerly recognized ways to describe climate trajectories."
+        "title": "河流（河岸）和沿海洪水",
+        "description": "河流和沿海洪水深度数据来源于世界资源研究所渡槽洪水灾害地图数据集。该数据集以1公里分辨率提供百年一遇（即在特定年份发生的概率为1/100）洪水的数据，并考虑了高海平面上升情景和地面沉降的影响。这些数据是在RCP（代表性浓度路径）情景下计算的，RCP情景是过去公认的描述气候轨迹的方法。"
       },
       "fireWeather": {
-        "title": "Fire weather",
-        "description": "This draws from NASA's Fire Weather Index (FWI) dataset, which is based on NEX-GDDP-CMIP6 projections. FWI represents the relationship between weather conditions and elevated fire risk. The number of days per year in which the FWI exceeds a threshold of 45 is used, representing days with high fire danger."
+        "title": "火灾天气",
+        "description": "该数据来源于美国国家航空航天局（NASA）的火灾天气指数（FWI）数据集，该数据集基于NEX-GDDP-CMIP6预测。FWI代表天气状况与火灾风险升高之间的关系。每年FWI超过45阈值的天数被用作衡量火灾危险程度的指标，代表火灾危险性较高的天数。"
       },
       "extremeHeat": {
-        "title": "Extreme heat / heat stress",
-        "description": "This is calculated as the number of days on which the near surface air temperature (the temperature felt at 2 meters above the ground) exceeds 35 °C, representing extreme heat-day frequency."
+        "title": "极端高温/热应激",
+        "description": "这是以近地表气温（地面以上 2 米处感受到的温度）超过 35°C 的天数来计算的，代表极端高温天气的频率。"
       },
       "extremeCold": {
-        "title": "Extreme cold",
-        "description": "This is calculated as the number of days on which the minimum near surface air temperature (the temperature felt at 2 meters above the ground) falls below 0 °C, representing extreme cold-day frequency."
+        "title": "极寒",
+        "description": "这是以最低近地面气温（地面以上 2 米处感受到的温度）低于 0°C 的天数来计算的，代表极端寒冷天气的频率。"
       },
       "extremePrecipitation": {
-        "title": "Extreme precipitation",
-        "description": "This is calculated as the maximum 5-day precipitation total in a given year, representing extreme precipitation events."
+        "title": "极端降水",
+        "description": "这是以某一年内 5 天最大降水量总和计算得出的，代表极端降水事件。"
       },
       "soilDegradation": {
-        "title": "Soil degradation / erosion",
-        "description": "To represent one aspect of soil erosion, global landslide hazard maps were accessed from the World Bank's Global Landslide Hazard Map. This is available at 1-km resolution."
+        "title": "土壤退化/侵蚀",
+        "description": "为了展现土壤侵蚀的一个方面，我们从世界银行的全球滑坡灾害地图中获取了全球滑坡灾害地图。该地图的分辨率为1公里。"
       }
     },
     "governmentActions": {
-      "title": "Government Actions",
-      "intro": "This tab contains three categories of information from the disclosure:",
-      "listGoals": "Adaptation Goals (Question 5.1 in the <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">questionnaire</a>)",
-      "listActions": "Actions (Question 9.1)",
-      "listProjects": "Projects (Question 9.3)",
-      "goals": "<strong class=\"font-medium text-cdp-dark\">Adaptation Goals</strong> are adaptation targets based on climate hazards and are typically qualitatively defined.",
-      "actions": "<strong class=\"font-medium text-cdp-dark\">Actions</strong> are defined here as the interventions taken to achieve adaptation goals and carry out a given strategy, which can include policies, projects, programs, partnerships, and more. Adaptation action data may include information on the sectors it impacts, attributes of resilience it enhances, co-benefits of the project, population affected, expectations for enhanced resilience timeframe, and funding sources and costs.",
-      "projects": "<strong class=\"font-medium text-cdp-dark\">Projects</strong> are specific climate-related initiatives for which jurisdictions are seeking funding, as reported via the questionnaire. Information about projects may include funding needs, project description, financing models, and more.",
-      "outro": "In addition, the Government Actions tab indicates whether the jurisdiction has completed a Climate Risk and Vulnerability Assessment, or has disclosed that they plan to do so."
+      "title": "政府行动",
+      "intro": "此标签页包含披露信息中的三类信息：",
+      "listGoals": "适应目标（ <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">问卷</a>中的问题 5.1）",
+      "listActions": "行动（问题 9.1）",
+      "listProjects": "项目（问题 9.3）",
+      "goals": "<strong class=\"font-medium text-cdp-dark\">适应目标</strong>是基于气候灾害的适应目标，通常是定性定义的。",
+      "actions": "本文将<strong class=\"font-medium text-cdp-dark\">行动</strong>定义为为实现适应目标和执行既定战略而采取的干预措施，包括政策、项目、方案、伙伴关系等。适应行动数据可能包括其影响的部门、增强的韧性属性、项目的协同效益、受影响人口、增强韧性的预期时间框架以及资金来源和成本等信息。",
+      "projects": "<strong class=\"font-medium text-cdp-dark\">项目</strong>是指各辖区正在寻求资金支持的具体气候相关举措，这些信息均通过问卷调查收集。项目信息可能包括资金需求、项目描述、融资模式等。",
+      "outro": "此外，“政府行动”选项卡显示该司法管辖区是否已完成气候风险和脆弱性评估，或者是否已披露他们计划进行评估。"
     },
     "solutions": {
-      "title": "Action Ideas",
-      "p1": "This tab presents information on relevant actions being taken by peer jurisdictions, derived from actions reported in the questionnaire. Jurisdictions highlighted here are those in the same <a href=\"https://ecoregions.appspot.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">biome</a> as a given city, state, or region, with actions that address one or more of the top 4 hazards of the given city, state, or region. <strong class=\"font-medium text-cdp-dark\">Action Ideas</strong> highlight the types of actions that jurisdictions are taking to adapt to climate hazards. Cities, states, and regions choose from an extensive list of solutions that represents a given action when reporting the actions they are taking.",
-      "p2": "These relevant actions from other jurisdictions in the same ecoregion are surfaced to help users explore what others are doing to adapt to climate hazards. Actions from these jurisdictions are collated and then grouped by solution category (e.g. engineered and built environment actions, behavioural actions) and solution type (e.g. sea walls and coastal protection structures, genetic techniques). The full list of solution types can be found under section 9.1 in the <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">CDP questionnaire guide</a>. From this list, the top 25 solutions are chosen based on those with the highest number of associated actions reported. A maximum of 5 solutions are chosen from a given solution category to highlight a diversity of efforts. For each solution, a subset of actions are selected to display as examples."
+      "title": "行动方案",
+      "p1": "此标签页展示了其他辖区正在采取的相关行动信息，这些信息来源于问卷调查中的报告。此处重点介绍的辖区与特定城市、州或地区位于同一<a href=\"https://ecoregions.appspot.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">生物群落</a>，并且其采取的行动旨在应对该城市、州或地区面临的四大主要灾害中的一项或多项。<strong class=\"font-medium text-cdp-dark\">行动方案</strong>部分重点介绍了各辖区为适应气候灾害而采取的行动类型。城市、州和地区在报告其正在采取的行动时，可以从一份涵盖广泛解决方案的列表中选择相应的行动方案。",
+      "p2": "为了帮助用户了解其他地区为适应气候灾害所采取的措施，系统会展示同一生态区域内其他地区的相关行动。这些地区的行动会被汇总，并按解决方案类别（例如工程和建筑环境措施、行为措施）和解决方案类型（例如海堤和海岸防护结构、基因技术）进行分组。完整的解决方案类型列表可在<a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">CDP问卷指南的</a>9.1节中找到。系统会从该列表中选择前25个解决方案，这些解决方案所报告的相关行动数量最多。每个解决方案类别最多选择5个解决方案，以突出不同领域的努力。对于每个解决方案，系统会选择一部分行动作为示例进行展示。"
     },
     "minimumCriteria": {
-      "title": "Minimum criteria: Data cleaning",
-      "intro": "As part of the data cleaning process, minimum criteria were defined for self-reported data displayed in the CDP Adaptation and Action Explorer to ensure usability, credibility, and comparability. These criteria establish a baseline level of data quality, allowing incomplete, inconsistent, or otherwise unreliable responses to be filtered out prior to analysis.",
+      "title": "最低要求：数据清洗",
+      "intro": "作为数据清洗流程的一部分，我们为CDP适应与行动探索器中显示的自述数据制定了最低标准，以确保数据的可用性、可信度和可比性。这些标准建立了数据质量的基准水平，以便在分析之前过滤掉不完整、不一致或其他不可靠的回复。",
       "headers": {
-        "topic": "Topic",
-        "questionNumber": "2025 CDP questionnaire number",
-        "rawData": "Raw data available at",
-        "criteria": "Minimum criteria"
+        "topic": "话题",
+        "questionNumber": "2025 CDP 问卷编号",
+        "rawData": "原始数据可在以下网址获取：",
+        "criteria": "最低标准"
       },
       "rows": {
         "climateHazards": {
-          "topic": "Climate hazards",
-          "criteria": "The climate hazard reported includes information on the type of hazard, the sectors most exposed by the hazard, and a description of the impacts on vulnerable populations and sectors."
+          "topic": "气候灾害",
+          "criteria": "报告的气候灾害包括灾害类型、受灾害影响最大的部门以及对弱势群体和部门的影响描述。"
         },
         "adaptationGoals": {
-          "topic": "Adaptation Goals",
-          "criteria": "The adaptation goal has a title or description, a base year, and a target year greater than or equal to the reporting year (2025)."
+          "topic": "适应目标",
+          "criteria": "适应目标具有标题或描述、基准年和大于或等于报告年份（2025 年）的目标年份。"
         },
         "adaptationActions": {
-          "topic": "Adaptation actions",
-          "criteria": "The action reported includes information on the type and category of action, the climate hazards that the action addresses, a description of the action, and the sectors the action applies to."
+          "topic": "适应性行动",
+          "criteria": "报告的行动包括行动的类型和类别、行动所应对的气候灾害、行动的描述以及行动适用的部门等信息。"
         },
         "projects": {
-          "topic": "Projects",
-          "criteria": "The project reported includes information on the project area and at least one more datapoint:<ul class=\"list-disc pl-5 mt-1 space-y-0.5\"><li>Project title</li><li>Project stage</li><li>Financing status</li><li>Financing model</li><li>Project description</li><li>Total cost</li><li>Investment needed</li></ul>"
+          "topic": "项目",
+          "criteria": "项目报告包含项目区域信息以及至少一个其他数据点：<ul class=\"list-disc pl-5 mt-1 space-y-0.5\"><li>项目名称</li><li>项目阶段</li><li>融资状况</li><li>融资模式</li><li>项目描述</li><li>总成本</li><li>所需投资</li></ul>"
         }
       },
       "rawDataLabels": {
-        "cities": "Cities",
-        "statesAndRegions": "States and regions"
+        "cities": "城市",
+        "statesAndRegions": "州和地区"
       }
     }
   },
   "learnMore": {
-    "lastUpdated": "Last updated: {{date}}",
-    "lastUpdatedDate": "April 2026",
-    "title": "About the Explorer",
-    "intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. The CDP Adaptation & Action Explorer brings together fragmented climate disclosure, hazard, and resilience information into a single workspace so subnational governments can find what matters fastest.",
+    "lastUpdated": "最后更新：{{date}}",
+    "lastUpdatedDate": "2026年4月",
+    "title": "关于探索者",
+    "intro": "Lorem ipsum dolor sat amet，consectetur adipiscing elit。 Sed do eiusmod tempor inciditunt ut laboure et dolore magna aliqua。 CDP 适应与行动探索器将零碎的气候披露、灾害和复原力信息汇集到一个工作空间中，以便地方政府能够最快地找到重要的事情。",
     "what": {
-      "title": "What you'll find here",
-      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+      "title": "你在这里会找到什么",
+      "body": "Lorem ipsum dolor sat amet，consectetur adipiscing elit。 Ut enim ad minim veniam, quis nostrud exeritation ullamco labouris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur。"
     },
     "audience": {
-      "title": "Who it's for",
-      "body": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt."
+      "title": "适用人群",
+      "body": "例外的是，如果你没有做好准备，那么你就必须承担责任，因为你必须付出努力。 sed ut perspiciatis unde omis iste natus error sat voluptatem Accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illoinvente veritatis et quasi architobeatae vitae dicta sunt."
     },
     "howToUse": {
-      "title": "How to use it",
-      "body": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit."
+      "title": "如何使用它",
+      "body": "Nemo enim ipsam voluptatem quia voluptas sat aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui Ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sat amet, consectetur, adipisci velit。"
     },
     "faq": {
-      "title": "Frequently asked questions",
-      "footnote": "Have another question? Reach out to the CDP team for guidance.",
+      "title": "常见问题解答",
+      "footnote": "还有其他问题？请联系 CDP 团队寻求指导。",
       "items": {
         "data": {
-          "question": "Where does the data come from?",
-          "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam. Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt."
+          "question": "数据来源是什么？",
+          "answer": "Lorem ipsum dolor sat amet，consectetur adipiscing elit。 Sed ut perspiciatis unde omnis iste natus error sat voluptatem Accusantium doloremque laudantium, totam rem aperiam. Eaque ipsa quae ab illoinvente veritatis et quasi architobeatae vitae dicta sunt。"
         },
         "updates": {
-          "question": "How often is the Explorer updated?",
-          "answer": "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur."
+          "question": "Explorer 多久更新一次？",
+          "answer": "Ut enim ad minima veniam, quis nostrum exeritationem ullam corporis suscipit Laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur."
         },
         "coverage": {
-          "question": "Why doesn't my city or region appear?",
-          "answer": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi."
+          "question": "为什么我的城市或地区没有显示？",
+          "answer": "在vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium v​​oluptatum deleniti atque Corroti quos dolores et quas molestias excepturi sint Occaecati cupiditate non Provident, similique sunt in culpa qui officia deserunt mollitia animi."
         },
         "contribute": {
-          "question": "Can I contribute data or feedback?",
-          "answer": "Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus."
+          "question": "我可以提供数据或反馈吗？",
+          "answer": "Et harum quidem rerum facilis est et expedita Outstandingio。时间上的自由，没有任何选择，没有任何障碍，但我最大的心愿是，一切都被假定，一切都是痛苦的。"
         },
         "use": {
-          "question": "Can I cite or reuse what's in the Explorer?",
-          "answer": "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur."
+          "question": "我可以引用或重复使用资源管理器中的内容吗？",
+          "answer": "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe Eveniet ut et voluptates repuudiandae sint et molestiae non recusandae. Itaqueearum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur."
         }
       }
     }
