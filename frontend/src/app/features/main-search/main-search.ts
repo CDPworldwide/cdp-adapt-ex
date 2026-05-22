@@ -26,7 +26,7 @@ import { STATE_ABBREV_TO_NAME } from './state-abbrev';
 import { Maps } from '../maps/maps';
 import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
 import type { Hazard, HazardProfile, LocationPin } from '@pac-api/client';
-import { CdpLogoIconComponent } from '../../shared/icons';
+import { CdpLogoIconComponent, WarningIconComponent } from '../../shared/icons';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
 import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
@@ -57,6 +57,7 @@ function stripDiacritics(value: string): string {
     Maps,
     LocationSummaryComponent,
     CdpLogoIconComponent,
+    WarningIconComponent,
     AppHeaderComponent,
     DisclosureTrendsComponent,
     WelcomeModalComponent,

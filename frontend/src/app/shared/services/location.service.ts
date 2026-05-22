@@ -76,7 +76,10 @@ export class LocationService {
               organizationId: location.id,
               name: location.name,
               country: location.country?.trim() || undefined,
-              disclosesToCDP: true,
+              // Non-disclosers have a null/empty public_status. Public and
+              // Non-Public disclosers both surface as "discloses" since the
+              // jurisdiction did appear in CDP's report.
+              disclosesToCDP: !!location.public_status,
             },
           ];
         });

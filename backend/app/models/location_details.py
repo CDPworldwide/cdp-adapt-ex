@@ -36,6 +36,9 @@ class OrganizationSummary(SQLModel):
     name: str | None = None
     country: str | None = None
     population: int | None = None
+    # "Public", "Non-Public", or null when the org has not disclosed. Surfaced
+    # so the search UI can distinguish disclosers from non-disclosers.
+    public_status: str | None = None
 
 
 class LocationGeometry(SQLModel):
