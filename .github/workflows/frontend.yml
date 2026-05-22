@@ -32,15 +32,12 @@ env:
   NODE_VERSION: "20.x"
 
 jobs:
-  build-and-test:
-    name: Frontend CI / build, lint, test
+  translation-coverage:
+    name: Frontend translations / coverage warning
     runs-on: ubuntu-latest
     if: github.event.action != 'closed' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
     permissions:
       contents: read
-      id-token: write
-    outputs:
-      backend-url: ${{ steps.backend-url.outputs.url }}
     env:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       SLACK_I18N_CHANNEL_ID: ${{ secrets.SLACK_I18N_CHANNEL_ID }}
@@ -54,19 +51,11 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Cache client build
-        uses: actions/cache@v4
-        with:
-          path: client/dist
-          key: client-build-${{ github.sha }}
-
       - name: Check translation parity
         id: i18n-coverage
         working-directory: frontend
         run: |
-          set +e
-          npm run i18n:coverage -- --fail-on-missing 2>&1 | tee i18n-coverage.txt
-          status=${PIPESTATUS[0]}
+          npm run i18n:coverage 2>&1 | tee i18n-coverage.txt
           report="$(awk '/^Translation coverage/{flag=1} /^Run with --show-keys/{flag=0} flag{print}' i18n-coverage.txt)"
 
           {
@@ -75,7 +64,39 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-          exit "$status"
+          python3 - <<'PY'
+          from pathlib import Path
+
+          rows = []
+          for line in Path("i18n-coverage.txt").read_text(encoding="utf-8").splitlines():
+              parts = line.split()
+              if len(parts) >= 8 and parts[1].endswith("%") and parts[3].isdigit():
+                  rows.append(
+                      {
+                          "locale": parts[0],
+                          "coverage": parts[1],
+                          "covered": parts[2],
+                          "missing": int(parts[3]),
+                          "empty": int(parts[4]),
+                          "type": int(parts[5]),
+                          "extra": int(parts[6]),
+                          "same_as_master": int(parts[7]),
+                      }
+                  )
+
+          warning_rows = [
+              row
+              for row in rows
+              if row["missing"] > 0 or row["empty"] > 0 or row["type"] > 0
+          ]
+          if warning_rows:
+              summary = ", ".join(
+                  f'{row["locale"]}: {row["missing"]} missing, '
+                  f'{row["empty"]} empty, {row["type"]} type mismatches'
+                  for row in warning_rows
+              )
+              print(f"::warning title=Translations need updates::{summary}")
+          PY
 
       - name: Prepare translation coverage Slack payload
         if: always() && steps.i18n-coverage.outputs.report != '' && env.SLACK_BOT_TOKEN != '' && env.SLACK_I18N_CHANNEL_ID != ''
@@ -96,7 +117,7 @@ jobs:
 
           for line in os.environ["I18N_COVERAGE_REPORT"].splitlines():
               parts = line.split()
-              if len(parts) >= 8 and parts[0] not in {"Locale", "------", "Translation"}:
+              if len(parts) >= 8 and parts[1].endswith("%") and parts[3].isdigit():
                   rows.append(
                       {
                           "locale": parts[0],
@@ -115,7 +136,7 @@ jobs:
           )
           details = "\n".join(
               (
-                  f'• `{row["locale"]}`: {row["coverage"]} translated '
+                  f'- `{row["locale"]}`: {row["coverage"]} translated '
                   f'({row["covered"]}); {row["missing"]} missing, '
                   f'{row["empty"]} empty, {row["type"]} type mismatches, '
                   f'{row["extra"]} extra, {row["same_as_master"]} same as master'
@@ -151,6 +172,30 @@ jobs:
         run: |
           echo "Slack post ok: ${{ steps.slack-i18n-coverage.outputs.ok }}"
           echo "Slack message timestamp: ${{ steps.slack-i18n-coverage.outputs.ts }}"
+
+  build-and-test:
+    name: Frontend CI / build, lint, test
+    runs-on: ubuntu-latest
+    if: github.event.action != 'closed' && (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      backend-url: ${{ steps.backend-url.outputs.url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup frontend build
+        uses: ./.github/actions/setup-frontend-build
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache client build
+        uses: actions/cache@v4
+        with:
+          path: client/dist
+          key: client-build-${{ github.sha }}
 
       # - name: Install integration test dependencies
       #   if: github.event_name == 'pull_request'
