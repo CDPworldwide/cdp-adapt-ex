@@ -322,6 +322,22 @@ describe('AskCdpAiService', () => {
       expect(doc.querySelector('.ai-sources-title')?.textContent).toBe('Sources');
       expect(doc.querySelectorAll('.ai-sources li').length).toBe(1);
     });
+
+    it('uses a readable sources label when translations are not ready', () => {
+      translate.setTranslation('en', {});
+
+      const html = service.parseToHtml(
+        [
+          'Urban flooding has caused major losses.[^1]',
+          '',
+          'Sources:',
+          '[^1]: George Local Municipality 2025 CDP-ICLEI Track disclosure.',
+        ].join('\n'),
+      );
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+
+      expect(doc.querySelector('.ai-sources-title')?.textContent).toBe('Sources');
+    });
   });
 
   function readRequestBodyAt(index: number): Promise<any> {
