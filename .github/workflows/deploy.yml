@@ -25,7 +25,7 @@ env:
   # Branch-specific environment configuration
   ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
   SERVICE_NAME_BACKEND: ${{ github.ref == 'refs/heads/production' && 'cdp-server-prod' || 'cdp-server' }}
-  SERVICE_NAME_FRONTEND: ${{ github.ref == 'refs/heads/production' && 'frontend-prod' || 'frontend' }}
+  SERVICE_NAME_FRONTEND: frontend
 
 jobs:
   deploy-backend:
