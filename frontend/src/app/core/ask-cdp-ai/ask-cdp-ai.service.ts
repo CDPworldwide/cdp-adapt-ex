@@ -514,7 +514,7 @@ export class AskCdpAiService {
 
       if (uniqueSources.length) {
         formattedContent = content.slice(0, sourcesMatch.index ?? 0).trimEnd();
-        const sourcesLabel = this.translateService.instant('askCdpAi.sources');
+        const sourcesLabel = this.getSourcesLabel();
         const sourceItems = uniqueSources.map(
           (source) =>
             `<li>${this.linkifySourceText(source.text)}</li>`,
@@ -535,6 +535,12 @@ export class AskCdpAiService {
 
   private normalizeSourceText(sourceText: string): string {
     return sourceText.replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
+  private getSourcesLabel(): string {
+    const translatedLabel = this.translateService.instant('askCdpAi.sources');
+
+    return translatedLabel && translatedLabel !== 'askCdpAi.sources' ? translatedLabel : 'Sources';
   }
 
   private linkifySourceText(sourceText: string): string {
