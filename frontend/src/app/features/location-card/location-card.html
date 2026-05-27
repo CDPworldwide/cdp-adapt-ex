@@ -42,7 +42,11 @@
           role="tablist"
           [attr.aria-label]="'locationCard.tabs.ariaLabel' | translate"
         >
-          <div class="flex items-end gap-2 lg:gap-20 justify-between lg:justify-start self-stretch">
+          <div
+            class="flex items-end gap-2 lg:gap-20 lg:justify-start self-stretch"
+            [class.justify-between]="showGovernmentActionsTab"
+            [class.justify-start]="!showGovernmentActionsTab"
+          >
             <button
               (click)="setActiveTab('hazards')"
               class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
@@ -195,7 +199,9 @@
       role="tablist"
     >
       <div
-        class="flex items-end gap-2 lg:gap-20 flex-1 border-b border-[#bfbfbf] -mx-4 lg:mx-0 px-4 lg:px-0 justify-between lg:justify-start self-stretch"
+        class="flex items-end gap-2 lg:gap-20 flex-1 border-b border-[#bfbfbf] -mx-4 lg:mx-0 px-4 lg:px-0 lg:justify-start self-stretch"
+        [class.justify-between]="showGovernmentActionsTab"
+        [class.justify-start]="!showGovernmentActionsTab"
       >
         <button
           (click)="setActiveTab('hazards')"

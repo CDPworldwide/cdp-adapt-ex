@@ -195,6 +195,10 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
 
   setActiveTab(tab: LocationCardTabKey): void {
     this.updateActiveTab(tab);
+    // Each tab is its own logical "page"; reset scroll so the content
+    // doesn't open partway down. Mirrors what `exploreHazardActions` does
+    // when it programmatically switches to the actions tab.
+    this.scrollRoot?.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   private updateActiveTab(tab: LocationCardTabKey): void {
