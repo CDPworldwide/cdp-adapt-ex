@@ -43,7 +43,9 @@
                 {{ 'locationCard.hazardOverview.topHazardsDisclosed' | translate }}
               </h3>
               <div
+                #topHazTip="matTooltip"
                 matTooltip="{{ 'locationCard.hazardOverview.topHazardsTooltip' | translate }}"
+                (click)="topHazTip.show()"
                 class="relative flex items-center justify-center cursor-pointer group shrink-0 before:absolute before:content-[''] before:-inset-3"
               >
                 <app-info-icon
@@ -99,9 +101,11 @@
                   {{ 'locationCard.hazardOverview.mostExposedSectors' | translate }}
                 </h3>
                 <div
+                  #sectorsTip="matTooltip"
                   matTooltip="{{
                     'locationCard.hazardOverview.mostExposedSectorsTooltip' | translate
                   }}"
+                  (click)="sectorsTip.show()"
                   class="relative flex items-center justify-center cursor-pointer group shrink-0 before:absolute before:content-[''] before:-inset-3"
                 >
                   <app-info-icon
@@ -887,7 +891,9 @@
             {{ 'locationCard.hazardDetail.requestersTitle' | translate }}
           </h2>
           <div
+            #reqTip="matTooltip"
             matTooltip="{{ 'locationCard.hazardDetail.requestersTooltip' | translate }}"
+            (click)="reqTip.show()"
             class="relative flex items-center justify-center cursor-pointer ml-2 before:absolute before:content-[''] before:-inset-3"
           >
             <app-info-icon size="16" class="text-cdp-dark"></app-info-icon>

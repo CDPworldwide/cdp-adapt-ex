@@ -175,12 +175,14 @@
               }}
             </span>
             <div
+              #popTip="matTooltip"
               matTooltip="{{
                 (data.publicStatus && data.publicStatus !== 'GEE-Derived'
                   ? 'locationCard.header.populationTooltip'
                   : 'locationCard.header.populationTooltipNonDiscloser'
                 ) | translate: { location: data.name }
               }}"
+              (click)="popTip.show()"
               class="relative flex items-center justify-center cursor-pointer group ml-1 before:absolute before:content-[''] before:-inset-3"
             >
               <app-info-icon

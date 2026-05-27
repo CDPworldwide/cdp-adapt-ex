@@ -64,7 +64,7 @@
       @for (filter of hazardFilters; track filter.type) {
         <button
           (click)="selectHazard(filter.type)"
-          class="flex flex-col items-center justify-center w-20 h-20 shrink-0 lg:w-[84px] lg:h-[84px] p-1 gap-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+          class="flex flex-col items-center justify-center w-20 h-20 shrink-0 lg:w-[84px] lg:h-[84px] p-1 gap-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 touch-pan-x lg:touch-auto"
           [ngClass]="{
             'bg-cdp-dark hover:bg-black active:bg-cdp-neutral-08': isSelected(filter.type),
             'bg-cdp-neutral-02 hover:bg-cdp-neutral-01 active:bg-cdp-gray': !isSelected(
@@ -73,6 +73,7 @@
           }"
           [matTooltip]="filter.type ? ('locationCard.hazardNames.' + filter.type | translate) : ''"
           matTooltipPosition="above"
+          matTooltipTouchGestures="off"
         >
           @if (filter.type) {
             <app-hazard-icon
