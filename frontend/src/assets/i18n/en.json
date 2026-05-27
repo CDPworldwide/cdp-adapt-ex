@@ -13,7 +13,8 @@
       "noDataBody": "We don't yet have data to display for this location. We're continually expanding our coverage with historical disclosures and additional trusted data sources.",
       "searchSuggestions": "Suggestions",
       "noResults": "No locations match '{{query}}'",
-      "disclosesToCdp": "Disclosure Available"
+      "disclosesToCdp": "Disclosure Available",
+      "noDisclosures": "Jurisdiction does not disclose; hazard information and action ideas are available"
     },
     "legend": {
       "cities": "Cities",

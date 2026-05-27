@@ -77,6 +77,13 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
   selectedHazardFilter: string | null = null;
   jurisdictionBounds?: google.maps.LatLngBounds;
 
+  // GEE-derived jurisdictions are CDP analysis-only (no disclosed
+  // questionnaire), so the Government actions tab — which is sourced entirely
+  // from disclosed actions/goals/projects — is hidden for them.
+  get showGovernmentActionsTab(): boolean {
+    return this.data?.publicStatus !== 'GEE-Derived';
+  }
+
   isStickyHeaderVisible = false;
 
   @ViewChild('stickyTrigger')
@@ -173,6 +180,12 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
 
       // Push the new geometry to the stream
       this.geometry$.next(currentData.geometry);
+
+      // If we just landed on a GEE-derived location while the Government
+      // actions tab is selected (e.g. via a deep link), fall back to Hazards.
+      if (this.activeTab === 'actions' && currentData.publicStatus === 'GEE-Derived') {
+        this.updateActiveTab('hazards');
+      }
     }
 
     if (changes['activeTab'] && shouldClearHazardFilter(changes['activeTab'].currentValue)) {
@@ -182,6 +195,10 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
 
   setActiveTab(tab: LocationCardTabKey): void {
     this.updateActiveTab(tab);
+    // Each tab is its own logical "page"; reset scroll so the content
+    // doesn't open partway down. Mirrors what `exploreHazardActions` does
+    // when it programmatically switches to the actions tab.
+    this.scrollRoot?.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   private updateActiveTab(tab: LocationCardTabKey): void {

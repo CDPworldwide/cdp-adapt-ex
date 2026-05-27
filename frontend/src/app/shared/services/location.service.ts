@@ -76,7 +76,10 @@ export class LocationService {
               organizationId: location.id,
               name: location.name,
               country: location.country?.trim() || undefined,
-              disclosesToCDP: true,
+              // `disclosure_status` is "Submitted" if the jurisdiction returned
+              // a questionnaire this cycle. Anything else (including
+              // "non-disclosed" or NULL) is treated as a non-discloser.
+              disclosesToCDP: location.disclosure_status === 'Submitted',
             },
           ];
         });

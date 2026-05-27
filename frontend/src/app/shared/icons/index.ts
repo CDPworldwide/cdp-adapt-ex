@@ -34,6 +34,7 @@ export { InfectiousDiseaseIconComponent } from './infectious-disease-icon.compon
 export { OtherLandscapeShiftIconComponent } from './other-landscape-shift-icon.component';
 export { NoHazardsIconComponent } from './no-hazards-icon.component';
 export { OtherHazardIconComponent } from './other-hazard-icon.component';
+export { WarningIconComponent } from './warning-icon.component';
 export { CloseIconComponent } from './close-icon.component';
 export { ImagePlaceholderIconComponent } from './image-placeholder-icon.component';
 export * from './info-icon.component';

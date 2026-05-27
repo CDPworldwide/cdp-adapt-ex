@@ -42,7 +42,11 @@
           role="tablist"
           [attr.aria-label]="'locationCard.tabs.ariaLabel' | translate"
         >
-          <div class="flex items-end gap-2 lg:gap-20 justify-between lg:justify-start self-stretch">
+          <div
+            class="flex items-end gap-2 lg:gap-20 lg:justify-start self-stretch"
+            [class.justify-between]="showGovernmentActionsTab"
+            [class.justify-start]="!showGovernmentActionsTab"
+          >
             <button
               (click)="setActiveTab('hazards')"
               class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
@@ -60,23 +64,25 @@
                 {{ 'locationCard.tabs.hazards' | translate }}
               </span>
             </button>
-            <button
-              (click)="setActiveTab('actions')"
-              class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
-              [ngClass]="
-                activeTab === 'actions' ? 'font-medium leading-8' : 'font-normal leading-5'
-              "
-              role="tab"
-              [attr.aria-selected]="activeTab === 'actions'"
-            >
-              <span
-                class="inline-block pb-[15px] whitespace-nowrap"
-                [class.border-b]="activeTab === 'actions'"
-                [class.border-cdp-border]="activeTab === 'actions'"
+            @if (showGovernmentActionsTab) {
+              <button
+                (click)="setActiveTab('actions')"
+                class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
+                [ngClass]="
+                  activeTab === 'actions' ? 'font-medium leading-8' : 'font-normal leading-5'
+                "
+                role="tab"
+                [attr.aria-selected]="activeTab === 'actions'"
               >
-                {{ 'locationCard.tabs.governmentActions' | translate }}
-              </span>
-            </button>
+                <span
+                  class="inline-block pb-[15px] whitespace-nowrap"
+                  [class.border-b]="activeTab === 'actions'"
+                  [class.border-cdp-border]="activeTab === 'actions'"
+                >
+                  {{ 'locationCard.tabs.governmentActions' | translate }}
+                </span>
+              </button>
+            }
             <button
               (click)="setActiveTab('solutions')"
               class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
@@ -169,13 +175,15 @@
               }}
             </span>
             <div
+              #popTip="matTooltip"
               matTooltip="{{
                 (data.publicStatus && data.publicStatus !== 'GEE-Derived'
                   ? 'locationCard.header.populationTooltip'
                   : 'locationCard.header.populationTooltipNonDiscloser'
                 ) | translate: { location: data.name }
               }}"
-              class="flex items-center justify-center cursor-pointer group ml-1"
+              (click)="popTip.show()"
+              class="relative flex items-center justify-center cursor-pointer group ml-1 before:absolute before:content-[''] before:-inset-3"
             >
               <app-info-icon
                 size="10"
@@ -193,7 +201,9 @@
       role="tablist"
     >
       <div
-        class="flex items-end gap-2 lg:gap-20 flex-1 border-b border-[#bfbfbf] -mx-4 lg:mx-0 px-4 lg:px-0 justify-between lg:justify-start self-stretch"
+        class="flex items-end gap-2 lg:gap-20 flex-1 border-b border-[#bfbfbf] -mx-4 lg:mx-0 px-4 lg:px-0 lg:justify-start self-stretch"
+        [class.justify-between]="showGovernmentActionsTab"
+        [class.justify-start]="!showGovernmentActionsTab"
       >
         <button
           (click)="setActiveTab('hazards')"
@@ -211,22 +221,24 @@
             {{ 'locationCard.tabs.hazards' | translate }}
           </span>
         </button>
-        <button
-          (click)="setActiveTab('actions')"
-          class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
-          [ngClass]="activeTab === 'actions' ? 'font-medium leading-8' : 'font-normal leading-5'"
-          role="tab"
-          [attr.aria-selected]="activeTab === 'actions'"
-          aria-controls="government-actions-panel"
-        >
-          <span
-            class="inline-block pb-[15px] whitespace-nowrap"
-            [class.border-b]="activeTab === 'actions'"
-            [class.border-cdp-border]="activeTab === 'actions'"
+        @if (showGovernmentActionsTab) {
+          <button
+            (click)="setActiveTab('actions')"
+            class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
+            [ngClass]="activeTab === 'actions' ? 'font-medium leading-8' : 'font-normal leading-5'"
+            role="tab"
+            [attr.aria-selected]="activeTab === 'actions'"
+            aria-controls="government-actions-panel"
           >
-            {{ 'locationCard.tabs.governmentActions' | translate }}
-          </span>
-        </button>
+            <span
+              class="inline-block pb-[15px] whitespace-nowrap"
+              [class.border-b]="activeTab === 'actions'"
+              [class.border-cdp-border]="activeTab === 'actions'"
+            >
+              {{ 'locationCard.tabs.governmentActions' | translate }}
+            </span>
+          </button>
+        }
         <button
           (click)="setActiveTab('solutions')"
           class="text-cdp-border text-center font-roboto text-sm tracking-cdp-wide transition-colors hover:text-cdp-red active:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 rounded-sm"
@@ -263,7 +275,7 @@
       }
 
       <!-- Government actions Tab -->
-      @if (activeTab === 'actions') {
+      @if (activeTab === 'actions' && showGovernmentActionsTab) {
         <div id="government-actions-panel" role="tabpanel">
           <app-government-actions
             [data]="data.governmentActions"

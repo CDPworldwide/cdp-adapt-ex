@@ -9,7 +9,7 @@
         [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
         matTooltipPosition="above"
         [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
-        class="inline-flex items-center justify-center align-middle ml-1.5 p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 not-italic"
+        class="relative inline-flex items-center justify-center align-middle ml-1.5 p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 not-italic before:absolute before:content-[''] before:-inset-3"
       >
         <app-info-icon size="14"></app-info-icon>
       </a>
@@ -37,7 +37,7 @@
         [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
         matTooltipPosition="above"
         [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
-        class="self-center inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+        class="relative self-center inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 before:absolute before:content-[''] before:-inset-3"
       >
         <app-info-icon size="14"></app-info-icon>
       </a>
@@ -55,16 +55,16 @@
         [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
         matTooltipPosition="above"
         [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
-        class="inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+        class="relative inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 before:absolute before:content-[''] before:-inset-3"
       >
         <app-info-icon size="14"></app-info-icon>
       </a>
     </div>
-    <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap lg:gap-2 px-4 lg:px-0">
+    <div class="flex gap-2 overflow-x-auto touch-pan-x px-4 lg:px-0 lg:flex-wrap lg:gap-2 lg:overflow-x-visible lg:touch-auto">
       @for (filter of hazardFilters; track filter.type) {
         <button
           (click)="selectHazard(filter.type)"
-          class="flex flex-col items-center justify-center aspect-square w-full lg:w-[84px] lg:h-[84px] lg:aspect-auto p-1 gap-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+          class="flex flex-col items-center justify-center w-20 h-20 shrink-0 lg:w-[84px] lg:h-[84px] p-1 gap-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 touch-pan-x lg:touch-auto"
           [ngClass]="{
             'bg-cdp-dark hover:bg-black active:bg-cdp-neutral-08': isSelected(filter.type),
             'bg-cdp-neutral-02 hover:bg-cdp-neutral-01 active:bg-cdp-gray': !isSelected(
@@ -73,6 +73,7 @@
           }"
           [matTooltip]="filter.type ? ('locationCard.hazardNames.' + filter.type | translate) : ''"
           matTooltipPosition="above"
+          matTooltipTouchGestures="off"
         >
           @if (filter.type) {
             <app-hazard-icon
