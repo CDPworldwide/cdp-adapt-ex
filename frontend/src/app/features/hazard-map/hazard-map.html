@@ -1,6 +1,6 @@
 <div class="relative w-full h-full">
   <div #map class="w-full h-full" [ngClass]="{ 'rounded-none': isExpanded }"></div>
-  @if (showExpand) {
+  @if (showExpand || isExpanded) {
     <button
       class="absolute top-3 right-3 lg:top-6 lg:right-6 bg-black hover:bg-black/90 rounded-full inline-flex justify-center items-center gap-1.5 px-4 py-1.5 cursor-pointer transition-colors z-10 focus:outline-2 focus:outline-white focus:outline-offset-2"
       (click)="toggleExpand()"

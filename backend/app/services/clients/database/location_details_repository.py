@@ -173,7 +173,7 @@ class LocationDetailsRepository:
                     DimCentral.disclosing_organization,
                     DimCentral.discloser_country_or_area,
                     DimCentral.current_pop,
-                    DimCentral.public_status,
+                    DimCentral.disclosure_status,
                 )
                 .where(
                     DimCentral.has_geometry,
@@ -187,7 +187,7 @@ class LocationDetailsRepository:
                     name=row.disclosing_organization,
                     country=row.discloser_country_or_area,
                     population=row.current_pop,
-                    public_status=row.public_status,
+                    disclosure_status=row.disclosure_status,
                 )
                 for row in results
                 if row.disclosing_organization

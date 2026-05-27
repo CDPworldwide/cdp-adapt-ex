@@ -36,9 +36,10 @@ class OrganizationSummary(SQLModel):
     name: str | None = None
     country: str | None = None
     population: int | None = None
-    # "Public", "Non-Public", or null when the org has not disclosed. Surfaced
-    # so the search UI can distinguish disclosers from non-disclosers.
-    public_status: str | None = None
+    # "Submitted" if the jurisdiction returned a questionnaire to CDP this
+    # cycle, "non-disclosed" otherwise. Surfaced so the search UI can flag
+    # non-disclosers with a warning icon.
+    disclosure_status: str | None = None
 
 
 class LocationGeometry(SQLModel):
@@ -66,6 +67,7 @@ class DimCentral(SQLModel, table=True):
     disclosing_org_type: str | None = None
     discloser_country_or_area: str | None = None
     public_status: str | None = None
+    disclosure_status: str | None = None
     current_pop: float | None = None
     reporting_language: str | None = None
     ranked_hazards: str | None = None

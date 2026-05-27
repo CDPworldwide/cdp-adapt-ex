@@ -85,12 +85,20 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
   }
 
   get bannerVariant(): 'no-report' | 'non-public' | 'no-hazards' | null {
-    if (!this.data || (this.data.hazards?.hazards?.length ?? 0) > 0) {
-      return null;
-    }
+    if (!this.data) return null;
+    // Only count hazards the jurisdiction itself disclosed. GEE-Derived rows
+    // come from CDP analysis, so they shouldn't suppress a banner that's
+    // explaining the absence of the jurisdiction's own report.
+    const disclosedCount = (this.data.hazards?.hazards ?? []).filter(
+      (h) => h.source !== 'GEE-Derived',
+    ).length;
+    if (disclosedCount > 0) return null;
     if (this.data.publicStatus == null) return 'no-report';
     if (this.data.publicStatus === 'Non-Public') return 'non-public';
-    return 'no-hazards';
+    if (this.data.publicStatus === 'Public') return 'no-hazards';
+    // GEE-Derived publicStatus: the 2×2 GEE grid below already explains the
+    // situation, so no banner is needed.
+    return null;
   }
 
   // Public orgs surface their own disclosed hazards
