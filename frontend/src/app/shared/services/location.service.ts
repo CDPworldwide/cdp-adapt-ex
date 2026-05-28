@@ -12,6 +12,10 @@ import { createApiClient } from './api-client';
 import { LanguageService } from './language.service';
 import { normalizeTranslationLanguage } from './translation-language.util';
 
+type LocationNameSummary = LocationNamesResponse['locations'][number] & {
+  disclosure_status?: string | null;
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -67,6 +71,8 @@ export class LocationService {
         }
 
         return (response.data as LocationNamesResponse).locations.flatMap((location) => {
+          const locationSummary = location as LocationNameSummary;
+
           if (!location.name) {
             return [];
           }
@@ -79,7 +85,7 @@ export class LocationService {
               // `disclosure_status` is "Submitted" if the jurisdiction returned
               // a questionnaire this cycle. Anything else (including
               // "non-disclosed" or NULL) is treated as a non-discloser.
-              disclosesToCDP: location.disclosure_status === 'Submitted',
+              disclosesToCDP: locationSummary.disclosure_status === 'Submitted',
             },
           ];
         });

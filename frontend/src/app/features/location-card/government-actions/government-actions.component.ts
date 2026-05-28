@@ -12,7 +12,6 @@ import type {
 } from '@pac-api/client';
 
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
-import { NoHazardsIconComponent } from '../../../shared/icons';
 import { AdaptationActionDetailComponent } from './adaptation-action-detail/adaptation-action-detail.component';
 import { AdaptationGoalDetailComponent } from './adaptation-goal-detail/adaptation-goal-detail.component';
 import { ProjectSeekingFundingDetailComponent } from './project-seeking-funding-detail/project-seeking-funding-detail.component';
@@ -30,7 +29,6 @@ export type { HazardSummaryRow, DetailItemType };
     CommonModule,
     TranslateModule,
     HazardIconComponent,
-    NoHazardsIconComponent,
     AdaptationActionDetailComponent,
     AdaptationGoalDetailComponent,
     ProjectSeekingFundingDetailComponent,
