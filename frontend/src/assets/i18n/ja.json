@@ -13,7 +13,8 @@
       "disclosesToCdp": "CDPへの場所情報報告",
       "searchOrSelect": "場所を検索",
       "orExploreOnMap": "または地図で探す",
-      "noResults": "'{{query}}'に一致する場所はありません"
+      "noResults": "'{{query}}'に一致する場所はありません",
+      "noDisclosures": "この管轄区域は開示していません。ハザード情報と行動案は利用できます"
     },
     "description": {
       "text": "世界各地の都市、州、地域が資金調達を求めている、地域の気候リスク、対策および適応プロジェクトを閲覧する",
@@ -64,6 +65,7 @@
     "hazardLegend": {
       "source": "原因",
       "scenario": "想定される状況",
+      "scenarioTooltip": "シナリオは、異なる気候の将来像のもとでハザードがどのように変化する可能性があるかを示します。「過去」は過去の条件を反映しています。その他の選択肢は、低排出から高排出までのような、将来起こり得る経路を表します。シナリオを選択すると、時間の経過とともにリスクレベルがどのように変化し得るかを確認できます。詳しくは方法論をご覧ください。",
       "timeframe": "利用可能な期間"
     },
     "scenarios": {
@@ -195,6 +197,7 @@
       "MASS_MOVEMENT": "マスムーブメント",
       "LOSS_OF_GREEN_SPACE": "緑地の喪失",
       "SOIL_DEGRADATION_EROSION": "土壌劣化",
+      "LANDSLIDES": "地すべり",
       "LANDSCAPE_SHIFT_DEGRADATION": "その他の景観の変化",
       "INFECTIOUS_DISEASE": "感染症",
       "BIODIVERSITY_LOSS": "生物多様性の喪失",
@@ -256,6 +259,7 @@
       "crvaVisitPortal": "CDPオープンデータポータルにアクセス",
       "requestersTitle": "データ開示の要請元",
       "requestersTooltip": "これは当該管轄区域に対して情報開示を要請した組織の一覧です。この一覧は網羅的なものではなく、また地方政府の法令遵守状況や情報開示の具体的な目的を示すものではありません。",
+      "requestersAttribution": "位置データは、<a href=\"https://docs.overturemaps.org/attribution/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Overture Maps Foundation</a> によるもので、<a href=\"https://opendatacommons.org/licenses/odbl/1-0/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Open Database License (ODbL)</a> に基づいて提供されています",
       "aiSummary": "AIによる概要",
       "proportionLabel": "最も曝露度の高い人口の割合",
       "vulnerablePopTitle": "最も影響を受けやすい脆弱な集団",

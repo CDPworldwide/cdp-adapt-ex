@@ -13,7 +13,8 @@
       "disclosesToCdp": "Informes de ubicación a CDP",
       "searchOrSelect": "Buscar ubicación",
       "orExploreOnMap": "O explore en el mapa",
-      "noResults": "No hay ubicaciones que coincidan con '{{query}}'"
+      "noResults": "No hay ubicaciones que coincidan con '{{query}}'",
+      "noDisclosures": "La jurisdicción no divulga información; hay información sobre peligros e ideas de acción disponibles"
     },
     "description": {
       "text": "Explore los riesgos climáticos locales, las acciones y los proyectos de adaptación que buscan financiación de ciudades, estados y regiones de todo el mundo.",
@@ -64,6 +65,7 @@
     "hazardLegend": {
       "source": "Fuente",
       "scenario": "Escenarios",
+      "scenarioTooltip": "Los escenarios muestran cómo puede cambiar un peligro bajo distintos futuros climáticos. \"Histórico\" refleja condiciones pasadas. Las demás opciones representan posibles trayectorias futuras, por ejemplo de menores a mayores emisiones. Elija un escenario para ver cómo podrían cambiar los niveles de riesgo con el tiempo. Consulte la metodología para obtener más información.",
       "timeframe": "Plazos disponibles"
     },
     "scenarios": {
@@ -195,6 +197,7 @@
       "MASS_MOVEMENT": "Movimiento de masas",
       "LOSS_OF_GREEN_SPACE": "Pérdida de espacios verdes",
       "SOIL_DEGRADATION_EROSION": "Degradación del suelo",
+      "LANDSLIDES": "Deslizamientos de tierra",
       "LANDSCAPE_SHIFT_DEGRADATION": "Otro cambio en el paisaje",
       "INFECTIOUS_DISEASE": "Enfermedades infecciosas",
       "BIODIVERSITY_LOSS": "Pérdida de biodiversidad",
@@ -256,6 +259,7 @@
       "crvaVisitPortal": "Visite el portal de datos abiertos de CDP.",
       "requestersTitle": "Divulgación de datos solicitada por",
       "requestersTooltip": "Estas son organizaciones que han solicitado información a esta jurisdicción. Esta lista no es exhaustiva y no indica el cumplimiento por parte del gobierno ni el propósito específico para el cual se divulgó la información.",
+      "requestersAttribution": "Datos de ubicación de <a href=\"https://docs.overturemaps.org/attribution/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Overture Maps Foundation</a> conforme a la <a href=\"https://opendatacommons.org/licenses/odbl/1-0/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Licencia de Base de Datos Abierta (ODbL)</a>",
       "aiSummary": "Resumen de IA",
       "proportionLabel": "Proporción de la población más expuesta",
       "vulnerablePopTitle": "Los grupos de población vulnerables son los más expuestos.",

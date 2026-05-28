@@ -13,7 +13,8 @@
       "disclosesToCdp": "向 CDP 报告位置",
       "searchOrSelect": "搜索地点",
       "orExploreOnMap": "或在地图上探索",
-      "noResults": "没有地点匹配 '{{query}}'"
+      "noResults": "没有地点匹配 '{{query}}'",
+      "noDisclosures": "该司法管辖区未披露；可查看灾害信息和行动建议"
     },
     "description": {
       "text": "了解全球各地城市、州和地区正在寻求资金支持的本地气候灾害应对、气候行动及适应与韧性相关项目。",
@@ -64,6 +65,7 @@
     "hazardLegend": {
       "source": "来源",
       "scenario": "场景",
+      "scenarioTooltip": "场景展示在不同气候未来下，灾害可能如何变化。“历史”反映过去的状况。其他选项代表可能的未来路径，例如从较低排放到较高排放。选择一个场景，查看风险水平可能如何随时间变化。更多信息请参阅方法论。",
       "timeframe": "可用时间范围"
     },
     "scenarios": {
@@ -195,6 +197,7 @@
       "MASS_MOVEMENT": "滑坡",
       "LOSS_OF_GREEN_SPACE": "绿地丧失",
       "SOIL_DEGRADATION_EROSION": "土壤退化",
+      "LANDSLIDES": "滑坡",
       "LANDSCAPE_SHIFT_DEGRADATION": "其他景观变化",
       "INFECTIOUS_DISEASE": "传染病",
       "BIODIVERSITY_LOSS": "生物多样性丧失",
@@ -256,6 +259,7 @@
       "crvaVisitPortal": "访问 CDP 开放数据门户",
       "requestersTitle": "数据披露请求",
       "requestersTooltip": "以下列出的是已向本司法管辖区提出信息披露请求的组织。此列表并不完整，也不代表政府是否已遵照执行，或信息披露的具体目的。",
+      "requestersAttribution": "位置数据来自 <a href=\"https://docs.overturemaps.org/attribution/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Overture Maps Foundation</a>，并依据 <a href=\"https://opendatacommons.org/licenses/odbl/1-0/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">开放数据库许可 (ODbL)</a> 提供",
       "aiSummary": "人工智能概要",
       "proportionLabel": "最易受影响的人口比例",
       "vulnerablePopTitle": "最易受影响的弱势群体",
