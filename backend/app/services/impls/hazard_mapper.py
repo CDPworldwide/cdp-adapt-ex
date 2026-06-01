@@ -38,6 +38,14 @@ HAZARD_STRING_TO_ENUM: Dict[str, HazardEnum] = {
     "Biodiversity loss": HazardEnum.BIODIVERSITY_LOSS,
 }
 
+# When a string routes to a specific enum but should display under its reported
+# label, the mapper sets other_hazard_details so frontend renders correctly
+HAZARD_STRING_TO_LABEL_OVERRIDE: Dict[str, str] = {
+    "Mass movement": "Mass movement",
+    "Other: Landslides": "Landslides",
+    "Other: Landslide": "Landslides",
+}
+
 
 class HazardMapper:
     """Utility to map raw database hazard strings to typed enums."""
@@ -61,7 +69,8 @@ class HazardMapper:
         # Explicit mappings take precedence
         hazard_type = HAZARD_STRING_TO_ENUM.get(normalized_string)
         if hazard_type is not None:
-            return Hazard(hazard_type=hazard_type)
+            label_override = HAZARD_STRING_TO_LABEL_OVERRIDE.get(normalized_string)
+            return Hazard(hazard_type=hazard_type, other_hazard_details=label_override)
 
         if normalized_string.startswith("Other:"):
             details = normalized_string.removeprefix("Other:").strip()
