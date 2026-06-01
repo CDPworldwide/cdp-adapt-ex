@@ -871,14 +871,16 @@
                   <path d="M7 17L17 7M17 7H8M17 7V16" />
                 </svg>
               </button>
-              <p
-                class="absolute top-2 left-3 whitespace-nowrap text-xs italic text-black font-roboto leading-4 z-10 pointer-events-none bg-white/80 px-1.5 py-0.5 rounded"
-              >
-                <span class="font-medium not-italic">{{
-                  'locationCard.hazards.geeCard.sourceLabel' | translate
-                }}</span>
-                {{ 'locationCard.hazards.geeCard.sourceText' | translate }}
-              </p>
+              @if (geeMap.hazardSource) {
+                <p
+                  class="absolute top-2 left-3 max-w-[55%] text-xs italic text-black font-roboto leading-4 z-10 pointer-events-none bg-white/80 px-1.5 py-0.5 rounded"
+                >
+                  <span class="font-medium not-italic">{{
+                    'locationCard.hazards.geeCard.sourceLabel' | translate
+                  }}</span>
+                  {{ geeMap.hazardSource }}
+                </p>
+              }
             </div>
           </div>
         }
