@@ -55,6 +55,20 @@ class LocationGeometry(SQLModel):
     centroid_lat: float | None = None
 
 
+class PeerLocation(SQLModel):
+    """Geometry/country for a peer jurisdiction, keyed by organization id.
+
+    Resolved from the peer's DimCentral row so the solution detail header can
+    render a map thumbnail and country line for the peer.
+    """
+
+    org_id: int
+    country: str | None = None
+    geometry: str | None = None
+    centroid_lng: float | None = None
+    centroid_lat: float | None = None
+
+
 class DimCentral(SQLModel, table=True):
     """Full model for CSTAR_2025_Dim_Central with all listed columns."""
 

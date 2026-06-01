@@ -305,6 +305,12 @@ class PeerAction(APIBaseModel):
     peer_name: str | None = (
         None  # TODO: Remove option None when BE is updated to always return an action for solutions
     )
+    # Peer jurisdiction location, resolved from peer_org_id so the detail
+    # header can render a map thumbnail and country line for the peer.
+    country: str | None = None
+    lat: float | None = Field(default=None, ge=-90, le=90)
+    lng: float | None = Field(default=None, ge=-180, le=180)
+    geometry: dict[str, Any] | None = None
     action: AdaptationAction | None = (
         None  # TODO: Remove option None when BE is updated to always return an action for solutions
     )

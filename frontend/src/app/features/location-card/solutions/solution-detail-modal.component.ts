@@ -14,7 +14,7 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/materia
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AdaptationAction, LocationProfile, SolutionCard } from '@pac-api/client';
+import { AdaptationAction, LocationProfile, PeerAction, SolutionCard } from '@pac-api/client';
 import {
   AdaptationActionDetailComponent,
   DETAIL_HERO_BACKGROUND,
@@ -96,12 +96,16 @@ export class SolutionDetailModalComponent implements OnInit, OnDestroy {
     }
   }
 
+  get currentPeer(): PeerAction | undefined {
+    return this.data.solution.peerActions?.[this.currentActionIndex] || undefined;
+  }
+
   get currentPeerName(): string | undefined {
-    return this.data.solution.peerActions?.[this.currentActionIndex]?.peerName || undefined;
+    return this.currentPeer?.peerName || undefined;
   }
 
   get currentAction(): AdaptationAction | undefined {
-    return this.data.solution.peerActions?.[this.currentActionIndex]?.action || undefined;
+    return this.currentPeer?.action || undefined;
   }
 
   get totalActions(): number {

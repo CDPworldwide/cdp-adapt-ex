@@ -63,7 +63,9 @@
       "source": "Source",
       "scenario": "Scenario",
       "scenarioTooltip": "Scenarios show how a hazard may change under different climate futures. \"Historical\" reflects past conditions. Other options represent possible future pathways, such as from lower emissions to higher emissions. Choose a scenario to see how risk levels could shift over time. See methodology for more information.",
-      "timeframe": "Time frame"
+      "timeframe": "Time frame",
+      "expandLegend": "Show legend details",
+      "collapseLegend": "Hide legend details"
     },
     "scenarios": {
       "historical": "Historical"
