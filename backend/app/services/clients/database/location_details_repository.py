@@ -128,10 +128,17 @@ class LocationDetailsRepository:
         if not org_ids:
             return []
         async with AsyncSession(self.engine) as session:
+            # Peer geometry only feeds a ~53px thumbnail, and a single location
+            # can have hundreds of peers. Full-resolution polygons would balloon
+            # the response past Cloud Run's 32 MB limit, so simplify aggressively
+            # (≈0.01° ≈ 1 km) — invisible at thumbnail size, ~99% smaller.
+            simplified_geometry = func.ST_SimplifyPreserveTopology(
+                DimCentral.geometry, 0.01
+            )
             statement = select(
                 DimCentral.cdp_disclosing_org_number.label("org_id"),
                 DimCentral.discloser_country_or_area.label("country"),
-                func.ST_AsGeoJSON(DimCentral.geometry).label("geometry"),
+                func.ST_AsGeoJSON(simplified_geometry).label("geometry"),
                 func.ST_X(DimCentral.centroid).label("centroid_lng"),
                 func.ST_Y(DimCentral.centroid).label("centroid_lat"),
             ).where(
