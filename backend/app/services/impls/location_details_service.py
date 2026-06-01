@@ -156,14 +156,14 @@ class LocationDetailsService:
         """Transform ORM goal models into AdaptationGoal schemas."""
         return [
             AdaptationGoal(
-                title=g.goal_english,
+                title=clean_disclosed_text(g.goal_english),
                 hazards_addressed=self.hazard_mapper.split_and_map_hazards(
                     g.hazard_addressed_english, org_id=org_id
                 )
                 if g.hazard_addressed_english
                 else [],
-                metric_indicator=g.metric_used_english,
-                comment=g.comment_english,
+                metric_indicator=clean_disclosed_text(g.metric_used_english),
+                comment=clean_disclosed_text(g.comment_english),
                 base_year=g.base_year,
                 target_year=g.target_year,
             )
@@ -204,7 +204,7 @@ class LocationDetailsService:
             total_cost_usd=float(total_cost_usd)
             if total_cost_usd is not None
             else None,
-            timeframe=timeframe_english,
+            timeframe=clean_disclosed_text(timeframe_english),
             description=clean_disclosed_text(description_english),
             resilience_enhanced=[
                 r.strip() for r in resilience_enhanced_english.split("|") if r.strip()
@@ -287,8 +287,8 @@ class LocationDetailsService:
                     title=clean_disclosed_text(project.project_title_english),
                     status=status,
                     description=clean_disclosed_text(project.project_descirption_english),
-                    project_area=project.project_area_english,
-                    finance_status=project.finance_status_english,
+                    project_area=clean_disclosed_text(project.project_area_english),
+                    finance_status=clean_disclosed_text(project.finance_status_english),
                     finance_model=finance_models,
                     funded_percent=funded_percent,
                     total_amount=project.total_cost_usd,
