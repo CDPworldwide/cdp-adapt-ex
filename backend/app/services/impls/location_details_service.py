@@ -17,6 +17,7 @@ from app.models.location_details import (
     FactHazards,
     FactProjects,
     OrganizationSummary,
+    PeerLocation,
     PeerSolutions,
     SolutionsExamples,
 )
@@ -86,17 +87,25 @@ class LocationDetailsService:
         )
 
         # Suppress this org's own disclosed adaptation content for Non-Public
-        # disclosers 
+        # disclosers
         if metadata is not None and metadata.public_status == "Non-Public":
             goals = []
             actions = []
             projects = []
 
+        # Resolve each peer jurisdiction's geometry/country (keyed by
+        # peer_org_id) so the solution detail header can show a map thumbnail.
+        peer_org_ids = {e.peer_org_id for e in peers_actions if e.peer_org_id}
+        peer_locations = await self.repository.get_peer_locations(peer_org_ids)
+        peer_locations_by_id = {loc.org_id: loc for loc in peer_locations}
+
         mapped_hazards = self._map_to_hazard_profiles(hazards, org_id)
         mapped_goals = self._map_to_adaptation_goals(goals, org_id)
         mapped_actions = self._map_to_adaptation_actions(actions, org_id)
         mapped_projects = self._map_to_projects(projects)
-        mapped_solution_cards = self._map_solution_cards(solutions, peers_actions)
+        mapped_solution_cards = self._map_solution_cards(
+            solutions, peers_actions, peer_locations_by_id
+        )
 
         profile = self.profile_builder.build_profile(
             org_id=org_id,
@@ -299,7 +308,9 @@ class LocationDetailsService:
         return result
 
     def _map_peers_actions(
-        self, solution_examples: list[SolutionsExamples]
+        self,
+        solution_examples: list[SolutionsExamples],
+        peer_locations_by_id: dict[int, PeerLocation],
     ) -> list[PeerAction]:
         """Transform solution examples into PeerAction objects.
 
@@ -329,14 +340,45 @@ class LocationDetailsService:
                     org_id=first.peer_org_id,
                 )
 
+            country, lat, lng, geometry = self._resolve_peer_location(
+                peer_locations_by_id.get(first.peer_org_id)
+            )
+
             peer_actions.append(
                 PeerAction(
                     peer_name=first.peer_org_name,
+                    country=country,
+                    lat=lat,
+                    lng=lng,
+                    geometry=geometry,
                     action=action,
                 )
             )
 
         return peer_actions
+
+    def _resolve_peer_location(
+        self, location: PeerLocation | None
+    ) -> tuple[str | None, float | None, float | None, dict | None]:
+        """Derive (country, lat, lng, geometry) for a peer's map thumbnail.
+
+        Prefers the pre-computed centroid for lat/lng; falls back to the first
+        vertex of the polygon when the centroid hasn't been backfilled. Returns
+        all-``None`` location fields when the peer has no resolvable geometry so
+        the frontend simply omits the thumbnail.
+        """
+        if location is None:
+            return None, None, None, None
+
+        geometry = json.loads(location.geometry) if location.geometry else None
+
+        lat, lng = location.centroid_lat, location.centroid_lng
+        if (lat is None or lng is None) and geometry is not None:
+            coords = self.profile_builder.extract_first_coordinate_pair(geometry)
+            if coords is not None:
+                lng, lat = coords
+
+        return location.country, lat, lng, geometry
 
     @staticmethod
     def _merge_hazard_addressed(rows: list[SolutionsExamples]) -> str | None:
@@ -355,6 +397,7 @@ class LocationDetailsService:
         self,
         solutions: list[PeerSolutions],
         solution_examples: list[SolutionsExamples],
+        peer_locations_by_id: dict[int, PeerLocation],
     ) -> list[SolutionCard]:
         """Transform solution rows into a list of SolutionCard objects."""
 
@@ -377,7 +420,9 @@ class LocationDetailsService:
             key = (s.target_org_id, s.action_index, s.disclosing_year)
             filtered_examples = examples_by_solution.get(key, [])
 
-            peer_actions = self._map_peers_actions(filtered_examples)
+            peer_actions = self._map_peers_actions(
+                filtered_examples, peer_locations_by_id
+            )
 
             solution_cards.append(
                 SolutionCard(

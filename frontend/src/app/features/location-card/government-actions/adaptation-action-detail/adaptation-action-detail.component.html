@@ -36,22 +36,34 @@
       <div class="flex-1 inline-flex flex-col justify-start items-start gap-8">
         <div class="self-stretch flex flex-col justify-start items-start gap-0">
           @if (locationName) {
-            <div class="inline-flex justify-start items-center gap-2">
-              <app-location-pin-icon></app-location-pin-icon>
-              <div class="flex justify-start items-center gap-1">
+            <div class="inline-flex justify-start items-center gap-[22px]">
+              @if (lat != null && lng != null) {
                 <div
-                  class="justify-start text-black text-xxs font-medium font-roboto uppercase leading-normal tracking-[2.8px]"
+                  class="w-[53px] h-[53px] flex-shrink-0 overflow-hidden rounded-2xl static-thumbnail border border-cdp-neutral-02"
+                >
+                  <app-hazard-map
+                    [lat]="lat"
+                    [lng]="lng"
+                    [locationName]="locationName"
+                    [zoom]="6"
+                    [showExpand]="false"
+                    [static]="true"
+                    [grayscale]="false"
+                    [geometry]="geometry ?? undefined"
+                  ></app-hazard-map>
+                </div>
+              } @else {
+                <app-location-pin-icon></app-location-pin-icon>
+              }
+              <div class="flex flex-col justify-center items-start gap-2.5 min-w-0">
+                <div
+                  class="text-cdp-border text-sm font-bold font-inter leading-tight break-words"
                 >
                   {{ locationName }}
                 </div>
                 @if (countryName) {
                   <div
-                    class="justify-start text-black text-xxs font-medium font-roboto uppercase leading-normal tracking-[2.8px]"
-                  >
-                    ,
-                  </div>
-                  <div
-                    class="justify-start text-black text-xxs font-medium font-roboto uppercase leading-normal tracking-[2.8px]"
+                    class="text-cdp-text-tertiary text-xl font-medium font-roboto uppercase leading-tight tracking-cdp-eyebrow"
                   >
                     {{ countryName }}
                   </div>

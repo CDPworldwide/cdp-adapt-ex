@@ -17,6 +17,7 @@ import { AdaptationAction, ActionStatus } from '@pac-api/client';
 import { CloseIconComponent } from '../../../../shared/icons/close-icon.component';
 import { InfoIconComponent } from '../../../../shared/icons/info-icon.component';
 import { LocationPinIconComponent } from '../../../../shared/icons/location-pin-icon.component';
+import { HazardMapComponent } from '../../../hazard-map/hazard-map';
 import { HazardIconComponent } from '../../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../../shared/components/sector-icon/sector-icon.component';
 import { ProtectedTranslationHtmlPipe } from '../../../../shared/pipes/protected-translation-html.pipe';
@@ -38,6 +39,7 @@ export const DETAIL_HERO_BACKGROUND = `linear-gradient(270deg, rgba(30, 30, 30, 
     MatIconModule,
     ProtectedTranslationHtmlPipe,
     LocationPinIconComponent,
+    HazardMapComponent,
   ],
   templateUrl: './adaptation-action-detail.component.html',
 })
@@ -45,6 +47,11 @@ export class AdaptationActionDetailComponent {
   @Input() action!: AdaptationAction;
   @Input() locationName?: string;
   @Input() countryName?: string;
+  // Peer/location coordinates used to render the header map thumbnail. When
+  // absent the header falls back to the location-pin icon.
+  @Input() lat?: number | null;
+  @Input() lng?: number | null;
+  @Input() geometry?: { [key: string]: unknown } | null;
   @Input() showHeroImage: boolean = true;
 
   readonly heroBackground = DETAIL_HERO_BACKGROUND;

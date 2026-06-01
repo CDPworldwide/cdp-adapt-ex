@@ -122,6 +122,10 @@
         <app-adaptation-action-detail
           [action]="currentAction"
           [locationName]="currentPeerName"
+          [countryName]="currentPeer?.country ?? undefined"
+          [lat]="currentPeer?.lat"
+          [lng]="currentPeer?.lng"
+          [geometry]="currentPeer?.geometry"
           [showHeroImage]="false"
           (closed)="close()"
         ></app-adaptation-action-detail>
