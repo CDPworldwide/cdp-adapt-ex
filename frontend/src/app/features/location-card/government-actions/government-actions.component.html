@@ -62,7 +62,7 @@
                         <span
                           class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-black whitespace-nowrap"
                         >
-                          @if (hazard.hazardType === 'OTHERS' && hazard.otherHazardDetails) {
+                          @if (hazard.otherHazardDetails) {
                             <span
                               [innerHTML]="
                                 hazard.otherHazardDetails | protectedTranslationHtml
@@ -208,7 +208,7 @@
                         <span
                           class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-black whitespace-nowrap"
                         >
-                          @if (hazard.hazardType === 'OTHERS' && hazard.otherHazardDetails) {
+                          @if (hazard.otherHazardDetails) {
                             <span
                               [innerHTML]="
                                 hazard.otherHazardDetails | protectedTranslationHtml

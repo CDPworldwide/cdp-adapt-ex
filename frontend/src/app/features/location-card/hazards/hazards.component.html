@@ -74,11 +74,10 @@
                 <span
                   class="text-white font-roboto text-xs font-normal leading-4 tracking-cdp-widest"
                 >
-                  @if (hazard.hazard.hazardType === 'OTHERS') {
+                  @if (hazard.hazard.otherHazardDetails) {
                     <span
                       [innerHTML]="
-                        (hazard.hazard.otherHazardDetails ?? '')
-                          | protectedTranslationHtml
+                        hazard.hazard.otherHazardDetails | protectedTranslationHtml
                       "
                     ></span>
                   } @else {
@@ -352,11 +351,10 @@
               <h3
                 class="text-cdp-dark font-roboto text-[28px] font-normal leading-9 tracking-normal"
               >
-                @if (hazard.hazard.hazardType === 'OTHERS') {
+                @if (hazard.hazard.otherHazardDetails) {
                   <span
                     [innerHTML]="
-                      (hazard.hazard.otherHazardDetails ?? '')
-                        | protectedTranslationHtml
+                      hazard.hazard.otherHazardDetails | protectedTranslationHtml
                     "
                   ></span>
                 } @else {
@@ -775,15 +773,12 @@
                 color="white"
               ></app-hazard-icon>
               <span class="text-white font-roboto text-sm font-normal leading-5">
-                @if (hazard.hazard.hazardType === 'OTHERS') {
+                @if (hazard.hazard.otherHazardDetails) {
                   <span
                     [innerHTML]="
-                      (hazard.hazard.otherHazardDetails ?? '')
-                        | protectedTranslationHtml
+                      hazard.hazard.otherHazardDetails | protectedTranslationHtml
                     "
                   ></span>
-                } @else if (hazard.hazard.hazardType === 'SOIL_DEGRADATION_EROSION') {
-                  {{ 'locationCard.hazardNames.LANDSLIDES' | translate }}
                 } @else {
                   {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
                 }
@@ -815,15 +810,12 @@
                 <h3
                   class="text-cdp-dark font-inter text-2xl font-medium leading-tight tracking-tight"
                 >
-                  @if (hazard.hazard.hazardType === 'OTHERS') {
+                  @if (hazard.hazard.otherHazardDetails) {
                     <span
                       [innerHTML]="
-                        (hazard.hazard.otherHazardDetails ?? '')
-                          | protectedTranslationHtml
+                        hazard.hazard.otherHazardDetails | protectedTranslationHtml
                       "
                     ></span>
-                  } @else if (hazard.hazard.hazardType === 'SOIL_DEGRADATION_EROSION') {
-                    {{ 'locationCard.hazardNames.LANDSLIDES' | translate }}
                   } @else {
                     {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
                   }

@@ -202,9 +202,8 @@
                   ></app-hazard-icon>
                   <div class="text-cdp-border font-roboto text-sm font-normal leading-5">
                     {{
-                      hazard.hazardType === 'OTHERS'
-                        ? (hazard.otherHazardDetails)
-                        : ('locationCard.hazardNames.' + hazard.hazardType | translate)
+                      hazard.otherHazardDetails
+                        || ('locationCard.hazardNames.' + hazard.hazardType | translate)
                     }}
                   </div>
                 </div>

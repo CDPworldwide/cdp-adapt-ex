@@ -50,9 +50,8 @@
                   class="text-sm font-normal font-roboto text-black leading-5 tracking-[0.25px]"
                 >
                   {{
-                    hazard.hazardType === 'OTHERS'
-                      ? (hazard.otherHazardDetails)
-                      : ('locationCard.hazardNames.' + hazard.hazardType | translate)
+                    hazard.otherHazardDetails
+                      || ('locationCard.hazardNames.' + hazard.hazardType | translate)
                   }}
                 </span>
               </div>

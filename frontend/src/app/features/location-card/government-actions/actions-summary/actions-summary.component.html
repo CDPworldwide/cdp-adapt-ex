@@ -31,8 +31,8 @@
         [class.bg-cdp-dark]="isSelected(hazardKey(row))"
         [class.bg-cdp-neutral-02]="!isSelected(hazardKey(row))"
         [matTooltip]="
-          row.hazard.hazardType === 'OTHERS'
-            ? hazardName(row) || 'Other'
+          row.hazard.otherHazardDetails
+            ? (hazardName(row) || 'Other')
             : (hazardTranslationKey(row) | translate)
         "
         matTooltipPosition="above"
@@ -51,7 +51,7 @@
           [class.text-cdp-light-text]="isSelected(hazardKey(row))"
           [class.text-cdp-border]="!isSelected(hazardKey(row))"
         >
-          @if (row.hazard.hazardType === 'OTHERS') {
+          @if (row.hazard.otherHazardDetails) {
             {{ hazardName(row) }}
           } @else {
             {{ hazardTranslationKey(row) | translate }}
