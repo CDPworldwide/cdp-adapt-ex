@@ -26,7 +26,7 @@
       class="pointer-events-auto box-border p-0 z-10 w-full fixed inset-x-0 bottom-0 md:absolute md:top-6 md:left-6 md:bottom-auto md:max-w-sm"
     >
       <mat-card
-        class="flex flex-col w-full shadow-[0_-6px_24px_rgba(0,0,0,0.12)] rounded-none md:rounded-lg"
+        class="flex flex-col w-full shadow-[0_-6px_24px_rgba(0,0,0,0.12)] !rounded-none"
       >
         <ng-container *ngTemplateOutlet="hazardLegendContent"></ng-container>
       </mat-card>
@@ -37,11 +37,16 @@
 <!-- Hazard Legend -->
 <ng-template #hazardLegendContent>
   <div class="p-5 md:p-6">
-    <div class="flex items-center gap-3">
+    <div
+      class="flex items-center gap-3"
+      (touchstart)="onLegendTouchStart($event)"
+      (touchmove)="onLegendTouchMove($event)"
+      (touchend)="onLegendTouchEnd()"
+    >
       @if (hazardType) {
         <app-hazard-icon [hazard]="hazardType" size="32"></app-hazard-icon>
       }
-      <div>
+      <div class="flex-1 min-w-0">
         <p class="text-sm">
           @if (hazardType) {
             {{ 'locationCard.hazardNames.' + hazardType | translate }}
@@ -50,10 +55,34 @@
         </p>
         <h2 class="text-lg font-medium">{{ locationName }}</h2>
       </div>
+      <!-- Collapse/expand handle for the mobile bottom sheet -->
+      <button
+        type="button"
+        (click)="toggleLegend()"
+        [attr.aria-expanded]="legendExpanded"
+        [attr.aria-label]="
+          (legendExpanded
+            ? 'maps.hazardLegend.collapseLegend'
+            : 'maps.hazardLegend.expandLegend'
+          ) | translate
+        "
+        class="md:hidden shrink-0 -mr-1 flex items-center justify-center p-1 text-cdp-dark"
+      >
+        <mat-icon class="transition-transform" [class.rotate-180]="legendExpanded"
+          >keyboard_arrow_up</mat-icon
+        >
+      </button>
     </div>
     <app-hazard-color-palette [palette]="palette"></app-hazard-color-palette>
-    <hr class="border-t border-cdp-gray my-4" />
-    @if (hazardSource) {
+    <!-- Collapsible details: grid-rows 0fr/1fr animates height without a fixed
+         size. Always open on desktop (md:grid-rows-[1fr]). -->
+    <div
+      class="grid transition-[grid-template-rows] duration-300 ease-out md:grid-rows-[1fr]"
+      [ngClass]="legendExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+    >
+      <div class="overflow-hidden">
+        <hr class="border-t border-cdp-gray my-4" />
+        @if (hazardSource) {
       <div class="mt-4">
         <label class="block text-sm font-medium text-gray-700 mb-1 uppercase">{{
           'maps.hazardLegend.source' | translate
@@ -133,6 +162,8 @@
           </div>
         </div>
       </div>
-    }
+      }
+      </div>
+    </div>
   </div>
 </ng-template>

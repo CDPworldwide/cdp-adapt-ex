@@ -94,6 +94,11 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
   private isMapInitialized = false;
   private destroy$ = new Subject<void>();
   isExpanded = false;
+  // Mobile only: the expanded-map legend opens as a collapsed bottom sheet
+  // (header + colour scale) and expands to the full card on tap/drag-up.
+  // Desktop always shows the full legend (see `md:block` in the template).
+  legendExpanded = false;
+  private legendTouchStartY: number | null = null;
 
   // Scenario picker
   scenarios: ScenarioEnum[] = [];
@@ -234,10 +239,39 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     };
   }
 
+  toggleLegend(): void {
+    this.legendExpanded = !this.legendExpanded;
+  }
+
+  onLegendTouchStart(event: TouchEvent): void {
+    this.legendTouchStartY = event.touches[0]?.clientY ?? null;
+  }
+
+  onLegendTouchMove(event: TouchEvent): void {
+    if (this.legendTouchStartY === null) return;
+    const currentY = event.touches[0]?.clientY;
+    if (currentY === undefined) return;
+    const deltaY = currentY - this.legendTouchStartY;
+    const THRESHOLD_PX = 30;
+    if (deltaY < -THRESHOLD_PX && !this.legendExpanded) {
+      this.legendExpanded = true;
+      this.legendTouchStartY = null;
+    } else if (deltaY > THRESHOLD_PX && this.legendExpanded) {
+      this.legendExpanded = false;
+      this.legendTouchStartY = null;
+    }
+  }
+
+  onLegendTouchEnd(): void {
+    this.legendTouchStartY = null;
+  }
+
   toggleExpand(): void {
     this.isExpanded = !this.isExpanded;
     const host = this.el.nativeElement;
     if (this.isExpanded) {
+      // Always (re)open the legend collapsed so the map is unobstructed.
+      this.legendExpanded = false;
       this.renderer.setStyle(host, 'position', 'fixed');
       this.renderer.setStyle(host, 'inset', '0');
       this.renderer.setStyle(host, 'width', '100vw');
