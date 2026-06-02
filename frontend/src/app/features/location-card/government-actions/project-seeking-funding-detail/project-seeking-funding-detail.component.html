@@ -1,10 +1,6 @@
 <div class="bg-white pb-6 break-words">
-  <!-- Hero image with close button -->
-  <div class="relative w-full h-52 bg-cdp-peach overflow-hidden flex items-start justify-end p-6">
-    <!-- Image placeholder (replace with real image when available) -->
-    <app-image-placeholder-icon
-      class="opacity-40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-    ></app-image-placeholder-icon>
+  <!-- Header with close button -->
+  <div class="relative w-full bg-cdp-peach flex items-start justify-end p-6">
     <button
       type="button"
       (click)="close()"
@@ -30,31 +26,6 @@
 
   <!-- Content sections -->
   <div class="flex flex-col px-6 pt-6">
-    <!-- Funding progress -->
-    @if (project.fundedPercent !== null && project.fundedPercent !== undefined) {
-      <div class="flex flex-col gap-4 py-4 border-t border-cdp-neutral-01">
-        <div class="flex justify-between items-center">
-          <span class="text-sm font-medium font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-            {{ project.fundedPercent }}% {{ 'locationCard.govActions.funded' | translate }}
-          </span>
-          @if (project.totalAmount) {
-            <span
-              class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]"
-            >
-              ${{ remainingAmount / 1000000 | number: '1.0-1' }}M
-              {{ 'locationCard.govActions.remaining' | translate }}
-            </span>
-          }
-        </div>
-        <div class="h-2 bg-neutral-200 rounded-full overflow-hidden">
-          <div
-            class="bg-cdp-green h-full rounded-full transition-all duration-500"
-            [style.width.%]="project.fundedPercent"
-          ></div>
-        </div>
-      </div>
-    }
-
     <!-- Description -->
     @if (project.description) {
       <div class="flex flex-col gap-2 lg:gap-4 py-4 border-t border-cdp-neutral-01">
@@ -147,36 +118,18 @@
       </div>
     }
 
-    <!-- Finance details -->
-    @if (project.totalAmount != null || project.totalNeeded != null) {
+    <!-- Total Needed -->
+    @if (project.totalNeeded != null) {
       <div class="flex flex-col gap-4 py-4 border-t border-cdp-neutral-01">
         <div class="flex gap-4">
           <div class="flex-1">
             <p class="text-sm font-medium font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-              {{ 'locationCard.govActions.detail.totalFunded' | translate }}
-            </p>
-            <p
-              class="text-sm font-medium font-roboto text-cdp-border leading-5 tracking-[0.25px] mt-1"
-            >
-              @if (fundedAmount) {
-                ${{ fundedAmount | number: '1.0-0' }}
-              } @else {
-                —
-              }
+              {{ 'locationCard.govActions.detail.totalNeeded' | translate }}
             </p>
           </div>
           <div class="flex-1">
-            <p class="text-sm font-medium font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-              {{ 'locationCard.govActions.detail.totalNeeded' | translate }}
-            </p>
-            <p
-              class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px] mt-1"
-            >
-              @if (project.totalNeeded != null) {
-                ${{ project.totalNeeded | number: '1.0-0' }}
-              } @else {
-                —
-              }
+            <p class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]">
+              ${{ project.totalNeeded | number: '1.0-0' }}
             </p>
           </div>
         </div>

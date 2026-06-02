@@ -12,6 +12,7 @@ import type {
 } from '@pac-api/client';
 
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
+import { CardCarouselComponent } from '../../../shared/components/card-carousel/card-carousel.component';
 import { AdaptationActionDetailComponent } from './adaptation-action-detail/adaptation-action-detail.component';
 import { AdaptationGoalDetailComponent } from './adaptation-goal-detail/adaptation-goal-detail.component';
 import { ProjectSeekingFundingDetailComponent } from './project-seeking-funding-detail/project-seeking-funding-detail.component';
@@ -29,6 +30,7 @@ export type { HazardSummaryRow, DetailItemType };
     CommonModule,
     TranslateModule,
     HazardIconComponent,
+    CardCarouselComponent,
     AdaptationActionDetailComponent,
     AdaptationGoalDetailComponent,
     ProjectSeekingFundingDetailComponent,

@@ -87,7 +87,10 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
   get requesters(): string[] {
     return (this.data?.requesters ?? [])
       .flatMap((r) => r.split(',').map((s) => s.trim()))
-      .filter(Boolean);
+      .filter(Boolean)
+      // Drop the legal-entity " e.V." suffix from "ICLEI - Local Governments
+      // for Sustainability e.V." so the badge reads as the common name.
+      .map((s) => s.replace(/\s+e\.?\s*v\.?\s*$/i, ''));
   }
 
   get bannerVariant(): 'no-report' | 'non-public' | 'no-hazards' | null {
