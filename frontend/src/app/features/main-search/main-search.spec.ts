@@ -68,9 +68,9 @@ describe('MainSearchComponent', () => {
   } as any;
 
   const MOCK_SUGGESTIONS = [
-    { organizationId: 101, name: 'London', disclosesToCDP: true },
-    { organizationId: 102, name: 'Los Angeles', disclosesToCDP: false },
-    { organizationId: 103, name: 'Vegas', disclosesToCDP: true },
+    { organizationId: 101, name: 'London', disclosesToCDP: true, isReportingLeader: false },
+    { organizationId: 102, name: 'Los Angeles', disclosesToCDP: false, isReportingLeader: false },
+    { organizationId: 103, name: 'Vegas', disclosesToCDP: true, isReportingLeader: false },
   ];
 
   const recreateComponent = () => {
@@ -214,12 +214,12 @@ describe('MainSearchComponent', () => {
 
     it('should limit the number of suggestions to 5', fakeAsync(() => {
       const manySuggestions = [
-        { organizationId: 201, name: 'Paris', disclosesToCDP: true },
-        { organizationId: 202, name: 'Perth', disclosesToCDP: false },
-        { organizationId: 203, name: 'Porto', disclosesToCDP: true },
-        { organizationId: 204, name: 'Prague', disclosesToCDP: false },
-        { organizationId: 205, name: 'Phoenix', disclosesToCDP: true },
-        { organizationId: 206, name: 'Portland', disclosesToCDP: true },
+        { organizationId: 201, name: 'Paris', disclosesToCDP: true, isReportingLeader: false },
+        { organizationId: 202, name: 'Perth', disclosesToCDP: false, isReportingLeader: false },
+        { organizationId: 203, name: 'Porto', disclosesToCDP: true, isReportingLeader: false },
+        { organizationId: 204, name: 'Prague', disclosesToCDP: false, isReportingLeader: false },
+        { organizationId: 205, name: 'Phoenix', disclosesToCDP: true, isReportingLeader: false },
+        { organizationId: 206, name: 'Portland', disclosesToCDP: true, isReportingLeader: false },
       ];
       mockLocationService.getAllLocationNames.and.returnValue(of(manySuggestions));
 
