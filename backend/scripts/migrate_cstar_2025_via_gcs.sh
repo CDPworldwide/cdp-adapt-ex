@@ -462,7 +462,7 @@ SELECT
 FROM \`${PROJECT_ID}.${SOURCE_DATASET}.${SRC_FACT_GOAL}\`
 "
 
-export_csv "fact_action" "cdp_disclosing_org_number, disclosing_year, action_index" "
+export_csv "fact_action" "cdp_disclosing_org_number, disclosing_year, action_index, row_order" "
 SELECT
   disclosure_cycle,
   cdp_disclosing_org_number,
@@ -479,7 +479,8 @@ SELECT
   action_status_english,
   total_cost_usd,
   action_index,
-  disclosing_year
+  disclosing_year,
+  row_order
 FROM \`${PROJECT_ID}.${SOURCE_DATASET}.${SRC_FACT_ACTION}\`
 "
 
@@ -523,7 +524,7 @@ FROM \`${PROJECT_ID}.${SOURCE_DATASET}.${SRC_PEER_SOLUTIONS}\`
 WHERE action_index IS NOT NULL
 "
 
-export_csv "solution_examples" "disclosing_year, target_org_id, hazard_filter, peer_org_id, action_index" "
+export_csv "solution_examples" "disclosing_year, target_org_id, hazard_filter, peer_org_id, action_index, row_order" "
 SELECT
   disclosing_year,
   target_org_id,
@@ -532,6 +533,7 @@ SELECT
   peer_org_id,
   peer_org_name,
   action_index,
+  row_order,
   hazard_addressed_english,
   action_description_english,
   sectors_applied_english,
@@ -584,7 +586,7 @@ copy_csv '"_cstar_2025_fact_goal_stage"' \
   "$CSV_DIR/fact_goal"
 
 copy_csv '"_cstar_2025_fact_action_stage"' \
-  'disclosure_cycle, cdp_disclosing_org_number, disclosing_organization, public_status, action_english, hazard_addressed_english, action_description_english, sectors_applied_english, resilience_enhanced_english, cobenefit_realized_english, timeframe_english, funding_source_english, action_status_english, total_cost_usd, action_index, disclosing_year' \
+  'disclosure_cycle, cdp_disclosing_org_number, disclosing_organization, public_status, action_english, hazard_addressed_english, action_description_english, sectors_applied_english, resilience_enhanced_english, cobenefit_realized_english, timeframe_english, funding_source_english, action_status_english, total_cost_usd, action_index, disclosing_year, row_order' \
   "$CSV_DIR/fact_action"
 
 copy_csv '"_cstar_2025_fact_funding_gap_stage"' \
@@ -596,7 +598,7 @@ copy_csv '"_cstar_2025_peer_solutions_stage"' \
   "$CSV_DIR/peer_solutions"
 
 copy_csv '"_cstar_2025_solution_examples_stage"' \
-  'disclosing_year, target_org_id, hazard_filter, action_english, peer_org_id, peer_org_name, action_index, hazard_addressed_english, action_description_english, sectors_applied_english, resilience_enhanced_english, cobenefit_realized_english, timeframe_english, funding_source_english, action_status_english, total_cost_usd, completeness_score' \
+  'disclosing_year, target_org_id, hazard_filter, action_english, peer_org_id, peer_org_name, action_index, row_order, hazard_addressed_english, action_description_english, sectors_applied_english, resilience_enhanced_english, cobenefit_realized_english, timeframe_english, funding_source_english, action_status_english, total_cost_usd, completeness_score' \
   "$CSV_DIR/solution_examples"
 fi  # end: !RESUME (full data-movement section)
 
@@ -910,7 +912,8 @@ INSERT INTO "CSTAR_2025_Fact_Action" (
   action_status_english,
   total_cost_usd,
   action_index,
-  disclosing_year
+  disclosing_year,
+  row_order
 )
 SELECT
   disclosure_cycle,
@@ -928,7 +931,8 @@ SELECT
   action_status_english,
   total_cost_usd,
   action_index,
-  disclosing_year
+  disclosing_year,
+  row_order
 FROM "_cstar_2025_fact_action_stage";
 
 INSERT INTO "CSTAR_2025_Fact_Funding_Gap" (
@@ -1005,6 +1009,7 @@ INSERT INTO "CSTAR_2025_Solution_Examples" (
   peer_org_id,
   peer_org_name,
   action_index,
+  row_order,
   hazard_addressed_english,
   action_description_english,
   sectors_applied_english,
@@ -1024,6 +1029,7 @@ SELECT
   peer_org_id,
   peer_org_name,
   action_index,
+  row_order,
   hazard_addressed_english,
   action_description_english,
   sectors_applied_english,
