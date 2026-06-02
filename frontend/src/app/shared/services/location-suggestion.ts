@@ -3,4 +3,5 @@ export interface LocationSuggestion {
   name: string;
   country?: string;
   disclosesToCDP: boolean;
+  isReportingLeader: boolean;
 }

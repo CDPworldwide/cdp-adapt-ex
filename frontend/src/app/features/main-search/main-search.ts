@@ -72,6 +72,9 @@ export class MainSearchComponent implements OnInit {
   // current page load and reappears on reload. No persistence by design.
   isInfoCardDismissed = false;
   allLocations: LocationSuggestion[] = [];
+  // Cached default-suggestion ordering: A-list reporters first, then everyone else,
+  // each group uniformly shuffled once per page load
+  private defaultSuggestions: LocationSuggestion[] = [];
   filteredLocations!: Observable<LocationSuggestion[]>;
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
 
@@ -117,6 +120,10 @@ export class MainSearchComponent implements OnInit {
       .subscribe({
         next: (names) => {
           this.allLocations = names;
+          this.defaultSuggestions = [...names]
+            .map((loc) => ({ loc, group: loc.isReportingLeader ? 0 : 1, key: Math.random() }))
+            .sort((a, b) => a.group - b.group || a.key - b.key)
+            .map((entry) => entry.loc);
           this.allLocations$.next(names);
         },
       });
@@ -271,7 +278,7 @@ export class MainSearchComponent implements OnInit {
     locations: LocationSuggestion[] = this.allLocations,
   ): LocationSuggestion[] {
     if (!value) {
-      return locations.slice(0, MainSearchComponent.MAX_SUGGESTIONS);
+      return this.defaultSuggestions.slice(0, MainSearchComponent.MAX_SUGGESTIONS);
     }
     // Search both name and country so a query like "thailand" surfaces every
     // Thai jurisdiction even though it doesn't appear in their names.
