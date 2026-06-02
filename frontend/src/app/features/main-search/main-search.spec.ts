@@ -176,7 +176,9 @@ describe('MainSearchComponent', () => {
         suggestions = opts.map((o) => o.name);
       });
 
-      expect(suggestions).toEqual(['London', 'Los Angeles', 'Vegas']);
+      // Empty-state order is randomized; assert set, not order.
+      // (MOCK_SUGGESTIONS < MAX_SUGGESTIONS so all survive the slice.)
+      expect([...suggestions].sort()).toEqual(['London', 'Los Angeles', 'Vegas']);
     });
 
     it('should update empty-state suggestions when locations load after init', fakeAsync(() => {
@@ -195,7 +197,8 @@ describe('MainSearchComponent', () => {
       suggestions$.next(MOCK_SUGGESTIONS);
       tick();
 
-      expect(suggestions).toEqual(['London', 'Los Angeles', 'Vegas']);
+      // See note above — empty-state order is randomized.
+      expect([...suggestions].sort()).toEqual(['London', 'Los Angeles', 'Vegas']);
     }));
 
     it('should return no results for irrelevant query', () => {

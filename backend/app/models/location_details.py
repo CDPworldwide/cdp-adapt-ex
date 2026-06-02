@@ -37,9 +37,9 @@ class OrganizationSummary(SQLModel):
     country: str | None = None
     population: int | None = None
     # "Submitted" if the jurisdiction returned a questionnaire to CDP this
-    # cycle, "non-disclosed" otherwise. Surfaced so the search UI can flag
-    # non-disclosers with a warning icon.
+    # cycle, "non-disclosed" otherwise.
     disclosure_status: str | None = None
+    is_reporting_leader: bool = False
 
 
 class LocationGeometry(SQLModel):
@@ -138,6 +138,7 @@ class FactActions(SQLModel, table=True):
     total_cost_usd: Decimal | None = None
     action_index: int = Field(primary_key=True)
     disclosing_year: int = Field(primary_key=True)
+    row_order: int = Field(primary_key=True)
 
 
 class FactHazards(SQLModel, table=True):
@@ -215,6 +216,7 @@ class SolutionsExamples(SQLModel, table=True):
     peer_org_id: int = Field(primary_key=True)
     peer_org_name: str | None = None
     action_index: int = Field(primary_key=True)
+    row_order: int = Field(primary_key=True)
     hazard_addressed_english: str | None = None
     action_description_english: str | None = None
     sectors_applied_english: str | None = None

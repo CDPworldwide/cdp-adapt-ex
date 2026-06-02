@@ -487,9 +487,13 @@ class LocationDetailsService:
     async def get_all_location_summaries(self) -> list[OrganizationSummary]:
         """Returns organization summaries used by location suggestions."""
         if LocationDetailsService._summaries_cache is None:
-            LocationDetailsService._summaries_cache = (
-                await self.repository.get_all_location_summaries()
-            )
+            summaries = await self.repository.get_all_location_summaries()
+            # Tag A-list reporters. Done once at cache time
+            from app.services.impls.location_profile_builder import _A_LIST
+
+            for s in summaries:
+                s.is_reporting_leader = s.id in _A_LIST
+            LocationDetailsService._summaries_cache = summaries
         return LocationDetailsService._summaries_cache
 
     async def get_all_location_pins(self) -> list[LocationPin]:

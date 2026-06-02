@@ -14,6 +14,7 @@ import { normalizeTranslationLanguage } from './translation-language.util';
 
 type LocationNameSummary = LocationNamesResponse['locations'][number] & {
   disclosure_status?: string | null;
+  is_reporting_leader?: boolean;
 };
 
 @Injectable({
@@ -86,6 +87,7 @@ export class LocationService {
               // a questionnaire this cycle. Anything else (including
               // "non-disclosed" or NULL) is treated as a non-discloser.
               disclosesToCDP: locationSummary.disclosure_status === 'Submitted',
+              isReportingLeader: locationSummary.is_reporting_leader ?? false,
             },
           ];
         });
