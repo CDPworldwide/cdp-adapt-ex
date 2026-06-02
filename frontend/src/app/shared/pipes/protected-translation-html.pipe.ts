@@ -24,6 +24,8 @@ export class ProtectedTranslationHtmlPipe implements PipeTransform {
 }
 
 export function protectTranslationHtml(value: string): string {
+  value = value.replace(/\t+/g, ' ').replace(/^ +/gm, '');
+
   const hasLowercase = LOWERCASE_PATTERN.test(value);
   const uppercaseWordCount = value.match(UPPERCASE_WORD_PATTERN)?.length ?? 0;
   let result = '';
