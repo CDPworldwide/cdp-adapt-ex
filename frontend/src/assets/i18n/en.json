@@ -433,6 +433,13 @@
       "jurisdictionsTakingAction": "Jurisdictions Taking this Action",
       "seeMethodology": "See Methodology for details",
       "intro": "Browse ideas for actions that other cities and regions with similar climate conditions and shared hazards are taking to respond",
+      "analysisFlag": {
+        "title": "Action ideas are based on hazards sourced from CDP analysis",
+        "limited": "This jurisdiction's CDP report did not have enough hazard information to display action ideas for their disclosed hazard profile.",
+        "private": "This jurisdiction's CDP report is private.",
+        "nonDiscloser": "This jurisdiction did not disclose data to CDP in 2025.",
+        "closing": "All information displayed on this page is based on hazards sourced from CDP analysis."
+      },
       "exampleActions": "example actions",
       "resilienceAttributes": "Resilience attributes enhanced",
       "impactedSectors": "Impacted sectors",

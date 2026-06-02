@@ -25,7 +25,6 @@ import {
 } from '../../../shared/icons';
 import { ShowMoreButtonComponent } from '../../../shared/components/show-more-button/show-more-button.component';
 import {
-  HazardEnum,
   type AdaptationAction,
   type Hazard,
   type HazardProfile,
@@ -102,27 +101,24 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
       (h) => h.source !== 'GEE-Derived',
     ).length;
     if (disclosedCount > 0) return null;
-    if (this.data.publicStatus == null) return 'no-report';
+    // Non-disclosers ({2}) carry either a null public_status or 'GEE-Derived'
+    // (analysis-only); both get the red "No report available" banner above the
+    // GEE-derived hazard grid.
+    if (this.data.publicStatus == null || this.data.publicStatus === 'GEE-Derived') {
+      return 'no-report';
+    }
     if (this.data.publicStatus === 'Non-Public') return 'non-public';
     if (this.data.publicStatus === 'Public') return 'no-hazards';
-    // GEE-Derived publicStatus: the 2×2 GEE grid below already explains the
-    // situation, so no banner is needed.
     return null;
   }
 
-  // Public orgs surface their own disclosed hazards. If every disclosed row is
-  // 'Other:', surface the GEE-Derived synthesized rows also.
+  // Public orgs surface their own disclosed hazards only. Even when every
+  // disclosed row is a free-text 'Other:' hazard (the {1.a} edge case), we list
+  // just those and do NOT supplement with GEE-derived maps — the Action Ideas
+  // tab carries a flag explaining its data is CDP-analysis-derived instead.
   get disclosedHazards(): HazardProfile[] {
     if (this.data?.publicStatus !== 'Public') return [];
-    const all = this.data?.hazards?.hazards ?? [];
-    const disclosed = all.filter((h) => h.source !== 'GEE-Derived');
-    const allOtherType =
-      disclosed.length > 0 &&
-      disclosed.every((h) => h.hazard?.hazardType === HazardEnum.OTHERS);
-    if (allOtherType) {
-      return [...disclosed, ...all.filter((h) => h.source === 'GEE-Derived')];
-    }
-    return disclosed;
+    return (this.data?.hazards?.hazards ?? []).filter((h) => h.source !== 'GEE-Derived');
   }
 
   // Public orgs that disclosed valid hazards show their own; else, falls back to GEE-derived.
