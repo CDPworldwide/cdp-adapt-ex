@@ -18,12 +18,13 @@ import { HazardMapComponent, SUPPORTED_HAZARD_TYPES } from '../../hazard-map/haz
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../shared/components/sector-icon/sector-icon.component';
 import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
-import {
-  InfoIconComponent,
-  ArrowRightIconComponent,
-  NoHazardsIconComponent,
-} from '../../../shared/icons';
+import { InfoIconComponent, ArrowRightIconComponent } from '../../../shared/icons';
 import { ShowMoreButtonComponent } from '../../../shared/components/show-more-button/show-more-button.component';
+import { EdgeCaseBannerComponent } from '../edge-case-banner/edge-case-banner.component';
+import {
+  getEdgeCaseBannerVariant,
+  type EdgeCaseBannerVariant,
+} from '../edge-case-banner/edge-case-banner.util';
 import {
   type AdaptationAction,
   type Hazard,
@@ -44,8 +45,8 @@ import {
     ProtectedTranslationHtmlPipe,
     InfoIconComponent,
     ArrowRightIconComponent,
-    NoHazardsIconComponent,
     ShowMoreButtonComponent,
+    EdgeCaseBannerComponent,
   ],
   templateUrl: './hazards.component.html',
   styleUrls: ['./hazards.component.css'],
@@ -92,30 +93,12 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
       .map((s) => s.replace(/\s+e\.?\s*v\.?\s*$/i, ''));
   }
 
-  get bannerVariant(): 'no-report' | 'non-public' | 'no-hazards' | null {
-    if (!this.data) return null;
-    // Only count hazards the jurisdiction itself disclosed. GEE-Derived rows
-    // come from CDP analysis, so they shouldn't suppress a banner that's
-    // explaining the absence of the jurisdiction's own report.
-    const disclosedCount = (this.data.hazards?.hazards ?? []).filter(
-      (h) => h.source !== 'GEE-Derived',
-    ).length;
-    if (disclosedCount > 0) return null;
-    // Non-disclosers ({2}) carry either a null public_status or 'GEE-Derived'
-    // (analysis-only); both get the red "No report available" banner above the
-    // GEE-derived hazard grid.
-    if (this.data.publicStatus == null || this.data.publicStatus === 'GEE-Derived') {
-      return 'no-report';
-    }
-    if (this.data.publicStatus === 'Non-Public') return 'non-public';
-    if (this.data.publicStatus === 'Public') return 'no-hazards';
-    return null;
+  get bannerVariant(): EdgeCaseBannerVariant {
+    return getEdgeCaseBannerVariant(this.data?.publicStatus, this.data?.hazards?.hazards);
   }
 
-  // Public orgs surface their own disclosed hazards only. Even when every
-  // disclosed row is a free-text 'Other:' hazard (the {1.a} edge case), we list
-  // just those and do NOT supplement with GEE-derived maps — the Action Ideas
-  // tab carries a flag explaining its data is CDP-analysis-derived instead.
+  // Public orgs show only their own disclosed hazards — never supplemented with
+  // GEE-derived maps, even when every disclosed row is a free-text 'Other:'.
   get disclosedHazards(): HazardProfile[] {
     if (this.data?.publicStatus !== 'Public') return [];
     return (this.data?.hazards?.hazards ?? []).filter((h) => h.source !== 'GEE-Derived');

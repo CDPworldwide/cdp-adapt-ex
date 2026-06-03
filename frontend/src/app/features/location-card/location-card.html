@@ -12,7 +12,7 @@
       <div class="mx-auto max-w-[1600px] lg:px-2">
         <div class="flex items-center gap-3 px-4 lg:px-6 pt-3 pb-2">
           <div
-            class="w-10 h-10 flex-shrink-0 overflow-hidden rounded-md static-thumbnail border border-cdp-neutral-02"
+            class="hidden lg:block w-10 h-10 flex-shrink-0 overflow-hidden rounded-md static-thumbnail border border-cdp-neutral-02"
           >
             @if (data.lat != null && data.lng != null) {
               <app-hazard-map
@@ -279,6 +279,7 @@
         <div id="government-actions-panel" role="tabpanel">
           <app-government-actions
             [data]="data.governmentActions"
+            [bannerVariant]="edgeCaseBannerVariant"
             [locationName]="data.name"
             [countryName]="data.countryName"
             [selectedFilter]="selectedHazardFilter"
