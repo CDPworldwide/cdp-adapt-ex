@@ -468,14 +468,14 @@
               @if (hazard.proportionExposedRange) {
                 <div>
                   <div class="border-t border-[#C4C4C4] mx-6"></div>
-                  <div class="flex px-6 py-[21px]">
+                  <div class="flex flex-col gap-2 lg:flex-row lg:gap-0 px-6 py-[21px]">
                     <p
-                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-1/2 pr-3"
+                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-full lg:w-1/2 lg:pr-3"
                     >
                       {{ 'locationCard.hazardDetail.proportionLabel' | translate }}
                     </p>
                     <p
-                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-1/2"
+                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-full lg:w-1/2"
                     >
                       {{ hazard.proportionExposedRange }}
                     </p>
@@ -487,14 +487,14 @@
               @if (hazard.vulnerableGroups?.length) {
                 <div>
                   <div class="border-t border-[#C4C4C4] mx-6"></div>
-                  <div class="flex px-6 py-[21px]">
+                  <div class="flex flex-col gap-2 lg:flex-row lg:gap-0 px-6 py-[21px]">
                     <p
-                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-1/2 pr-3"
+                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-full lg:w-1/2 lg:pr-3"
                     >
                       {{ 'locationCard.hazardDetail.vulnerablePopTitle' | translate }}
                     </p>
                     <ul
-                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-1/2 space-y-1"
+                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-full lg:w-1/2 space-y-1 list-disc pl-5"
                     >
                       <li *ngFor="let group of hazard.vulnerableGroups">
                         <span [innerHTML]="group | protectedTranslationHtml"></span>
@@ -508,14 +508,14 @@
               @if (hazard.impact) {
                 <div>
                   <div class="border-t border-[#C4C4C4] mx-6"></div>
-                  <div class="flex px-6 py-[21px]">
+                  <div class="flex flex-col gap-2 lg:flex-row lg:gap-0 px-6 py-[21px]">
                     <p
-                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-1/2 pr-3"
+                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-full lg:w-1/2 lg:pr-3"
                     >
                       {{ 'locationCard.hazardDetail.impactLabel' | translate }}
                     </p>
                     <div
-                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-1/2"
+                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-full lg:w-1/2"
                     >
                       @if (parseImpact(hazard.impact); as parsed) {
                         <span
@@ -532,14 +532,14 @@
               @if (hazard.mostExposedSectors?.length) {
                 <div>
                   <div class="border-t border-[#C4C4C4] mx-6"></div>
-                  <div class="flex px-6 py-[21px]">
+                  <div class="flex flex-col gap-2 lg:flex-row lg:gap-0 px-6 py-[21px]">
                     <p
-                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-1/2 pr-3"
+                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-full lg:w-1/2 lg:pr-3"
                     >
                       {{ 'locationCard.hazardDetail.mostExposedSectors' | translate }}
                     </p>
                     <ul
-                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-1/2 space-y-1"
+                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-full lg:w-1/2 space-y-1 list-disc pl-5"
                     >
                       <li *ngFor="let sector of hazard.mostExposedSectors">
                         @if (sector.sectorType === 'OTHERS') {
@@ -633,112 +633,7 @@
       </div>
     }
 
-    @if (bannerVariant === 'no-hazards') {
-      <div class="mb-8 px-4 lg:px-0">
-        <div class="w-full px-6 py-4 bg-cdp-red flex justify-start items-center gap-6">
-          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
-            <app-no-hazards-icon size="44" color="white"></app-no-hazards-icon>
-          </div>
-          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
-            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
-              <div
-                class="self-stretch text-white text-base font-semibold font-roboto leading-6 tracking-tight"
-              >
-                {{ 'locationCard.hazards.noHazardsBanner.title' | translate }}
-              </div>
-              <div
-                class="self-stretch text-white text-sm font-light font-roboto leading-5 tracking-tight"
-                [innerHTML]="'locationCard.hazards.noHazardsBanner.description' | translate"
-              ></div>
-            </div>
-            <div class="h-12 flex justify-center items-center shrink-0">
-              <a
-                href="https://data.cdp.net/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="bg-white inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-gray-100 transition-colors"
-              >
-                <div
-                  class="justify-center text-cdp-red text-sm font-normal font-roboto leading-5 tracking-tight"
-                >
-                  {{ 'locationCard.hazards.noHazardsBanner.button' | translate }}
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    } @else if (bannerVariant === 'non-public') {
-      <div class="mb-8 px-4 lg:px-0">
-        <div class="w-full px-6 py-4 bg-cdp-neutral-01 flex justify-start items-center gap-6">
-          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
-            <app-no-hazards-icon size="44" color="black"></app-no-hazards-icon>
-          </div>
-          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
-            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
-              <div
-                class="self-stretch text-cdp-dark text-base font-semibold font-roboto leading-6 tracking-tight"
-              >
-                {{ 'locationCard.hazards.reportNotPublicBanner.title' | translate }}
-              </div>
-              <div
-                class="self-stretch text-cdp-dark text-sm font-light font-roboto leading-5 tracking-tight"
-                [innerHTML]="'locationCard.hazards.reportNotPublicBanner.description' | translate"
-              ></div>
-            </div>
-            <div class="h-12 flex justify-center items-center shrink-0">
-              <a
-                href="https://www.cdp.net/en/cities"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline border border-cdp-dark hover:bg-cdp-dark transition-colors group"
-              >
-                <div
-                  class="justify-center text-cdp-dark group-hover:text-white text-sm font-normal font-roboto leading-5 tracking-tight transition-colors"
-                >
-                  {{ 'locationCard.hazards.reportNotPublicBanner.button' | translate }}
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    } @else if (bannerVariant === 'no-report') {
-      <div class="mb-8 px-4 lg:px-0">
-        <div class="w-full px-6 py-4 bg-cdp-red flex justify-start items-center gap-6">
-          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
-            <app-no-hazards-icon size="44" color="white"></app-no-hazards-icon>
-          </div>
-          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
-            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
-              <div
-                class="self-stretch text-white text-base font-semibold font-roboto leading-6 tracking-tight"
-              >
-                {{ 'locationCard.hazards.noReportAvailableBanner.title' | translate }}
-              </div>
-              <div
-                class="self-stretch text-white text-sm font-light font-roboto leading-5 tracking-tight"
-                [innerHTML]="'locationCard.hazards.noReportAvailableBanner.description' | translate"
-              ></div>
-            </div>
-            <div class="h-12 flex justify-center items-center shrink-0">
-              <a
-                href="https://www.cdp.net/en/cities"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="bg-white inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-gray-100 transition-colors"
-              >
-                <div
-                  class="justify-center text-cdp-red text-sm font-normal font-roboto leading-5 tracking-tight"
-                >
-                  {{ 'locationCard.hazards.noReportAvailableBanner.button' | translate }}
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    }
+    <app-edge-case-banner [variant]="bannerVariant"></app-edge-case-banner>
 
     @if (geeFallback.length) {
       <h2

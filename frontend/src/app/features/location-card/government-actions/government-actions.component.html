@@ -1,6 +1,9 @@
 @if (data) {
   <!-- List View -->
   <div class="space-y-6">
+    @if (bannerVariant === 'no-hazards' || bannerVariant === 'non-public') {
+      <app-edge-case-banner [variant]="bannerVariant"></app-edge-case-banner>
+    }
     <app-actions-summary
       [summaryRows]="summaryRows"
       [totalGoals]="totalGoals"

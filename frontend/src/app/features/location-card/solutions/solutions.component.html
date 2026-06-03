@@ -4,15 +4,8 @@
     <p
       class="m-0 text-cdp-border font-inter text-sm italic font-normal leading-5 tracking-cdp-wide"
     >
-      {{ 'locationCard.solutions.intro' | translate }}<a
-        routerLink="/methodology"
-        [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
-        matTooltipPosition="above"
-        [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
-        class="relative inline-flex items-center justify-center align-middle ml-1.5 p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 not-italic before:absolute before:content-[''] before:-inset-3"
-      >
-        <app-info-icon size="14"></app-info-icon>
-      </a>
+      {{ 'locationCard.solutions.intro' | translate
+      }}<app-methodology-info class="ml-1.5"></app-methodology-info>
     </p>
   </div>
 
@@ -56,15 +49,7 @@
               : { year: data?.disclosureYear || ('locationCard.hazardDetail.unknown' | translate) }
         }}
       </span>
-      <a
-        routerLink="/methodology"
-        [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
-        matTooltipPosition="above"
-        [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
-        class="relative self-center inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 before:absolute before:content-[''] before:-inset-3"
-      >
-        <app-info-icon size="14"></app-info-icon>
-      </a>
+      <app-methodology-info class="self-center"></app-methodology-info>
     </div>
   </section>
 
@@ -74,15 +59,7 @@
       <h2 class="text-sm font-bold font-inter leading-normal text-cdp-border m-0">
         {{ 'locationCard.solutions.hazardFiltersTitle' | translate }}
       </h2>
-      <a
-        routerLink="/methodology"
-        [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
-        matTooltipPosition="above"
-        [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
-        class="relative inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 before:absolute before:content-[''] before:-inset-3"
-      >
-        <app-info-icon size="14"></app-info-icon>
-      </a>
+      <app-methodology-info></app-methodology-info>
     </div>
     <div class="flex gap-2 overflow-x-auto touch-pan-x px-4 lg:px-0 lg:flex-wrap lg:gap-2 lg:overflow-x-visible lg:touch-auto">
       @for (filter of hazardFilters; track filter.type) {

@@ -27,6 +27,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GeometryService } from '../../shared/services/geometry.service';
 import type { AdaptationAction, Hazard, LocationProfile } from '@pac-api/client';
 import { SolutionsComponent } from './solutions/solutions.component';
+import {
+  getEdgeCaseBannerVariant,
+  type EdgeCaseBannerVariant,
+} from './edge-case-banner/edge-case-banner.util';
 import { ReplaySubject, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Footer } from '../../core/footer/footer';
@@ -82,6 +86,11 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
   // from disclosed actions/goals/projects — is hidden for them.
   get showGovernmentActionsTab(): boolean {
     return this.data?.publicStatus !== 'GEE-Derived';
+  }
+
+  // Shared with the Government actions tab so it shows the same banner as Hazards.
+  get edgeCaseBannerVariant(): EdgeCaseBannerVariant {
+    return getEdgeCaseBannerVariant(this.data?.publicStatus, this.data?.hazards?.hazards);
   }
 
   isStickyHeaderVisible = false;

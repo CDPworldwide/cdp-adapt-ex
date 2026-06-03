@@ -134,8 +134,8 @@
       "sectorsLabel": "Vulnerable economic sectors",
       "noHazardsBanner": {
         "title": "No hazards disclosed",
-        "description": "This jurisdiction didn’t report any hazards on their CDP report. <strong>All hazard information displayed on this page is sourced from CDP analysis</strong>.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP open data portal.",
-        "button": "CDP open data portal"
+        "description": "This jurisdiction didn’t report any hazards on their CDP report. <strong>All hazard information displayed on this page is sourced from CDP analysis</strong>.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP Open Data Portal.",
+        "button": "CDP Open Data Portal"
       },
       "reportNotPublicBanner": {
         "title": "Report not available for public view",
@@ -334,7 +334,7 @@
       "notDisclosed": "Not disclosed",
       "noActionsBanner": {
         "title": "Some data may not be reported",
-        "description": "This jurisdiction may be missing some categories of disclosure from their CDP report.<br><br>Download the full disclosure from the CDP open data portal.",
+        "description": "This jurisdiction may be missing some categories of disclosure from their CDP report.<br><br>Download the full disclosure from the CDP Open Data Portal.",
         "button": "Visit the CDP Open Data Portal"
       },
       "noGoals": {
@@ -365,6 +365,7 @@
         "impactedSectors": "Impacted sectors",
         "totalFunded": "Total Funded",
         "totalNeeded": "Total Needed",
+        "dataNotAvailable": "Data not available",
         "totalFundsNeeded": "Total funds needed",
         "projectArea": "Project Area",
         "financeModel": "Financing model",

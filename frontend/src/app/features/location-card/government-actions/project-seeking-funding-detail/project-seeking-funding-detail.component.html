@@ -119,21 +119,27 @@
     }
 
     <!-- Total Needed -->
-    @if (project.totalNeeded != null) {
-      <div class="flex flex-col gap-4 py-4 border-t border-cdp-neutral-01">
-        <div class="flex gap-4">
-          <div class="flex-1">
-            <p class="text-sm font-medium font-roboto text-cdp-border leading-5 tracking-[0.25px]">
-              {{ 'locationCard.govActions.detail.totalNeeded' | translate }}
-            </p>
-          </div>
-          <div class="flex-1">
+    <div class="flex flex-col gap-4 py-4 border-t border-cdp-neutral-01">
+      <div class="flex gap-4">
+        <div class="flex-1">
+          <p class="text-sm font-medium font-roboto text-cdp-border leading-5 tracking-[0.25px]">
+            {{ 'locationCard.govActions.detail.totalNeeded' | translate }}
+          </p>
+        </div>
+        <div class="flex-1">
+          @if (project.totalNeeded != null) {
             <p class="text-sm font-normal font-roboto text-cdp-border leading-5 tracking-[0.25px]">
               ${{ project.totalNeeded | number: '1.0-0' }}
             </p>
-          </div>
+          } @else {
+            <p
+              class="text-sm font-normal italic font-roboto text-cdp-neutral-05 leading-5 tracking-[0.25px]"
+            >
+              {{ 'locationCard.govActions.detail.dataNotAvailable' | translate }}
+            </p>
+          }
         </div>
       </div>
-    }
+    </div>
   </div>
 </div>

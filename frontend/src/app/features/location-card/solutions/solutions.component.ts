@@ -4,16 +4,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
-import {
-  ArrowRightLongIconComponent,
-  InfoIconComponent,
-  NoHazardsIconComponent,
-} from '../../../shared/icons';
+import { ArrowRightLongIconComponent, NoHazardsIconComponent } from '../../../shared/icons';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterLink } from '@angular/router';
 import { HazardEnum, LocationProfile, SolutionCard, SolutionCategoryEnum } from '@pac-api/client';
 import { SolutionDetailModalComponent } from './solution-detail-modal.component';
 import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
+import { MethodologyInfoComponent } from '../../../shared/components/methodology-info/methodology-info.component';
 
 @Component({
   selector: 'app-solutions',
@@ -23,12 +19,11 @@ import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-tr
     TranslateModule,
     HazardIconComponent,
     ArrowRightLongIconComponent,
-    InfoIconComponent,
     NoHazardsIconComponent,
     MatTooltipModule,
     MatDialogModule,
-    RouterLink,
     ProtectedTranslationHtmlPipe,
+    MethodologyInfoComponent,
   ],
   templateUrl: './solutions.component.html',
 })
@@ -42,14 +37,9 @@ export class SolutionsComponent {
 
   constructor() {}
 
-  /**
-   * Which "action ideas are CDP-analysis-derived" flag to show, or null for a
-   * normal full discloser (whose action ideas come from their own disclosed
-   * hazards). The variant key also selects the explanatory sentence:
-   *   - 'limited'      → disclosed but not enough usable hazards ({1.a}/{1.b})
-   *   - 'private'      → Non-Public discloser ({1.c})
-   *   - 'nonDiscloser' → never disclosed to CDP ({2})
-   */
+  // Flag shown when Action Ideas come from CDP analysis rather than the
+  // jurisdiction's own disclosure; null for a normal discloser. The variant
+  // also selects the explanatory sentence.
   get analysisFlagVariant(): 'limited' | 'private' | 'nonDiscloser' | null {
     if (!this.data) return null;
     const status = this.data.publicStatus;

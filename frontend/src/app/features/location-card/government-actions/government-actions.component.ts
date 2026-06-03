@@ -13,6 +13,8 @@ import type {
 
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import { CardCarouselComponent } from '../../../shared/components/card-carousel/card-carousel.component';
+import { EdgeCaseBannerComponent } from '../edge-case-banner/edge-case-banner.component';
+import type { EdgeCaseBannerVariant } from '../edge-case-banner/edge-case-banner.util';
 import { AdaptationActionDetailComponent } from './adaptation-action-detail/adaptation-action-detail.component';
 import { AdaptationGoalDetailComponent } from './adaptation-goal-detail/adaptation-goal-detail.component';
 import { ProjectSeekingFundingDetailComponent } from './project-seeking-funding-detail/project-seeking-funding-detail.component';
@@ -31,6 +33,7 @@ export type { HazardSummaryRow, DetailItemType };
     TranslateModule,
     HazardIconComponent,
     CardCarouselComponent,
+    EdgeCaseBannerComponent,
     AdaptationActionDetailComponent,
     AdaptationGoalDetailComponent,
     ProjectSeekingFundingDetailComponent,
@@ -43,6 +46,8 @@ export type { HazardSummaryRow, DetailItemType };
 })
 export class GovernmentActionsComponent implements OnChanges {
   @Input() data: ActionsTab | null = null;
+  // Mirrors the Hazards-tab disclosure banner; null for normal disclosers.
+  @Input() bannerVariant: EdgeCaseBannerVariant = null;
   @Input() locationName: string = '';
   @Input() countryName: string = '';
   @Input() disclosureYear: number | null | undefined;
