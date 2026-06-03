@@ -28,7 +28,7 @@
       </div>
 
       @if (filteredGoals.length > 0) {
-        <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
+        <app-card-carousel>
           @for (goal of filteredGoals; track $index) {
             <button
               type="button"
@@ -94,7 +94,7 @@
               </div>
             </button>
           }
-        </div>
+        </app-card-carousel>
       } @else {
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
@@ -134,7 +134,7 @@
       </div>
 
       @if (filteredActions.length > 0) {
-        <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
+        <app-card-carousel>
           @for (action of filteredActions; track $index) {
             <button
               type="button"
@@ -225,7 +225,7 @@
               </div>
             </button>
           }
-        </div>
+        </app-card-carousel>
       } @else {
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
@@ -265,7 +265,7 @@
       </div>
 
       @if (filteredProjects.length > 0) {
-        <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
+        <app-card-carousel>
           @for (project of filteredProjects; track $index) {
             <button
               type="button"
@@ -334,7 +334,7 @@
               </div>
             </button>
           }
-        </div>
+        </app-card-carousel>
       } @else {
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"

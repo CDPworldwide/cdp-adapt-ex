@@ -4,7 +4,11 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
-import { ArrowRightLongIconComponent, InfoIconComponent } from '../../../shared/icons';
+import {
+  ArrowRightLongIconComponent,
+  InfoIconComponent,
+  NoHazardsIconComponent,
+} from '../../../shared/icons';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { HazardEnum, LocationProfile, SolutionCard, SolutionCategoryEnum } from '@pac-api/client';
@@ -20,6 +24,7 @@ import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-tr
     HazardIconComponent,
     ArrowRightLongIconComponent,
     InfoIconComponent,
+    NoHazardsIconComponent,
     MatTooltipModule,
     MatDialogModule,
     RouterLink,
@@ -36,6 +41,32 @@ export class SolutionsComponent {
   selectedHazard: HazardEnum | null = null;
 
   constructor() {}
+
+  /**
+   * Which "action ideas are CDP-analysis-derived" flag to show, or null for a
+   * normal full discloser (whose action ideas come from their own disclosed
+   * hazards). The variant key also selects the explanatory sentence:
+   *   - 'limited'      → disclosed but not enough usable hazards ({1.a}/{1.b})
+   *   - 'private'      → Non-Public discloser ({1.c})
+   *   - 'nonDiscloser' → never disclosed to CDP ({2})
+   */
+  get analysisFlagVariant(): 'limited' | 'private' | 'nonDiscloser' | null {
+    if (!this.data) return null;
+    const status = this.data.publicStatus;
+    if (status == null || status === 'GEE-Derived') return 'nonDiscloser';
+    if (status === 'Non-Public') return 'private';
+    if (status === 'Public') {
+      const disclosed = (this.data.hazards?.hazards ?? []).filter(
+        (h) => h.source !== 'GEE-Derived',
+      );
+      // No usable disclosed hazards (none at all, or all free-text 'Other:').
+      const limited =
+        disclosed.length === 0 ||
+        disclosed.every((h) => h.hazard?.hazardType === HazardEnum.OTHERS);
+      return limited ? 'limited' : null;
+    }
+    return null;
+  }
 
   get hazardFilters() {
     return [

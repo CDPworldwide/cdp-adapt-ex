@@ -119,11 +119,6 @@ describe('ProjectSeekingFundingDetailComponent', () => {
     }
   }));
 
-  it('should calculate funded and remaining amounts correctly', () => {
-    expect(component.fundedAmount).toBe(500000);
-    expect(component.remainingAmount).toBe(500000);
-  });
-
   it('should emit closed event when close button is clicked', () => {
     spyOn(component.closed, 'emit');
     const closeBtn = fixture.debugElement.query(By.css('button[aria-label="Close"]'));

@@ -16,6 +16,30 @@
     </p>
   </div>
 
+  <!-- Flag: action ideas derived from CDP analysis rather than disclosed hazards -->
+  @if (analysisFlagVariant) {
+    <div class="mx-4 lg:mx-0">
+      <div class="w-full px-6 py-4 bg-cdp-neutral-01 flex justify-start items-center gap-6">
+        <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
+          <app-no-hazards-icon size="44" color="black"></app-no-hazards-icon>
+        </div>
+        <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
+          <div
+            class="self-stretch text-cdp-dark text-base font-semibold font-roboto leading-6 tracking-tight"
+          >
+            {{ 'locationCard.solutions.analysisFlag.title' | translate }}
+          </div>
+          <div
+            class="self-stretch text-cdp-dark text-sm font-light font-roboto leading-5 tracking-tight"
+          >
+            {{ 'locationCard.solutions.analysisFlag.' + analysisFlagVariant | translate }}
+            {{ 'locationCard.solutions.analysisFlag.closing' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
   <!-- Popular Peer Actions Header -->
   <section class="flex flex-col items-start px-4 lg:px-0">
     <h2 class="text-base font-bold font-inter leading-normal text-cdp-border m-0">
