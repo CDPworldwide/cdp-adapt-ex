@@ -3,6 +3,16 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const DEFAULT_MASTER_LOCALE = 'en';
+const SAME_AS_MASTER_ALLOWED_KEYS = new Set([
+  'shared.cdp',
+  'homepage.welcomeModal.beta',
+  'locationCard.hazardDetail.linkLabel',
+  'learnMore.what.body',
+  'learnMore.howToUse.body',
+  'learnMore.faq.items.updates.answer',
+  'learnMore.faq.items.coverage.answer',
+  'learnMore.faq.items.use.answer',
+]);
 const DEFAULT_I18N_DIR = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '..',
@@ -177,7 +187,8 @@ function compareLocale(masterLeaves, masterLocale, locale, localeData) {
     if (
       locale !== masterLocale &&
       typeof localeResult.value === 'string' &&
-      localeResult.value === masterValue
+      localeResult.value === masterValue &&
+      !SAME_AS_MASTER_ALLOWED_KEYS.has(key)
     ) {
       sameAsMaster.push(key);
     }
@@ -185,7 +196,12 @@ function compareLocale(masterLeaves, masterLocale, locale, localeData) {
 
   const localeLeaves = flattenLeaves(localeData);
   const extra = [...localeLeaves.keys()].filter((key) => !masterLeaves.has(key));
-  const covered = masterLeaves.size - missing.length - empty.length - typeMismatches.length;
+  const covered =
+    masterLeaves.size -
+    missing.length -
+    empty.length -
+    typeMismatches.length -
+    sameAsMaster.length;
   const coverage = masterLeaves.size === 0 ? 100 : (covered / masterLeaves.size) * 100;
 
   return {
@@ -204,6 +220,23 @@ function formatPercent(value) {
   return `${value.toFixed(1)}%`;
 }
 
+function issueCount(result) {
+  return (
+    result.missing.length +
+    result.empty.length +
+    result.typeMismatches.length +
+    result.sameAsMaster.length
+  );
+}
+
+function needsTranslationCount(result) {
+  return result.missing.length + result.empty.length + result.sameAsMaster.length;
+}
+
+function percentageOfTotal(count, total) {
+  return total === 0 ? 0 : (count / total) * 100;
+}
+
 function printList(title, items) {
   if (items.length === 0) {
     return;
@@ -217,21 +250,56 @@ function printList(title, items) {
 
 function printReport(results, { showKeys }) {
   console.log('\nTranslation coverage');
-  console.log('Locale  Coverage  Covered  Missing  Empty  Type  Extra  Same as master');
-  console.log('------  --------  -------  -------  -----  ----  -----  --------------');
+  console.log(
+    'Locale  Coverage  Translated  Needs translation  Needs %  Missing keys  Empty  Same as master  Type  Issues  Extra',
+  );
+  console.log(
+    '------  --------  ----------  -----------------  -------  ------------  -----  --------------  ----  ------  -----',
+  );
 
   for (const [locale, result] of results) {
+    const missingCount = result.missing.length;
+    const emptyCount = result.empty.length;
+    const typeMismatchCount = result.typeMismatches.length;
+    const sameAsMasterCount = result.sameAsMaster.length;
+    const needsTranslation = needsTranslationCount(result);
+    const issues = issueCount(result);
     const row = [
       locale.padEnd(6),
       formatPercent(result.coverage).padStart(8),
       `${result.covered}/${result.total}`.padStart(7),
-      String(result.missing.length).padStart(7),
-      String(result.empty.length).padStart(5),
-      String(result.typeMismatches.length).padStart(4),
+      String(needsTranslation).padStart(17),
+      formatPercent(percentageOfTotal(needsTranslation, result.total)).padStart(7),
+      String(missingCount).padStart(12),
+      String(emptyCount).padStart(5),
+      String(sameAsMasterCount).padStart(14),
+      String(typeMismatchCount).padStart(4),
+      String(issues).padStart(6),
       String(result.extra.length).padStart(5),
-      String(result.sameAsMaster.length).padStart(14),
     ];
     console.log(row.join('  '));
+  }
+
+  const warningRows = [...results.entries()].filter(([, result]) => issueCount(result) > 0);
+  if (warningRows.length > 0) {
+    console.log('\nTranslation warnings');
+    for (const [locale, result] of warningRows) {
+      const missingCount = result.missing.length;
+      const emptyCount = result.empty.length;
+      const typeMismatchCount = result.typeMismatches.length;
+      const sameAsMasterCount = result.sameAsMaster.length;
+      const needsTranslation = needsTranslationCount(result);
+      const issues = issueCount(result);
+      console.log(
+        `WARNING ${locale}: ${formatPercent(percentageOfTotal(needsTranslation, result.total))} ` +
+          `needs translation (${needsTranslation}/${result.total}; ${missingCount} missing keys, ` +
+          `${emptyCount} empty, ${sameAsMasterCount} same as master); ` +
+          `${issues} total issues including ${typeMismatchCount} type mismatches`,
+      );
+    }
+  } else {
+    console.log('\nTranslation warnings');
+    console.log('No missing, empty, or type-mismatched translation keys.');
   }
 
   if (!showKeys) {

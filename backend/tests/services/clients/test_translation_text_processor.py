@@ -11,17 +11,17 @@ def test_protect_acronyms_handles_dotted_and_plain_tokens():
     )
 
     assert prepared.text == (
-        "{PACACRONYM0} flood protection with {PACACRONYM1}, "
-        "{PACACRONYM2}, {PACACRONYM3}-led {PACACRONYM4} "
-        "support, and {PACACRONYM5}"
+        "X_PAC_0_X flood protection with X_PAC_1_X, "
+        "X_PAC_2_X, X_PAC_3_X-led X_PAC_4_X "
+        "support, and X_PAC_5_X"
     )
     assert prepared.placeholders == {
-        "{PACACRONYM0}": "M.O.S.E.",
-        "{PACACRONYM1}": "Mo.S.E",
-        "{PACACRONYM2}": "MOSE",
-        "{PACACRONYM3}": "U.S.",
-        "{PACACRONYM4}": "EPA",
-        "{PACACRONYM5}": "HVAC/CDP",
+        "X_PAC_0_X": "M.O.S.E.",
+        "X_PAC_1_X": "Mo.S.E",
+        "X_PAC_2_X": "MOSE",
+        "X_PAC_3_X": "U.S.",
+        "X_PAC_4_X": "EPA",
+        "X_PAC_5_X": "HVAC/CDP",
     }
 
 
@@ -29,12 +29,19 @@ def test_protect_acronyms_handles_dotted_token_without_final_period():
     prepared = protect_acronyms("M.O.S.E flood protection and CO2 monitoring")
 
     assert prepared.text == (
-        "{PACACRONYM0} flood protection and {PACACRONYM1} monitoring"
+        "X_PAC_0_X flood protection and X_PAC_1_X monitoring"
     )
     assert prepared.placeholders == {
-        "{PACACRONYM0}": "M.O.S.E",
-        "{PACACRONYM1}": "CO2",
+        "X_PAC_0_X": "M.O.S.E",
+        "X_PAC_1_X": "CO2",
     }
+
+
+def test_protect_acronyms_skips_lowercase_dotted_abbreviations():
+    prepared = protect_acronyms("Use cooling strategies (e.g., pools) and i.e. examples.")
+
+    assert prepared.text == "Use cooling strategies (e.g., pools) and i.e. examples."
+    assert prepared.placeholders == {}
 
 
 def test_protect_acronyms_skips_all_caps_phrases_without_lowercase_context():
@@ -46,13 +53,13 @@ def test_protect_acronyms_skips_all_caps_phrases_without_lowercase_context():
 
 def test_restore_acronyms_replaces_placeholders_with_original_tokens():
     placeholders = {
-        "{PACACRONYM0}": "M.O.S.E.",
-        "{PACACRONYM1}": "EPA",
+        "X_PAC_0_X": "M.O.S.E.",
+        "X_PAC_1_X": "EPA",
     }
 
     assert (
         restore_acronyms(
-            "Protección {PACACRONYM0} con guía de {PACACRONYM1}",
+            "Protección X_PAC_0_X con guía de X_PAC_1_X",
             placeholders,
         )
         == "Protección M.O.S.E. con guía de EPA"

@@ -17,6 +17,7 @@ from app.models.location_details import (
     FactHazards,
     FactProjects,
     OrganizationSummary,
+    PeerLocation,
     PeerSolutions,
     SolutionsExamples,
 )
@@ -86,24 +87,25 @@ class LocationDetailsService:
         )
 
         # Suppress this org's own disclosed adaptation content for Non-Public
-        # disclosers — their goals/actions/projects are private. Solutions and
-        # peer-actions are NOT suppressed: they're recommendations sourced from
-        # other (Public) peer orgs, so showing them doesn't leak anything about
-        # the Non-Public target. Public orgs and non-disclosers (empty
-        # public_status) pass through; non-disclosers naturally have no
-        # disclosed content today but may receive GEE-derived data later, which
-        # should not be silently suppressed by a broader `!= "Public"`
-        # condition.
+        # disclosers
         if metadata is not None and metadata.public_status == "Non-Public":
             goals = []
             actions = []
             projects = []
 
+        # Resolve each peer jurisdiction's geometry/country (keyed by
+        # peer_org_id) so the solution detail header can show a map thumbnail.
+        peer_org_ids = {e.peer_org_id for e in peers_actions if e.peer_org_id}
+        peer_locations = await self.repository.get_peer_locations(peer_org_ids)
+        peer_locations_by_id = {loc.org_id: loc for loc in peer_locations}
+
         mapped_hazards = self._map_to_hazard_profiles(hazards, org_id)
         mapped_goals = self._map_to_adaptation_goals(goals, org_id)
         mapped_actions = self._map_to_adaptation_actions(actions, org_id)
         mapped_projects = self._map_to_projects(projects)
-        mapped_solution_cards = self._map_solution_cards(solutions, peers_actions)
+        mapped_solution_cards = self._map_solution_cards(
+            solutions, peers_actions, peer_locations_by_id
+        )
 
         profile = self.profile_builder.build_profile(
             org_id=org_id,
@@ -163,14 +165,14 @@ class LocationDetailsService:
         """Transform ORM goal models into AdaptationGoal schemas."""
         return [
             AdaptationGoal(
-                title=g.goal_english,
+                title=clean_disclosed_text(g.goal_english),
                 hazards_addressed=self.hazard_mapper.split_and_map_hazards(
                     g.hazard_addressed_english, org_id=org_id
                 )
                 if g.hazard_addressed_english
                 else [],
-                metric_indicator=g.metric_used_english,
-                comment=g.comment_english,
+                metric_indicator=clean_disclosed_text(g.metric_used_english),
+                comment=clean_disclosed_text(g.comment_english),
                 base_year=g.base_year,
                 target_year=g.target_year,
             )
@@ -211,7 +213,7 @@ class LocationDetailsService:
             total_cost_usd=float(total_cost_usd)
             if total_cost_usd is not None
             else None,
-            timeframe=timeframe_english,
+            timeframe=clean_disclosed_text(timeframe_english),
             description=clean_disclosed_text(description_english),
             resilience_enhanced=[
                 r.strip() for r in resilience_enhanced_english.split("|") if r.strip()
@@ -294,8 +296,8 @@ class LocationDetailsService:
                     title=clean_disclosed_text(project.project_title_english),
                     status=status,
                     description=clean_disclosed_text(project.project_descirption_english),
-                    project_area=project.project_area_english,
-                    finance_status=project.finance_status_english,
+                    project_area=clean_disclosed_text(project.project_area_english),
+                    finance_status=clean_disclosed_text(project.finance_status_english),
                     finance_model=finance_models,
                     funded_percent=funded_percent,
                     total_amount=project.total_cost_usd,
@@ -306,59 +308,121 @@ class LocationDetailsService:
         return result
 
     def _map_peers_actions(
-        self, solution_examples: list[SolutionsExamples]
+        self,
+        solution_examples: list[SolutionsExamples],
+        peer_locations_by_id: dict[int, PeerLocation],
     ) -> list[PeerAction]:
-        """Transform solution examples into PeerAction objects."""
-        peer_actions: list[PeerAction] = []
+        """Transform solution examples into PeerAction objects.
 
+        De-dupe into one PeerAction per
+        (peer_org_id, action_index), merging hazard_addressed_english across
+        the matching rows.
+        """
+        grouped: dict[tuple[int, int], list[SolutionsExamples]] = defaultdict(list)
         for example in solution_examples:
+            grouped[(example.peer_org_id, example.action_index)].append(example)
+
+        peer_actions: list[PeerAction] = []
+        for rows in grouped.values():
+            first = rows[0]
             action: AdaptationAction | None = None
-            if example.action_english:
+            if first.action_english:
                 action = self._build_adaptation_action(
-                    title=example.action_english,
-                    hazard_addressed_english=example.hazard_addressed_english,
-                    status_text=example.action_status_english,
-                    cobenefit_realized_english=example.cobenefit_realized_english,
-                    total_cost_usd=example.total_cost_usd,
-                    timeframe_english=example.timeframe_english,
-                    description_english=example.action_description_english,
-                    resilience_enhanced_english=example.resilience_enhanced_english,
-                    sectors_applied_english=example.sectors_applied_english,
-                    org_id=example.peer_org_id,
+                    title=first.action_english,
+                    hazard_addressed_english=self._merge_hazard_addressed(rows),
+                    status_text=first.action_status_english,
+                    cobenefit_realized_english=first.cobenefit_realized_english,
+                    total_cost_usd=first.total_cost_usd,
+                    timeframe_english=first.timeframe_english,
+                    description_english=first.action_description_english,
+                    resilience_enhanced_english=first.resilience_enhanced_english,
+                    sectors_applied_english=first.sectors_applied_english,
+                    org_id=first.peer_org_id,
                 )
+
+            country, lat, lng, geometry = self._resolve_peer_location(
+                peer_locations_by_id.get(first.peer_org_id)
+            )
 
             peer_actions.append(
                 PeerAction(
-                    peer_name=example.peer_org_name,
+                    peer_name=first.peer_org_name,
+                    country=country,
+                    lat=lat,
+                    lng=lng,
+                    geometry=geometry,
                     action=action,
                 )
             )
 
         return peer_actions
 
+    def _resolve_peer_location(
+        self, location: PeerLocation | None
+    ) -> tuple[str | None, float | None, float | None, dict | None]:
+        """Derive (country, lat, lng, geometry) for a peer's map thumbnail.
+
+        Prefers the pre-computed centroid for lat/lng; falls back to the first
+        vertex of the polygon when the centroid hasn't been backfilled. Returns
+        all-``None`` location fields when the peer has no resolvable geometry so
+        the frontend simply omits the thumbnail.
+        """
+        if location is None:
+            return None, None, None, None
+
+        geometry = json.loads(location.geometry) if location.geometry else None
+
+        lat, lng = location.centroid_lat, location.centroid_lng
+        if (lat is None or lng is None) and geometry is not None:
+            coords = self.profile_builder.extract_first_coordinate_pair(geometry)
+            if coords is not None:
+                lng, lat = coords
+
+        return location.country, lat, lng, geometry
+
+    @staticmethod
+    def _merge_hazard_addressed(rows: list[SolutionsExamples]) -> str | None:
+        """Union the pipe-separated hazard_addressed_english values, preserving order."""
+        seen: list[str] = []
+        for row in rows:
+            if not row.hazard_addressed_english:
+                continue
+            for token in row.hazard_addressed_english.split("|"):
+                token = token.strip()
+                if token and token not in seen:
+                    seen.append(token)
+        return " | ".join(seen) if seen else None
+
     def _map_solution_cards(
         self,
         solutions: list[PeerSolutions],
         solution_examples: list[SolutionsExamples],
+        peer_locations_by_id: dict[int, PeerLocation],
     ) -> list[SolutionCard]:
         """Transform solution rows into a list of SolutionCard objects."""
 
+        # Join key intentionally excludes hazard_filter: peer_solutions
+        # carries an "All" aggregate row, while solution_examples for
+        # GEE-fallback orgs is only emitted per-hazard. Matching by
+        # (target, action_index, year) lets the "All" solution pick up its
+        # per-hazard examples; _map_peers_actions then collapses duplicates.
         examples_by_solution = defaultdict(list)
         for example in solution_examples:
             key = (
                 example.target_org_id,
                 example.action_index,
                 example.disclosing_year,
-                example.hazard_filter,
             )
             examples_by_solution[key].append(example)
 
         solution_cards: list[SolutionCard] = []
         for s in solutions:
-            key = (s.target_org_id, s.action_index, s.disclosing_year, s.hazard_filter)
+            key = (s.target_org_id, s.action_index, s.disclosing_year)
             filtered_examples = examples_by_solution.get(key, [])
 
-            peer_actions = self._map_peers_actions(filtered_examples)
+            peer_actions = self._map_peers_actions(
+                filtered_examples, peer_locations_by_id
+            )
 
             solution_cards.append(
                 SolutionCard(
@@ -423,9 +487,13 @@ class LocationDetailsService:
     async def get_all_location_summaries(self) -> list[OrganizationSummary]:
         """Returns organization summaries used by location suggestions."""
         if LocationDetailsService._summaries_cache is None:
-            LocationDetailsService._summaries_cache = (
-                await self.repository.get_all_location_summaries()
-            )
+            summaries = await self.repository.get_all_location_summaries()
+            # Tag A-list reporters. Done once at cache time
+            from app.services.impls.location_profile_builder import _A_LIST
+
+            for s in summaries:
+                s.is_reporting_leader = s.id in _A_LIST
+            LocationDetailsService._summaries_cache = summaries
         return LocationDetailsService._summaries_cache
 
     async def get_all_location_pins(self) -> list[LocationPin]:

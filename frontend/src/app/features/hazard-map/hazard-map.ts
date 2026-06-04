@@ -14,11 +14,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HazardEnum, ScenarioEnum, YearRange } from '@pac-api/client';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HazardIconComponent } from '../../shared/components/hazard-icon/hazard-icon.component';
+import { InfoIconComponent } from '../../shared/icons/info-icon.component';
 import { HazardColorPaletteComponent } from './hazard-legend/hazard-color-palette.component';
 import { HazardMapService } from './hazard-map.service';
 import { GoogleMapsLoaderService } from '../../shared/services/google-maps-loader.service';
@@ -64,8 +66,10 @@ const FLOOD_SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
     FormsModule,
     MatCardModule,
     MatIcon,
+    MatTooltipModule,
     HazardIconComponent,
     HazardColorPaletteComponent,
+    InfoIconComponent,
     TranslateModule,
   ],
   templateUrl: './hazard-map.html',
@@ -90,6 +94,11 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
   private isMapInitialized = false;
   private destroy$ = new Subject<void>();
   isExpanded = false;
+  // Mobile only: the expanded-map legend opens as a collapsed bottom sheet
+  // (header + colour scale) and expands to the full card on tap/drag-up.
+  // Desktop always shows the full legend (see `md:block` in the template).
+  legendExpanded = false;
+  private legendTouchStartY: number | null = null;
 
   // Scenario picker
   scenarios: ScenarioEnum[] = [];
@@ -230,10 +239,39 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
     };
   }
 
+  toggleLegend(): void {
+    this.legendExpanded = !this.legendExpanded;
+  }
+
+  onLegendTouchStart(event: TouchEvent): void {
+    this.legendTouchStartY = event.touches[0]?.clientY ?? null;
+  }
+
+  onLegendTouchMove(event: TouchEvent): void {
+    if (this.legendTouchStartY === null) return;
+    const currentY = event.touches[0]?.clientY;
+    if (currentY === undefined) return;
+    const deltaY = currentY - this.legendTouchStartY;
+    const THRESHOLD_PX = 30;
+    if (deltaY < -THRESHOLD_PX && !this.legendExpanded) {
+      this.legendExpanded = true;
+      this.legendTouchStartY = null;
+    } else if (deltaY > THRESHOLD_PX && this.legendExpanded) {
+      this.legendExpanded = false;
+      this.legendTouchStartY = null;
+    }
+  }
+
+  onLegendTouchEnd(): void {
+    this.legendTouchStartY = null;
+  }
+
   toggleExpand(): void {
     this.isExpanded = !this.isExpanded;
     const host = this.el.nativeElement;
     if (this.isExpanded) {
+      // Always (re)open the legend collapsed so the map is unobstructed.
+      this.legendExpanded = false;
       this.renderer.setStyle(host, 'position', 'fixed');
       this.renderer.setStyle(host, 'inset', '0');
       this.renderer.setStyle(host, 'width', '100vw');

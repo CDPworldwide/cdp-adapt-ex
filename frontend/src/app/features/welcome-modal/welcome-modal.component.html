@@ -5,37 +5,28 @@
     aria-modal="true"
     aria-labelledby="welcome-modal-title"
   >
-    <div
-      class="absolute inset-0 bg-black/50"
-      (click)="dismiss()"
-      aria-hidden="true"
-    ></div>
+    <div class="absolute inset-0 bg-black/50" (click)="dismiss()" aria-hidden="true"></div>
 
     <div
       class="relative bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-cdp-card px-6 py-8 md:px-10 md:py-10"
     >
       <div class="flex items-center justify-center gap-2 mb-6">
-        <span
-          class="bg-cdp-red/30 text-cdp-red text-xxs font-roboto px-1.5 py-0.5 rounded"
-        >
+        <span class="bg-cdp-red/30 text-cdp-red text-xxs font-roboto px-1.5 py-0.5 rounded">
           {{ 'homepage.welcomeModal.beta' | translate }}
         </span>
         <span class="text-center text-xs leading-5 font-normal text-cdp-neutral-05 font-roboto">
           {{ 'homepage.welcomeModal.earlyAccess' | translate }}
-          <a
-            href="https://cdp-worldwide.typeform.com/to/CFhsXgBm"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            (click)="feedbackService.open()"
             class="text-cdp-red underline hover:text-cdp-dark transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
           >
             {{ 'homepage.welcomeModal.feedbackWelcome' | translate }}
-          </a>
+          </button>
         </span>
       </div>
 
-      <p
-        class="text-center text-xs uppercase tracking-cdp-eyebrow text-cdp-dark font-roboto"
-      >
+      <p class="text-center text-xs uppercase tracking-cdp-eyebrow text-cdp-dark font-roboto">
         {{ 'homepage.welcomeModal.eyebrow' | translate }}
       </p>
 

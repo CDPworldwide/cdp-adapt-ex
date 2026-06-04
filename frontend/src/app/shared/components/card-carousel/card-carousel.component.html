@@ -1,0 +1,29 @@
+<div class="relative">
+  @if (isOverflowing) {
+    <button
+      type="button"
+      (click)="scrollByPage(-1)"
+      [disabled]="!canScrollLeft"
+      [attr.aria-label]="'shared.scrollLeft' | translate"
+      class="hidden lg:flex absolute left-2 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full bg-white border border-cdp-neutral-02 shadow-md text-cdp-dark hover:bg-cdp-neutral-01 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-dark disabled:opacity-30 disabled:shadow-none disabled:pointer-events-none"
+    >
+      <mat-icon class="!w-6 !h-6 !text-2xl !leading-none">chevron_left</mat-icon>
+    </button>
+  }
+
+  <div #scroller class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2" (scroll)="onScroll()">
+    <ng-content></ng-content>
+  </div>
+
+  @if (isOverflowing) {
+    <button
+      type="button"
+      (click)="scrollByPage(1)"
+      [disabled]="!canScrollRight"
+      [attr.aria-label]="'shared.scrollRight' | translate"
+      class="hidden lg:flex absolute right-2 top-1/2 -translate-y-1/2 z-20 items-center justify-center w-10 h-10 rounded-full bg-white border border-cdp-neutral-02 shadow-md text-cdp-dark hover:bg-cdp-neutral-01 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-dark disabled:opacity-30 disabled:shadow-none disabled:pointer-events-none"
+    >
+      <mat-icon class="!w-6 !h-6 !text-2xl !leading-none">chevron_right</mat-icon>
+    </button>
+  }
+</div>

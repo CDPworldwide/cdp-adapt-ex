@@ -18,6 +18,7 @@ _SECTOR_MAPPING: Dict[str, SectorEnum] = {
     "Electricity, gas, steam and air conditioning supply": SectorEnum.ELECTRICITY_GAS_STEAM_AIR,
     "Water supply": SectorEnum.WATER_SUPPLY,
     "Sewerage, waste management and remediation activities": SectorEnum.SEWERAGE_WASTE_REMEDIATION,
+    "Sewerage, wastewater management and remediation activities": SectorEnum.SEWERAGE_WASTE_REMEDIATION,
     "Waste management": SectorEnum.WASTE_MANAGEMENT,
     "Administrative and support service activities": SectorEnum.ADMIN_SUPPORT_SERVICES,
     "Public administration and defence; compulsory social security": SectorEnum.PUBLIC_ADMIN_DEFENCE,

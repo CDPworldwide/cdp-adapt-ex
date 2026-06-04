@@ -12,12 +12,13 @@ import type {
 } from '@pac-api/client';
 
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
-import { NoHazardsIconComponent } from '../../../shared/icons';
+import { CardCarouselComponent } from '../../../shared/components/card-carousel/card-carousel.component';
+import { EdgeCaseBannerComponent } from '../edge-case-banner/edge-case-banner.component';
+import type { EdgeCaseBannerVariant } from '../edge-case-banner/edge-case-banner.util';
 import { AdaptationActionDetailComponent } from './adaptation-action-detail/adaptation-action-detail.component';
 import { AdaptationGoalDetailComponent } from './adaptation-goal-detail/adaptation-goal-detail.component';
 import { ProjectSeekingFundingDetailComponent } from './project-seeking-funding-detail/project-seeking-funding-detail.component';
 import { ActionsSummaryComponent } from './actions-summary/actions-summary.component';
-import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
 import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
 import { splitTitleAtLastColon } from '../../../shared/utils/title.util';
 import type { HazardSummaryRow, DetailItemType } from './government-actions.types';
@@ -31,12 +32,12 @@ export type { HazardSummaryRow, DetailItemType };
     CommonModule,
     TranslateModule,
     HazardIconComponent,
-    NoHazardsIconComponent,
+    CardCarouselComponent,
+    EdgeCaseBannerComponent,
     AdaptationActionDetailComponent,
     AdaptationGoalDetailComponent,
     ProjectSeekingFundingDetailComponent,
     ActionsSummaryComponent,
-    AutoTranslatePipe,
     ProtectedTranslationHtmlPipe,
     A11yModule,
   ],
@@ -45,6 +46,8 @@ export type { HazardSummaryRow, DetailItemType };
 })
 export class GovernmentActionsComponent implements OnChanges {
   @Input() data: ActionsTab | null = null;
+  // Mirrors the Hazards-tab disclosure banner; null for normal disclosers.
+  @Input() bannerVariant: EdgeCaseBannerVariant = null;
   @Input() locationName: string = '';
   @Input() countryName: string = '';
   @Input() disclosureYear: number | null | undefined;
@@ -62,9 +65,6 @@ export class GovernmentActionsComponent implements OnChanges {
     return this.totalGoals === 0 && this.totalActions === 0 && this.totalProjects === 0;
   }
 
-  get isAnyEmpty(): boolean {
-    return this.totalGoals === 0 || this.totalActions === 0 || this.totalProjects === 0;
-  }
   selectedType: DetailItemType | null = null;
   selectedItem: AdaptationGoal | AdaptationAction | ProjectSeekingFunding | null = null;
   private previousFocus: HTMLElement | null = null;

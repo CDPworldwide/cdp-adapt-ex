@@ -17,13 +17,20 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { HazardMapComponent, SUPPORTED_HAZARD_TYPES } from '../../hazard-map/hazard-map';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import { SectorIconComponent } from '../../../shared/components/sector-icon/sector-icon.component';
-import {
-  InfoIconComponent,
-  ArrowRightIconComponent,
-  NoHazardsIconComponent,
-} from '../../../shared/icons';
+import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
+import { InfoIconComponent, ArrowRightIconComponent } from '../../../shared/icons';
 import { ShowMoreButtonComponent } from '../../../shared/components/show-more-button/show-more-button.component';
-import type { AdaptationAction, Hazard, HazardProfile, LocationProfile } from '@pac-api/client';
+import { EdgeCaseBannerComponent } from '../edge-case-banner/edge-case-banner.component';
+import {
+  getEdgeCaseBannerVariant,
+  type EdgeCaseBannerVariant,
+} from '../edge-case-banner/edge-case-banner.util';
+import {
+  type AdaptationAction,
+  type Hazard,
+  type HazardProfile,
+  type LocationProfile,
+} from '@pac-api/client';
 
 @Component({
   selector: 'app-hazards',
@@ -35,10 +42,11 @@ import type { AdaptationAction, Hazard, HazardProfile, LocationProfile } from '@
     HazardMapComponent,
     HazardIconComponent,
     SectorIconComponent,
+    ProtectedTranslationHtmlPipe,
     InfoIconComponent,
     ArrowRightIconComponent,
-    NoHazardsIconComponent,
     ShowMoreButtonComponent,
+    EdgeCaseBannerComponent,
   ],
   templateUrl: './hazards.component.html',
   styleUrls: ['./hazards.component.css'],
@@ -79,27 +87,26 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
   get requesters(): string[] {
     return (this.data?.requesters ?? [])
       .flatMap((r) => r.split(',').map((s) => s.trim()))
-      .filter(Boolean);
+      .filter(Boolean)
+      // Drop the legal-entity " e.V." suffix from "ICLEI - Local Governments
+      // for Sustainability e.V." so the badge reads as the common name.
+      .map((s) => s.replace(/\s+e\.?\s*v\.?\s*$/i, ''));
   }
 
-  get bannerVariant(): 'no-report' | 'non-public' | 'no-hazards' | null {
-    if (!this.data || (this.data.hazards?.hazards?.length ?? 0) > 0) {
-      return null;
-    }
-    if (this.data.publicStatus == null) return 'no-report';
-    if (this.data.publicStatus === 'Non-Public') return 'non-public';
-    return 'no-hazards';
+  get bannerVariant(): EdgeCaseBannerVariant {
+    return getEdgeCaseBannerVariant(this.data?.publicStatus, this.data?.hazards?.hazards);
   }
 
-  // Public orgs surface their own disclosed hazards
+  // Public orgs show only their own disclosed hazards — never supplemented with
+  // GEE-derived maps, even when every disclosed row is a free-text 'Other:'.
   get disclosedHazards(): HazardProfile[] {
     if (this.data?.publicStatus !== 'Public') return [];
     return (this.data?.hazards?.hazards ?? []).filter((h) => h.source !== 'GEE-Derived');
   }
 
-  // Non-Public orgs and non-disclosers show GEE-derived hazards in different blocks
+  // Public orgs that disclosed valid hazards show their own; else, falls back to GEE-derived.
   get geeFallback(): HazardProfile[] {
-    if (this.data?.publicStatus === 'Public') return [];
+    if (this.data?.publicStatus === 'Public' && this.disclosedHazards.length > 0) return [];
     return (this.data?.hazards?.hazards ?? []).filter((h) => h.source === 'GEE-Derived');
   }
 
