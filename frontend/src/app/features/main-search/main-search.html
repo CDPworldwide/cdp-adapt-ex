@@ -28,7 +28,12 @@
           type="text"
           class="flex-1 min-w-0 bg-transparent text-white text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-none border-none outline-none caret-white"
           [formControl]="searchControl"
-          (keydown.enter)="onSearch(); $event.preventDefault()"
+          role="combobox"
+          aria-autocomplete="list"
+          [attr.aria-expanded]="isOverlayOpen"
+          aria-controls="search-suggestions"
+          [attr.aria-activedescendant]="activeSuggestionId"
+          (keydown)="onSearchKeydown($event)"
         />
       </div>
 
@@ -46,12 +51,17 @@
             <span class="text-xs uppercase tracking-cdp-eyebrow text-white/60 font-medium">
               {{ 'homepage.hero.searchSuggestions' | translate }}
             </span>
-            <ul class="mt-4 divide-y divide-white/10">
-              @for (option of results; track option.organizationId) {
+            <ul id="search-suggestions" class="mt-4 divide-y divide-white/10" role="listbox">
+              @for (option of results; track option.organizationId; let index = $index) {
                 <li>
                   <button
+                    [id]="getSuggestionId(index)"
                     type="button"
+                    role="option"
+                    [attr.aria-selected]="activeSuggestionIndex === index"
                     class="w-full py-4 px-2 -mx-2 rounded-sm flex items-center justify-between text-left hover:bg-white/5 active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red transition-colors"
+                    [ngClass]="{ 'bg-white/10': activeSuggestionIndex === index }"
+                    (mouseenter)="setActiveSuggestion(index)"
                     (click)="onSearch(option.name)"
                   >
                     <span class="flex flex-col text-left">
