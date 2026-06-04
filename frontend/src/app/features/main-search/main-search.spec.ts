@@ -235,6 +235,42 @@ describe('MainSearchComponent', () => {
 
       expect(suggestions.length).toBe(5);
     }));
+
+    it('should move the active suggestion with arrow keys', () => {
+      component.searchControl.setValue('Lo');
+      fixture.detectChanges();
+
+      component.onSearchKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      expect(component.activeSuggestionIndex).toBe(0);
+
+      component.onSearchKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      expect(component.activeSuggestionIndex).toBe(1);
+
+      component.onSearchKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      expect(component.activeSuggestionIndex).toBe(0);
+
+      component.onSearchKeydown(new KeyboardEvent('keydown', { key: 'ArrowUp' }));
+      expect(component.activeSuggestionIndex).toBe(1);
+    });
+
+    it('should select the active suggestion when Enter is pressed', () => {
+      component.searchControl.setValue('Lo');
+      fixture.detectChanges();
+
+      component.onSearchKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      component.onSearchKeydown(new KeyboardEvent('keydown', { key: 'Enter' }));
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', 101]);
+    });
+
+    it('should select the first visible suggestion when Enter is pressed without an active suggestion', () => {
+      component.searchControl.setValue('Lo');
+      fixture.detectChanges();
+
+      component.onSearchKeydown(new KeyboardEvent('keydown', { key: 'Enter' }));
+
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', 101]);
+    });
   });
 
   describe('Search Functionality', () => {

@@ -77,6 +77,8 @@ export class MainSearchComponent implements OnInit {
   private defaultSuggestions: LocationSuggestion[] = [];
   filteredLocations!: Observable<LocationSuggestion[]>;
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
+  activeSuggestionIndex = -1;
+  private visibleSuggestions: LocationSuggestion[] = [];
 
   selectedLocation: LocationPin | null = null;
   selectedLocationData: LocationData | null = null;
@@ -107,10 +109,22 @@ export class MainSearchComponent implements OnInit {
     );
 
     this.filteredLocations = combineLatest([
-      this.searchControl.valueChanges.pipe(startWith(this.searchControl.value || '')),
+      this.searchControl.valueChanges.pipe(
+        startWith(this.searchControl.value || ''),
+        tap(() => {
+          this.activeSuggestionIndex = -1;
+          this.onInput();
+        }),
+      ),
       this.allLocations$,
     ]).pipe(
       map(([value, locations]) => this._filter(value || '', locations)),
+      tap((locations) => {
+        this.visibleSuggestions = locations;
+        if (this.activeSuggestionIndex >= locations.length) {
+          this.activeSuggestionIndex = locations.length - 1;
+        }
+      }),
       takeUntilDestroyed(this.destroyRef),
     );
 
@@ -227,6 +241,46 @@ export class MainSearchComponent implements OnInit {
     }
   }
 
+  onSearchKeydown(event: KeyboardEvent): void {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.moveActiveSuggestion(1);
+      return;
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.moveActiveSuggestion(-1);
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const selectedSuggestion =
+        this.visibleSuggestions[this.activeSuggestionIndex] ?? this.visibleSuggestions[0];
+      if (selectedSuggestion) {
+        this.onSearch(selectedSuggestion.name);
+        return;
+      }
+
+      this.onSearch();
+    }
+  }
+
+  setActiveSuggestion(index: number): void {
+    this.activeSuggestionIndex = index;
+  }
+
+  getSuggestionId(index: number): string {
+    return `search-suggestion-${index}`;
+  }
+
+  get activeSuggestionId(): string | null {
+    return this.activeSuggestionIndex >= 0
+      ? this.getSuggestionId(this.activeSuggestionIndex)
+      : null;
+  }
+
   splitMatch(name: string, query: string): Array<{ text: string; bold: boolean }> {
     const trimmed = (query || '').trim();
     if (!trimmed) {
@@ -295,6 +349,26 @@ export class MainSearchComponent implements OnInit {
       const { _normalizedName, _normalizedCountry, ...rest } = result.obj;
       return rest;
     });
+  }
+
+  private moveActiveSuggestion(step: 1 | -1): void {
+    if (this.visibleSuggestions.length === 0) {
+      this.activeSuggestionIndex = -1;
+      return;
+    }
+
+    const nextIndex = this.activeSuggestionIndex + step;
+    if (nextIndex < 0) {
+      this.activeSuggestionIndex = this.visibleSuggestions.length - 1;
+      return;
+    }
+
+    if (nextIndex >= this.visibleSuggestions.length) {
+      this.activeSuggestionIndex = 0;
+      return;
+    }
+
+    this.activeSuggestionIndex = nextIndex;
   }
 
   onSearch(query?: string) {
