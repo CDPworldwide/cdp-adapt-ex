@@ -66,7 +66,9 @@
       "source": "来源",
       "scenario": "场景",
       "scenarioTooltip": "场景展示在不同气候未来下，灾害可能如何变化。“历史”反映过去的状况。其他选项代表可能的未来路径，例如从较低排放到较高排放。选择一个场景，查看风险水平可能如何随时间变化。更多信息请参阅方法论。",
-      "timeframe": "可用时间范围"
+      "timeframe": "可用时间范围",
+      "expandLegend": "显示图例详情",
+      "collapseLegend": "隐藏图例详情"
     },
     "scenarios": {
       "historical": "历史"
@@ -86,6 +88,8 @@
     "selectLanguage": "选择语言",
     "expandMap": "展开地图",
     "collapseMap": "收起地图",
+    "scrollLeft": "向左滚动",
+    "scrollRight": "向右滚动",
     "close": "关闭",
     "previousAction": "上一项行动",
     "nextAction": "下一项行动",
@@ -372,6 +376,7 @@
         "dialogLabel": "详情对话框",
         "metricIndicator": "指标/指示器和证据",
         "comment": "评论",
+        "dataNotAvailable": "数据不可用",
         "baseYear": "基准年",
         "totalFundsNeeded": "所需资金总额",
         "stageOfProjectDevelopment": "项目开发阶段",
@@ -461,6 +466,13 @@
       "impactedSectors": "受影响行业",
       "seeMethodology": "详见方法论",
       "intro": "浏览具有相似气候条件和共同风险的其他城市正在采取的应对行动想法",
+      "analysisFlag": {
+        "title": "基于 CDP 分析的信息",
+        "limited": "该辖区披露的灾害信息有限，因此 CDP 使用分析来识别相关行动想法。",
+        "private": "该辖区的披露未公开，因此 CDP 使用分析来识别相关行动想法。",
+        "nonDiscloser": "该辖区未向 CDP 披露信息，因此 CDP 使用分析来识别相关行动想法。",
+        "closing": "更多信息请参阅方法论。"
+      },
       "noSolutionsContent": {
         "title": "{{location}}截至{{year}}年CDP披露尚未披露其辖区的风险信息",
         "description": "目前，{{location}}的{{year}}年CDP披露中没有任何风险信息。这可能有多种原因，但出于信任、准确性和质量考虑，我们不会显示其他信息。<br><br>由于没有风险数据，我们无法计算受类似环境风险影响的可比地点。这里可能显示的内容，以及本产品中其他地点在解决方案部分显示的内容，是一组在全球其他具有类似风险概况的地点实施的解决方案类别。<br><br>解决方案是经过分类的行动，可能适用于全球其他地点，使用户能够查看自己的地点，并了解其他地方正在做什么、哪些做法可能可在此应用或实施。"

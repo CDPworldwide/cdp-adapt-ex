@@ -66,7 +66,9 @@
       "source": "Fonte",
       "scenario": "Cenários",
       "scenarioTooltip": "Os cenários mostram como um risco pode mudar sob diferentes futuros climáticos. \"Histórico\" reflete condições passadas. Outras opções representam possíveis trajetórias futuras, como de emissões mais baixas a emissões mais altas. Escolha um cenário para ver como os níveis de risco podem mudar ao longo do tempo. Consulte a metodologia para obter mais informações.",
-      "timeframe": "Prazos disponíveis"
+      "timeframe": "Prazos disponíveis",
+      "expandLegend": "Mostrar detalhes da legenda",
+      "collapseLegend": "Ocultar detalhes da legenda"
     },
     "scenarios": {
       "historical": "Histórico"
@@ -86,6 +88,8 @@
     "selectLanguage": "Selecionar idioma",
     "expandMap": "Expandir mapa",
     "collapseMap": "Recolher mapa",
+    "scrollLeft": "Rolar para a esquerda",
+    "scrollRight": "Rolar para a direita",
     "close": "Fechar",
     "previousAction": "Ação anterior",
     "nextAction": "Próxima ação",
@@ -372,6 +376,7 @@
         "dialogLabel": "Janela de detalhes",
         "metricIndicator": "Métrica / indicador e evidência",
         "comment": "Comentário",
+        "dataNotAvailable": "Dados não disponíveis",
         "baseYear": "Ano base",
         "totalFundsNeeded": "Total de fundos necessários",
         "stageOfProjectDevelopment": "Etapa de desenvolvimento do projeto",
@@ -461,6 +466,13 @@
       "impactedSectors": "Setores afetados",
       "seeMethodology": "Ver detalhes na metodologia",
       "intro": "Explore ideias de ações que outras cidades com condições climáticas semelhantes e riscos compartilhados estão adotando para responder",
+      "analysisFlag": {
+        "title": "Informações baseadas na análise do CDP",
+        "limited": "Esta jurisdição divulgou informações limitadas sobre riscos, portanto o CDP usou análises para identificar ideias de ação relevantes.",
+        "private": "A divulgação desta jurisdição não é pública, portanto o CDP usou análises para identificar ideias de ação relevantes.",
+        "nonDiscloser": "Esta jurisdição não divulgou informações ao CDP, portanto o CDP usou análises para identificar ideias de ação relevantes.",
+        "closing": "Consulte a metodologia para obter mais informações."
+      },
       "noSolutionsContent": {
         "title": "{{location}} não divulgou informações de risco para sua jurisdição na divulgação CDP de {{year}}",
         "description": "Atualmente não há informações de risco na divulgação CDP de {{year}} de {{location}}. Pode haver alguns motivos para isso, mas por confiança, precisão e qualidade não mostramos outras informações.<br><br>Como não temos dados de risco, não podemos calcular localizações comparáveis afetadas por riscos ambientais semelhantes. O que você poderia ver aqui, e o que outras localizações neste produto mostram em soluções, é uma lista de categorias de soluções implementadas em outros lugares do mundo com perfis de risco semelhantes.<br><br>Soluções são ações categorizadas que poderiam ser aplicadas em outras localizações do mundo, permitindo que os usuários olhem para sua localização e vejam o que outros estão fazendo que poderia ser aplicado ou implementado aqui."
