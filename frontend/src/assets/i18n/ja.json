@@ -13,7 +13,8 @@
       "disclosesToCdp": "CDPへの場所情報報告",
       "searchOrSelect": "場所を検索",
       "orExploreOnMap": "または地図で探す",
-      "noResults": "'{{query}}'に一致する場所はありません"
+      "noResults": "'{{query}}'に一致する場所はありません",
+      "noDisclosures": "この管轄区域は開示していません。ハザード情報と行動案は利用できます"
     },
     "description": {
       "text": "世界各地の都市、州、地域が資金調達を求めている、地域の気候リスク、対策および適応プロジェクトを閲覧する",
@@ -37,7 +38,7 @@
       "feedbackWelcome": "フィードバック歓迎",
       "mobileNotice": "注：この体験はモバイル向けに最適化されていません。最良の結果を得るには、デスクトップでCDP Adaptation & Action Explorerをご利用ください。",
       "eyebrow": "ようこそ",
-      "title": "CDP Adaptation & Action Explorer",
+      "title": "CDP適応とアクションエクスプローラー",
       "description": "都市、州、地域が気候リスクを理解し、レジリエンス解決策を探り、パートナーや資金提供者に進捗を伝えるためのオープンソースツールです。今後さらに機能が追加されます。",
       "prompt": "あなたに最も当てはまるものはどれですか？",
       "roles": {
@@ -64,6 +65,7 @@
     "hazardLegend": {
       "source": "原因",
       "scenario": "想定される状況",
+      "scenarioTooltip": "シナリオは、異なる気候の将来像のもとでハザードがどのように変化する可能性があるかを示します。「過去」は過去の条件を反映しています。その他の選択肢は、低排出から高排出までのような、将来起こり得る経路を表します。シナリオを選択すると、時間の経過とともにリスクレベルがどのように変化し得るかを確認できます。詳しくは方法論をご覧ください。",
       "timeframe": "利用可能な期間"
     },
     "scenarios": {
@@ -195,6 +197,7 @@
       "MASS_MOVEMENT": "マスムーブメント",
       "LOSS_OF_GREEN_SPACE": "緑地の喪失",
       "SOIL_DEGRADATION_EROSION": "土壌劣化",
+      "LANDSLIDES": "地すべり",
       "LANDSCAPE_SHIFT_DEGRADATION": "その他の景観の変化",
       "INFECTIOUS_DISEASE": "感染症",
       "BIODIVERSITY_LOSS": "生物多様性の喪失",
@@ -244,7 +247,7 @@
       "topNHazards": "上位 {{count}} の危険",
       "hazardsDisclosedCount": "（{{count}} 件開示）",
       "topFourHazardsDisclosed": "上位4つのハザード（{{count}}）",
-      "topHazardsDisclosed": "開示された上位ハザード（開示数）",
+      "topHazardsDisclosed": "開示された上位ハザード（{{count}}件開示）",
       "topTwoComputed": "算出された上位2つのハザード",
       "topFourComputed": "算出された上位4つのハザード",
       "noGeeData": "このハザードに関する外部データは利用できません。",
@@ -256,6 +259,7 @@
       "crvaVisitPortal": "CDPオープンデータポータルにアクセス",
       "requestersTitle": "データ開示の要請元",
       "requestersTooltip": "これは当該管轄区域に対して情報開示を要請した組織の一覧です。この一覧は網羅的なものではなく、また地方政府の法令遵守状況や情報開示の具体的な目的を示すものではありません。",
+      "requestersAttribution": "位置データは、<a href=\"https://docs.overturemaps.org/attribution/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Overture Maps Foundation</a> によるもので、<a href=\"https://opendatacommons.org/licenses/odbl/1-0/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Open Database License (ODbL)</a> に基づいて提供されています",
       "aiSummary": "AIによる概要",
       "proportionLabel": "最も曝露度の高い人口の割合",
       "vulnerablePopTitle": "最も影響を受けやすい脆弱な集団",
@@ -514,154 +518,154 @@
     "populationExposed": "すでに重大な気候ハザードに直面している管轄区域"
   },
   "methodology": {
-    "lastUpdated": "Last updated: {{date}}",
-    "lastUpdatedDate": "April 2026",
-    "title": "Methodology",
-    "intro": "This platform draws from both CDP's annual questionnaire for reporting by governments and supplemental hazard data to cover the climate hazards that cities, states, and regions face and how they are addressing them. It also surfaces insights from around the globe by identifying relevant solutions and actions across cities with similar characteristics.",
+    "lastUpdated": "最終更新日: {{date}}",
+    "lastUpdatedDate": "2026年4月",
+    "title": "方法論",
+    "intro": "このプラットフォームは、CDPが政府向けに毎年実施している報告アンケートと、補足的な災害データの両方を活用し、都市、州、地域が直面する気候変動による災害とその対策を網羅しています。また、類似した特性を持つ都市間で関連する解決策や取り組みを特定することで、世界各地からの知見も提供します。",
     "questionnaire": {
-      "title": "CDP's Annual Questionnaire",
-      "body": "Cities, states and regions are invited to complete CDP's annual questionnaire through the CDP-ICLEI Track disclosure portal. The questionnaire captures qualitative and quantitative information on topics including governance, climate risk and vulnerability assessments, greenhouse gas emissions inventories, energy consumption, sectoral data, adaptation and mitigation goals, and climate planning and actions. Jurisdictions can update their disclosures through questionnaires released yearly. The Explorer currently displays data from 2025 public disclosures. Additional information and most recent questions can be found <a href=\"https://www.cdp.net/en/disclose\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">here</a>."
+      "title": "CDPの年次アンケート",
+      "body": "都市、州、地域は、CDP-ICLEI Track開示ポータルを通じて、CDPの年次アンケートに回答するよう求められています。このアンケートでは、ガバナンス、気候リスクと脆弱性の評価、温室効果ガス排出量インベントリ、エネルギー消費、セクター別データ、適応と緩和の目標、気候変動対策計画と行動などに関する定性的および定量的な情報を収集します。管轄区域は、毎年公開されるアンケートを通じて開示情報を更新できます。エクスプローラーには現在、2025年の公開データが表示されています。詳細情報と最新の質問は、 <a href=\"https://www.cdp.net/en/disclose\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">こちらを</a>ご覧ください。"
     },
     "hazards": {
-      "title": "Hazards",
-      "intro": "For jurisdictions that have disclosed information through the questionnaire, hazard data is primarily drawn from this disclosure. Additional hazard information and data for visualization is sourced from remote sensing and model-derived data accessed through Google Earth Engine.",
+      "title": "危険",
+      "intro": "アンケートを通じて情報を開示した管轄区域については、ハザードデータは主にこの開示情報から得られます。視覚化のための追加のハザード情報およびデータは、Google Earth Engineを通じてアクセスしたリモートセンシングデータおよびモデル由来データから取得されます。",
       "questionnaireData": {
-        "title": "Cities, States, and Regions Questionnaire Data",
-        "p1": "Cities, states, and regions are asked to share details on the most significant climate hazards facing their jurisdiction (Question 2.2 in the 2025 <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">questionnaire</a>). The self-disclosed hazard data may contain information about vulnerable population and sectoral exposure, hazard probability, magnitude of impact, expected hazard changes in intensity or frequency, and the timeframe of expected change. Probability and magnitude responses are given along a five category scale: low, medium-low, medium, medium-high, and high.",
-        "p2": "For each jurisdiction, up to four top hazards are displayed on the platform, primarily ranked based on the average value of their reported probability and magnitude. Proportion of the population exposed to the hazard is used where data is incomplete."
+        "title": "都市、州、地域に関するアンケートデータ",
+        "p1": "都市、州、地域は、管轄区域が直面する最も重大な気候変動による災害に関する詳細情報を共有するよう求められています（2025年<a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">アンケート</a>の質問2.2）。自己申告される災害データには、脆弱な人口やセクターの曝露状況、災害発生確率、影響の規模、予想される災害の強度や頻度の変化、および予想される変化の期間に関する情報が含まれる場合があります。発生確率と影響の規模は、低、中低、中、中高、高の5段階の尺度で回答します。",
+        "p2": "各管轄区域ごとに、最大4つの主要な危険要因がプラットフォーム上に表示され、主に報告された発生確率と規模の平均値に基づいて順位付けされます。データが不完全な場合は、その危険要因にさらされる人口の割合が使用されます。"
       },
       "geeData": {
-        "title": "Google Earth Engine and External Data",
-        "p1": "To provide additional context and better understand the dynamics of a hazard in a given jurisdiction, geospatial hazard data layers were developed from datasets available on Google Earth Engine and other data portals, including from specific risk indices or hazard forecasting models, as well as directly from downscaled climate projections.",
-        "p2": "Earth Engine and other external hazard data were rescaled to values ranging from 0 to 5, aligning it for easier comparison with the five-category, low to high questionnaire response format scale. A value of 0 represents when a hazard is not expected to impact the jurisdiction within the next 5 years. Jurisdictions without any exposure to the given hazard were omitted in this calculation, allowing the analysis to better reflect comparisons across areas actually experiencing the hazard.",
-        "p3": "Many hazard layers are available for both historical baseline conditions as well as future projections. Projected values are provided for two-decade ranges, centered on three milestone years: 2030, 2050, and 2080. Hazard projections are provided under four combined, widely used socioeconomic-climate scenarios. These scenarios represent increasingly extreme warming pathways: SSP1–RCP2.6, SSP2-4.5, SSP3–RCP7.0, and SSP5–RCP8.5. There are a few exceptions: soil erosion is only available for historical conditions, and flooding hazards are available for historical conditions, RCP 4.5, and RCP 8.5 scenarios (former climate scenario characterizations). Water stress includes three of the four scenarios, omitting SSP2-4.5.",
-        "p4": "For fire weather, extreme heat/heat stress, extreme cold, and extreme precipitation, downscaled climate projections from <a href=\"https://www.nccs.nasa.gov/data-collections/nex-gddp-cmip6/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">NEX-GDDP-CMIP6</a> were used. Hazard values were calculated for ~28-km grid cells for each year under the various scenarios. A multi-model ensemble (MME) median value was calculated for each cell using all available climate models. This provides a central, representative value across diverse climate model projections and reduces the effects of variation between models."
+        "title": "Google Earth Engineと外部データ",
+        "p1": "特定の管轄区域における災害の動態をより深く理解し、より詳細な情報を提供するために、Google Earth Engineやその他のデータポータルで入手可能なデータセット（特定の危険指標や災害予測モデル、ダウンスケールされた気候予測など）から、地理空間的な災害データレイヤーが開発されました。",
+        "p2": "Earth Engineなどの外部ハザードデータは、0から5までの値に再スケーリングされ、5段階（低から高）のアンケート回答形式スケールとの比較が容易になるように調整されました。0は、今後5年以内に当該管轄区域にハザードが影響を及ぼす見込みがないことを示します。この計算では、当該ハザードに全く影響を受けていない管轄区域は除外されており、分析結果が実際にハザードの影響を受けている地域間の比較をより正確に反映できるようになっています。",
+        "p3": "過去の基準状態と将来の予測の両方について、多くのハザードレイヤーが利用可能です。予測値は、2030年、2050年、2080年の3つの節目年を中心とした20年ごとの範囲で提供されます。ハザード予測は、広く使用されている4つの複合的な社会経済気候シナリオに基づいて提供されます。これらのシナリオは、ますます極端になる温暖化経路を表しています。SSP1–RCP2.6、SSP2-4.5、SSP3–RCP7.0、およびSSP5–RCP8.5です。いくつかの例外があります。土壌侵食は過去の状態のみで利用可能であり、洪水ハザードは過去の状態、RCP 4.5、およびRCP 8.5シナリオ（以前の気候シナリオ特性）で利用可能です。水ストレスには、SSP2-4.5を除く4つのシナリオのうち3つが含まれます。",
+        "p4": "火災気象、極端な高温／熱ストレス、極端な低温、および極端な降水量については、 <a href=\"https://www.nccs.nasa.gov/data-collections/nex-gddp-cmip6/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">NEX-GDDP-CMIP6</a>のダウンスケールされた気候予測が使用されました。さまざまなシナリオの下で、各年について約28km四方のグリッドセルごとにハザード値が計算されました。利用可能なすべての気候モデルを使用して、各セルについてマルチモデルアンサンブル（MME）の中央値が計算されました。これにより、多様な気候モデル予測全体にわたる中心的で代表的な値が得られ、モデル間の変動の影響が軽減されます。"
       },
       "layers": {
-        "title": "Learn more about the data used for each hazard layer:",
-        "footnote": "Additional hazard layers may be added over time."
+        "title": "各ハザードレイヤーで使用されるデータの詳細については、こちらをご覧ください。",
+        "footnote": "今後、追加の危険要因層が設けられる可能性があります。"
       },
-      "outro": "To display hazard maps and assign hazard values for each jurisdiction, global hazard layers from Google Earth Engine were filtered by a jurisdiction's administrative boundaries and spatially averaged within them. Administrative boundaries were obtained primarily through data from <a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation</a>. When unavailable, boundaries were obtained from <a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a> or datasets available on the <a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">UN OCHA Humanitarian Data Exchange</a>. When no appropriate jurisdiction boundary was found, pseudo-boundaries were created using the jurisdiction's geographic center (sourced from the above or manually in <a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google Maps</a>) and their reported land area."
+      "outro": "ハザードマップを表示し、各管轄区域にハザード値を割り当てるため、Google Earth Engine のグローバルハザードレイヤーを管轄区域の行政境界でフィルタリングし、その境界内で空間的に平均化しました。行政境界は主に<a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation</a>のデータから取得しました。入手できない場合は、 <a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a>または<a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">UN OCHA 人道データ交換</a>で入手可能なデータセットから境界を取得しました。適切な管轄区域境界が見つからない場合は、管轄区域の地理的中心 (上記から取得、または<a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google マップ</a>で手動で取得) と報告されている土地面積を使用して擬似境界を作成しました。"
     },
     "hazardLayers": {
       "waterStress": {
-        "title": "Water stress",
-        "description": "Global water risk data was sourced from the World Resources Institute (WRI) Aqueduct Water Risk Atlas 4.0 framework and aggregated to the HydroBASINS Level 6 unit. The values are provided from WRI in the scale of 0-5."
+        "title": "水ストレス",
+        "description": "世界の水リスクデータは、世界資源研究所（WRI）のAqueduct Water Risk Atlas 4.0フレームワークから取得し、HydroBASINSレベル6に集約しました。値はWRIから0～5のスケールで提供されています。"
       },
       "flooding": {
-        "title": "Fluvial (riverine) and coastal flooding",
-        "description": "Fluvial and coastal flood depth was sourced from the World Resources Institute Aqueduct Flood Hazard Map dataset. Data is provided at a 1-km resolution for 100-year (i.e. 1 in 100 probability of occurring in a given year) floods, under a high sea level rise scenario and accounting for subsidence. These were calculated under RCPs (representative concentration pathways), which were the formerly recognized ways to describe climate trajectories."
+        "title": "河川洪水および沿岸洪水",
+        "description": "河川および沿岸の洪水深は、世界資源研究所の水道洪水ハザードマップデータセットから取得しました。データは、海面上昇シナリオと地盤沈下を考慮した、100年に一度（つまり、特定の年に発生する確率が100分の1）の洪水について、1km解像度で提供されています。これらは、かつて気候変動の軌跡を記述する方法として認識されていたRCP（代表濃度経路）に基づいて計算されました。"
       },
       "fireWeather": {
-        "title": "Fire weather",
-        "description": "This draws from NASA's Fire Weather Index (FWI) dataset, which is based on NEX-GDDP-CMIP6 projections. FWI represents the relationship between weather conditions and elevated fire risk. The number of days per year in which the FWI exceeds a threshold of 45 is used, representing days with high fire danger."
+        "title": "火災気象",
+        "description": "これは、NASAの火災気象指数（FWI）データセットに基づいています。このデータセットは、NEX-GDDP-CMIP6の予測データを基に作成されています。FWIは、気象条件と火災リスクの上昇との関係を表します。FWIが45の閾値を超える日数が年間で何日であるかを示しており、これは火災危険度が高い日を表しています。"
       },
       "extremeHeat": {
-        "title": "Extreme heat / heat stress",
-        "description": "This is calculated as the number of days on which the near surface air temperature (the temperature felt at 2 meters above the ground) exceeds 35 °C, representing extreme heat-day frequency."
+        "title": "極度の暑さ／熱ストレス",
+        "description": "これは、地表付近の気温（地上2メートルで体感できる温度）が35℃を超える日数として算出され、猛暑日の頻度を表します。"
       },
       "extremeCold": {
-        "title": "Extreme cold",
-        "description": "This is calculated as the number of days on which the minimum near surface air temperature (the temperature felt at 2 meters above the ground) falls below 0 °C, representing extreme cold-day frequency."
+        "title": "極寒",
+        "description": "これは、地表付近の最低気温（地上2メートルで体感できる気温）が0℃を下回る日数として計算され、極寒日の頻度を表します。"
       },
       "extremePrecipitation": {
-        "title": "Extreme precipitation",
-        "description": "This is calculated as the maximum 5-day precipitation total in a given year, representing extreme precipitation events."
+        "title": "極端な降水量",
+        "description": "これは、特定の年における最大5日間降水量の合計として算出され、極端な降水現象を表します。"
       },
       "soilDegradation": {
-        "title": "Soil degradation / erosion",
-        "description": "To represent one aspect of soil erosion, global landslide hazard maps were accessed from the World Bank's Global Landslide Hazard Map. This is available at 1-km resolution."
+        "title": "土壌劣化／浸食",
+        "description": "土壌侵食の一側面を示すために、世界銀行のグローバル地滑りハザードマップから世界の地滑りハザードマップを入手した。このマップは1km解像度で利用可能である。"
       }
     },
     "governmentActions": {
-      "title": "Government Actions",
-      "intro": "This tab contains three categories of information from the disclosure:",
-      "listGoals": "Adaptation Goals (Question 5.1 in the <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">questionnaire</a>)",
-      "listActions": "Actions (Question 9.1)",
-      "listProjects": "Projects (Question 9.3)",
-      "goals": "<strong class=\"font-medium text-cdp-dark\">Adaptation Goals</strong> are adaptation targets based on climate hazards and are typically qualitatively defined.",
-      "actions": "<strong class=\"font-medium text-cdp-dark\">Actions</strong> are defined here as the interventions taken to achieve adaptation goals and carry out a given strategy, which can include policies, projects, programs, partnerships, and more. Adaptation action data may include information on the sectors it impacts, attributes of resilience it enhances, co-benefits of the project, population affected, expectations for enhanced resilience timeframe, and funding sources and costs.",
-      "projects": "<strong class=\"font-medium text-cdp-dark\">Projects</strong> are specific climate-related initiatives for which jurisdictions are seeking funding, as reported via the questionnaire. Information about projects may include funding needs, project description, financing models, and more.",
-      "outro": "In addition, the Government Actions tab indicates whether the jurisdiction has completed a Climate Risk and Vulnerability Assessment, or has disclosed that they plan to do so."
+      "title": "政府の行動",
+      "intro": "このタブには、開示情報から得られた3つのカテゴリの情報が含まれています。",
+      "listGoals": "適応目標（ <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">アンケート</a>の質問5.1）",
+      "listActions": "行動（質問9.1）",
+      "listProjects": "プロジェクト（質問9.3）",
+      "goals": "<strong class=\"font-medium text-cdp-dark\">適応目標と</strong>は、気候変動による災害に基づいた適応目標であり、通常は定性的に定義される。",
+      "actions": "ここでいう<strong class=\"font-medium text-cdp-dark\">「行動」</strong>とは、適応目標を達成し、特定の戦略を実行するために講じられる介入策を指し、政策、プロジェクト、プログラム、パートナーシップなどが含まれます。適応行動に関するデータには、影響を受けるセクター、強化されるレジリエンスの特性、プロジェクトの副次的効果、影響を受ける人口、レジリエンス強化の期待期間、資金源と費用に関する情報が含まれる場合があります。",
+      "projects": "<strong class=\"font-medium text-cdp-dark\">プロジェクト</strong>とは、アンケートを通じて報告された、各自治体が資金提供を求めている気候変動関連の具体的な取り組みのことです。プロジェクトに関する情報には、資金ニーズ、プロジェクト概要、資金調達モデルなどが含まれます。",
+      "outro": "さらに、「政府の取り組み」タブには、当該管轄区域が気候リスクおよび脆弱性評価を完了したか、または完了する予定であることを公表したかが表示されます。"
     },
     "solutions": {
-      "title": "Action Ideas",
-      "p1": "This tab presents information on relevant actions being taken by peer jurisdictions, derived from actions reported in the questionnaire. Jurisdictions highlighted here are those in the same <a href=\"https://ecoregions.appspot.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">biome</a> as a given city, state, or region, with actions that address one or more of the top 4 hazards of the given city, state, or region. <strong class=\"font-medium text-cdp-dark\">Action Ideas</strong> highlight the types of actions that jurisdictions are taking to adapt to climate hazards. Cities, states, and regions choose from an extensive list of solutions that represents a given action when reporting the actions they are taking.",
-      "p2": "These relevant actions from other jurisdictions in the same ecoregion are surfaced to help users explore what others are doing to adapt to climate hazards. Actions from these jurisdictions are collated and then grouped by solution category (e.g. engineered and built environment actions, behavioural actions) and solution type (e.g. sea walls and coastal protection structures, genetic techniques). The full list of solution types can be found under section 9.1 in the <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">CDP questionnaire guide</a>. From this list, the top 25 solutions are chosen based on those with the highest number of associated actions reported. A maximum of 5 solutions are chosen from a given solution category to highlight a diversity of efforts. For each solution, a subset of actions are selected to display as examples."
+      "title": "行動アイデア",
+      "p1": "このタブでは、アンケートで報告された行動に基づき、同等の管轄区域が実施している関連行動に関する情報が表示されます。ここで強調表示されている管轄区域は、特定の都市、州、または地域と同じ<a href=\"https://ecoregions.appspot.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">生物群系</a>に属し、当該都市、州、または地域の上位4つの災害のうち1つ以上に対処する行動を実施している管轄区域です。<strong class=\"font-medium text-cdp-dark\">行動アイデアで</strong>は、管轄区域が気候変動による災害に適応するために実施している行動の種類が強調表示されます。都市、州、地域は、実施している行動を報告する際に、特定の行動を表す広範な解決策のリストから選択します。",
+      "p2": "同じ生態地域内の他の管轄区域からの関連行動は、ユーザーが気候変動による災害への適応策を調査す​​るのに役立つよう表示されます。これらの管轄区域からの行動は収集され、解決策のカテゴリ（例：工学的および建築環境対策、行動的対策）と解決策のタイプ（例：防潮堤および沿岸保護構造物、遺伝子技術）ごとにグループ化されます。解決策のタイプの全リストは、 <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">CDP アンケートガイド</a>のセクション 9.1 に記載されています。このリストから、報告された関連行動の数が最も多い上位 25 の解決策が選択されます。取り組みの多様性を強調するために、特定の解決策カテゴリからは最大 5 つの解決策が選択されます。各解決策について、例として表示される行動のサブセットが選択されます。"
     },
     "minimumCriteria": {
-      "title": "Minimum criteria: Data cleaning",
-      "intro": "As part of the data cleaning process, minimum criteria were defined for self-reported data displayed in the CDP Adaptation and Action Explorer to ensure usability, credibility, and comparability. These criteria establish a baseline level of data quality, allowing incomplete, inconsistent, or otherwise unreliable responses to be filtered out prior to analysis.",
+      "title": "最低限の基準: データクリーニング",
+      "intro": "データクリーニングプロセスの一環として、使いやすさ、信頼性、比較可能性を確保するため、CDP適応・アクションエクスプローラーに表示される自己申告データの最低基準が定義されました。これらの基準はデータ品質のベースラインレベルを確立し、不完全、矛盾、またはその他の理由で信頼性の低い回答を分析前に除外することを可能にします。",
       "headers": {
-        "topic": "Topic",
-        "questionNumber": "2025 CDP questionnaire number",
-        "rawData": "Raw data available at",
-        "criteria": "Minimum criteria"
+        "topic": "トピック",
+        "questionNumber": "2025年CDPアンケート番号",
+        "rawData": "生データは以下で入手可能です。",
+        "criteria": "最低基準"
       },
       "rows": {
         "climateHazards": {
-          "topic": "Climate hazards",
-          "criteria": "The climate hazard reported includes information on the type of hazard, the sectors most exposed by the hazard, and a description of the impacts on vulnerable populations and sectors."
+          "topic": "気候災害",
+          "criteria": "報告された気候災害には、災害の種類、災害によって最も影響を受ける分野、および脆弱な人々や分野への影響の説明に関する情報が含まれています。"
         },
         "adaptationGoals": {
-          "topic": "Adaptation Goals",
-          "criteria": "The adaptation goal has a title or description, a base year, and a target year greater than or equal to the reporting year (2025)."
+          "topic": "適応目標",
+          "criteria": "適応目標には、タイトルまたは説明、基準年、および報告年（2025年）以降の目標年が含まれます。"
         },
         "adaptationActions": {
-          "topic": "Adaptation actions",
-          "criteria": "The action reported includes information on the type and category of action, the climate hazards that the action addresses, a description of the action, and the sectors the action applies to."
+          "topic": "適応策",
+          "criteria": "報告された措置には、措置の種類とカテゴリー、措置が対処する気候変動による危険、措置の説明、および措置が適用される分野に関する情報が含まれています。"
         },
         "projects": {
-          "topic": "Projects",
-          "criteria": "The project reported includes information on the project area and at least one more datapoint:<ul class=\"list-disc pl-5 mt-1 space-y-0.5\"><li>Project title</li><li>Project stage</li><li>Financing status</li><li>Financing model</li><li>Project description</li><li>Total cost</li><li>Investment needed</li></ul>"
+          "topic": "プロジェクト",
+          "criteria": "報告されたプロジェクトには、プロジェクト対象地域に関する情報と、少なくとももう1つのデータポイントが含まれています。<ul class=\"list-disc pl-5 mt-1 space-y-0.5\"><li>プロジェクトタイトル</li><li>プロジェクト段階</li><li>財務状況</li><li>フィンモデル</li><li>プロジェクト概要</li><li>総費用</li><li>投資が必要</li></ul>"
         }
       },
       "rawDataLabels": {
-        "cities": "Cities",
-        "statesAndRegions": "States and regions"
+        "cities": "都市",
+        "statesAndRegions": "州および地域"
       }
     }
   },
   "learnMore": {
-    "lastUpdated": "Last updated: {{date}}",
-    "lastUpdatedDate": "April 2026",
-    "title": "About the Explorer",
-    "intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. The CDP Adaptation & Action Explorer brings together fragmented climate disclosure, hazard, and resilience information into a single workspace so subnational governments can find what matters fastest.",
+    "lastUpdated": "最終更新日: {{date}}",
+    "lastUpdatedDate": "2026年4月",
+    "title": "エクスプローラーについて",
+    "intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.重大な労働と悲惨な事件を一時的に引き起こします。 CDP Adaptation &amp; Action Explorer は、断片化された気候情報開示、危険、回復力に関する情報を 1 つのワークスペースにまとめて、地方自治体が何が重要かを迅速に見つけられるようにします。",
     "what": {
-      "title": "What you'll find here",
-      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+      "title": "ここで見つけられるもの",
+      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.必要最小限の費用で、必要な作業をすべて行って、結果を得ることができます。 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eufugiat nulla pariatur."
     },
     "audience": {
-      "title": "Who it's for",
-      "body": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt."
+      "title": "対象者",
+      "body": "例外的に、問題を提起することはできませんが、責任を負う義務を負うものではありません。さまざまなエラーが発生した場合、そのエラーが発生する可能性があり、その結果、正確な情報が得られ、履歴書が表示される可能性があります。"
     },
     "howToUse": {
-      "title": "How to use it",
-      "body": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit."
+      "title": "使用方法",
+      "body": "必要なものは、すべての機能を自動的に制御し、非常に多くの操作を実行して、必要な操作を実行します。 Neque porro quisquam est、qui dolorem ipsum quia dolor sit amet、consectetur、adipisci velit。"
     },
     "faq": {
-      "title": "Frequently asked questions",
-      "footnote": "Have another question? Reach out to the CDP team for guidance.",
+      "title": "よくある質問",
+      "footnote": "他に質問がありますか？CDPチームにお問い合わせください。",
       "items": {
         "data": {
-          "question": "Where does the data come from?",
-          "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam. Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt."
+          "question": "データはどこから入手したのですか？",
+          "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.あらゆるエラーが発生した場合、そのエラーが発生する可能性があります。正確な情報を発明し、履歴書を作成するための準建築物を作成できます。"
         },
         "updates": {
-          "question": "How often is the Explorer updated?",
-          "answer": "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur."
+          "question": "Explorerはどのくらいの頻度で更新されますか？",
+          "answer": "必要最小限の効果を発揮し、身体の緊張をほぐし、商品に必要な液体を最大限に発揮します。あなたの責任は、自分自身の責任を最大限に高めることです。"
         },
         "coverage": {
-          "question": "Why doesn't my city or region appear?",
-          "answer": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi."
+          "question": "私の住む都市や地域が表示されないのはなぜですか？",
+          "answer": "ベロ・エオスとアキュサムスとイウストは、堕落したドロレスとモレスティアを除いて、ディグニッシモス・ドゥシムス・キ・ブランディティス・プラエセンティアム・デレニティで、神聖な不法行為を除いて、モリティア・アニミの責任を負う類似のサントです。"
         },
         "contribute": {
-          "question": "Can I contribute data or feedback?",
-          "answer": "Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus."
+          "question": "データやフィードバックを提供できますか？",
+          "answer": "より簡単に、そして迅速に区別できます。一時的に自由になり、最適なオプションを選択して、すべてを制限し、最大の場所に直面して、すべてのことを想定し、すべてを危険にさらします。"
         },
         "use": {
-          "question": "Can I cite or reuse what's in the Explorer?",
-          "answer": "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur."
+          "question": "Explorerに掲載されている内容を引用したり、再利用したりしてもいいですか？",
+          "answer": "一時的には、犯罪者や犯罪者が必要な情報を収集し、犯罪者や不法行為を引き起こす可能性があります。あなたの耳は、サピエンテのデレクトスにある、別名コンセクアトゥルのようなものです。"
         }
       }
     }

@@ -4,17 +4,34 @@
     <p
       class="m-0 text-cdp-border font-inter text-sm italic font-normal leading-5 tracking-cdp-wide"
     >
-      {{ 'locationCard.solutions.intro' | translate }}<a
-        routerLink="/methodology"
-        [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
-        matTooltipPosition="above"
-        [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
-        class="inline-flex items-center justify-center align-middle ml-1.5 p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 not-italic"
-      >
-        <app-info-icon size="14"></app-info-icon>
-      </a>
+      {{ 'locationCard.solutions.intro' | translate
+      }}<app-methodology-info class="ml-1.5"></app-methodology-info>
     </p>
   </div>
+
+  <!-- Flag: action ideas derived from CDP analysis rather than disclosed hazards -->
+  @if (analysisFlagVariant) {
+    <div class="mx-4 lg:mx-0">
+      <div class="w-full px-6 py-4 bg-cdp-neutral-01 flex justify-start items-center gap-6">
+        <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
+          <app-no-hazards-icon size="44" color="black"></app-no-hazards-icon>
+        </div>
+        <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
+          <div
+            class="self-stretch text-cdp-dark text-base font-semibold font-roboto leading-6 tracking-tight"
+          >
+            {{ 'locationCard.solutions.analysisFlag.title' | translate }}
+          </div>
+          <div
+            class="self-stretch text-cdp-dark text-sm font-light font-roboto leading-5 tracking-tight"
+          >
+            {{ 'locationCard.solutions.analysisFlag.' + analysisFlagVariant | translate }}
+            {{ 'locationCard.solutions.analysisFlag.closing' | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 
   <!-- Popular Peer Actions Header -->
   <section class="flex flex-col items-start px-4 lg:px-0">
@@ -32,15 +49,7 @@
               : { year: data?.disclosureYear || ('locationCard.hazardDetail.unknown' | translate) }
         }}
       </span>
-      <a
-        routerLink="/methodology"
-        [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
-        matTooltipPosition="above"
-        [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
-        class="self-center inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
-      >
-        <app-info-icon size="14"></app-info-icon>
-      </a>
+      <app-methodology-info class="self-center"></app-methodology-info>
     </div>
   </section>
 
@@ -50,21 +59,13 @@
       <h2 class="text-sm font-bold font-inter leading-normal text-cdp-border m-0">
         {{ 'locationCard.solutions.hazardFiltersTitle' | translate }}
       </h2>
-      <a
-        routerLink="/methodology"
-        [matTooltip]="'locationCard.solutions.seeMethodology' | translate"
-        matTooltipPosition="above"
-        [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
-        class="inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
-      >
-        <app-info-icon size="14"></app-info-icon>
-      </a>
+      <app-methodology-info></app-methodology-info>
     </div>
-    <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap lg:gap-2 px-4 lg:px-0">
+    <div class="flex gap-2 overflow-x-auto touch-pan-x px-4 lg:px-0 lg:flex-wrap lg:gap-2 lg:overflow-x-visible lg:touch-auto">
       @for (filter of hazardFilters; track filter.type) {
         <button
           (click)="selectHazard(filter.type)"
-          class="flex flex-col items-center justify-center aspect-square w-full lg:w-[84px] lg:h-[84px] lg:aspect-auto p-1 gap-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+          class="flex flex-col items-center justify-center w-20 h-20 shrink-0 lg:w-[84px] lg:h-[84px] p-1 gap-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 touch-pan-x lg:touch-auto"
           [ngClass]="{
             'bg-cdp-dark hover:bg-black active:bg-cdp-neutral-08': isSelected(filter.type),
             'bg-cdp-neutral-02 hover:bg-cdp-neutral-01 active:bg-cdp-gray': !isSelected(
@@ -73,6 +74,7 @@
           }"
           [matTooltip]="filter.type ? ('locationCard.hazardNames.' + filter.type | translate) : ''"
           matTooltipPosition="above"
+          matTooltipTouchGestures="off"
         >
           @if (filter.type) {
             <app-hazard-icon
@@ -134,7 +136,9 @@
                 <h4
                   class="text-white text-2xl font-light font-roboto leading-normal tracking-[1.2px] line-clamp-2 break-words"
                 >
-                  {{ solution.solution }}
+                  <span
+                    [innerHTML]="solution.solution | protectedTranslationHtml"
+                  ></span>
                 </h4>
                 @if (solution.hasLocalAction) {
                   <div

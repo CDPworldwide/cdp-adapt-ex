@@ -1,15 +1,24 @@
-from app.api.v1.deps import get_location_details_service
+from app.api.v1.deps import (
+    get_location_details_service,
+    get_location_profile_translation_service,
+)
 from app.schemas.location import (
     LocationNamesResponse,
+    LocationProfile,
     LocationPinsResponse,
     LocationResponse,
 )
 from app.services.impls.location_details_service import LocationDetailsService
+from app.services.impls.location_profile_translation_service import (
+    LocationProfileTranslationService,
+    normalize_translation_language,
+)
 from app.shared.exceptions import (
     CityGeometryMissingException,
     CityNotFoundException,
     MultipleCitiesFoundException,
 )
+from app.shared.config import settings
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
@@ -56,11 +65,20 @@ async def get_all_location_names(
 async def get_location_by_org_id(
     organization_id: int,
     location_service: LocationDetailsService = Depends(get_location_details_service),
+    profile_translation_service: LocationProfileTranslationService = Depends(
+        get_location_profile_translation_service
+    ),
+    target_language: str = "en",
 ) -> LocationResponse:
     """Get location details by organization ID."""
     try:
         location = await location_service.get_location_details_by_org_id(
             organization_id
+        )
+        location = await translate_location_response(
+            location,
+            target_language,
+            profile_translation_service,
         )
         return LocationResponse(location=location)
     except CityNotFoundException as e:
@@ -126,6 +144,10 @@ async def get_all_location_pins(
 async def get_location(
     location_name: str,
     location_service: LocationDetailsService = Depends(get_location_details_service),
+    profile_translation_service: LocationProfileTranslationService = Depends(
+        get_location_profile_translation_service
+    ),
+    target_language: str = "en",
 ) -> LocationResponse:
     """Get location details by name.
 
@@ -153,4 +175,23 @@ async def get_location(
             status_code=300,
             content={"detail": str(e), "candidates": e.candidates},
         )
+    location = await translate_location_response(
+        location,
+        target_language,
+        profile_translation_service,
+    )
     return LocationResponse(location=location)
+
+
+async def translate_location_response(
+    location: LocationProfile,
+    target_language: str,
+    profile_translation_service: LocationProfileTranslationService,
+) -> LocationProfile:
+    target_language = normalize_translation_language(target_language)
+    if target_language not in settings.SUPPORTED_TRANSLATION_LANGUAGES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported target language: {target_language}",
+        )
+    return await profile_translation_service.translate_profile(location, target_language)

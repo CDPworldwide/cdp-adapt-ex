@@ -13,7 +13,8 @@
       "noDataBody": "We don't yet have data to display for this location. We're continually expanding our coverage with historical disclosures and additional trusted data sources.",
       "searchSuggestions": "Suggestions",
       "noResults": "No locations match '{{query}}'",
-      "disclosesToCdp": "Disclosure Available"
+      "disclosesToCdp": "Disclosure Available",
+      "noDisclosures": "Jurisdiction did not disclose in 2025; hazard information and action ideas are available"
     },
     "legend": {
       "cities": "Cities",
@@ -61,7 +62,10 @@
     "hazardLegend": {
       "source": "Source",
       "scenario": "Scenario",
-      "timeframe": "Time frame"
+      "scenarioTooltip": "Scenarios show how a hazard may change under different climate futures. \"Historical\" reflects past conditions. Other options represent possible future pathways, such as from lower emissions to higher emissions. Choose a scenario to see how risk levels could shift over time. See methodology for more information.",
+      "timeframe": "Time frame",
+      "expandLegend": "Show legend details",
+      "collapseLegend": "Hide legend details"
     },
     "scenarios": {
       "historical": "Historical"
@@ -81,6 +85,8 @@
     "selectLanguage": "Select language",
     "expandMap": "Expand map",
     "collapseMap": "Collapse map",
+    "scrollLeft": "Scroll left",
+    "scrollRight": "Scroll right",
     "showLess": "Show less",
     "methodology": "Methodology",
     "legacyNav": {
@@ -128,8 +134,8 @@
       "sectorsLabel": "Vulnerable economic sectors",
       "noHazardsBanner": {
         "title": "No hazards disclosed",
-        "description": "This jurisdiction didn’t report any hazards on their CDP report. <strong>All hazard information displayed on this page is sourced from CDP analysis</strong>.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP open data portal.",
-        "button": "CDP open data portal"
+        "description": "This jurisdiction didn’t report any hazards on their CDP report. <strong>All hazard information displayed on this page is sourced from CDP analysis</strong>.<br><br>To see more about what this jurisdiction reported, download the full questionnaire from the CDP Open Data Portal.",
+        "button": "CDP Open Data Portal"
       },
       "reportNotPublicBanner": {
         "title": "Report not available for public view",
@@ -275,6 +281,7 @@
       "crvaVisitPortal": "Visit the CDP Open Data Portal",
       "requestersTitle": "Data disclosure requested by",
       "requestersTooltip": "These are organizations that have requested disclosure from this jurisdiction. This list is not exhaustive and does not indicate government compliance or the specific purpose for which information was disclosed.",
+      "requestersAttribution": "Location data from <a href=\"https://docs.overturemaps.org/attribution/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Overture Maps Foundation</a> pursuant to the <a href=\"https://opendatacommons.org/licenses/odbl/1-0/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Open Database License (ODbL)</a>",
       "unknown": "Unknown",
       "mostExposedSectors": "Exposed sectors",
       "showMoreHazards": "Show more hazards",
@@ -327,7 +334,7 @@
       "notDisclosed": "Not disclosed",
       "noActionsBanner": {
         "title": "Some data may not be reported",
-        "description": "This jurisdiction may be missing some categories of disclosure from their CDP report.<br><br>Download the full disclosure from the CDP open data portal.",
+        "description": "This jurisdiction may be missing some categories of disclosure from their CDP report.<br><br>Download the full disclosure from the CDP Open Data Portal.",
         "button": "Visit the CDP Open Data Portal"
       },
       "noGoals": {
@@ -358,6 +365,7 @@
         "impactedSectors": "Impacted sectors",
         "totalFunded": "Total Funded",
         "totalNeeded": "Total Needed",
+        "dataNotAvailable": "Data not available",
         "totalFundsNeeded": "Total funds needed",
         "projectArea": "Project Area",
         "financeModel": "Financing model",
@@ -412,20 +420,27 @@
     "solutions": {
       "alsoHasLocalAction": "also has action(s) in this category",
       "exampleActionsCount": "View {{count}} example actions",
-      "popularSolutionsTitle": "Action Ideas from Peer Cities",
+      "popularSolutionsTitle": "Action Ideas from Peer Cities, States and Regions",
       "totalCostOfAction": "Total cost of action (USD)",
       "timeframe": "Timeframe",
       "hazardFiltersTitle": "Hazard filters",
       "description": "Description",
       "sourceLabel": "Source:",
-      "sourceText": "CDP aggregation and analysis on {{year}} Disclosures from Peer Cities",
+      "sourceText": "CDP aggregation and analysis of {{year}} disclosures from peer jurisdictions",
       "climateHazards": "Climate hazards",
       "statusOfAction": "Status of action",
       "coBenefits": "Co-benefits",
       "hazardsAddressed": "Hazards Addressed",
       "jurisdictionsTakingAction": "Jurisdictions Taking this Action",
       "seeMethodology": "See Methodology for details",
-      "intro": "Browse ideas for actions that other cities with similar climate conditions and shared hazards are taking to respond",
+      "intro": "Browse ideas for actions that other cities and regions with similar climate conditions and shared hazards are taking to respond",
+      "analysisFlag": {
+        "title": "Action ideas are based on hazards sourced from CDP analysis",
+        "limited": "This jurisdiction's CDP report did not have enough hazard information to display action ideas for their disclosed hazard profile.",
+        "private": "This jurisdiction's CDP report is private.",
+        "nonDiscloser": "This jurisdiction did not disclose data to CDP in 2025.",
+        "closing": "All information displayed on this page is based on hazards sourced from CDP analysis."
+      },
       "exampleActions": "example actions",
       "resilienceAttributes": "Resilience attributes enhanced",
       "impactedSectors": "Impacted sectors",
@@ -478,10 +493,10 @@
     "lastUpdated": "Last updated: {{date}}",
     "lastUpdatedDate": "April 2026",
     "title": "Methodology",
-    "intro": "This platform draws from both CDP's annual questionnaire for reporting by governments and supplemental hazard data to cover the climate hazards that cities, states, and regions face and how they are addressing them. It also surfaces insights from around the globe by identifying relevant solutions and actions across cities with similar characteristics.",
+    "intro": "This platform draws data from both CDP's cities, states & regions annual questionnaire and supplemental hazard data to cover the climate hazard that cities, states & regions face and how they are addressing them. It also surfaces insights from around the globe by identifying relevant solutions and actions across cities with similar characteristics.",
     "questionnaire": {
-      "title": "CDP's Annual Questionnaire",
-      "body": "Cities, states and regions are invited to complete CDP's annual questionnaire through the CDP-ICLEI Track disclosure portal. The questionnaire captures qualitative and quantitative information on topics including governance, climate risk and vulnerability assessments, greenhouse gas emissions inventories, energy consumption, sectoral data, adaptation and mitigation goals, and climate planning and actions. Jurisdictions can update their disclosures through questionnaires released yearly. The Explorer currently displays data from 2025 public disclosures. Additional information and most recent questions can be found <a href=\"https://www.cdp.net/en/disclose\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">here</a>."
+      "title": "CDP's Cities, States & Regions Annual Questionnaire",
+      "body": "Cities are invited to complete the annual questionnaire through the CDP-ICLEI Track and states & regions via the states & regions questionnaire. The questionnaire captures qualitative and quantitative information on topics including governance, climate risk and vulnerability assessments, greenhouse gas emissions inventories, energy consumption, sectoral data, adaptation and mitigation goals, and climate planning and actions. Jurisdictions can update their disclosures through these questionnaires released yearly. The Explorer currently displays data from 2025 public disclosures by cities, states & regions. Additional information and most recent questions can be found <a href=\"https://www.cdp.net/en/disclose/how-to-disclose#cities\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">here</a>."
     },
     "hazards": {
       "title": "Hazards",

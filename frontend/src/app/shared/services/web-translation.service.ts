@@ -12,10 +12,19 @@ interface PendingEntry {
   targetLang: string;
 }
 
-const CACHE_KEY_PREFIX = 'translation:v2:';
+interface StoredTranslation {
+  savedAt: number;
+  text: string;
+  value: string;
+}
+
+const CACHE_KEY_PREFIX = 'translation:v3:';
+const CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 7;
 const MAX_CACHE_ENTRIES = 500;
 const BATCH_DELAY_MS = 50;
 const MAX_BATCH_SIZE = 50;
+const REQUEST_RETRY_COUNT = 1;
+const REQUEST_RETRY_DELAY_MS = 150;
 
 @Injectable({ providedIn: 'root' })
 export class WebTranslationService {
@@ -37,9 +46,9 @@ export class WebTranslationService {
       return text;
     }
 
-    const cacheKey = `${normalizedSourceLang}:${targetLang}:${text}`;
+    const cacheKey = this.buildCacheKey(normalizedSourceLang, targetLang, text);
 
-    const cached = this.translationCache.get(cacheKey) ?? this.loadFromStorage(cacheKey);
+    const cached = this.translationCache.get(cacheKey) ?? this.loadFromStorage(cacheKey, text);
     if (cached !== null) {
       return cached;
     }
@@ -67,16 +76,8 @@ export class WebTranslationService {
   clearCache(): void {
     this.translationCache.clear();
 
-    try {
-      for (let i = sessionStorage.length - 1; i >= 0; i--) {
-        const key = sessionStorage.key(i);
-        if (key && key.startsWith(CACHE_KEY_PREFIX)) {
-          sessionStorage.removeItem(key);
-        }
-      }
-    } catch {
-      // Ignore storage errors
-    }
+    this.clearStorageBucket(localStorage);
+    this.clearStorageBucket(sessionStorage);
   }
 
   private scheduleBatchFlush(): void {
@@ -130,23 +131,14 @@ export class WebTranslationService {
     const texts = entries.map(([, { text }]) => text);
 
     try {
-      const result = await translateTextsApiV1TranslatePost({
-        client: this.client,
-        body: {
-          texts,
-          target_language: targetLang,
-          source_language: sourceLang,
-        },
-      });
-
-      if (result.error) {
-        throw result.error;
-      }
-
-      const response = result.data as TranslateResponse;
+      const response = await this.requestTranslations(texts, sourceLang, targetLang);
       entries.forEach(([cacheKey, { resolvers }], index) => {
-        const translated = response.translations[index] ?? texts[index];
-        this.storeInCache(cacheKey, translated);
+        const translated = response.translations[index];
+        if (translated === undefined) {
+          resolvers.forEach((resolve) => resolve(texts[index]));
+          return;
+        }
+        this.storeInCache(cacheKey, translated, texts[index]);
         resolvers.forEach((resolve) => resolve(translated));
       });
     } catch {
@@ -156,7 +148,41 @@ export class WebTranslationService {
     }
   }
 
-  private storeInCache(key: string, value: string): void {
+  private async requestTranslations(
+    texts: string[],
+    sourceLang: string,
+    targetLang: string,
+  ): Promise<TranslateResponse> {
+    let lastError: unknown;
+
+    for (let attempt = 0; attempt <= REQUEST_RETRY_COUNT; attempt++) {
+      try {
+        const result = await translateTextsApiV1TranslatePost({
+          client: this.client,
+          body: {
+            texts,
+            target_language: targetLang,
+            source_language: sourceLang,
+          },
+        });
+
+        if (result.error) {
+          throw result.error;
+        }
+
+        return result.data as TranslateResponse;
+      } catch (error) {
+        lastError = error;
+        if (attempt < REQUEST_RETRY_COUNT) {
+          await new Promise((resolve) => setTimeout(resolve, REQUEST_RETRY_DELAY_MS));
+        }
+      }
+    }
+
+    throw lastError;
+  }
+
+  private storeInCache(key: string, value: string, text: string): void {
     this.translationCache.set(key, value);
 
     if (this.translationCache.size > MAX_CACHE_ENTRIES) {
@@ -167,21 +193,103 @@ export class WebTranslationService {
     }
 
     try {
-      sessionStorage.setItem(CACHE_KEY_PREFIX + key, value);
+      const payload: StoredTranslation = { text, value, savedAt: Date.now() };
+      localStorage.setItem(CACHE_KEY_PREFIX + key, JSON.stringify(payload));
+      this.pruneStorage(localStorage);
     } catch {
-      // Storage full — ignore
+      try {
+        const payload: StoredTranslation = { text, value, savedAt: Date.now() };
+        sessionStorage.setItem(CACHE_KEY_PREFIX + key, JSON.stringify(payload));
+        this.pruneStorage(sessionStorage);
+      } catch {
+        // Storage full or unavailable — ignore
+      }
     }
   }
 
-  private loadFromStorage(key: string): string | null {
+  private loadFromStorage(key: string, text: string): string | null {
+    return (
+      this.loadFromStorageBucket(localStorage, key, text) ??
+      this.loadFromStorageBucket(sessionStorage, key, text)
+    );
+  }
+
+  private clearStorageBucket(storage: Storage): void {
     try {
-      const value = sessionStorage.getItem(CACHE_KEY_PREFIX + key);
-      if (value !== null) {
-        this.translationCache.set(key, value);
+      for (let i = storage.length - 1; i >= 0; i--) {
+        const key = storage.key(i);
+        if (key && key.startsWith(CACHE_KEY_PREFIX)) {
+          storage.removeItem(key);
+        }
       }
-      return value;
+    } catch {
+      // Ignore storage errors
+    }
+  }
+
+  private loadFromStorageBucket(storage: Storage, key: string, text: string): string | null {
+    const storageKey = CACHE_KEY_PREFIX + key;
+
+    try {
+      const rawValue = storage.getItem(storageKey);
+      if (rawValue === null) {
+        return null;
+      }
+
+      const parsed = JSON.parse(rawValue) as StoredTranslation;
+      if (
+        parsed.text !== text ||
+        typeof parsed.value !== 'string' ||
+        Date.now() - parsed.savedAt > CACHE_TTL_MS
+      ) {
+        storage.removeItem(storageKey);
+        return null;
+      }
+
+      this.translationCache.set(key, parsed.value);
+      return parsed.value;
     } catch {
       return null;
     }
+  }
+
+  private pruneStorage(storage: Storage): void {
+    const cacheEntries: Array<{ key: string; savedAt: number }> = [];
+
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
+      if (!key?.startsWith(CACHE_KEY_PREFIX)) {
+        continue;
+      }
+
+      try {
+        const parsed = JSON.parse(storage.getItem(key) ?? '{}') as Partial<StoredTranslation>;
+        cacheEntries.push({ key, savedAt: parsed.savedAt ?? 0 });
+      } catch {
+        cacheEntries.push({ key, savedAt: 0 });
+      }
+    }
+
+    if (cacheEntries.length <= MAX_CACHE_ENTRIES) {
+      return;
+    }
+
+    cacheEntries.sort((a, b) => a.savedAt - b.savedAt);
+    cacheEntries
+      .slice(0, cacheEntries.length - MAX_CACHE_ENTRIES)
+      .forEach(({ key }) => storage.removeItem(key));
+  }
+
+  private buildCacheKey(sourceLang: string, targetLang: string, text: string): string {
+    return `${sourceLang}:${targetLang}:${this.hashText(text)}`;
+  }
+
+  private hashText(text: string): string {
+    let hash = 2166136261;
+    for (let i = 0; i < text.length; i++) {
+      hash ^= text.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return `${(hash >>> 0).toString(36)}:${text.length}`;
   }
 }

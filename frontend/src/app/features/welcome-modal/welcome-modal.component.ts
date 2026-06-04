@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '@env/environment';
+import { FeedbackService } from '../../shared/services/feedback.service';
 
 const STORAGE_KEY = 'cdp-welcome-dismissed';
 const ROLE_STORAGE_KEY = 'cdp-user-role';
@@ -17,6 +18,7 @@ interface RoleOption {
   imports: [CommonModule, TranslateModule],
 })
 export class WelcomeModalComponent implements OnInit {
+  readonly feedbackService = inject(FeedbackService);
   isOpen = false;
   selectedRole: string | null = null;
 

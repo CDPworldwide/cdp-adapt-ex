@@ -1,7 +1,7 @@
 @if (data && data.hazards) {
   <div>
     <!-- Hazard Overview Section -->
-    @if (disclosedHazards?.length) {
+    @if (disclosedHazards.length) {
       <div>
         <div class="flex flex-col items-start gap-1 w-full mt-4 px-4 lg:px-0">
           <h2
@@ -43,8 +43,10 @@
                 {{ 'locationCard.hazardOverview.topHazardsDisclosed' | translate }}
               </h3>
               <div
+                #topHazTip="matTooltip"
                 matTooltip="{{ 'locationCard.hazardOverview.topHazardsTooltip' | translate }}"
-                class="flex items-center justify-center cursor-pointer group shrink-0"
+                (click)="topHazTip.show()"
+                class="relative flex items-center justify-center cursor-pointer group shrink-0 before:absolute before:content-[''] before:-inset-3"
               >
                 <app-info-icon
                   variant="filled"
@@ -71,12 +73,17 @@
                 ></app-hazard-icon>
                 <span
                   class="text-white font-roboto text-xs font-normal leading-4 tracking-cdp-widest"
-                  >{{
-                    hazard.hazard.hazardType === 'OTHERS'
-                      ? hazard.hazard.otherHazardDetails
-                      : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
-                  }}</span
                 >
+                  @if (hazard.hazard.otherHazardDetails) {
+                    <span
+                      [innerHTML]="
+                        hazard.hazard.otherHazardDetails | protectedTranslationHtml
+                      "
+                    ></span>
+                  } @else {
+                    {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+                  }
+                </span>
               </div>
             </div>
           </div>
@@ -93,10 +100,12 @@
                   {{ 'locationCard.hazardOverview.mostExposedSectors' | translate }}
                 </h3>
                 <div
+                  #sectorsTip="matTooltip"
                   matTooltip="{{
                     'locationCard.hazardOverview.mostExposedSectorsTooltip' | translate
                   }}"
-                  class="flex items-center justify-center cursor-pointer group shrink-0"
+                  (click)="sectorsTip.show()"
+                  class="relative flex items-center justify-center cursor-pointer group shrink-0 before:absolute before:content-[''] before:-inset-3"
                 >
                   <app-info-icon
                     variant="filled"
@@ -147,12 +156,18 @@
                       ></app-sector-icon>
                       <span
                         class="text-white font-roboto text-xs font-normal leading-4 tracking-cdp-widest whitespace-nowrap"
-                        >{{
-                          sector.sectorType === 'OTHERS'
-                            ? sector.otherSectorDetails
-                            : ('locationCard.sectorNames.' + sector.sectorType | translate)
-                        }}</span
                       >
+                        @if (sector.sectorType === 'OTHERS') {
+                          <span
+                            [innerHTML]="
+                              (sector.otherSectorDetails ?? '')
+                                | protectedTranslationHtml
+                            "
+                          ></span>
+                        } @else {
+                          {{ 'locationCard.sectorNames.' + sector.sectorType | translate }}
+                        }
+                      </span>
                     </div>
                   </div>
                   <!-- Fading effect at the bottom -->
@@ -336,11 +351,15 @@
               <h3
                 class="text-cdp-dark font-roboto text-[28px] font-normal leading-9 tracking-normal"
               >
-                {{
-                  hazard.hazard.hazardType === 'OTHERS'
-                    ? hazard.hazard.otherHazardDetails
-                    : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
-                }}
+                @if (hazard.hazard.otherHazardDetails) {
+                  <span
+                    [innerHTML]="
+                      hazard.hazard.otherHazardDetails | protectedTranslationHtml
+                    "
+                  ></span>
+                } @else {
+                  {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+                }
               </h3>
             </div>
             <div class="flex items-center lg:ml-auto">
@@ -371,7 +390,7 @@
             <p
               class="text-black font-roboto text-base font-normal leading-6 tracking-cdp-widest px-6 pb-4"
             >
-              {{ hazard.description }}
+              <span [innerHTML]="hazard.description | protectedTranslationHtml"></span>
             </p>
           }
 
@@ -440,7 +459,8 @@
               #dataFieldContent
               class="transition-[padding-bottom] duration-500 ease-in-out"
               [ngClass]="{
-                'h-full overflow-hidden': !isHazardExpanded(hazard.hazard),
+                'h-full overflow-hidden max-h-[400px] lg:max-h-none':
+                  !isHazardExpanded(hazard.hazard),
                 'h-auto pb-20': isHazardExpanded(hazard.hazard),
               }"
             >
@@ -448,14 +468,14 @@
               @if (hazard.proportionExposedRange) {
                 <div>
                   <div class="border-t border-[#C4C4C4] mx-6"></div>
-                  <div class="flex px-6 py-[21px]">
+                  <div class="flex flex-col gap-2 lg:flex-row lg:gap-0 px-6 py-[21px]">
                     <p
-                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-1/2 pr-3"
+                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-full lg:w-1/2 lg:pr-3"
                     >
                       {{ 'locationCard.hazardDetail.proportionLabel' | translate }}
                     </p>
                     <p
-                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-1/2"
+                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-full lg:w-1/2"
                     >
                       {{ hazard.proportionExposedRange }}
                     </p>
@@ -467,16 +487,18 @@
               @if (hazard.vulnerableGroups?.length) {
                 <div>
                   <div class="border-t border-[#C4C4C4] mx-6"></div>
-                  <div class="flex px-6 py-[21px]">
+                  <div class="flex flex-col gap-2 lg:flex-row lg:gap-0 px-6 py-[21px]">
                     <p
-                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-1/2 pr-3"
+                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-full lg:w-1/2 lg:pr-3"
                     >
                       {{ 'locationCard.hazardDetail.vulnerablePopTitle' | translate }}
                     </p>
                     <ul
-                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-1/2 space-y-1"
+                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-full lg:w-1/2 space-y-1 list-disc pl-5"
                     >
-                      <li *ngFor="let group of hazard.vulnerableGroups">{{ group }}</li>
+                      <li *ngFor="let group of hazard.vulnerableGroups">
+                        <span [innerHTML]="group | protectedTranslationHtml"></span>
+                      </li>
                     </ul>
                   </div>
                 </div>
@@ -486,17 +508,20 @@
               @if (hazard.impact) {
                 <div>
                   <div class="border-t border-[#C4C4C4] mx-6"></div>
-                  <div class="flex px-6 py-[21px]">
+                  <div class="flex flex-col gap-2 lg:flex-row lg:gap-0 px-6 py-[21px]">
                     <p
-                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-1/2 pr-3"
+                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-full lg:w-1/2 lg:pr-3"
                     >
                       {{ 'locationCard.hazardDetail.impactLabel' | translate }}
                     </p>
                     <div
-                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-1/2"
+                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-full lg:w-1/2"
                     >
                       @if (parseImpact(hazard.impact); as parsed) {
-                        <span class="whitespace-pre-line">{{ parsed.text }}</span>
+                        <span
+                          class="whitespace-pre-line"
+                          [innerHTML]="parsed.text | protectedTranslationHtml"
+                        ></span>
                       }
                     </div>
                   </div>
@@ -507,21 +532,26 @@
               @if (hazard.mostExposedSectors?.length) {
                 <div>
                   <div class="border-t border-[#C4C4C4] mx-6"></div>
-                  <div class="flex px-6 py-[21px]">
+                  <div class="flex flex-col gap-2 lg:flex-row lg:gap-0 px-6 py-[21px]">
                     <p
-                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-1/2 pr-3"
+                      class="text-cdp-dark font-roboto text-sm font-medium leading-5 tracking-cdp-wide w-full lg:w-1/2 lg:pr-3"
                     >
                       {{ 'locationCard.hazardDetail.mostExposedSectors' | translate }}
                     </p>
                     <ul
-                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-1/2 space-y-1"
+                      class="text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-wide w-full lg:w-1/2 space-y-1 list-disc pl-5"
                     >
                       <li *ngFor="let sector of hazard.mostExposedSectors">
-                        {{
-                          sector.sectorType === 'OTHERS'
-                            ? sector.otherSectorDetails
-                            : ('locationCard.sectorNames.' + sector.sectorType | translate)
-                        }}
+                        @if (sector.sectorType === 'OTHERS') {
+                          <span
+                            [innerHTML]="
+                              (sector.otherSectorDetails ?? '')
+                                | protectedTranslationHtml
+                            "
+                          ></span>
+                        } @else {
+                          {{ 'locationCard.sectorNames.' + sector.sectorType | translate }}
+                        }
                       </li>
                     </ul>
                   </div>
@@ -603,112 +633,7 @@
       </div>
     }
 
-    @if (bannerVariant === 'no-hazards') {
-      <div class="mb-8 px-4 lg:px-0">
-        <div class="w-full px-6 py-4 bg-cdp-red flex justify-start items-center gap-6">
-          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
-            <app-no-hazards-icon size="44" color="white"></app-no-hazards-icon>
-          </div>
-          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
-            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
-              <div
-                class="self-stretch text-white text-base font-semibold font-roboto leading-6 tracking-tight"
-              >
-                {{ 'locationCard.hazards.noHazardsBanner.title' | translate }}
-              </div>
-              <div
-                class="self-stretch text-white text-sm font-light font-roboto leading-5 tracking-tight"
-                [innerHTML]="'locationCard.hazards.noHazardsBanner.description' | translate"
-              ></div>
-            </div>
-            <div class="h-12 flex justify-center items-center shrink-0">
-              <a
-                href="https://data.cdp.net/"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="bg-white inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-gray-100 transition-colors"
-              >
-                <div
-                  class="justify-center text-cdp-red text-sm font-normal font-roboto leading-5 tracking-tight"
-                >
-                  {{ 'locationCard.hazards.noHazardsBanner.button' | translate }}
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    } @else if (bannerVariant === 'non-public') {
-      <div class="mb-8 px-4 lg:px-0">
-        <div class="w-full px-6 py-4 bg-cdp-neutral-01 flex justify-start items-center gap-6">
-          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
-            <app-no-hazards-icon size="44" color="black"></app-no-hazards-icon>
-          </div>
-          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
-            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
-              <div
-                class="self-stretch text-cdp-dark text-base font-semibold font-roboto leading-6 tracking-tight"
-              >
-                {{ 'locationCard.hazards.reportNotPublicBanner.title' | translate }}
-              </div>
-              <div
-                class="self-stretch text-cdp-dark text-sm font-light font-roboto leading-5 tracking-tight"
-                [innerHTML]="'locationCard.hazards.reportNotPublicBanner.description' | translate"
-              ></div>
-            </div>
-            <div class="h-12 flex justify-center items-center shrink-0">
-              <a
-                href="https://www.cdp.net/en/cities"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline border border-cdp-dark hover:bg-cdp-dark transition-colors group"
-              >
-                <div
-                  class="justify-center text-cdp-dark group-hover:text-white text-sm font-normal font-roboto leading-5 tracking-tight transition-colors"
-                >
-                  {{ 'locationCard.hazards.reportNotPublicBanner.button' | translate }}
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    } @else if (bannerVariant === 'no-report') {
-      <div class="mb-8 px-4 lg:px-0">
-        <div class="w-full px-6 py-4 bg-cdp-red flex justify-start items-center gap-6">
-          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
-            <app-no-hazards-icon size="44" color="white"></app-no-hazards-icon>
-          </div>
-          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
-            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
-              <div
-                class="self-stretch text-white text-base font-semibold font-roboto leading-6 tracking-tight"
-              >
-                {{ 'locationCard.hazards.noReportAvailableBanner.title' | translate }}
-              </div>
-              <div
-                class="self-stretch text-white text-sm font-light font-roboto leading-5 tracking-tight"
-                [innerHTML]="'locationCard.hazards.noReportAvailableBanner.description' | translate"
-              ></div>
-            </div>
-            <div class="h-12 flex justify-center items-center shrink-0">
-              <a
-                href="https://www.cdp.net/en/cities"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="bg-white inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-gray-100 transition-colors"
-              >
-                <div
-                  class="justify-center text-cdp-red text-sm font-normal font-roboto leading-5 tracking-tight"
-                >
-                  {{ 'locationCard.hazards.noReportAvailableBanner.button' | translate }}
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    }
+    <app-edge-case-banner [variant]="bannerVariant"></app-edge-case-banner>
 
     @if (geeFallback.length) {
       <h2
@@ -743,11 +668,15 @@
                 color="white"
               ></app-hazard-icon>
               <span class="text-white font-roboto text-sm font-normal leading-5">
-                {{
-                  hazard.hazard.hazardType === 'OTHERS'
-                    ? hazard.hazard.otherHazardDetails
-                    : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
-                }}
+                @if (hazard.hazard.otherHazardDetails) {
+                  <span
+                    [innerHTML]="
+                      hazard.hazard.otherHazardDetails | protectedTranslationHtml
+                    "
+                  ></span>
+                } @else {
+                  {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+                }
               </span>
             </div>
           }
@@ -776,20 +705,27 @@
                 <h3
                   class="text-cdp-dark font-inter text-2xl font-medium leading-tight tracking-tight"
                 >
-                  {{
-                    hazard.hazard.hazardType === 'OTHERS'
-                      ? hazard.hazard.otherHazardDetails
-                      : ('locationCard.hazardNames.' + hazard.hazard.hazardType | translate)
-                  }}
+                  @if (hazard.hazard.otherHazardDetails) {
+                    <span
+                      [innerHTML]="
+                        hazard.hazard.otherHazardDetails | protectedTranslationHtml
+                      "
+                    ></span>
+                  } @else {
+                    {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
+                  }
                 </h3>
               </div>
               <p
                 class="min-h-10 text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-tight"
               >
-                {{
-                  hazard.description ??
-                    ('locationCard.hazards.geeSummary.' + hazard.hazard.hazardType | translate)
-                }}
+                @if (hazard.description) {
+                  <span
+                    [innerHTML]="hazard.description | protectedTranslationHtml"
+                  ></span>
+                } @else {
+                  {{ 'locationCard.hazards.geeSummary.' + hazard.hazard.hazardType | translate }}
+                }
               </p>
             </div>
             <div class="relative h-[400px] overflow-hidden">
@@ -822,14 +758,16 @@
                   <path d="M7 17L17 7M17 7H8M17 7V16" />
                 </svg>
               </button>
-              <p
-                class="absolute bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs italic text-black font-roboto leading-4 z-10 pointer-events-none"
-              >
-                <span class="font-medium not-italic">{{
-                  'locationCard.hazards.geeCard.sourceLabel' | translate
-                }}</span>
-                {{ 'locationCard.hazards.geeCard.sourceText' | translate }}
-              </p>
+              @if (geeMap.hazardSource) {
+                <p
+                  class="absolute top-4 left-3 right-52 text-xs italic text-black font-roboto leading-4 z-10 pointer-events-none bg-white/80 px-1.5 py-2 rounded"
+                >
+                  <span class="font-medium not-italic">{{
+                    'locationCard.hazards.geeCard.sourceLabel' | translate
+                  }}</span>
+                  {{ geeMap.hazardSource }}
+                </p>
+              }
             </div>
           </div>
         }
@@ -846,8 +784,10 @@
             {{ 'locationCard.hazardDetail.requestersTitle' | translate }}
           </h2>
           <div
+            #reqTip="matTooltip"
             matTooltip="{{ 'locationCard.hazardDetail.requestersTooltip' | translate }}"
-            class="flex items-center justify-center cursor-pointer ml-2"
+            (click)="reqTip.show()"
+            class="relative flex items-center justify-center cursor-pointer ml-2 before:absolute before:content-[''] before:-inset-3"
           >
             <app-info-icon size="16" class="text-cdp-dark"></app-info-icon>
           </div>
@@ -864,6 +804,10 @@
             </span>
           </div>
         </div>
+        <p
+          class="self-stretch pt-3 text-cdp-dark font-roboto text-xs font-bold leading-4 tracking-cdp-wide"
+          [innerHTML]="'locationCard.hazardDetail.requestersAttribution' | translate"
+        ></p>
       </div>
     }
   </div>

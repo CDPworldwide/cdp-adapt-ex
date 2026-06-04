@@ -4,11 +4,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
-import { ArrowRightLongIconComponent, InfoIconComponent } from '../../../shared/icons';
+import { ArrowRightLongIconComponent, NoHazardsIconComponent } from '../../../shared/icons';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterLink } from '@angular/router';
 import { HazardEnum, LocationProfile, SolutionCard, SolutionCategoryEnum } from '@pac-api/client';
 import { SolutionDetailModalComponent } from './solution-detail-modal.component';
+import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
+import { MethodologyInfoComponent } from '../../../shared/components/methodology-info/methodology-info.component';
 
 @Component({
   selector: 'app-solutions',
@@ -18,10 +19,11 @@ import { SolutionDetailModalComponent } from './solution-detail-modal.component'
     TranslateModule,
     HazardIconComponent,
     ArrowRightLongIconComponent,
-    InfoIconComponent,
+    NoHazardsIconComponent,
     MatTooltipModule,
     MatDialogModule,
-    RouterLink,
+    ProtectedTranslationHtmlPipe,
+    MethodologyInfoComponent,
   ],
   templateUrl: './solutions.component.html',
 })
@@ -34,6 +36,27 @@ export class SolutionsComponent {
   selectedHazard: HazardEnum | null = null;
 
   constructor() {}
+
+  // Flag shown when Action Ideas come from CDP analysis rather than the
+  // jurisdiction's own disclosure; null for a normal discloser. The variant
+  // also selects the explanatory sentence.
+  get analysisFlagVariant(): 'limited' | 'private' | 'nonDiscloser' | null {
+    if (!this.data) return null;
+    const status = this.data.publicStatus;
+    if (status == null || status === 'GEE-Derived') return 'nonDiscloser';
+    if (status === 'Non-Public') return 'private';
+    if (status === 'Public') {
+      const disclosed = (this.data.hazards?.hazards ?? []).filter(
+        (h) => h.source !== 'GEE-Derived',
+      );
+      // No usable disclosed hazards (none at all, or all free-text 'Other:').
+      const limited =
+        disclosed.length === 0 ||
+        disclosed.every((h) => h.hazard?.hazardType === HazardEnum.OTHERS);
+      return limited ? 'limited' : null;
+    }
+    return null;
+  }
 
   get hazardFilters() {
     return [

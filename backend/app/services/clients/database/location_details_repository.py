@@ -15,6 +15,7 @@ from app.models.location_details import (
     FactProjects,
     LocationGeometry,
     OrganizationSummary,
+    PeerLocation,
     PeerSolutions,
     SolutionsExamples,
 )
@@ -80,7 +81,6 @@ class LocationDetailsRepository:
         async with AsyncSession(self.engine) as session:
             statement = select(SolutionsExamples).where(
                 SolutionsExamples.target_org_id == org_id,
-                SolutionsExamples.hazard_filter == "All",
             )
             return list((await session.exec(statement)).all())
 
@@ -109,6 +109,44 @@ class LocationDetailsRepository:
             if result is None:
                 return None
             return DimCentral(**result._mapping)
+
+    async def get_peer_locations(
+        self, org_ids: set[int]
+    ) -> List[PeerLocation]:
+        """Return geometry/country for each peer organization id.
+
+        Only rows with geometry are returned; peers without geometry are
+        simply absent from the result and the caller degrades gracefully
+        (no map thumbnail for that peer).
+
+        Args:
+            org_ids: The set of peer organization ids to resolve.
+
+        Returns:
+            A list of PeerLocation rows with GeoJSON geometry/centroid strings.
+        """
+        if not org_ids:
+            return []
+        async with AsyncSession(self.engine) as session:
+            # Peer geometry only feeds a ~53px thumbnail, and a single location
+            # can have hundreds of peers. Full-resolution polygons would balloon
+            # the response past Cloud Run's 32 MB limit, so simplify aggressively
+            # (≈0.01° ≈ 1 km) — invisible at thumbnail size, ~99% smaller.
+            simplified_geometry = func.ST_SimplifyPreserveTopology(
+                DimCentral.geometry, 0.01
+            )
+            statement = select(
+                DimCentral.cdp_disclosing_org_number.label("org_id"),
+                DimCentral.discloser_country_or_area.label("country"),
+                func.ST_AsGeoJSON(simplified_geometry).label("geometry"),
+                func.ST_X(DimCentral.centroid).label("centroid_lng"),
+                func.ST_Y(DimCentral.centroid).label("centroid_lat"),
+            ).where(
+                DimCentral.cdp_disclosing_org_number.in_(org_ids),
+                DimCentral.has_geometry,
+            )
+            results = (await session.exec(statement)).all()
+            return [PeerLocation(**row._mapping) for row in results]
 
     async def has_organization(self, org_id: int) -> bool:
         """Return whether an organization with geometry exists for the provided ID."""
@@ -174,6 +212,7 @@ class LocationDetailsRepository:
                     DimCentral.disclosing_organization,
                     DimCentral.discloser_country_or_area,
                     DimCentral.current_pop,
+                    DimCentral.disclosure_status,
                 )
                 .where(
                     DimCentral.has_geometry,
@@ -187,6 +226,7 @@ class LocationDetailsRepository:
                     name=row.disclosing_organization,
                     country=row.discloser_country_or_area,
                     population=row.current_pop,
+                    disclosure_status=row.disclosure_status,
                 )
                 for row in results
                 if row.disclosing_organization

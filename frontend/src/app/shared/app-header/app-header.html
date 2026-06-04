@@ -16,8 +16,7 @@
       [matMenuTriggerFor]="helpMenu"
       [attr.aria-label]="'shared.helpMenu.label' | translate"
     >
-      <mat-icon
-        class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center"
+      <mat-icon class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center"
         >question_mark</mat-icon
       >
     </button>
@@ -51,21 +50,16 @@
   <a mat-menu-item routerLink="/methodology">
     {{ 'shared.methodology' | translate }}
   </a>
-  <a
-    mat-menu-item
-    href="https://cdp-worldwide.typeform.com/to/CFhsXgBm"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
+  <button mat-menu-item type="button" (click)="feedbackService.open()">
     <span class="inline-flex items-center gap-2">
       {{ 'shared.helpMenu.feedback' | translate }}
       <mat-icon
         class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center text-cdp-text-secondary"
         [attr.aria-label]="'shared.helpMenu.externalIndicator' | translate"
-        >open_in_new</mat-icon
+        >rate_review</mat-icon
       >
     </span>
-  </a>
+  </button>
 </mat-menu>
 
 <mat-menu #languageMenu="matMenu">

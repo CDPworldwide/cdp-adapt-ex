@@ -1,42 +1,9 @@
 @if (data) {
   <!-- List View -->
   <div class="space-y-6">
-    @if (isAnyEmpty) {
-      <div class="mb-8 px-4 lg:px-0">
-        <div class="w-full px-6 py-4 bg-cdp-neutral-01 flex justify-start items-center gap-6 rounded-lg">
-          <div class="w-16 h-16 p-2 flex justify-start items-center gap-2.5 shrink-0">
-            <app-no-hazards-icon size="44" color="#333333"></app-no-hazards-icon>
-          </div>
-          <div class="flex-1 flex flex-col lg:flex-row justify-start lg:items-center gap-6">
-            <div class="flex-1 inline-flex flex-col justify-start items-start gap-1">
-              <div
-                class="self-stretch justify-start text-cdp-neutral-08 text-base font-semibold font-roboto leading-6 tracking-tight"
-              >
-                {{ 'locationCard.govActions.noActionsBanner.title' | translate }}
-              </div>
-              <div
-                class="self-stretch text-cdp-neutral-08 text-sm font-normal font-roboto leading-5 tracking-tight"
-                [innerHTML]="'locationCard.govActions.noActionsBanner.description' | translate"
-              ></div>
-            </div>
-            <div class="h-12 flex justify-center items-center shrink-0">
-              <a
-                href="https://data.cdp.net/"
-                target="_blank"
-                class="bg-cdp-dark rounded inline-flex flex-col justify-center items-center overflow-hidden px-4 py-2.5 no-underline hover:bg-black transition-colors"
-              >
-                <div
-                  class="justify-center text-white text-sm font-medium font-roboto leading-5 tracking-tight"
-                >
-                  {{ 'locationCard.govActions.noActionsBanner.button' | translate }}
-                </div>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+    @if (bannerVariant === 'no-hazards' || bannerVariant === 'non-public') {
+      <app-edge-case-banner [variant]="bannerVariant"></app-edge-case-banner>
     }
-
     <app-actions-summary
       [summaryRows]="summaryRows"
       [totalGoals]="totalGoals"
@@ -64,7 +31,7 @@
       </div>
 
       @if (filteredGoals.length > 0) {
-        <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
+        <app-card-carousel>
           @for (goal of filteredGoals; track $index) {
             <button
               type="button"
@@ -75,7 +42,7 @@
                 <h3
                   class="text-[22px] font-normal font-roboto leading-7 tracking-normal text-cdp-border line-clamp-3 overflow-hidden text-ellipsis"
                 >
-                  <span [innerHTML]="goal.title | autoTranslate | protectedTranslationHtml"></span>
+                  <span [innerHTML]="goal.title | protectedTranslationHtml"></span>
                 </h3>
               </div>
 
@@ -86,7 +53,7 @@
                   >
                     {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                   </p>
-                  <div class="flex flex-row flex-wrap gap-2">
+                  <div class="flex flex-row gap-2 overflow-x-auto min-w-0">
                     @for (hazard of goal.hazardsAddressed; track hazard) {
                       <div class="flex items-center gap-2 p-1 h-5 shrink-0">
                         <app-hazard-icon
@@ -98,10 +65,10 @@
                         <span
                           class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-black whitespace-nowrap"
                         >
-                          @if (hazard.hazardType === 'OTHERS' && hazard.otherHazardDetails) {
+                          @if (hazard.otherHazardDetails) {
                             <span
                               [innerHTML]="
-                                hazard.otherHazardDetails | autoTranslate | protectedTranslationHtml
+                                hazard.otherHazardDetails | protectedTranslationHtml
                               "
                             ></span>
                           } @else {
@@ -130,7 +97,7 @@
               </div>
             </button>
           }
-        </div>
+        </app-card-carousel>
       } @else {
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
@@ -170,7 +137,7 @@
       </div>
 
       @if (filteredActions.length > 0) {
-        <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
+        <app-card-carousel>
           @for (action of filteredActions; track $index) {
             <button
               type="button"
@@ -187,13 +154,13 @@
                     <span class="text-white text-[13px] font-normal font-roboto leading-tight">
                       {{
                         action.status.statusType === 'OTHERS' && action.status.otherStatusDetails
-                          ? (action.status.otherStatusDetails | autoTranslate)
+                          ? (action.status.otherStatusDetails)
                           : ('locationCard.actionStatuses.' + action.status.statusType | translate)
                       }}
                     </span>
                   </div>
                 }
-                @let titleParts = splitTitleAtLastColon(action.title | autoTranslate);
+                @let titleParts = splitTitleAtLastColon(action.title);
                 @if (titleParts.prefix) {
                   <p
                     class="text-xs font-normal font-roboto leading-4 tracking-[0.4px] text-cdp-neutral-05 self-stretch line-clamp-1 overflow-hidden text-ellipsis"
@@ -220,7 +187,7 @@
                       class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-cdp-border self-stretch overflow-hidden line-clamp-4"
                     >
                       @for (benefit of action.coBenefits; track benefit; let last = $last) {
-                        <div [innerHTML]="benefit | autoTranslate | protectedTranslationHtml"></div>
+                        <div [innerHTML]="benefit | protectedTranslationHtml"></div>
                       }
                     </div>
                   </div>
@@ -232,7 +199,7 @@
                   >
                     {{ 'locationCard.govActions.hazardsAddressed' | translate }}
                   </p>
-                  <div class="flex flex-row flex-wrap gap-2">
+                  <div class="flex flex-row gap-2 overflow-x-auto min-w-0">
                     @for (hazard of action.hazardsAddressed; track hazard) {
                       <div class="flex items-center gap-2 p-1 h-5 shrink-0">
                         <app-hazard-icon
@@ -244,10 +211,10 @@
                         <span
                           class="text-sm font-normal font-roboto leading-5 tracking-[0.25px] text-black whitespace-nowrap"
                         >
-                          @if (hazard.hazardType === 'OTHERS' && hazard.otherHazardDetails) {
+                          @if (hazard.otherHazardDetails) {
                             <span
                               [innerHTML]="
-                                hazard.otherHazardDetails | autoTranslate | protectedTranslationHtml
+                                hazard.otherHazardDetails | protectedTranslationHtml
                               "
                             ></span>
                           } @else {
@@ -261,7 +228,7 @@
               </div>
             </button>
           }
-        </div>
+        </app-card-carousel>
       } @else {
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"
@@ -301,7 +268,7 @@
       </div>
 
       @if (filteredProjects.length > 0) {
-        <div class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2">
+        <app-card-carousel>
           @for (project of filteredProjects; track $index) {
             <button
               type="button"
@@ -314,7 +281,7 @@
                 <h3
                   class="self-stretch justify-start text-[22px] font-normal font-roboto leading-7 tracking-normal text-cdp-border line-clamp-3 overflow-hidden text-ellipsis"
                 >
-                  <span [innerHTML]="project.title | autoTranslate | protectedTranslationHtml"></span>
+                  <span [innerHTML]="project.title | protectedTranslationHtml"></span>
                 </h3>
               </div>
 
@@ -361,7 +328,6 @@
                       <span
                         [innerHTML]="
                           formatFinanceModel(project.financeModel)
-                            | autoTranslate
                             | protectedTranslationHtml
                         "
                       ></span>
@@ -371,7 +337,7 @@
               </div>
             </button>
           }
-        </div>
+        </app-card-carousel>
       } @else {
         <p
           class="px-4 lg:px-0 text-sm text-cdp-neutral-05 leading-5"

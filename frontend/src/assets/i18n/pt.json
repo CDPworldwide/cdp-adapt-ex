@@ -13,7 +13,8 @@
       "disclosesToCdp": "Relatórios de localização para o CDP",
       "searchOrSelect": "Buscar localização",
       "orExploreOnMap": "Ou explore no mapa",
-      "noResults": "Nenhuma localização corresponde a '{{query}}'"
+      "noResults": "Nenhuma localização corresponde a '{{query}}'",
+      "noDisclosures": "A jurisdição não divulga; informações sobre riscos e ideias de ação estão disponíveis"
     },
     "description": {
       "text": "Explore os riscos climáticos locais, as ações e os projetos de adaptação que buscam financiamento de cidades, estados e regiões em todo o mundo.",
@@ -37,7 +38,7 @@
       "feedbackWelcome": "feedback bem-vindo",
       "mobileNotice": "Observação: esta experiência ainda não foi otimizada para dispositivos móveis. Para melhores resultados, use o CDP Adaptation & Action Explorer em desktop.",
       "eyebrow": "Bem-vindo ao",
-      "title": "CDP Adaptation & Action Explorer",
+      "title": "Explorador de Adaptação e Ação do CDP",
       "description": "Uma ferramenta de código aberto que ajuda cidades, estados e regiões a entender riscos climáticos, explorar soluções de resiliência e comunicar progresso a parceiros e financiadores. Mais recursos estão a caminho.",
       "prompt": "O que melhor descreve você?",
       "roles": {
@@ -64,6 +65,7 @@
     "hazardLegend": {
       "source": "Fonte",
       "scenario": "Cenários",
+      "scenarioTooltip": "Os cenários mostram como um risco pode mudar sob diferentes futuros climáticos. \"Histórico\" reflete condições passadas. Outras opções representam possíveis trajetórias futuras, como de emissões mais baixas a emissões mais altas. Escolha um cenário para ver como os níveis de risco podem mudar ao longo do tempo. Consulte a metodologia para obter mais informações.",
       "timeframe": "Prazos disponíveis"
     },
     "scenarios": {
@@ -94,7 +96,7 @@
     "legacyNav": {
       "main": "Principal",
       "maps": "Mapas",
-      "chat": "Chat"
+      "chat": "Bater papo"
     },
     "helpMenu": {
       "label": "Ajuda",
@@ -195,6 +197,7 @@
       "MASS_MOVEMENT": "Movimento de massas",
       "LOSS_OF_GREEN_SPACE": "Perda de espaços verdes",
       "SOIL_DEGRADATION_EROSION": "Degradação do solo",
+      "LANDSLIDES": "Deslizamentos de terra",
       "LANDSCAPE_SHIFT_DEGRADATION": "Outra mudança de cenário",
       "INFECTIOUS_DISEASE": "Doenças infecciosas",
       "BIODIVERSITY_LOSS": "Perda de biodiversidade",
@@ -256,6 +259,7 @@
       "crvaVisitPortal": "Visite o Portal de Dados Abertos do CDP",
       "requestersTitle": "Divulgação de dados solicitada por",
       "requestersTooltip": "Estas são organizações que solicitaram a divulgação de informações a esta jurisdição. Esta lista não é exaustiva e não indica conformidade governamental nem a finalidade específica para a qual as informações foram divulgadas.",
+      "requestersAttribution": "Dados de localização da <a href=\"https://docs.overturemaps.org/attribution/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Overture Maps Foundation</a> conforme a <a href=\"https://opendatacommons.org/licenses/odbl/1-0/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-dark underline underline-offset-2\">Licença de Banco de Dados Aberto (ODbL)</a>",
       "aiSummary": "Resumo de IA",
       "proportionLabel": "Proporção da população mais exposta",
       "vulnerablePopTitle": "Grupos populacionais vulneráveis mais expostos",
@@ -338,7 +342,7 @@
       "coBenefits": "Benefícios colaterais",
       "projectsSeekingFundingWithCount": "Projetos em busca de financiamento ({{count}} Divulgados)",
       "projectSeekingFunding": "Projeto em busca de financiamento",
-      "status": "Status",
+      "status": "Estado",
       "totalFundingNeeded": "Financiamento total necessário",
       "types": {
         "adaptationGoal": "Objetivo de adaptação",
@@ -513,153 +517,153 @@
     "populationExposed": "Jurisdições que já enfrentam riscos climáticos significativos"
   },
   "methodology": {
-    "lastUpdated": "Last updated: {{date}}",
-    "lastUpdatedDate": "April 2026",
-    "title": "Methodology",
-    "intro": "This platform draws from both CDP's annual questionnaire for reporting by governments and supplemental hazard data to cover the climate hazards that cities, states, and regions face and how they are addressing them. It also surfaces insights from around the globe by identifying relevant solutions and actions across cities with similar characteristics.",
+    "lastUpdated": "Última atualização: {{date}}",
+    "lastUpdatedDate": "Abril de 2026",
+    "title": "Metodologia",
+    "intro": "Esta plataforma utiliza tanto o questionário anual do CDP para relatórios governamentais quanto dados suplementares sobre riscos climáticos para abordar os perigos que cidades, estados e regiões enfrentam e como estão lidando com eles. Ela também revela informações de todo o mundo, identificando soluções e ações relevantes em cidades com características semelhantes.",
     "questionnaire": {
-      "title": "CDP's Annual Questionnaire",
-      "body": "Cities, states and regions are invited to complete CDP's annual questionnaire through the CDP-ICLEI Track disclosure portal. The questionnaire captures qualitative and quantitative information on topics including governance, climate risk and vulnerability assessments, greenhouse gas emissions inventories, energy consumption, sectoral data, adaptation and mitigation goals, and climate planning and actions. Jurisdictions can update their disclosures through questionnaires released yearly. The Explorer currently displays data from 2025 public disclosures. Additional information and most recent questions can be found <a href=\"https://www.cdp.net/en/disclose\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">here</a>."
+      "title": "Questionário anual do CDP",
+      "body": "Cidades, estados e regiões são convidados a preencher o questionário anual do CDP por meio do portal de divulgação CDP-ICLEI Track. O questionário coleta informações qualitativas e quantitativas sobre tópicos como governança, avaliações de risco e vulnerabilidade climática, inventários de emissões de gases de efeito estufa, consumo de energia, dados setoriais, metas de adaptação e mitigação, e planejamento e ações climáticas. As jurisdições podem atualizar suas divulgações por meio de questionários publicados anualmente. O Explorer exibe atualmente dados das divulgações públicas de 2025. Informações adicionais e as perguntas mais recentes podem ser encontradas <a href=\"https://www.cdp.net/en/disclose\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">aqui</a> ."
     },
     "hazards": {
-      "title": "Hazards",
-      "intro": "For jurisdictions that have disclosed information through the questionnaire, hazard data is primarily drawn from this disclosure. Additional hazard information and data for visualization is sourced from remote sensing and model-derived data accessed through Google Earth Engine.",
+      "title": "Perigos",
+      "intro": "Para as jurisdições que divulgaram informações por meio do questionário, os dados de risco são extraídos principalmente dessas divulgações. Informações adicionais sobre riscos e dados para visualização são provenientes de sensoriamento remoto e dados derivados de modelos acessados ​​por meio do Google Earth Engine.",
       "questionnaireData": {
-        "title": "Cities, States, and Regions Questionnaire Data",
-        "p1": "Cities, states, and regions are asked to share details on the most significant climate hazards facing their jurisdiction (Question 2.2 in the 2025 <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">questionnaire</a>). The self-disclosed hazard data may contain information about vulnerable population and sectoral exposure, hazard probability, magnitude of impact, expected hazard changes in intensity or frequency, and the timeframe of expected change. Probability and magnitude responses are given along a five category scale: low, medium-low, medium, medium-high, and high.",
-        "p2": "For each jurisdiction, up to four top hazards are displayed on the platform, primarily ranked based on the average value of their reported probability and magnitude. Proportion of the population exposed to the hazard is used where data is incomplete."
+        "title": "Dados do questionário sobre cidades, estados e regiões",
+        "p1": "Cidades, estados e regiões são solicitados a compartilhar detalhes sobre os riscos climáticos mais significativos que afetam suas jurisdições (Questão 2.2 do <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">questionário</a> de 2025). Os dados sobre riscos autodeclarados podem conter informações sobre a população vulnerável e a exposição setorial, a probabilidade do risco, a magnitude do impacto, as mudanças esperadas na intensidade ou frequência do risco e o período de tempo da mudança esperada. As respostas de probabilidade e magnitude são fornecidas em uma escala de cinco categorias: baixa, médio-baixa, média, médio-alta e alta.",
+        "p2": "Para cada jurisdição, são exibidos na plataforma até quatro dos principais riscos, classificados principalmente com base no valor médio da probabilidade e magnitude relatadas. A proporção da população exposta ao risco é utilizada quando os dados estão incompletos."
       },
       "geeData": {
-        "title": "Google Earth Engine and External Data",
-        "p1": "To provide additional context and better understand the dynamics of a hazard in a given jurisdiction, geospatial hazard data layers were developed from datasets available on Google Earth Engine and other data portals, including from specific risk indices or hazard forecasting models, as well as directly from downscaled climate projections.",
-        "p2": "Earth Engine and other external hazard data were rescaled to values ranging from 0 to 5, aligning it for easier comparison with the five-category, low to high questionnaire response format scale. A value of 0 represents when a hazard is not expected to impact the jurisdiction within the next 5 years. Jurisdictions without any exposure to the given hazard were omitted in this calculation, allowing the analysis to better reflect comparisons across areas actually experiencing the hazard.",
-        "p3": "Many hazard layers are available for both historical baseline conditions as well as future projections. Projected values are provided for two-decade ranges, centered on three milestone years: 2030, 2050, and 2080. Hazard projections are provided under four combined, widely used socioeconomic-climate scenarios. These scenarios represent increasingly extreme warming pathways: SSP1–RCP2.6, SSP2-4.5, SSP3–RCP7.0, and SSP5–RCP8.5. There are a few exceptions: soil erosion is only available for historical conditions, and flooding hazards are available for historical conditions, RCP 4.5, and RCP 8.5 scenarios (former climate scenario characterizations). Water stress includes three of the four scenarios, omitting SSP2-4.5.",
-        "p4": "For fire weather, extreme heat/heat stress, extreme cold, and extreme precipitation, downscaled climate projections from <a href=\"https://www.nccs.nasa.gov/data-collections/nex-gddp-cmip6/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">NEX-GDDP-CMIP6</a> were used. Hazard values were calculated for ~28-km grid cells for each year under the various scenarios. A multi-model ensemble (MME) median value was calculated for each cell using all available climate models. This provides a central, representative value across diverse climate model projections and reduces the effects of variation between models."
+        "title": "Google Earth Engine e dados externos",
+        "p1": "Para fornecer contexto adicional e melhor compreender a dinâmica de um risco em uma determinada jurisdição, camadas de dados geoespaciais de riscos foram desenvolvidas a partir de conjuntos de dados disponíveis no Google Earth Engine e em outros portais de dados, incluindo índices de risco específicos ou modelos de previsão de riscos, bem como diretamente de projeções climáticas em escala reduzida.",
+        "p2": "Os dados do Earth Engine e de outros riscos externos foram reescalonados para valores de 0 a 5, alinhando-os para facilitar a comparação com a escala de resposta do questionário de cinco categorias, de baixo a alto. O valor 0 representa quando não se espera que um risco impacte a jurisdição nos próximos 5 anos. Jurisdições sem qualquer exposição ao risco em questão foram omitidas neste cálculo, permitindo que a análise reflita melhor as comparações entre áreas que de fato sofrem com o risco.",
+        "p3": "Diversas camadas de risco estão disponíveis tanto para condições históricas de referência quanto para projeções futuras. Os valores projetados são fornecidos para intervalos de duas décadas, centrados em três anos marcantes: 2030, 2050 e 2080. As projeções de risco são apresentadas sob quatro cenários socioeconômicos e climáticos combinados e amplamente utilizados. Esses cenários representam trajetórias de aquecimento cada vez mais extremas: SSP1–RCP2.6, SSP2–4.5, SSP3–RCP7.0 e SSP5–RCP8.5. Há algumas exceções: a erosão do solo está disponível apenas para condições históricas, e os riscos de inundação estão disponíveis para condições históricas, para o cenário RCP 4.5 e para o cenário RCP 8.5 (caracterizações anteriores de cenários climáticos). O estresse hídrico inclui três dos quatro cenários, omitindo o SSP2–4.5.",
+        "p4": "Para condições meteorológicas propícias a incêndios, calor extremo/estresse térmico, frio extremo e precipitação extrema, foram utilizadas projeções climáticas refinadas do <a href=\"https://www.nccs.nasa.gov/data-collections/nex-gddp-cmip6/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">NEX-GDDP-CMIP6</a> . Os valores de risco foram calculados para células de grade de aproximadamente 28 km para cada ano, sob os diversos cenários. Um valor mediano de conjunto multimodelos (MME) foi calculado para cada célula, utilizando todos os modelos climáticos disponíveis. Isso fornece um valor central e representativo entre as diversas projeções de modelos climáticos e reduz os efeitos da variação entre os modelos."
       },
       "layers": {
-        "title": "Learn more about the data used for each hazard layer:",
-        "footnote": "Additional hazard layers may be added over time."
+        "title": "Saiba mais sobre os dados utilizados para cada camada de risco:",
+        "footnote": "Camadas adicionais de risco podem ser adicionadas ao longo do tempo."
       },
-      "outro": "To display hazard maps and assign hazard values for each jurisdiction, global hazard layers from Google Earth Engine were filtered by a jurisdiction's administrative boundaries and spatially averaged within them. Administrative boundaries were obtained primarily through data from <a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation</a>. When unavailable, boundaries were obtained from <a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a> or datasets available on the <a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">UN OCHA Humanitarian Data Exchange</a>. When no appropriate jurisdiction boundary was found, pseudo-boundaries were created using the jurisdiction's geographic center (sourced from the above or manually in <a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google Maps</a>) and their reported land area."
+      "outro": "Para exibir mapas de risco e atribuir valores de risco para cada jurisdição, as camadas de risco global do Google Earth Engine foram filtradas pelos limites administrativos de cada jurisdição e calculadas as médias espaciais dentro desses limites. Os limites administrativos foram obtidos principalmente por meio de dados da <a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation</a> . Quando indisponíveis, os limites foram obtidos do <a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a> ou de conjuntos de dados disponíveis no <a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Sistema de Intercâmbio de Dados Humanitários do OCHA (Escritório das Nações Unidas</a> para a Coordenação de Assuntos Humanitários). Quando nenhum limite de jurisdição apropriado foi encontrado, pseudo-limites foram criados usando o centro geográfico da jurisdição (obtido da fonte acima ou manualmente no <a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google Maps</a> ) e sua área territorial declarada."
     },
     "hazardLayers": {
       "waterStress": {
-        "title": "Water stress",
-        "description": "Global water risk data was sourced from the World Resources Institute (WRI) Aqueduct Water Risk Atlas 4.0 framework and aggregated to the HydroBASINS Level 6 unit. The values are provided from WRI in the scale of 0-5."
+        "title": "Estresse hídrico",
+        "description": "Os dados globais sobre risco hídrico foram obtidos do Atlas de Risco Hídrico de Aquedutos 4.0 do Instituto de Recursos Mundiais (WRI) e agregados à unidade de nível 6 do HydroBASINS. Os valores são fornecidos pelo WRI em uma escala de 0 a 5."
       },
       "flooding": {
-        "title": "Fluvial (riverine) and coastal flooding",
-        "description": "Fluvial and coastal flood depth was sourced from the World Resources Institute Aqueduct Flood Hazard Map dataset. Data is provided at a 1-km resolution for 100-year (i.e. 1 in 100 probability of occurring in a given year) floods, under a high sea level rise scenario and accounting for subsidence. These were calculated under RCPs (representative concentration pathways), which were the formerly recognized ways to describe climate trajectories."
+        "title": "Inundações fluviais (de rios) e costeiras",
+        "description": "A profundidade das cheias fluviais e costeiras foi obtida do conjunto de dados do Mapa de Risco de Inundação de Aquedutos do Instituto de Recursos Mundiais (World Resources Institute). Os dados são fornecidos com resolução de 1 km para cheias com período de retorno de 100 anos (ou seja, com probabilidade de ocorrência de 1 em 100 em um determinado ano), sob um cenário de alta elevação do nível do mar e considerando a subsidência. Esses valores foram calculados com base nos RCPs (trajetórias de concentração representativas), que eram as formas anteriormente reconhecidas para descrever as trajetórias climáticas."
       },
       "fireWeather": {
-        "title": "Fire weather",
-        "description": "This draws from NASA's Fire Weather Index (FWI) dataset, which is based on NEX-GDDP-CMIP6 projections. FWI represents the relationship between weather conditions and elevated fire risk. The number of days per year in which the FWI exceeds a threshold of 45 is used, representing days with high fire danger."
+        "title": "Condições de incêndio",
+        "description": "Este estudo utiliza dados do Índice de Risco de Incêndio (FWI, na sigla em inglês) da NASA, que por sua vez se baseia nas projeções NEX-GDDP-CMIP6. O FWI representa a relação entre as condições climáticas e o elevado risco de incêndio. O número de dias por ano em que o FWI ultrapassa o limite de 45 é utilizado, representando dias com alto perigo de incêndio."
       },
       "extremeHeat": {
-        "title": "Extreme heat / heat stress",
-        "description": "This is calculated as the number of days on which the near surface air temperature (the temperature felt at 2 meters above the ground) exceeds 35 °C, representing extreme heat-day frequency."
+        "title": "Calor extremo / estresse térmico",
+        "description": "Este valor é calculado como o número de dias em que a temperatura do ar próximo à superfície (a temperatura sentida a 2 metros acima do solo) excede 35 °C, representando a frequência de dias de calor extremo."
       },
       "extremeCold": {
-        "title": "Extreme cold",
-        "description": "This is calculated as the number of days on which the minimum near surface air temperature (the temperature felt at 2 meters above the ground) falls below 0 °C, representing extreme cold-day frequency."
+        "title": "Frio extremo",
+        "description": "Este valor é calculado como o número de dias em que a temperatura mínima do ar próximo à superfície (a temperatura sentida a 2 metros acima do solo) cai abaixo de 0 °C, representando a frequência de dias extremamente frios."
       },
       "extremePrecipitation": {
-        "title": "Extreme precipitation",
-        "description": "This is calculated as the maximum 5-day precipitation total in a given year, representing extreme precipitation events."
+        "title": "Precipitação extrema",
+        "description": "Este valor é calculado como o total máximo de precipitação em 5 dias num determinado ano, representando eventos de precipitação extrema."
       },
       "soilDegradation": {
-        "title": "Soil degradation / erosion",
-        "description": "To represent one aspect of soil erosion, global landslide hazard maps were accessed from the World Bank's Global Landslide Hazard Map. This is available at 1-km resolution."
+        "title": "Degradação/erosão do solo",
+        "description": "Para representar um aspecto da erosão do solo, foram acessados ​​mapas globais de risco de deslizamentos de terra do Banco Mundial. Este mapa está disponível com resolução de 1 km."
       }
     },
     "governmentActions": {
-      "title": "Government Actions",
-      "intro": "This tab contains three categories of information from the disclosure:",
-      "listGoals": "Adaptation Goals (Question 5.1 in the <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">questionnaire</a>)",
-      "listActions": "Actions (Question 9.1)",
-      "listProjects": "Projects (Question 9.3)",
-      "goals": "<strong class=\"font-medium text-cdp-dark\">Adaptation Goals</strong> are adaptation targets based on climate hazards and are typically qualitatively defined.",
-      "actions": "<strong class=\"font-medium text-cdp-dark\">Actions</strong> are defined here as the interventions taken to achieve adaptation goals and carry out a given strategy, which can include policies, projects, programs, partnerships, and more. Adaptation action data may include information on the sectors it impacts, attributes of resilience it enhances, co-benefits of the project, population affected, expectations for enhanced resilience timeframe, and funding sources and costs.",
-      "projects": "<strong class=\"font-medium text-cdp-dark\">Projects</strong> are specific climate-related initiatives for which jurisdictions are seeking funding, as reported via the questionnaire. Information about projects may include funding needs, project description, financing models, and more.",
-      "outro": "In addition, the Government Actions tab indicates whether the jurisdiction has completed a Climate Risk and Vulnerability Assessment, or has disclosed that they plan to do so."
+      "title": "Ações do Governo",
+      "intro": "Esta aba contém três categorias de informações da divulgação:",
+      "listGoals": "Objetivos de adaptação (Questão 5.1 do <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">questionário</a> )",
+      "listActions": "Ações (Questão 9.1)",
+      "listProjects": "Projetos (Questão 9.3)",
+      "goals": "<strong class=\"font-medium text-cdp-dark\">Os Objetivos de Adaptação</strong> são metas de adaptação baseadas em riscos climáticos e são normalmente definidos qualitativamente.",
+      "actions": "<strong class=\"font-medium text-cdp-dark\">As ações</strong> são definidas aqui como as intervenções realizadas para atingir as metas de adaptação e executar uma determinada estratégia, que pode incluir políticas, projetos, programas, parcerias e muito mais. Os dados sobre ações de adaptação podem incluir informações sobre os setores impactados, os atributos de resiliência que elas aprimoram, os benefícios colaterais do projeto, a população afetada, as expectativas quanto ao prazo para o aumento da resiliência e as fontes e custos de financiamento.",
+      "projects": "<strong class=\"font-medium text-cdp-dark\">Os projetos</strong> são iniciativas específicas relacionadas ao clima para as quais as jurisdições buscam financiamento, conforme relatado por meio do questionário. As informações sobre os projetos podem incluir necessidades de financiamento, descrição do projeto, modelos de financiamento e muito mais.",
+      "outro": "Além disso, a aba &quot;Ações Governamentais&quot; indica se a jurisdição concluiu uma Avaliação de Risco e Vulnerabilidade Climática ou divulgou que planeja fazê-lo."
     },
     "solutions": {
-      "title": "Action Ideas",
-      "p1": "This tab presents information on relevant actions being taken by peer jurisdictions, derived from actions reported in the questionnaire. Jurisdictions highlighted here are those in the same <a href=\"https://ecoregions.appspot.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">biome</a> as a given city, state, or region, with actions that address one or more of the top 4 hazards of the given city, state, or region. <strong class=\"font-medium text-cdp-dark\">Action Ideas</strong> highlight the types of actions that jurisdictions are taking to adapt to climate hazards. Cities, states, and regions choose from an extensive list of solutions that represents a given action when reporting the actions they are taking.",
-      "p2": "These relevant actions from other jurisdictions in the same ecoregion are surfaced to help users explore what others are doing to adapt to climate hazards. Actions from these jurisdictions are collated and then grouped by solution category (e.g. engineered and built environment actions, behavioural actions) and solution type (e.g. sea walls and coastal protection structures, genetic techniques). The full list of solution types can be found under section 9.1 in the <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">CDP questionnaire guide</a>. From this list, the top 25 solutions are chosen based on those with the highest number of associated actions reported. A maximum of 5 solutions are chosen from a given solution category to highlight a diversity of efforts. For each solution, a subset of actions are selected to display as examples."
+      "title": "Ideias de ação",
+      "p1": "Esta aba apresenta informações sobre ações relevantes que estão sendo tomadas por jurisdições semelhantes, derivadas das ações relatadas no questionário. As jurisdições destacadas aqui são aquelas que estão no mesmo <a href=\"https://ecoregions.appspot.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">bioma</a> que uma determinada cidade, estado ou região, com ações que abordam um ou mais dos 4 principais riscos da cidade, estado ou região em questão. <strong class=\"font-medium text-cdp-dark\">As Ideias de Ação</strong> destacam os tipos de ações que as jurisdições estão tomando para se adaptar aos riscos climáticos. Cidades, estados e regiões escolhem entre uma extensa lista de soluções que representam uma determinada ação ao relatarem as ações que estão tomando.",
+      "p2": "Essas ações relevantes de outras jurisdições na mesma ecorregião são apresentadas para ajudar os usuários a explorar o que outros estão fazendo para se adaptar aos riscos climáticos. As ações dessas jurisdições são compiladas e agrupadas por categoria de solução (por exemplo, ações de engenharia e ambiente construído, ações comportamentais) e tipo de solução (por exemplo, diques e estruturas de proteção costeira, técnicas genéticas). A lista completa de tipos de solução pode ser encontrada na seção 9.1 do <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">guia do questionário do CDP</a> . Dessa lista, as 25 principais soluções são escolhidas com base naquelas com o maior número de ações associadas relatadas. No máximo, 5 soluções são selecionadas de uma determinada categoria para destacar a diversidade de esforços. Para cada solução, um subconjunto de ações é selecionado para exibição como exemplos."
     },
     "minimumCriteria": {
-      "title": "Minimum criteria: Data cleaning",
-      "intro": "As part of the data cleaning process, minimum criteria were defined for self-reported data displayed in the CDP Adaptation and Action Explorer to ensure usability, credibility, and comparability. These criteria establish a baseline level of data quality, allowing incomplete, inconsistent, or otherwise unreliable responses to be filtered out prior to analysis.",
+      "title": "Critérios mínimos: Limpeza de dados",
+      "intro": "Como parte do processo de limpeza de dados, foram definidos critérios mínimos para os dados autodeclarados exibidos no Explorador de Adaptação e Ações do CDP, a fim de garantir usabilidade, credibilidade e comparabilidade. Esses critérios estabelecem um nível básico de qualidade dos dados, permitindo que respostas incompletas, inconsistentes ou não confiáveis ​​sejam filtradas antes da análise.",
       "headers": {
-        "topic": "Topic",
-        "questionNumber": "2025 CDP questionnaire number",
-        "rawData": "Raw data available at",
-        "criteria": "Minimum criteria"
+        "topic": "Tópico",
+        "questionNumber": "Número do questionário do CDP de 2025",
+        "rawData": "Dados brutos disponíveis em",
+        "criteria": "Critérios mínimos"
       },
       "rows": {
         "climateHazards": {
-          "topic": "Climate hazards",
-          "criteria": "The climate hazard reported includes information on the type of hazard, the sectors most exposed by the hazard, and a description of the impacts on vulnerable populations and sectors."
+          "topic": "Riscos climáticos",
+          "criteria": "O relatório sobre os riscos climáticos inclui informações sobre o tipo de risco, os setores mais expostos a ele e uma descrição dos impactos sobre as populações e setores vulneráveis."
         },
         "adaptationGoals": {
-          "topic": "Adaptation Goals",
-          "criteria": "The adaptation goal has a title or description, a base year, and a target year greater than or equal to the reporting year (2025)."
+          "topic": "Objetivos de adaptação",
+          "criteria": "O objetivo de adaptação possui um título ou descrição, um ano-base e um ano-alvo igual ou superior ao ano do relatório (2025)."
         },
         "adaptationActions": {
-          "topic": "Adaptation actions",
-          "criteria": "The action reported includes information on the type and category of action, the climate hazards that the action addresses, a description of the action, and the sectors the action applies to."
+          "topic": "Ações de adaptação",
+          "criteria": "A ação relatada inclui informações sobre o tipo e a categoria da ação, os riscos climáticos que a ação aborda, uma descrição da ação e os setores aos quais a ação se aplica."
         },
         "projects": {
-          "topic": "Projects",
-          "criteria": "The project reported includes information on the project area and at least one more datapoint:<ul class=\"list-disc pl-5 mt-1 space-y-0.5\"><li>Project title</li><li>Project stage</li><li>Financing status</li><li>Financing model</li><li>Project description</li><li>Total cost</li><li>Investment needed</li></ul>"
+          "topic": "Projetos",
+          "criteria": "O relatório do projeto inclui informações sobre a área do projeto e pelo menos mais um ponto de dados:<ul class=\"list-disc pl-5 mt-1 space-y-0.5\"><li> Título do projeto</li><li> Fase do projeto</li><li> Situação do financiamento</li><li> Modelo de financiamento</li><li> Descrição do projeto</li><li> Custo total</li><li> Investimento necessário</li></ul>"
         }
       },
       "rawDataLabels": {
-        "cities": "Cities",
-        "statesAndRegions": "States and regions"
+        "cities": "Cidades",
+        "statesAndRegions": "Estados e regiões"
       }
     }
   },
   "learnMore": {
-    "lastUpdated": "Last updated: {{date}}",
-    "lastUpdatedDate": "April 2026",
-    "title": "About the Explorer",
-    "intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. The CDP Adaptation & Action Explorer brings together fragmented climate disclosure, hazard, and resilience information into a single workspace so subnational governments can find what matters fastest.",
+    "lastUpdated": "Última atualização: {{date}}",
+    "lastUpdatedDate": "Abril de 2026",
+    "title": "Sobre o Explorador",
+    "intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incidente ut labore et dolore magna aliqua. O CDP Adaptation &amp; Action Explorer reúne informações fragmentadas sobre divulgação climática, perigos e resiliência em um único espaço de trabalho para que os governos subnacionais possam encontrar o que importa mais rapidamente.",
     "what": {
-      "title": "What you'll find here",
-      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+      "title": "O que você encontrará aqui",
+      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea comodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
     },
     "audience": {
-      "title": "Who it's for",
-      "body": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt."
+      "title": "Para quem é?",
+      "body": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi arquiteto beatae vitae dicta sunt."
     },
     "howToUse": {
-      "title": "How to use it",
+      "title": "Como usar",
       "body": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit."
     },
     "faq": {
-      "title": "Frequently asked questions",
-      "footnote": "Have another question? Reach out to the CDP team for guidance.",
+      "title": "Perguntas frequentes",
+      "footnote": "Tem mais alguma dúvida? Entre em contato com a equipe do CDP para obter orientações.",
       "items": {
         "data": {
-          "question": "Where does the data come from?",
-          "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam. Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt."
+          "question": "De onde vêm os dados?",
+          "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam. Eaque ipsa quae ab illo inventore veritatis et quase arquiteto beatae vitae dicta sunt."
         },
         "updates": {
-          "question": "How often is the Explorer updated?",
-          "answer": "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur."
+          "question": "Com que frequência o Explorer é atualizado?",
+          "answer": "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea comodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur."
         },
         "coverage": {
-          "question": "Why doesn't my city or region appear?",
-          "answer": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi."
+          "question": "Por que minha cidade ou região não aparece?",
+          "answer": "At vero eos et acusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi."
         },
         "contribute": {
-          "question": "Can I contribute data or feedback?",
-          "answer": "Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus."
+          "question": "Posso contribuir com dados ou feedback?",
+          "answer": "Et harum quidem rerum facilis est et expedita distinta. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus."
         },
         "use": {
-          "question": "Can I cite or reuse what's in the Explorer?",
+          "question": "Posso citar ou reutilizar o conteúdo do Explorer?",
           "answer": "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur."
         }
       }
