@@ -23,7 +23,7 @@
 
     <!-- Title -->
     <h2 class="text-[22px] font-normal font-roboto text-black leading-7">
-      <span [innerHTML]="goal.title | protectedTranslationHtml"></span>
+      <span [innerHTML]="goal.title | autoTranslate | protectedTranslationHtml"></span>
     </h2>
   </div>
 
@@ -50,8 +50,9 @@
                   class="text-sm font-normal font-roboto text-black leading-5 tracking-[0.25px]"
                 >
                   {{
-                    hazard.otherHazardDetails
-                      || ('locationCard.hazardNames.' + hazard.hazardType | translate)
+                    hazard.hazardType === 'OTHERS'
+                      ? (hazard.otherHazardDetails | autoTranslate)
+                      : ('locationCard.hazardNames.' + hazard.hazardType | translate)
                   }}
                 </span>
               </div>

@@ -1,10 +1,7 @@
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from app.api.v1.deps import (
-    get_location_details_service,
-    get_location_profile_translation_service,
-)
+from app.api.v1.deps import get_location_details_service
 from app.main import app
 from app.models.location_details import DimCentral, OrganizationSummary, PeerSolutions
 from app.schemas.location import (
@@ -118,77 +115,6 @@ async def test_get_location_by_org_id_success(client, mock_location_details_serv
     mock_location_details_service.get_location_details_by_org_id.assert_called_once_with(
         867355
     )
-    app.dependency_overrides.clear()
-
-
-@pytest.mark.asyncio
-async def test_get_location_by_org_id_translates_profile_on_backend(
-    client, mock_location_details_service
-):
-    expected_location = LocationProfile(
-        organization_id=123,
-        name="Junagadh",
-        country_name="India",
-        lat=21.5222,
-        lng=70.4579,
-        geometry={"type": "Point", "coordinates": [70.4579, 21.5222]},
-        hazards=HazardsTab(statistics=RegionalStatistics()),
-        government_actions=ActionsTab(),
-        solutions=SolutionsTab(),
-    )
-    translated_location = expected_location.model_copy(
-        update={"reporting_language": "es"}
-    )
-    mock_location_details_service.get_location_details_by_org_id.return_value = (
-        expected_location
-    )
-    mock_translation_service = AsyncMock()
-    mock_translation_service.translate_profile.return_value = translated_location
-
-    app.dependency_overrides[get_location_details_service] = (
-        lambda: mock_location_details_service
-    )
-    app.dependency_overrides[get_location_profile_translation_service] = (
-        lambda: mock_translation_service
-    )
-
-    response = await client.get("/api/v1/locations/id/867355?target_language=es")
-
-    assert response.status_code == 200
-    assert response.json()["location"]["reportingLanguage"] == "es"
-    mock_translation_service.translate_profile.assert_awaited_once_with(
-        expected_location, "es"
-    )
-    app.dependency_overrides.clear()
-
-
-@pytest.mark.asyncio
-async def test_get_location_by_org_id_rejects_unsupported_target_language(
-    client, mock_location_details_service
-):
-    expected_location = LocationProfile(
-        organization_id=123,
-        name="Junagadh",
-        country_name="India",
-        lat=21.5222,
-        lng=70.4579,
-        geometry={"type": "Point", "coordinates": [70.4579, 21.5222]},
-        hazards=HazardsTab(statistics=RegionalStatistics()),
-        government_actions=ActionsTab(),
-        solutions=SolutionsTab(),
-    )
-    mock_location_details_service.get_location_details_by_org_id.return_value = (
-        expected_location
-    )
-
-    app.dependency_overrides[get_location_details_service] = (
-        lambda: mock_location_details_service
-    )
-
-    response = await client.get("/api/v1/locations/id/867355?target_language=xx")
-
-    assert response.status_code == 400
-    assert response.json()["detail"] == "Unsupported target language: xx"
     app.dependency_overrides.clear()
 
 

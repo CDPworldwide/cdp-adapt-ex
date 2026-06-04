@@ -7,8 +7,7 @@ ACRONYM_PATTERN = re.compile(
 )
 LOWERCASE_PATTERN = re.compile(r"[a-z]")
 UPPERCASE_WORD_PATTERN = re.compile(r"\b[A-Z]{2,}\b")
-PLACEHOLDER_TEMPLATE = "X_PAC_{index}_X"
-PLACEHOLDER_PATTERN = re.compile(r"\bX_PAC_\d+_X\b")
+PLACEHOLDER_TEMPLATE = "{{PACACRONYM{index}}}"
 
 
 @dataclass(frozen=True)
@@ -34,9 +33,6 @@ def protect_acronyms(text: str) -> PreparedText:
         token = match.group(0)
         is_dotted = "." in token
         has_symbol = bool(re.search(r"[0-9/-]", token))
-
-        if is_dotted and token == token.lower():
-            return token
 
         if not is_dotted and not has_symbol and not has_lowercase and uppercase_word_count > 2:
             return token

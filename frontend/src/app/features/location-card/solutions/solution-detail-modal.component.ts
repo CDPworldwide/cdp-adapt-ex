@@ -14,7 +14,7 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/materia
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AdaptationAction, LocationProfile, PeerAction, SolutionCard } from '@pac-api/client';
+import { AdaptationAction, LocationProfile, SolutionCard } from '@pac-api/client';
 import {
   AdaptationActionDetailComponent,
   DETAIL_HERO_BACKGROUND,
@@ -27,6 +27,7 @@ import {
   ArrowLeftLongIconComponent,
   CloseIconComponent,
 } from '../../../shared/icons';
+import { AutoTranslatePipe } from '../../../shared/pipes/auto-translate.pipe';
 import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
 
 @Component({
@@ -43,6 +44,7 @@ import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-tr
     ArrowRightLongIconComponent,
     ArrowLeftLongIconComponent,
     CloseIconComponent,
+    AutoTranslatePipe,
     ProtectedTranslationHtmlPipe,
   ],
   templateUrl: './solution-detail-modal.component.html',
@@ -96,16 +98,12 @@ export class SolutionDetailModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  get currentPeer(): PeerAction | undefined {
-    return this.data.solution.peerActions?.[this.currentActionIndex] || undefined;
-  }
-
   get currentPeerName(): string | undefined {
-    return this.currentPeer?.peerName || undefined;
+    return this.data.solution.peerActions?.[this.currentActionIndex]?.peerName || undefined;
   }
 
   get currentAction(): AdaptationAction | undefined {
-    return this.currentPeer?.action || undefined;
+    return this.data.solution.peerActions?.[this.currentActionIndex]?.action || undefined;
   }
 
   get totalActions(): number {

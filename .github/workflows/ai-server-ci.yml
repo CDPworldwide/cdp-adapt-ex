@@ -14,13 +14,9 @@ on:
       - ".github/workflows/ai-server-ci.yml"
       - ".github/workflows/ai-server-deploy.yml"
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
   lint-and-test:
-    name: AI server CI / lint, test
+    name: Lint and test ai-server
     runs-on: ubuntu-latest
 
     steps:

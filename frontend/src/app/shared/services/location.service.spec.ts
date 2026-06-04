@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { LocationService } from './location.service';
 import type { LocationProfile } from '@pac-api/client';
-import { LanguageService } from './language.service';
 
 /**
  * LocationService Unit Tests
@@ -60,15 +59,7 @@ describe('LocationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        LocationService,
-        {
-          provide: LanguageService,
-          useValue: {
-            currentLang: () => 'en',
-          },
-        },
-      ],
+      providers: [LocationService],
     });
     service = TestBed.inject(LocationService);
   });

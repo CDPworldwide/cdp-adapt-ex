@@ -5,12 +5,12 @@
     {{ 'locationCard.govActions.filterByHazard' | translate }}
   </h2>
 
-  <div class="flex gap-2 overflow-x-auto touch-pan-x mt-4 px-4 lg:px-0 lg:flex-wrap lg:gap-2.5 lg:overflow-x-visible lg:touch-auto">
+  <div class="grid grid-cols-4 gap-2 lg:flex lg:flex-wrap lg:gap-2.5 mt-4 px-4 lg:px-0">
     <!-- All button -->
     <button
       type="button"
       (click)="selectFilter(null)"
-      class="w-20 h-20 shrink-0 lg:w-[84px] lg:h-[84px] p-2 flex items-center justify-center cursor-pointer transition-[opacity,background-color,box-shadow] hover:opacity-90 active:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+      class="aspect-square w-full lg:w-[84px] lg:h-[84px] lg:aspect-auto p-2 flex items-center justify-center cursor-pointer transition-[opacity,background-color,box-shadow] hover:opacity-90 active:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
       [class.bg-cdp-dark]="isSelected(null)"
       [class.bg-cdp-neutral-02]="!isSelected(null)"
     >
@@ -27,16 +27,15 @@
       <button
         type="button"
         (click)="selectFilter(hazardKey(row))"
-        class="w-20 h-20 shrink-0 lg:w-[84px] lg:h-[84px] p-2 flex flex-col items-center justify-center gap-1 cursor-pointer transition-[opacity,background-color,box-shadow] overflow-hidden hover:opacity-90 active:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 touch-pan-x lg:touch-auto"
+        class="aspect-square w-full lg:w-[84px] lg:h-[84px] lg:aspect-auto p-2 flex flex-col items-center justify-center gap-1 cursor-pointer transition-[opacity,background-color,box-shadow] overflow-hidden hover:opacity-90 active:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
         [class.bg-cdp-dark]="isSelected(hazardKey(row))"
         [class.bg-cdp-neutral-02]="!isSelected(hazardKey(row))"
         [matTooltip]="
-          row.hazard.otherHazardDetails
-            ? (hazardName(row) || 'Other')
+          row.hazard.hazardType === 'OTHERS'
+            ? hazardName(row) || 'Other'
             : (hazardTranslationKey(row) | translate)
         "
         matTooltipPosition="above"
-        matTooltipTouchGestures="off"
       >
         <app-hazard-icon
           [hazard]="row.hazard.hazardType"
@@ -51,7 +50,7 @@
           [class.text-cdp-light-text]="isSelected(hazardKey(row))"
           [class.text-cdp-border]="!isSelected(hazardKey(row))"
         >
-          @if (row.hazard.otherHazardDetails) {
+          @if (row.hazard.hazardType === 'OTHERS') {
             {{ hazardName(row) }}
           } @else {
             {{ hazardTranslationKey(row) | translate }}

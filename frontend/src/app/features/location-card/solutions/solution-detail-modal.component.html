@@ -22,7 +22,7 @@
         class="text-2xl lg:text-[31px] font-roboto font-normal leading-normal text-white pr-10 lg:pr-0"
       >
         <span
-          [innerHTML]="data.solution.solution | protectedTranslationHtml"
+          [innerHTML]="data.solution.solution | autoTranslate | protectedTranslationHtml"
         ></span>
       </h2>
       @if (data.solution.hasLocalAction) {
@@ -122,10 +122,6 @@
         <app-adaptation-action-detail
           [action]="currentAction"
           [locationName]="currentPeerName"
-          [countryName]="currentPeer?.country ?? undefined"
-          [lat]="currentPeer?.lat"
-          [lng]="currentPeer?.lng"
-          [geometry]="currentPeer?.geometry"
           [showHeroImage]="false"
           (closed)="close()"
         ></app-adaptation-action-detail>

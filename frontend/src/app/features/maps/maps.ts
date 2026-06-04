@@ -51,12 +51,6 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
     { marker: google.maps.marker.AdvancedMarkerElement; orgType: OrgTypeEnum }
   > = new Map();
 
-  // Computed from the actual pin set after pins load. Used as the "global view"
-  // for resetMap() and to clamp minZoom so the user can't dolly out to blank
-  // sky/ocean beyond the pin cohort.
-  private defaultZoom: number | null = null;
-  private defaultCenter: google.maps.LatLngLiteral | null = null;
-
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -68,21 +62,9 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.googleMapsLoader.loadApi().subscribe((loaded) => {
-      if (!loaded) return;
-      // Load pins first so the map can boot at the fitted zoom level instead
-      // of animating in from a wider initial view.
-      this.subscriptions.push(
-        this.locationPinsService.getAllLocationPins().subscribe({
-          next: (pins) => {
-            this.initMap(pins);
-            pins.forEach((location) => this.addPin(location));
-          },
-          error: (err) => {
-            console.error('Failed to load location pins:', err);
-            this.initMap([]);
-          },
-        }),
-      );
+      if (loaded) {
+        this.initMap();
+      }
     });
 
     this.subscriptions.push(
@@ -109,22 +91,15 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  private initMap(pins: LocationPin[]): void {
+  private initMap(): void {
     const isDesktop = this.isDesktop();
-    const { center, zoom } = this.computeFit(pins, isDesktop);
-    this.defaultCenter = center;
-    this.defaultZoom = zoom;
-
+    const initialZoom = isDesktop ? 1.75 : 1.25;
     const mapOptions: google.maps.MapOptions = {
-      center,
-      zoom,
-      minZoom: zoom,
+      center: { lat: 20, lng: -20 },
+      zoom: initialZoom,
+      minZoom: initialZoom,
       maxZoom: 10,
       mapId: 'f9ca03d789a382f6c5712958',
-      // Hard-clamp the camera to a single world copy so we never expose blank
-      // duplicate worlds. AdvancedMarkerElement normalizes lng to [-180, 180]
-      // and only renders in the canonical world copy, so showing duplicate
-      // worlds would otherwise leave the extra copies empty of pins.
       restriction: {
         latLngBounds: {
           north: 85.05,
@@ -132,7 +107,6 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
           west: -180,
           east: 180,
         },
-        strictBounds: true,
       },
       isFractionalZoomEnabled: true,
       mapTypeId: window.google.maps.MapTypeId.ROADMAP,
@@ -141,53 +115,19 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
       streetViewControl: false,
     };
     this.googleMap = new window.google.maps.Map(this.mapElementRef.nativeElement, mapOptions);
+
+    this.addStaticPins();
   }
 
-  // Compute the center + zoom that frames every pin inside the current
-  // container, using the Web Mercator projection math directly so we can apply
-  // it at map-construction time (no fitBounds animation).
-  private computeFit(
-    pins: LocationPin[],
-    isDesktop: boolean,
-  ): { center: google.maps.LatLngLiteral; zoom: number } {
-    const fallbackZoom = isDesktop ? 2 : 1.25;
-    const fallback = { center: { lat: 20, lng: -20 }, zoom: fallbackZoom };
-    if (pins.length === 0) return fallback;
-
-    let minLat = Infinity;
-    let maxLat = -Infinity;
-    let minLng = Infinity;
-    let maxLng = -Infinity;
-    for (const p of pins) {
-      if (p.lat < minLat) minLat = p.lat;
-      if (p.lat > maxLat) maxLat = p.lat;
-      if (p.lng < minLng) minLng = p.lng;
-      if (p.lng > maxLng) maxLng = p.lng;
-    }
-
-    const el = this.mapElementRef.nativeElement as HTMLElement;
-    const padding = isDesktop ? 40 : 16;
-    const containerW = Math.max(1, el.offsetWidth - padding * 2);
-    const containerH = Math.max(1, el.offsetHeight - padding * 2);
-
-    // Web Mercator y, normalized to [0, 1].
-    const latY = (lat: number): number => {
-      const clamped = Math.max(Math.min(lat, 85.05), -85.05);
-      const sin = Math.sin((clamped * Math.PI) / 180);
-      return 0.5 - Math.log((1 + sin) / (1 - sin)) / (4 * Math.PI);
-    };
-
-    const lngFraction = Math.max(1e-6, (maxLng - minLng) / 360);
-    const latFraction = Math.max(1e-6, latY(minLat) - latY(maxLat));
-
-    const zoomX = Math.log2(containerW / 256 / lngFraction);
-    const zoomY = Math.log2(containerH / 256 / latFraction);
-    const zoom = Math.max(1, Math.min(10, Math.min(zoomX, zoomY)));
-
-    return {
-      center: { lat: (minLat + maxLat) / 2, lng: (minLng + maxLng) / 2 },
-      zoom,
-    };
+  private addStaticPins(): void {
+    this.subscriptions.push(
+      this.locationPinsService.getAllLocationPins().subscribe({
+        next: (pins) => {
+          pins.forEach((location) => this.addPin(location));
+        },
+        error: (err) => console.error('Failed to load location pins:', err),
+      }),
+    );
   }
 
   private addPin(location: LocationPin): void {
@@ -236,13 +176,15 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private resetMap(): void {
-    if (!this.googleMap) return;
-    const center = this.defaultCenter ?? { lat: 20, lng: -20 };
-    const zoom = this.defaultZoom ?? (this.isDesktop() ? 2 : 1.25);
-    this.googleMap.panTo(center);
-    google.maps.event.addListenerOnce(this.googleMap, 'idle', () => {
-      this.googleMap.setZoom(zoom);
-    });
+    if (this.googleMap) {
+      const isDesktop = this.isDesktop();
+      const initialZoom = isDesktop ? 1.75 : 1.25;
+
+      this.googleMap.panTo({ lat: 20, lng: -20 });
+      google.maps.event.addListenerOnce(this.googleMap, 'idle', () => {
+        this.googleMap.setZoom(initialZoom);
+      });
+    }
   }
 
   private getPinStyle(orgType: OrgTypeEnum, isSelected: boolean) {

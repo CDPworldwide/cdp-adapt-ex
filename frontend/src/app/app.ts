@@ -3,13 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { HazardMapService } from './features/hazard-map/hazard-map.service';
 import { LanguageService } from './shared/services/language.service';
 import { environment } from '../environments/environment';
-import { FeedbackModalComponent } from './shared/feedback-modal/feedback-modal';
 
 declare let gtag: Function;
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FeedbackModalComponent],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

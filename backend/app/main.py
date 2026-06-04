@@ -13,7 +13,6 @@ from sqlmodel import SQLModel
 
 from app.api.v1.api import api_router
 from app.models.onboarding import UserRoleSelection
-from app.models.translation_cache import TranslationCache
 from app.services.clients.database import database_service
 from app.shared.config import settings
 from app.shared.limiter import limiter
@@ -23,7 +22,7 @@ from app.shared.logging import logger
 # startup so we don't need a migration tool for this set. Read-only analytical
 # tables (DimCentral, FactHazards, etc.) are managed outside the app and must
 # NOT be added here.
-APP_OWNED_TABLES = [UserRoleSelection.__table__, TranslationCache.__table__]
+APP_OWNED_TABLES = [UserRoleSelection.__table__]
 
 load_dotenv()
 

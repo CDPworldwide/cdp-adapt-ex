@@ -5,7 +5,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CdpLogoWithTextIconComponent } from '../icons';
-import { FeedbackService } from '../services/feedback.service';
 import { LanguageService } from '../services/language.service';
 
 @Component({
@@ -23,5 +22,4 @@ import { LanguageService } from '../services/language.service';
 })
 export class AppHeaderComponent {
   readonly languageService = inject(LanguageService);
-  readonly feedbackService = inject(FeedbackService);
 }

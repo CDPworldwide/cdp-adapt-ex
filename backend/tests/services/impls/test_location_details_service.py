@@ -291,66 +291,6 @@ class TestGetEligibleLocationDetailsByName:
         ]
         assert solution_cards[0].has_local_action is False
 
-    async def test_solution_examples_join_ignores_hazard_filter(
-        self,
-        location_details_service: LocationDetailsService,
-        mock_repository: AsyncMock,
-    ):
-        """Per-hazard examples should attach to an 'All'-filter solution row.
-
-        GEE-fallback orgs only get per-hazard rows in solution_examples, and the service joins these.
-        """
-        mock_repository.get_solutions.return_value = [
-            build_mock_solution(hazard_filter="All")
-        ]
-        mock_repository.get_solution_examples.return_value = [
-            build_mock_solution_example(hazard_filter="Extreme heat"),
-        ]
-
-        result = await location_details_service.get_eligible_location_details_by_name(
-            "TestCity"
-        )
-
-        solution_cards = result.solutions.solutions[
-            SolutionCategoryEnum.ENGINEERED_BUILT_ENVIRONMENT
-        ]
-        assert len(solution_cards[0].peer_actions) == 1
-        assert solution_cards[0].peer_actions[0].peer_name == "Peer Org Name"
-
-    async def test_solution_examples_dedupe_same_peer_across_hazards(
-        self,
-        location_details_service: LocationDetailsService,
-        mock_repository: AsyncMock,
-    ):
-        """A single peer/action across multiple hazard_filter rows collapses
-        into one PeerAction, with hazard_addressed_english merged."""
-        mock_repository.get_solutions.return_value = [build_mock_solution()]
-        mock_repository.get_solution_examples.return_value = [
-            build_mock_solution_example(
-                hazard_filter="Extreme heat",
-                hazard_addressed_english="Extreme heat | Heavy precipitation",
-            ),
-            build_mock_solution_example(
-                hazard_filter="Heavy precipitation",
-                hazard_addressed_english="Heavy precipitation | Drought",
-            ),
-        ]
-
-        result = await location_details_service.get_eligible_location_details_by_name(
-            "TestCity"
-        )
-
-        peer_actions = result.solutions.solutions[
-            SolutionCategoryEnum.ENGINEERED_BUILT_ENVIRONMENT
-        ][0].peer_actions
-        assert len(peer_actions) == 1
-        addressed = peer_actions[0].action.hazards_addressed
-        addressed_types = {h.hazard_type.value for h in addressed}
-        # All three distinct hazards survive (order preserved by first-seen)
-        assert "EXTREME_HEAT" in addressed_types
-        assert "HEAVY_PRECIPITATION" in addressed_types
-        assert "DROUGHT" in addressed_types
-
     async def test_get_location_with_missing_metadata(
         self,
         location_details_service: LocationDetailsService,

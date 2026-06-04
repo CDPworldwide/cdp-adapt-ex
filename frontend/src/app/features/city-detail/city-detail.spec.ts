@@ -1,7 +1,7 @@
 import { Component, NO_ERRORS_SCHEMA, input, output, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
-import { BehaviorSubject, EMPTY, Observable, Subject, of, throwError } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, of, throwError } from 'rxjs';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CityDetailPageComponent } from './city-detail';
 import { LocationService } from '../../shared/services/location.service';
@@ -10,7 +10,6 @@ import { HazardMapService } from '../hazard-map/hazard-map.service';
 import { GoogleMapsLoaderService } from '../../shared/services/google-maps-loader.service';
 import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { By } from '@angular/platform-browser';
-import { LanguageService } from '../../shared/services/language.service';
 
 class FakeLoader implements TranslateLoader {
   getTranslation(): Observable<any> {
@@ -169,47 +168,6 @@ describe('CityDetailPageComponent', () => {
     expect(component.isLoading).toBeFalse();
     expect(component.isNotFound).toBeTrue();
     expect(component.locationData).toBeNull();
-  });
-
-  it('ignores stale location responses after the language changes', () => {
-    const languageService = TestBed.inject(LanguageService);
-    const spanishLocation = {
-      ...MOCK_LOCATION_DATA,
-      reportingLanguage: 'es',
-      hazards: { statistics: {}, hazards: [{ description: 'es drought' }] },
-    } as any;
-    const japaneseLocation = {
-      ...MOCK_LOCATION_DATA,
-      reportingLanguage: 'ja',
-      hazards: { statistics: {}, hazards: [{ description: 'ja drought' }] },
-    } as any;
-    const spanishResponse$ = new Subject<any>();
-    const japaneseResponse$ = new Subject<any>();
-
-    mockLocationService.getLocationByOrganizationId.calls.reset();
-    mockLocationService.getLocationByOrganizationId.and.returnValues(
-      spanishResponse$,
-      japaneseResponse$,
-    );
-
-    languageService.switchLanguage('es');
-    fixture.detectChanges();
-    languageService.switchLanguage('ja');
-    fixture.detectChanges();
-
-    spanishResponse$.next(spanishLocation);
-    spanishResponse$.complete();
-    fixture.detectChanges();
-
-    expect(component.locationData).toBeNull();
-    expect(component.isLoading).toBeTrue();
-
-    japaneseResponse$.next(japaneseLocation);
-    japaneseResponse$.complete();
-    fixture.detectChanges();
-
-    expect(component.locationData).toBe(japaneseLocation);
-    expect(component.isLoading).toBeFalse();
   });
 
   it('navigates when tabs change', () => {

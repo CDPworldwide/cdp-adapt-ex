@@ -68,9 +68,9 @@ describe('MainSearchComponent', () => {
   } as any;
 
   const MOCK_SUGGESTIONS = [
-    { organizationId: 101, name: 'London', disclosesToCDP: true, isReportingLeader: false },
-    { organizationId: 102, name: 'Los Angeles', disclosesToCDP: false, isReportingLeader: false },
-    { organizationId: 103, name: 'Vegas', disclosesToCDP: true, isReportingLeader: false },
+    { organizationId: 101, name: 'London', disclosesToCDP: true },
+    { organizationId: 102, name: 'Los Angeles', disclosesToCDP: false },
+    { organizationId: 103, name: 'Vegas', disclosesToCDP: true },
   ];
 
   const recreateComponent = () => {
@@ -176,9 +176,7 @@ describe('MainSearchComponent', () => {
         suggestions = opts.map((o) => o.name);
       });
 
-      // Empty-state order is randomized; assert set, not order.
-      // (MOCK_SUGGESTIONS < MAX_SUGGESTIONS so all survive the slice.)
-      expect([...suggestions].sort()).toEqual(['London', 'Los Angeles', 'Vegas']);
+      expect(suggestions).toEqual(['London', 'Los Angeles', 'Vegas']);
     });
 
     it('should update empty-state suggestions when locations load after init', fakeAsync(() => {
@@ -197,8 +195,7 @@ describe('MainSearchComponent', () => {
       suggestions$.next(MOCK_SUGGESTIONS);
       tick();
 
-      // See note above — empty-state order is randomized.
-      expect([...suggestions].sort()).toEqual(['London', 'Los Angeles', 'Vegas']);
+      expect(suggestions).toEqual(['London', 'Los Angeles', 'Vegas']);
     }));
 
     it('should return no results for irrelevant query', () => {
@@ -214,12 +211,12 @@ describe('MainSearchComponent', () => {
 
     it('should limit the number of suggestions to 5', fakeAsync(() => {
       const manySuggestions = [
-        { organizationId: 201, name: 'Paris', disclosesToCDP: true, isReportingLeader: false },
-        { organizationId: 202, name: 'Perth', disclosesToCDP: false, isReportingLeader: false },
-        { organizationId: 203, name: 'Porto', disclosesToCDP: true, isReportingLeader: false },
-        { organizationId: 204, name: 'Prague', disclosesToCDP: false, isReportingLeader: false },
-        { organizationId: 205, name: 'Phoenix', disclosesToCDP: true, isReportingLeader: false },
-        { organizationId: 206, name: 'Portland', disclosesToCDP: true, isReportingLeader: false },
+        { organizationId: 201, name: 'Paris', disclosesToCDP: true },
+        { organizationId: 202, name: 'Perth', disclosesToCDP: false },
+        { organizationId: 203, name: 'Porto', disclosesToCDP: true },
+        { organizationId: 204, name: 'Prague', disclosesToCDP: false },
+        { organizationId: 205, name: 'Phoenix', disclosesToCDP: true },
+        { organizationId: 206, name: 'Portland', disclosesToCDP: true },
       ];
       mockLocationService.getAllLocationNames.and.returnValue(of(manySuggestions));
 

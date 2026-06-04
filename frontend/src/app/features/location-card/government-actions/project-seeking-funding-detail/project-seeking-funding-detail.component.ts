@@ -15,6 +15,8 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProjectSeekingFunding } from '@pac-api/client';
 import { CloseIconComponent } from '../../../../shared/icons/close-icon.component';
+import { ImagePlaceholderIconComponent } from '../../../../shared/icons/image-placeholder-icon.component';
+import { AutoTranslatePipe } from '../../../../shared/pipes/auto-translate.pipe';
 import { ProtectedTranslationHtmlPipe } from '../../../../shared/pipes/protected-translation-html.pipe';
 
 @Component({
@@ -24,6 +26,8 @@ import { ProtectedTranslationHtmlPipe } from '../../../../shared/pipes/protected
     CommonModule,
     TranslateModule,
     CloseIconComponent,
+    ImagePlaceholderIconComponent,
+    AutoTranslatePipe,
     ProtectedTranslationHtmlPipe,
   ],
   templateUrl: './project-seeking-funding-detail.component.html',
@@ -85,5 +89,19 @@ export class ProjectSeekingFundingDetailComponent implements AfterViewInit, OnCh
 
   close(): void {
     this.closed.emit();
+  }
+
+  get fundedAmount(): number {
+    if (this.project.totalAmount != null && this.project.fundedPercent != null) {
+      return (this.project.totalAmount * this.project.fundedPercent) / 100;
+    }
+    return 0;
+  }
+
+  get remainingAmount(): number {
+    if (this.project.totalAmount != null && this.project.fundedPercent != null) {
+      return this.project.totalAmount * (1 - this.project.fundedPercent / 100);
+    }
+    return this.project.totalAmount ?? 0;
   }
 }

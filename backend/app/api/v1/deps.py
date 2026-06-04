@@ -8,9 +8,6 @@ from app.services.clients.database.location_details_repository import (
     LocationDetailsRepository,
 )
 from app.services.clients.database.onboarding_repository import OnboardingRepository
-from app.services.clients.database.translation_cache_repository import (
-    TranslationCacheRepository,
-)
 from app.services.clients.earth_engine_client import EarthEngineClient
 from app.services.clients.translate_client import TranslateClient, translate_client
 from app.services.impls.city_resolution_service_impl import CityResolutionServiceImpl
@@ -19,9 +16,6 @@ from app.services.impls.earth_engine_hazard_data_provider_impl import (
     EarthEngineHazardDataProviderImpl,
 )
 from app.services.impls.location_details_service import LocationDetailsService
-from app.services.impls.location_profile_translation_service import (
-    LocationProfileTranslationService,
-)
 from app.services.interfaces.city_resolution_service import CityResolutionService
 from app.services.interfaces.discloser_client import DiscloserClient
 from app.services.interfaces.hazard_data_provider_interface import (
@@ -55,11 +49,6 @@ def get_onboarding_repository() -> OnboardingRepository:
     return OnboardingRepository(database_service.engine)
 
 
-def get_translation_cache_repository() -> TranslationCacheRepository:
-    """Dependency that provides the TranslationCacheRepository instance."""
-    return TranslationCacheRepository(lambda: database_service.engine)
-
-
 def get_city_resolution_service() -> CityResolutionService:
     """Dependency that provides the CityResolutionService instance."""
     return CityResolutionServiceImpl(get_location_details_repository())
@@ -91,13 +80,6 @@ def get_earth_engine_hazard_data_provider() -> HazardDataProviderInterface:
 def get_translate_client() -> TranslateClient:
     """Dependency that returns the TranslateClient instance."""
     return translate_client
-
-
-def get_location_profile_translation_service() -> LocationProfileTranslationService:
-    """Dependency that provides backend-only location profile translation."""
-    return LocationProfileTranslationService(
-        get_translate_client(), get_translation_cache_repository()
-    )
 
 
 def require_api_key(api_key: str | None = Security(api_key_header)) -> None:

@@ -36,10 +36,6 @@ class OrganizationSummary(SQLModel):
     name: str | None = None
     country: str | None = None
     population: int | None = None
-    # "Submitted" if the jurisdiction returned a questionnaire to CDP this
-    # cycle, "non-disclosed" otherwise.
-    disclosure_status: str | None = None
-    is_reporting_leader: bool = False
 
 
 class LocationGeometry(SQLModel):
@@ -51,20 +47,6 @@ class LocationGeometry(SQLModel):
     # Pre-computed centroid coordinates (POINT geometry on DimCentral). When
     # present they are used directly; when NULL the service falls back to
     # extracting the first coordinate pair from `geometry`.
-    centroid_lng: float | None = None
-    centroid_lat: float | None = None
-
-
-class PeerLocation(SQLModel):
-    """Geometry/country for a peer jurisdiction, keyed by organization id.
-
-    Resolved from the peer's DimCentral row so the solution detail header can
-    render a map thumbnail and country line for the peer.
-    """
-
-    org_id: int
-    country: str | None = None
-    geometry: str | None = None
     centroid_lng: float | None = None
     centroid_lat: float | None = None
 
@@ -81,7 +63,6 @@ class DimCentral(SQLModel, table=True):
     disclosing_org_type: str | None = None
     discloser_country_or_area: str | None = None
     public_status: str | None = None
-    disclosure_status: str | None = None
     current_pop: float | None = None
     reporting_language: str | None = None
     ranked_hazards: str | None = None
@@ -138,7 +119,6 @@ class FactActions(SQLModel, table=True):
     total_cost_usd: Decimal | None = None
     action_index: int = Field(primary_key=True)
     disclosing_year: int = Field(primary_key=True)
-    row_order: int = Field(primary_key=True)
 
 
 class FactHazards(SQLModel, table=True):
@@ -160,7 +140,7 @@ class FactHazards(SQLModel, table=True):
     time_frame: str | None = None
     summary_text: str | None = None
     population_range: str | None = None
-    public_status: str = Field(primary_key=True)
+    public_status: str | None = None
     disclosing_year: int = Field(primary_key=True)
 
 
@@ -216,7 +196,6 @@ class SolutionsExamples(SQLModel, table=True):
     peer_org_id: int = Field(primary_key=True)
     peer_org_name: str | None = None
     action_index: int = Field(primary_key=True)
-    row_order: int = Field(primary_key=True)
     hazard_addressed_english: str | None = None
     action_description_english: str | None = None
     sectors_applied_english: str | None = None

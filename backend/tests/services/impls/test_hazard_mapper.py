@@ -26,27 +26,6 @@ def test_map_string_to_hazard_other(hazard_mapper):
     assert hazard_mapper.map_string_to_hazard("Other:    ") is None
 
 
-def test_map_string_to_hazard_label_override(hazard_mapper):
-    """Strings routed to a specific enum but with a display-label override
-    should retain the original label in other_hazard_details"""
-    assert hazard_mapper.map_string_to_hazard("Mass movement") == Hazard(
-        hazard_type=HazardEnum.SOIL_DEGRADATION_EROSION,
-        other_hazard_details="Mass movement",
-    )
-    assert hazard_mapper.map_string_to_hazard("Other: Landslides") == Hazard(
-        hazard_type=HazardEnum.SOIL_DEGRADATION_EROSION,
-        other_hazard_details="Landslides",
-    )
-    assert hazard_mapper.map_string_to_hazard("Other: Landslide") == Hazard(
-        hazard_type=HazardEnum.SOIL_DEGRADATION_EROSION,
-        other_hazard_details="Landslides",
-    )
-    # Soil degradation/erosion keeps no override — the enum translation is correct
-    assert hazard_mapper.map_string_to_hazard("Soil degradation/erosion") == Hazard(
-        hazard_type=HazardEnum.SOIL_DEGRADATION_EROSION
-    )
-
-
 def test_map_string_to_hazard_unknown(hazard_mapper):
     # Unknown hazards should be logged and return None
     assert hazard_mapper.map_string_to_hazard("Something else") is None

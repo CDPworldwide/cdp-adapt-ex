@@ -26,13 +26,12 @@ import { STATE_ABBREV_TO_NAME } from './state-abbrev';
 import { Maps } from '../maps/maps';
 import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
 import type { Hazard, HazardProfile, LocationPin } from '@pac-api/client';
-import { CdpLogoIconComponent, WarningIconComponent } from '../../shared/icons';
+import { CdpLogoIconComponent } from '../../shared/icons';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
 import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
 import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
 import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
-import { Footer } from '../../core/footer/footer';
 
 // `São Paulo` → `sao paulo`. NFD-strip combining marks; preserves length.
 function stripDiacritics(value: string): string {
@@ -57,11 +56,9 @@ function stripDiacritics(value: string): string {
     Maps,
     LocationSummaryComponent,
     CdpLogoIconComponent,
-    WarningIconComponent,
     AppHeaderComponent,
     DisclosureTrendsComponent,
     WelcomeModalComponent,
-    Footer,
   ],
 })
 export class MainSearchComponent implements OnInit {
@@ -72,9 +69,6 @@ export class MainSearchComponent implements OnInit {
   // current page load and reappears on reload. No persistence by design.
   isInfoCardDismissed = false;
   allLocations: LocationSuggestion[] = [];
-  // Cached default-suggestion ordering: A-list reporters first, then everyone else,
-  // each group uniformly shuffled once per page load
-  private defaultSuggestions: LocationSuggestion[] = [];
   filteredLocations!: Observable<LocationSuggestion[]>;
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
 
@@ -120,10 +114,6 @@ export class MainSearchComponent implements OnInit {
       .subscribe({
         next: (names) => {
           this.allLocations = names;
-          this.defaultSuggestions = [...names]
-            .map((loc) => ({ loc, group: loc.isReportingLeader ? 0 : 1, key: Math.random() }))
-            .sort((a, b) => a.group - b.group || a.key - b.key)
-            .map((entry) => entry.loc);
           this.allLocations$.next(names);
         },
       });
@@ -278,7 +268,7 @@ export class MainSearchComponent implements OnInit {
     locations: LocationSuggestion[] = this.allLocations,
   ): LocationSuggestion[] {
     if (!value) {
-      return this.defaultSuggestions.slice(0, MainSearchComponent.MAX_SUGGESTIONS);
+      return locations.slice(0, MainSearchComponent.MAX_SUGGESTIONS);
     }
     // Search both name and country so a query like "thailand" surfaces every
     // Thai jurisdiction even though it doesn't appear in their names.

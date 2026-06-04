@@ -27,10 +27,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { GeometryService } from '../../shared/services/geometry.service';
 import type { AdaptationAction, Hazard, LocationProfile } from '@pac-api/client';
 import { SolutionsComponent } from './solutions/solutions.component';
-import {
-  getEdgeCaseBannerVariant,
-  type EdgeCaseBannerVariant,
-} from './edge-case-banner/edge-case-banner.util';
 import { ReplaySubject, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Footer } from '../../core/footer/footer';
@@ -80,18 +76,6 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
   activeTab: LocationCardTabKey = DEFAULT_LOCATION_CARD_TAB;
   selectedHazardFilter: string | null = null;
   jurisdictionBounds?: google.maps.LatLngBounds;
-
-  // GEE-derived jurisdictions are CDP analysis-only (no disclosed
-  // questionnaire), so the Government actions tab — which is sourced entirely
-  // from disclosed actions/goals/projects — is hidden for them.
-  get showGovernmentActionsTab(): boolean {
-    return this.data?.publicStatus !== 'GEE-Derived';
-  }
-
-  // Shared with the Government actions tab so it shows the same banner as Hazards.
-  get edgeCaseBannerVariant(): EdgeCaseBannerVariant {
-    return getEdgeCaseBannerVariant(this.data?.publicStatus, this.data?.hazards?.hazards);
-  }
 
   isStickyHeaderVisible = false;
 
@@ -189,12 +173,6 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
 
       // Push the new geometry to the stream
       this.geometry$.next(currentData.geometry);
-
-      // If we just landed on a GEE-derived location while the Government
-      // actions tab is selected (e.g. via a deep link), fall back to Hazards.
-      if (this.activeTab === 'actions' && currentData.publicStatus === 'GEE-Derived') {
-        this.updateActiveTab('hazards');
-      }
     }
 
     if (changes['activeTab'] && shouldClearHazardFilter(changes['activeTab'].currentValue)) {
@@ -204,10 +182,6 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
 
   setActiveTab(tab: LocationCardTabKey): void {
     this.updateActiveTab(tab);
-    // Each tab is its own logical "page"; reset scroll so the content
-    // doesn't open partway down. Mirrors what `exploreHazardActions` does
-    // when it programmatically switches to the actions tab.
-    this.scrollRoot?.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   private updateActiveTab(tab: LocationCardTabKey): void {

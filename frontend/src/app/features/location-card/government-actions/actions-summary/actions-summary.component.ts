@@ -36,6 +36,7 @@ export class ActionsSummaryComponent {
   }
 
   hazardName(row: HazardSummaryRow): string {
+    if (row.hazard.hazardType !== 'OTHERS') return '';
     return this.toTitleCase(row.hazard.otherHazardDetails ?? '');
   }
 
