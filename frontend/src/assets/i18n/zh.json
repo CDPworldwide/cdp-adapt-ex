@@ -521,14 +521,14 @@
   },
   "disclosureTrends": {
     "title": "披露趋势",
-    "disclosingJurisdictions": "来自 {{countries}} 个国家的城市、州和地区在 2025 年披露了信息",
+    "disclosingJurisdictions": "来自 {{countries}} 个国家的城市、州和地区披露了信息",
     "adaptationActions": "报告的适应行动总数",
-    "waterSecurityRisks": "报告水安全风险的司法管辖区",
+    "waterSecurityRisks": "识别水安全风险的司法管辖区",
     "floodingRisks": "识别洪水风险的司法管辖区",
     "topHazards": "主要报告风险",
     "noHazardsReported": "未报告风险",
     "climateProjects": "报告的气候项目总数",
-    "significantHazards": "报告面临重大气候风险（当前和预期）的司法管辖区"
+    "significantHazards": "面临重大气候风险的司法管辖区"
   },
   "methodology": {
     "lastUpdated": "最后更新：{{date}}",

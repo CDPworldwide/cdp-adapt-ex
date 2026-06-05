@@ -482,14 +482,14 @@
   },
   "disclosureTrends": {
     "title": "Disclosure Trends",
-    "disclosingJurisdictions": "Cities, states and regions from {{countries}} countries disclosed in 2025",
+    "disclosingJurisdictions": "Cities, states and regions from {{countries}} countries disclosed",
     "adaptationActions": "Total adaptation actions reported",
-    "waterSecurityRisks": "Jurisdictions report water security risks",
+    "waterSecurityRisks": "Jurisdictions that identify water security risks",
     "floodingRisks": "Jurisdictions that identify flooding risks",
     "topHazards": "Top Reported Hazards",
     "noHazardsReported": "No hazards reported",
     "climateProjects": "Total climate projects reported",
-    "significantHazards": "Jurisdictions report facing significant climate hazards (current and anticipated)"
+    "significantHazards": "Jurisdictions facing significant climate hazards"
   },
   "methodology": {
     "lastUpdated": "Last updated: {{date}}",

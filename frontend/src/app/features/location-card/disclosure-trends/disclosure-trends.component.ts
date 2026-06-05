@@ -8,7 +8,6 @@ import {
   OnDestroy,
   PLATFORM_ID,
   SimpleChanges,
-  ViewChild,
   inject,
   signal,
   type WritableSignal,
@@ -20,8 +19,6 @@ import {
   WaterSecurityIconComponent,
   MoneyCircleIconComponent,
   EarthIconComponent,
-  ArrowLeftIconComponent,
-  ArrowRightIconComponent,
 } from '../../../shared/icons';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import type { DisclosureTrendsSummary } from './disclosure-trends.stats';
@@ -39,8 +36,6 @@ const HAZARD_STAGGER_MS = 150;
     WaterSecurityIconComponent,
     MoneyCircleIconComponent,
     EarthIconComponent,
-    ArrowLeftIconComponent,
-    ArrowRightIconComponent,
     HazardIconComponent,
   ],
   templateUrl: './disclosure-trends.component.html',
@@ -48,7 +43,6 @@ const HAZARD_STAGGER_MS = 150;
 export class DisclosureTrendsComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() summary!: DisclosureTrendsSummary;
   @Input() year!: number;
-  @ViewChild('cardsRail') private cardsRail?: ElementRef<HTMLElement>;
 
   private readonly elementRef = inject(ElementRef<HTMLElement>);
   private readonly ngZone = inject(NgZone);
@@ -127,14 +121,6 @@ export class DisclosureTrendsComponent implements AfterViewInit, OnChanges, OnDe
   getHazardNumber(range: string | null): string {
     if (!range) return '';
     return range.replace('%', '').trim();
-  }
-
-  scrollTrendCards(direction: 'prev' | 'next'): void {
-    const rail = this.cardsRail?.nativeElement;
-    if (!rail) return;
-
-    const delta = rail.clientWidth * 0.75 * (direction === 'next' ? 1 : -1);
-    rail.scrollBy({ left: delta, behavior: 'smooth' });
   }
 
   private snapToFinal(): void {
