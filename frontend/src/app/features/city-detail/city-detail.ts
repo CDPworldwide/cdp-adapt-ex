@@ -111,25 +111,30 @@ export class CityDetailPageComponent implements OnInit {
 
     const visualViewport = window.visualViewport;
     const rootStyle = document.documentElement.style;
-    const updateHeight = () => {
+    const updateViewportMetrics = () => {
       rootStyle.setProperty(
         '--app-visual-viewport-height',
         `${visualViewport?.height ?? window.innerHeight}px`,
       );
+      rootStyle.setProperty(
+        '--app-visual-viewport-offset-top',
+        `${visualViewport?.offsetTop ?? 0}px`,
+      );
     };
 
-    updateHeight();
-    window.addEventListener('resize', updateHeight);
-    window.addEventListener('orientationchange', updateHeight);
-    visualViewport?.addEventListener('resize', updateHeight);
-    visualViewport?.addEventListener('scroll', updateHeight);
+    updateViewportMetrics();
+    window.addEventListener('resize', updateViewportMetrics);
+    window.addEventListener('orientationchange', updateViewportMetrics);
+    visualViewport?.addEventListener('resize', updateViewportMetrics);
+    visualViewport?.addEventListener('scroll', updateViewportMetrics);
 
     this.destroyRef.onDestroy(() => {
-      window.removeEventListener('resize', updateHeight);
-      window.removeEventListener('orientationchange', updateHeight);
-      visualViewport?.removeEventListener('resize', updateHeight);
-      visualViewport?.removeEventListener('scroll', updateHeight);
+      window.removeEventListener('resize', updateViewportMetrics);
+      window.removeEventListener('orientationchange', updateViewportMetrics);
+      visualViewport?.removeEventListener('resize', updateViewportMetrics);
+      visualViewport?.removeEventListener('scroll', updateViewportMetrics);
       rootStyle.removeProperty('--app-visual-viewport-height');
+      rootStyle.removeProperty('--app-visual-viewport-offset-top');
     });
   }
 
