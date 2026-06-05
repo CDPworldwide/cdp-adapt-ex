@@ -2,6 +2,21 @@
   display: block;
 }
 
+.ai-panel-drawer {
+  height: calc(100vh - 4rem);
+  height: calc(100svh - 4rem);
+  height: calc(var(--app-visual-viewport-height, 100svh) - 4rem);
+  max-height: calc(100dvh - 4rem);
+}
+
+@media (min-width: 1024px) {
+  .ai-panel-drawer {
+    height: 100dvh;
+    height: var(--app-visual-viewport-height, 100dvh);
+    max-height: 100dvh;
+  }
+}
+
 .org-empty-state {
   background-image: radial-gradient(circle at top right, rgba(245, 158, 11, 0.14), transparent 30%),
     radial-gradient(circle at bottom left, rgba(15, 23, 42, 0.06), transparent 28%);
