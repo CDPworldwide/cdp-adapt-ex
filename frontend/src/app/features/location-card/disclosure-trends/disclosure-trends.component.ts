@@ -19,6 +19,7 @@ import {
   WaterSecurityIconComponent,
   MoneyCircleIconComponent,
   EarthIconComponent,
+  UrbanFloodingIconComponent,
 } from '../../../shared/icons';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import type { DisclosureTrendsSummary } from './disclosure-trends.stats';
@@ -36,6 +37,7 @@ const HAZARD_STAGGER_MS = 150;
     WaterSecurityIconComponent,
     MoneyCircleIconComponent,
     EarthIconComponent,
+    UrbanFloodingIconComponent,
     HazardIconComponent,
   ],
   templateUrl: './disclosure-trends.component.html',

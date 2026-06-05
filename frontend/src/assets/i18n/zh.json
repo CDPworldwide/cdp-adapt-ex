@@ -526,6 +526,7 @@
     "waterSecurityRisks": "识别水安全风险的司法管辖区",
     "floodingRisks": "识别洪水风险的司法管辖区",
     "topHazards": "主要报告风险",
+    "ofJurisdictions": "司法管辖区",
     "noHazardsReported": "未报告风险",
     "climateProjects": "报告的气候项目总数",
     "significantHazards": "面临重大气候风险的司法管辖区"

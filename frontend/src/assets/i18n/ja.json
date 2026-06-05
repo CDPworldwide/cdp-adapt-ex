@@ -527,6 +527,7 @@
     "waterSecurityRisks": "水安全保障リスクを特定した管轄区域",
     "floodingRisks": "洪水リスクを特定した管轄区域",
     "topHazards": "主な報告ハザード",
+    "ofJurisdictions": "管轄区域の割合",
     "noHazardsReported": "報告されたハザードはありません",
     "climateProjects": "報告された気候プロジェクトの総数",
     "significantHazards": "重大な気候ハザードに直面している管轄区域"

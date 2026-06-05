@@ -107,14 +107,14 @@
           {{ 'disclosureTrends.topHazards' | translate }}
         </span>
         @if (summary.topHazards.length > 0) {
-          <div class="flex justify-center items-center flex-1">
+          <div class="flex flex-col justify-center items-center flex-1">
             <div
               class="relative w-full h-auto max-w-xs aspect-[29/39] lg:h-full lg:w-auto lg:max-w-full"
             >
               <!-- Rank 1: Large -->
               @if (summary.topHazards[0]) {
                 <div
-                  class="absolute w-[75.4%] lg:w-[65%] aspect-square rounded-full bg-cdp-red top-[2%] lg:top-[8%] left-[17.8%] lg:left-[12.8%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out motion-reduce:transition-none"
+                  class="absolute w-[75.4%] lg:w-[65%] aspect-square rounded-full bg-cdp-red top-[1%] lg:top-[2%] left-[17.8%] lg:left-[17.5%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out motion-reduce:transition-none"
                   [class.scale-0]="!hasEntered()"
                   [class.scale-100]="hasEntered()"
                 >
@@ -145,7 +145,7 @@
               <!-- Rank 2: Medium -->
               @if (summary.topHazards[1]) {
                 <div
-                  class="absolute w-[52.2%] lg:w-[45%] aspect-square rounded-full bg-cdp-light-text top-[56%] lg:top-[55%] left-[2.9%] lg:left-0 flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out delay-150 motion-reduce:transition-none motion-reduce:delay-0"
+                  class="absolute z-20 w-[63.6%] lg:w-[55%] aspect-square rounded-full bg-cdp-light-text top-[51%] lg:top-[50%] left-0 lg:left-[2%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out delay-150 motion-reduce:transition-none motion-reduce:delay-0"
                   [class.scale-0]="!hasEntered()"
                   [class.scale-100]="hasEntered()"
                 >
@@ -156,7 +156,7 @@
                     [showTooltip]="false"
                   ></app-hazard-icon>
                   <span
-                    class="mt-[4.5cqw] text-cdp-border font-inter text-[8.5cqw] lg:text-[6cqw] font-medium leading-tight text-center px-[4.5cqw]"
+                    class="mt-[4.5cqw] text-cdp-border font-inter text-[8.5cqw] lg:text-[7cqw] font-medium leading-tight text-center px-[4.5cqw]"
                   >
                     {{ formatHazardType(summary.topHazards[1].type) }}
                   </span>
@@ -176,7 +176,7 @@
               <!-- Rank 3: Small -->
               @if (summary.topHazards[2]) {
                 <div
-                  class="absolute w-[36.8%] lg:w-[31.7%] aspect-square rounded-full bg-cdp-neutral-04 top-[58%] lg:top-[57%] right-[3.1%] lg:right-[19%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out delay-300 motion-reduce:transition-none motion-reduce:delay-0"
+                  class="absolute z-10 w-[58.4%] lg:w-[50.5%] aspect-square rounded-full bg-cdp-neutral-04 top-[54%] lg:top-[54%] right-[-6%] lg:right-[-2%] flex flex-col items-center justify-center overflow-hidden [container-type:inline-size] [&_svg]:!w-[11.5cqw] [&_svg]:!h-[11.5cqw] origin-center transform transition-transform duration-700 ease-out delay-300 motion-reduce:transition-none motion-reduce:delay-0"
                   [class.scale-0]="!hasEntered()"
                   [class.scale-100]="hasEntered()"
                 >
@@ -187,7 +187,7 @@
                     [showTooltip]="false"
                   ></app-hazard-icon>
                   <span
-                    class="mt-[4.5cqw] text-cdp-border font-inter text-[11cqw] lg:text-[6cqw] font-medium leading-tight text-center px-[4.5cqw]"
+                    class="mt-[4.5cqw] text-cdp-border font-inter text-[8.5cqw] lg:text-[7cqw] font-medium leading-tight text-center px-[4.5cqw]"
                   >
                     {{ formatHazardType(summary.topHazards[2].type) }}
                   </span>
@@ -204,6 +204,9 @@
                 </div>
               }
             </div>
+            <span class="mt-2 text-center text-white font-inter text-xs md:text-sm font-medium leading-none">
+              {{ 'disclosureTrends.ofJurisdictions' | translate }}
+            </span>
           </div>
         } @else {
           <span class="text-white/50 text-sm">{{
@@ -238,7 +241,7 @@
       <div
         class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-5 min-h-[170px] md:min-h-[200px] lg:min-h-[190px] xl:min-h-[220px] 2xl:min-h-[250px] lg:col-start-5 lg:row-start-2"
       >
-        <app-water-security-icon size="30"></app-water-security-icon>
+        <app-urban-flooding-icon size="30"></app-urban-flooding-icon>
         <div class="flex flex-col">
           <span
             class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"

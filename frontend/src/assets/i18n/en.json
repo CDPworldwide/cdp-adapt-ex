@@ -487,6 +487,7 @@
     "waterSecurityRisks": "Jurisdictions that identify water security risks",
     "floodingRisks": "Jurisdictions that identify flooding risks",
     "topHazards": "Top Reported Hazards",
+    "ofJurisdictions": "of jurisdictions",
     "noHazardsReported": "No hazards reported",
     "climateProjects": "Total climate projects reported",
     "significantHazards": "Jurisdictions facing significant climate hazards"
