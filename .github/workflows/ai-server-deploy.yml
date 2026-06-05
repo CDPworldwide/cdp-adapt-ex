@@ -125,7 +125,7 @@ jobs:
           HEADERS=$(mktemp)
           STATUS=$(curl -s -o /tmp/cors-preflight-body -D "$HEADERS" -w "%{http_code}" \
             -X OPTIONS \
-            -H "Origin: https://frontend-pbybuiwoxq-uc.a.run.app" \
+            -H "Origin: https://cdp-action-explorer.net" \
             -H "Access-Control-Request-Method: POST" \
             -H "Access-Control-Request-Headers: authorization,content-type,x-api-key" \
             "$URL/v1/suggest-follow-ups" || echo "000")

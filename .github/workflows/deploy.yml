@@ -28,8 +28,8 @@ env:
   # Production is the only long-lived deployment from this workflow.
   ENVIRONMENT: production
   SERVICE_NAME_BACKEND: cdp-server-prod
-  # Keep the single public frontend URL on the existing frontend service.
-  SERVICE_NAME_FRONTEND: frontend
+  # Production traffic for cdp-action-explorer.net is mapped to this service.
+  SERVICE_NAME_FRONTEND: frontend-prod
 
 jobs:
   deploy-backend:
