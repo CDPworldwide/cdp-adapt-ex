@@ -522,12 +522,14 @@
   },
   "disclosureTrends": {
     "title": "開示トレンド",
-    "adaptationPlan": "適応計画を持つ都市、州、地域",
+    "disclosingJurisdictions": "{{countries}}か国の都市、州、地域が開示",
+    "adaptationActions": "報告された適応アクションの総数",
     "waterSecurityRisks": "水安全保障リスクに直面していると報告した管轄区域",
+    "floodingRisks": "洪水リスクを特定した管轄区域",
     "topHazards": "主な報告ハザード",
     "noHazardsReported": "報告されたハザードはありません",
-    "projectsSeekingFinance": "資金を求める気候適応プロジェクト",
-    "populationExposed": "すでに重大な気候ハザードに直面している管轄区域"
+    "climateProjects": "報告された気候プロジェクトの総数",
+    "significantHazards": "重大な気候ハザードに直面している管轄区域"
   },
   "methodology": {
     "lastUpdated": "最終更新日: {{date}}",

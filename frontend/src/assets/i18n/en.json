@@ -482,12 +482,14 @@
   },
   "disclosureTrends": {
     "title": "Disclosure Trends",
-    "adaptationPlan": "Cities, states and regions that have an adaptation plan",
+    "disclosingJurisdictions": "Cities, states and regions from {{countries}} countries disclosed",
+    "adaptationActions": "Total adaptation actions reported",
     "waterSecurityRisks": "Jurisdictions that report facing water security risks",
+    "floodingRisks": "Jurisdictions that identify flooding risks",
     "topHazards": "Top Reported Hazards",
     "noHazardsReported": "No hazards reported",
-    "projectsSeekingFinance": "Climate adaptation projects seeking finance",
-    "populationExposed": "Jurisdictions already facing significant climate hazards"
+    "climateProjects": "Total climate projects reported",
+    "significantHazards": "Jurisdictions facing significant climate hazards"
   },
   "methodology": {
     "lastUpdated": "Last updated: {{date}}",

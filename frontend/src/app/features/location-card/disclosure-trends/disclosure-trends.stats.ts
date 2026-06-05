@@ -1,9 +1,39 @@
-import type { HazardEnum } from '@pac-api/client';
+import type {
+  DisclosureTrendsSummary as ApiDisclosureTrendsSummary,
+  HazardEnum,
+} from '@pac-api/client';
 
-// Re-export the generated types so existing imports stay stable. The backend
-// schema in backend/app/schemas/disclosure_trends.py is the single source of
-// truth.
-export type { DisclosureTrendsSummary, TopHazard } from '@pac-api/client';
+export type { TopHazard } from '@pac-api/client';
+
+export type DisclosureTrendsSummary = ApiDisclosureTrendsSummary & {
+  jurisdictionCount: number;
+  countryCount: number;
+  adaptationActionsCount: number;
+  climateProjectsCount: number;
+  projectFocusBreakdown: string;
+  waterSecurityRisksPct: number;
+  floodingRisksPct: number;
+};
+
+export const STATIC_DISCLOSURE_TRENDS_2025: DisclosureTrendsSummary = {
+  jurisdictionCount: 1005,
+  countryCount: 80,
+  adaptationActionsCount: 6355,
+  climateProjectsCount: 2871,
+  projectFocusBreakdown:
+    '52% mitigation-focused, 30% adaptation-focused, 12% dual-focused, 6% unknown',
+  waterSecurityRisksPct: 54,
+  floodingRisksPct: 73,
+  jurisdictionsExposedPct: 66,
+  adaptationPlanCount: 1005,
+  waterSecurityRisksCount: 54,
+  projectsSeekingFinanceCount: 2871,
+  topHazards: [
+    { rank: 1, type: 'EXTREME_HEAT', range: '58%' },
+    { rank: 2, type: 'URBAN_FLOODING', range: '49%' },
+    { rank: 3, type: 'DROUGHT', range: '45%' },
+  ],
+};
 
 // Scarcity-side water hazards only; commented entries are intentionally excluded but
 // kept as a reference for which related hazard types have been considered.

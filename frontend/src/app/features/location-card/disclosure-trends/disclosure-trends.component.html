@@ -19,9 +19,9 @@
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-3.5">
-      <!-- Title + arrows: visible only at lg+, occupies col 1 spanning both rows -->
+      <!-- Title: visible only at lg+, occupies col 1 spanning all rows -->
       <div
-        class="hidden lg:flex flex-col justify-start lg:col-start-1 lg:row-start-1 lg:row-span-2"
+        class="hidden lg:flex flex-col justify-start lg:col-start-1 lg:row-start-1 lg:row-span-3"
       >
         <div class="min-w-0">
           <span
@@ -37,35 +37,57 @@
         </div>
       </div>
 
-      <!-- Adaptation plan -->
+      <!-- Disclosing jurisdictions -->
       <div
-        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-2 lg:row-start-1"
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-5 min-h-[170px] md:min-h-[200px] lg:min-h-[190px] xl:min-h-[220px] 2xl:min-h-[250px] lg:col-start-2 lg:row-start-1"
+      >
+        <app-earth-icon size="28"></app-earth-icon>
+        <div class="flex flex-col">
+          <span
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
+          >
+            {{ jurisdictionDisplay() | number: '1.0-0' }}
+          </span>
+          <span
+            class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
+          >
+            {{
+              'disclosureTrends.disclosingJurisdictions'
+                | translate: { countries: summary.countryCount }
+            }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Adaptation actions -->
+      <div
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-5 min-h-[170px] md:min-h-[200px] lg:min-h-[190px] xl:min-h-[220px] 2xl:min-h-[250px] lg:col-start-2 lg:row-start-2"
       >
         <app-check-circle-icon size="28"></app-check-circle-icon>
         <div class="flex flex-col">
           <span
             class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
           >
-            {{ adaptationPlanDisplay() | number: '1.0-0' }}
+            {{ adaptationActionsDisplay() | number: '1.0-0' }}
           </span>
           <span
             class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
           >
-            {{ 'disclosureTrends.adaptationPlan' | translate }}
+            {{ 'disclosureTrends.adaptationActions' | translate }}
           </span>
         </div>
       </div>
 
       <!-- Water security -->
       <div
-        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-2 lg:row-start-2"
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-5 min-h-[170px] md:min-h-[200px] lg:min-h-[190px] xl:min-h-[220px] 2xl:min-h-[250px] lg:col-start-2 lg:row-start-3"
       >
         <app-water-security-icon size="30"></app-water-security-icon>
         <div class="flex flex-col">
           <span
             class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
           >
-            {{ waterSecurityDisplay() | number: '1.0-0' }}
+            {{ waterSecurityPctDisplay() | number: '1.0-0' }}%
           </span>
           <span
             class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
@@ -75,9 +97,9 @@
         </div>
       </div>
 
-      <!-- Top hazards (sm: full row; lg: cols 3-4 spanning both rows) -->
+      <!-- Top hazards (sm: full row; lg: cols 3-4 spanning all rows) -->
       <div
-        class="sm:col-span-2 lg:col-start-3 lg:col-span-2 lg:row-start-1 lg:row-span-2 bg-cdp-neutral-09 px-5 py-6 md:px-6 md:py-7 flex flex-col min-h-[320px] md:min-h-[400px] lg:min-h-0"
+        class="sm:col-span-2 lg:col-start-3 lg:col-span-2 lg:row-start-1 lg:row-span-3 bg-cdp-neutral-09 px-5 py-6 md:px-6 md:py-7 flex flex-col min-h-[320px] md:min-h-[400px] lg:min-h-0"
       >
         <span
           class="block text-white font-roboto text-[11px] md:text-xs font-normal uppercase leading-none tracking-cdp-eyebrow mb-4"
@@ -190,28 +212,50 @@
         }
       </div>
 
-      <!-- Projects seeking finance -->
+      <!-- Climate projects -->
       <div
-        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-5 lg:row-start-1"
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-5 min-h-[170px] md:min-h-[200px] lg:min-h-[190px] xl:min-h-[220px] 2xl:min-h-[250px] lg:col-start-5 lg:row-start-1"
       >
         <app-money-circle-icon size="28"></app-money-circle-icon>
         <div class="flex flex-col">
           <span
             class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
           >
-            {{ projectsSeekingFinanceDisplay() | number: '1.0-0' }}
+            {{ climateProjectsDisplay() | number: '1.0-0' }}
           </span>
           <span
             class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
           >
-            {{ 'disclosureTrends.projectsSeekingFinance' | translate }}
+            {{ 'disclosureTrends.climateProjects' | translate }}
+          </span>
+          <span class="block mt-2 text-white/70 font-inter text-[11px] md:text-xs leading-snug">
+            {{ summary.projectFocusBreakdown }}
           </span>
         </div>
       </div>
 
-      <!-- Jurisdictions exposed -->
+      <!-- Flooding risks -->
       <div
-        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-6 min-h-[200px] md:min-h-[240px] lg:min-h-[260px] xl:min-h-[300px] 2xl:min-h-[360px] lg:col-start-5 lg:row-start-2"
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-5 min-h-[170px] md:min-h-[200px] lg:min-h-[190px] xl:min-h-[220px] 2xl:min-h-[250px] lg:col-start-5 lg:row-start-2"
+      >
+        <app-water-security-icon size="30"></app-water-security-icon>
+        <div class="flex flex-col">
+          <span
+            class="block font-roboto font-normal text-white leading-none text-3xl md:text-4xl lg:text-[44px] xl:text-5xl 2xl:text-6xl tabular-nums"
+          >
+            {{ floodingRisksPctDisplay() | number: '1.0-0' }}%
+          </span>
+          <span
+            class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
+          >
+            {{ 'disclosureTrends.floodingRisks' | translate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Significant hazards -->
+      <div
+        class="bg-cdp-neutral-09 px-5 py-5 md:px-6 md:py-6 flex flex-col justify-between gap-5 min-h-[170px] md:min-h-[200px] lg:min-h-[190px] xl:min-h-[220px] 2xl:min-h-[250px] lg:col-start-5 lg:row-start-3"
       >
         <app-earth-icon size="28"></app-earth-icon>
         <div class="flex flex-col">
@@ -227,7 +271,7 @@
           <span
             class="block mt-3 md:mt-4 text-white font-inter text-xs md:text-sm font-medium leading-snug"
           >
-            {{ 'disclosureTrends.populationExposed' | translate }}
+            {{ 'disclosureTrends.significantHazards' | translate }}
           </span>
         </div>
       </div>
