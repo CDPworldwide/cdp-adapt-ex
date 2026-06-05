@@ -66,6 +66,8 @@ export class CityDetailPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.syncVisualViewportHeight();
+
     combineLatest([this.route.paramMap, this.route.data])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([params, data]) => {
@@ -100,6 +102,35 @@ export class CityDetailPageComponent implements OnInit {
     }
 
     this.router.navigate(['/org', this.organizationId, tab]);
+  }
+
+  private syncVisualViewportHeight(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const visualViewport = window.visualViewport;
+    const rootStyle = document.documentElement.style;
+    const updateHeight = () => {
+      rootStyle.setProperty(
+        '--app-visual-viewport-height',
+        `${visualViewport?.height ?? window.innerHeight}px`,
+      );
+    };
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    window.addEventListener('orientationchange', updateHeight);
+    visualViewport?.addEventListener('resize', updateHeight);
+    visualViewport?.addEventListener('scroll', updateHeight);
+
+    this.destroyRef.onDestroy(() => {
+      window.removeEventListener('resize', updateHeight);
+      window.removeEventListener('orientationchange', updateHeight);
+      visualViewport?.removeEventListener('resize', updateHeight);
+      visualViewport?.removeEventListener('scroll', updateHeight);
+      rootStyle.removeProperty('--app-visual-viewport-height');
+    });
   }
 
   private loadLocationByOrganizationId(organizationId: string): void {

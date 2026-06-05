@@ -2,6 +2,22 @@
   display: block;
 }
 
+.chat-input-section {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+@media (max-height: 480px) {
+  .chat-panel-header {
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .chat-input-section {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+    padding-top: 0.5rem;
+  }
+}
+
 .ai-assistant-message {
   color: #111827;
 }
