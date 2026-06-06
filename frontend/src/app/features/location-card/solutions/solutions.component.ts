@@ -101,8 +101,6 @@ export class SolutionsComponent {
     'assets/images/solutions.component.images/environmental_bkgs_dew.webp',
     'assets/images/solutions.component.images/environmental_bkgs_trees.webp',
     'assets/images/solutions.component.images/environmental_bkgs_windmill.webp',
-    'assets/images/solutions.component.images/environmental_bkgs_pool.webp',
-    'assets/images/solutions.component.images/environmental_bkgs_water_recycling.webp',
   ];
 
   getCardBackground(index: number): string {
