@@ -93,24 +93,13 @@ PGPASSWORD="$POSTGRES_PASSWORD" psql \
   -c 'select cdp_disclosing_org_number, disclosing_organization from "CSTAR_2025_Dim_Central" where cdp_disclosing_org_number in (831391,10894,31176,73051,31169,74594);'
 ```
 
-## Update Remote System Prompt
+## Update System Prompt
 
-The deployed AI server reads `SYSTEM_PROMPT` from this stable public Gist URL:
+The deployed AI server uses the bundled `app/prompts/system_prompt.md` file by
+default. Leave `SYSTEM_PROMPT` unset in Cloud Run unless a temporary override is
+needed.
 
-```text
-https://gist.githubusercontent.com/andrewm-bakerst/fa841de953aed344794b1fc0281069d1/raw/system_prompt.md
-```
-
-Upload `app/prompts/system_prompt.md` to that Gist:
-
-```bash
-uv run update-system-prompt
-```
-
-The script updates Gist `fa841de953aed344794b1fc0281069d1` using the active
-`gh` auth token and prints the fixed raw URL. Remote prompts are re-fetched
-after `SYSTEM_PROMPT_CACHE_SECONDS` so Gist edits can be picked up without
-restarting the server.
-
-There is no automatic repo-to-Gist sync workflow. For prompt-only edits, update
-the Gist directly or run the script locally.
+Remote prompt overrides are still supported by setting `SYSTEM_PROMPT` to an
+HTTP(S) URL or file path, but production deploys should avoid depending on
+external prompt URLs because a missing prompt endpoint makes chat completions
+fail at request time.
