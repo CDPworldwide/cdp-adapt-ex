@@ -31,19 +31,53 @@
 
 .ai-assistant-message {
   color: #111827;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 :host ::ng-deep .ai-markdown {
   font-size: 0.875rem;
   line-height: 1.55;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+:host ::ng-deep .ai-markdown * {
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 :host ::ng-deep .ai-markdown > * + * {
   margin-top: 0.75rem;
 }
 
-:host ::ng-deep .ai-markdown p {
+:host ::ng-deep .ai-markdown p,
+:host ::ng-deep .ai-markdown h1,
+:host ::ng-deep .ai-markdown h2,
+:host ::ng-deep .ai-markdown h3,
+:host ::ng-deep .ai-markdown h4,
+:host ::ng-deep .ai-markdown h5,
+:host ::ng-deep .ai-markdown h6 {
   margin: 0;
+}
+
+:host ::ng-deep .ai-markdown a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+:host ::ng-deep .ai-markdown pre,
+:host ::ng-deep .ai-markdown code {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+:host ::ng-deep .ai-markdown table {
+  display: block;
+  overflow-x: auto;
 }
 
 :host ::ng-deep .ai-markdown strong {

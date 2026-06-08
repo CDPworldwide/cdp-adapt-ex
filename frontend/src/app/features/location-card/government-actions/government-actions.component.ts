@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { A11yModule } from '@angular/cdk/a11y';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,6 +22,8 @@ import { ActionsSummaryComponent } from './actions-summary/actions-summary.compo
 import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
 import { splitTitleAtLastColon } from '../../../shared/utils/title.util';
 import type { HazardSummaryRow, DetailItemType } from './government-actions.types';
+import { PosthogService } from '../../../core/analytics/posthog.service';
+import { actionItemProperties } from '../../../core/analytics/analytics-events';
 
 export type { HazardSummaryRow, DetailItemType };
 
@@ -48,10 +50,12 @@ export class GovernmentActionsComponent implements OnChanges {
   @Input() data: ActionsTab | null = null;
   // Mirrors the Hazards-tab disclosure banner; null for normal disclosers.
   @Input() bannerVariant: EdgeCaseBannerVariant = null;
+  @Input() locationId: number | string | null | undefined;
   @Input() locationName: string = '';
   @Input() countryName: string = '';
   @Input() disclosureYear: number | null | undefined;
   @Input() selectedFilter: string | null = null;
+  @Output() selectedFilterChange = new EventEmitter<string | null>();
 
   summaryRows: HazardSummaryRow[] = [];
   totalGoals: number = 0;
@@ -68,6 +72,8 @@ export class GovernmentActionsComponent implements OnChanges {
   selectedType: DetailItemType | null = null;
   selectedItem: AdaptationGoal | AdaptationAction | ProjectSeekingFunding | null = null;
   private previousFocus: HTMLElement | null = null;
+
+  constructor(private posthog: PosthogService) {}
 
   get selectedAction(): AdaptationAction {
     return this.selectedItem as AdaptationAction;
@@ -135,6 +141,7 @@ export class GovernmentActionsComponent implements OnChanges {
   onFilterChanged(hazardKey: string | null): void {
     this.selectedFilter = hazardKey;
     this.applyFilter();
+    this.selectedFilterChange.emit(hazardKey);
   }
 
   private applyFilter(): void {
@@ -169,6 +176,19 @@ export class GovernmentActionsComponent implements OnChanges {
     this.previousFocus = document.activeElement as HTMLElement;
     this.selectedType = type;
     this.selectedItem = item;
+
+    const properties = {
+      ...this.locationContextProperties(),
+      ...actionItemProperties(type, item),
+    };
+
+    if (type === 'action') {
+      this.posthog.capture('government_action_opened', properties);
+    } else if (type === 'project') {
+      this.posthog.capture('funding_project_opened', properties);
+    } else {
+      this.posthog.capture('adaptation_goal_opened', properties);
+    }
   }
 
   closeDetail(): void {
@@ -200,5 +220,14 @@ export class GovernmentActionsComponent implements OnChanges {
       default:
         return 'bg-gray-400 text-white';
     }
+  }
+
+  private locationContextProperties(): Record<string, string | number | null | undefined> {
+    return {
+      location_id: this.locationId == null ? undefined : this.locationId,
+      location_name: this.locationName,
+      country: this.countryName,
+      disclosure_year: this.disclosureYear ?? undefined,
+    };
   }
 }

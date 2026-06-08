@@ -31,6 +31,8 @@ import {
   type HazardProfile,
   type LocationProfile,
 } from '@pac-api/client';
+import { PosthogService } from '../../../core/analytics/posthog.service';
+import { hazardProperties, locationProperties } from '../../../core/analytics/analytics-events';
 
 @Component({
   selector: 'app-hazards',
@@ -82,15 +84,18 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
   constructor(
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
+    private posthog: PosthogService,
   ) {}
 
   get requesters(): string[] {
-    return (this.data?.requesters ?? [])
-      .flatMap((r) => r.split(',').map((s) => s.trim()))
-      .filter(Boolean)
-      // Drop the legal-entity " e.V." suffix from "ICLEI - Local Governments
-      // for Sustainability e.V." so the badge reads as the common name.
-      .map((s) => s.replace(/\s+e\.?\s*v\.?\s*$/i, ''));
+    return (
+      (this.data?.requesters ?? [])
+        .flatMap((r) => r.split(',').map((s) => s.trim()))
+        .filter(Boolean)
+        // Drop the legal-entity " e.V." suffix from "ICLEI - Local Governments
+        // for Sustainability e.V." so the badge reads as the common name.
+        .map((s) => s.replace(/\s+e\.?\s*v\.?\s*$/i, ''))
+    );
   }
 
   get bannerVariant(): EdgeCaseBannerVariant {
@@ -295,6 +300,13 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
       this.expandedHazards.delete(key);
     } else {
       this.expandedHazards.add(key);
+      const profile = this.findHazardProfile(hazard);
+      this.posthog.capture('hazard_detail_expanded', {
+        ...locationProperties(this.data),
+        ...hazardProperties(hazard),
+        hazard_rank: profile?.hazardRank,
+        hazard_source: profile?.source,
+      });
     }
   }
 
@@ -304,6 +316,13 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
 
   onExploreActions(hazard: Hazard): void {
     this.exploreActions.emit(hazard);
+  }
+
+  private findHazardProfile(hazard: Hazard): HazardProfile | undefined {
+    const key = this.getHazardKey(hazard);
+    return this.data?.hazards?.hazards?.find(
+      (profile) => this.getHazardKey(profile.hazard) === key,
+    );
   }
 
   parseImpact(text: string): { text: string; url: string | null } {

@@ -4,6 +4,7 @@ import { HazardMapService } from './features/hazard-map/hazard-map.service';
 import { LanguageService } from './shared/services/language.service';
 import { environment } from '../environments/environment';
 import { FeedbackModalComponent } from './shared/feedback-modal/feedback-modal';
+import { PosthogService } from './core/analytics/posthog.service';
 
 declare let gtag: Function;
 
@@ -16,6 +17,7 @@ declare let gtag: Function;
 export class App implements OnInit {
   private languageService = inject(LanguageService);
   private hazardMapService = inject(HazardMapService);
+  private posthogService = inject(PosthogService);
   protected readonly title = signal('frontend');
 
   skipToMain(event: Event) {
@@ -27,6 +29,7 @@ export class App implements OnInit {
   ngOnInit() {
     this.languageService.init();
     this.hazardMapService.preloadHazardLayers().subscribe();
+    this.posthogService.init();
 
     if (typeof gtag === 'function') {
       gtag('config', 'G-Z6QWJ09VM8', { debug_mode: environment.isDebugMode });

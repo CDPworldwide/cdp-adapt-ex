@@ -2,6 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { LanguageService } from './language.service';
+import { PosthogService } from '../../core/analytics/posthog.service';
 
 export interface FeedbackLocationContext {
   locationId?: string | number | null;
@@ -16,6 +17,7 @@ export class FeedbackService {
   private readonly router = inject(Router);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly languageService = inject(LanguageService);
+  private readonly posthog = inject(PosthogService);
 
   readonly isOpen = signal(false);
   private readonly openCount = signal(0);
@@ -29,6 +31,16 @@ export class FeedbackService {
   open(): void {
     this.openCount.update((count) => count + 1);
     this.isOpen.set(true);
+    const path = this.router.url.split('?')[0].split('#')[0] || '/';
+    const context = path.startsWith('/org/') ? this.locationContext() : {};
+    this.posthog.capture('feedback_opened', {
+      path,
+      language: this.languageService.currentLang(),
+      viewport: this.viewportSize(),
+      location_id: context.locationId == null ? undefined : String(context.locationId),
+      location_name: context.locationName,
+      active_tab: context.activeTab,
+    });
   }
 
   close(): void {

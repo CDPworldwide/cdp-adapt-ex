@@ -93,6 +93,14 @@ Sensitive variables must be defined in Secret Manager with the appropriate envir
 | `ALLOWED_ORIGINS` | CORS origins (comma-separated). |
 | `GOOGLE_MAPS_API_KEY` | Google Maps API Key. |
 
+Optional frontend analytics are configured through GitHub Actions variables:
+
+| Variable Name | Description |
+|---------------|-------------|
+| `FRONTEND_POSTHOG_KEY` | PostHog project key compiled into the frontend when analytics should be enabled. |
+| `FRONTEND_POSTHOG_HOST` | PostHog ingestion host. Defaults to `https://eu.i.posthog.com` when unset. |
+| `FRONTEND_POSTHOG_ENABLED` | Set to `true` to enable PostHog during frontend builds. Defaults to `false` when unset. |
+
 ### 📈 Monitoring & Logs
 
 #### View Deployment Logs
@@ -176,7 +184,7 @@ sequenceDiagram
 
 ### 1. Production (`deploy.yml`)
 Triggered on **push** to the `production` branch or by manual dispatch.
-- **Orchestration**: Deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, and Google Maps key injected at compile time.
+- **Orchestration**: Deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, Google Maps key, and optional PostHog analytics settings injected at compile time.
 - **Verification**: Automatically rolls back if the backend health check fails.
 
 ### 2. PR Previews (`backend-deploy.yml` & `frontend.yml`)

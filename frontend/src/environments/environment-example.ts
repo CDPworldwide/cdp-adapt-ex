@@ -21,4 +21,9 @@ export const environment = {
   mapsConfig: {
     apiKey: '',
   },
+  posthog: {
+    key: '',
+    host: 'https://eu.i.posthog.com',
+    enabled: false,
+  },
 };
