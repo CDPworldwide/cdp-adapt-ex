@@ -19,6 +19,7 @@ import {
   WaterSecurityIconComponent,
   MoneyCircleIconComponent,
   EarthIconComponent,
+  UrbanFloodingIconComponent,
 } from '../../../shared/icons';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import type { DisclosureTrendsSummary } from './disclosure-trends.stats';
@@ -36,6 +37,7 @@ const HAZARD_STAGGER_MS = 150;
     WaterSecurityIconComponent,
     MoneyCircleIconComponent,
     EarthIconComponent,
+    UrbanFloodingIconComponent,
     HazardIconComponent,
   ],
   templateUrl: './disclosure-trends.component.html',
@@ -53,9 +55,11 @@ export class DisclosureTrendsComponent implements AfterViewInit, OnChanges, OnDe
   private timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
   readonly hasEntered = signal(false);
-  readonly adaptationPlanDisplay = signal(0);
-  readonly waterSecurityDisplay = signal(0);
-  readonly projectsSeekingFinanceDisplay = signal(0);
+  readonly jurisdictionDisplay = signal(0);
+  readonly adaptationActionsDisplay = signal(0);
+  readonly waterSecurityPctDisplay = signal(0);
+  readonly climateProjectsDisplay = signal(0);
+  readonly floodingRisksPctDisplay = signal(0);
   readonly jurisdictionsExposedPctDisplay = signal(0);
   readonly hazardNumberDisplays: WritableSignal<number>[] = [signal(0), signal(0), signal(0)];
 
@@ -122,9 +126,11 @@ export class DisclosureTrendsComponent implements AfterViewInit, OnChanges, OnDe
   }
 
   private snapToFinal(): void {
-    this.adaptationPlanDisplay.set(this.summary.adaptationPlanCount);
-    this.waterSecurityDisplay.set(this.summary.waterSecurityRisksCount);
-    this.projectsSeekingFinanceDisplay.set(this.summary.projectsSeekingFinanceCount);
+    this.jurisdictionDisplay.set(this.summary.jurisdictionCount);
+    this.adaptationActionsDisplay.set(this.summary.adaptationActionsCount);
+    this.waterSecurityPctDisplay.set(this.summary.waterSecurityRisksPct);
+    this.climateProjectsDisplay.set(this.summary.climateProjectsCount);
+    this.floodingRisksPctDisplay.set(this.summary.floodingRisksPct);
     this.jurisdictionsExposedPctDisplay.set(this.summary.jurisdictionsExposedPct ?? 0);
     this.summary.topHazards.forEach((h, i) => {
       const target = this.parseHazardNumber(h.range);
@@ -134,13 +140,15 @@ export class DisclosureTrendsComponent implements AfterViewInit, OnChanges, OnDe
 
   private startCounters(): void {
     this.cancelPending();
-    this.tween(this.adaptationPlanDisplay, this.summary.adaptationPlanCount, COUNTER_DURATION_MS);
-    this.tween(this.waterSecurityDisplay, this.summary.waterSecurityRisksCount, COUNTER_DURATION_MS);
+    this.tween(this.jurisdictionDisplay, this.summary.jurisdictionCount, COUNTER_DURATION_MS);
     this.tween(
-      this.projectsSeekingFinanceDisplay,
-      this.summary.projectsSeekingFinanceCount,
+      this.adaptationActionsDisplay,
+      this.summary.adaptationActionsCount,
       COUNTER_DURATION_MS,
     );
+    this.tween(this.waterSecurityPctDisplay, this.summary.waterSecurityRisksPct, COUNTER_DURATION_MS);
+    this.tween(this.climateProjectsDisplay, this.summary.climateProjectsCount, COUNTER_DURATION_MS);
+    this.tween(this.floodingRisksPctDisplay, this.summary.floodingRisksPct, COUNTER_DURATION_MS);
     this.tween(
       this.jurisdictionsExposedPctDisplay,
       this.summary.jurisdictionsExposedPct ?? 0,
