@@ -280,9 +280,11 @@
           <app-government-actions
             [data]="data.governmentActions"
             [bannerVariant]="edgeCaseBannerVariant"
+            [locationId]="data.organizationId"
             [locationName]="data.name"
             [countryName]="data.countryName"
             [selectedFilter]="selectedHazardFilter"
+            (selectedFilterChange)="onActionHazardFilterChange($event)"
             [disclosureYear]="data.disclosureYear"
           ></app-government-actions>
         </div>

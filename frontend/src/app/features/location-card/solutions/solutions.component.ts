@@ -10,6 +10,8 @@ import { HazardEnum, LocationProfile, SolutionCard, SolutionCategoryEnum } from 
 import { SolutionDetailModalComponent } from './solution-detail-modal.component';
 import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
 import { MethodologyInfoComponent } from '../../../shared/components/methodology-info/methodology-info.component';
+import { PosthogService } from '../../../core/analytics/posthog.service';
+import { locationProperties, solutionProperties } from '../../../core/analytics/analytics-events';
 
 @Component({
   selector: 'app-solutions',
@@ -32,6 +34,7 @@ export class SolutionsComponent {
 
   private dialog = inject(MatDialog);
   private breakpointObserver = inject(BreakpointObserver);
+  private posthog = inject(PosthogService);
 
   selectedHazard: HazardEnum | null = null;
 
@@ -91,6 +94,17 @@ export class SolutionsComponent {
 
   selectHazard(hazardType: HazardEnum | null): void {
     this.selectedHazard = hazardType;
+    this.posthog.capture(
+      hazardType ? 'solution_hazard_filter_applied' : 'solution_hazard_filter_cleared',
+      {
+        ...locationProperties(this.data),
+        hazard_type: hazardType,
+        matching_solution_count: this.categories.reduce(
+          (count, category) => count + category.solutions.length,
+          0,
+        ),
+      },
+    );
   }
 
   isSelected(hazardType: HazardEnum | null): boolean {
@@ -109,6 +123,12 @@ export class SolutionsComponent {
   }
 
   openSolutionDetail(solution: SolutionCard): void {
+    this.posthog.capture('solution_detail_opened', {
+      ...locationProperties(this.data),
+      ...solutionProperties(solution),
+      selected_hazard_filter: this.selectedHazard,
+    });
+
     const isMobile =
       this.breakpointObserver.isMatched(Breakpoints.Handset) ||
       this.breakpointObserver.isMatched('(max-width: 1023px)');

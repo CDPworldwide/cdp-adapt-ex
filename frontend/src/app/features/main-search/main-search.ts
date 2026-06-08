@@ -33,13 +33,11 @@ import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends
 import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
 import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
 import { Footer } from '../../core/footer/footer';
+import { PosthogService } from '../../core/analytics/posthog.service';
 
 // `São Paulo` → `sao paulo`. NFD-strip combining marks; preserves length.
 function stripDiacritics(value: string): string {
-  return value
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase();
+  return value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 }
 
 @Component({
@@ -101,6 +99,7 @@ export class MainSearchComponent implements OnInit {
     private mapSelectionService: MapSelectionService,
     private router: Router,
     private disclosureTrendsStatsService: DisclosureTrendsStatsService,
+    private posthog: PosthogService,
   ) {}
 
   ngOnInit() {
@@ -199,6 +198,12 @@ export class MainSearchComponent implements OnInit {
     }
     const suggestion = this.allLocations.find((loc) => loc.name === this.selectedLocation?.name);
     if (suggestion) {
+      this.posthog.capture('search_location_selected', {
+        location_id: suggestion.organizationId,
+        location_name: suggestion.name,
+        country: suggestion.country,
+        source: 'map_pin',
+      });
       this.mapSelectionService.clearSelection();
       this.router.navigate(['/org', suggestion.organizationId]);
     }
@@ -385,6 +390,18 @@ export class MainSearchComponent implements OnInit {
     );
 
     if (selectedLocation) {
+      const resultRank =
+        this.visibleSuggestions.findIndex(
+          (location) => location.organizationId === selectedLocation.organizationId,
+        ) + 1;
+      this.posthog.capture('search_location_selected', {
+        location_id: selectedLocation.organizationId,
+        location_name: selectedLocation.name,
+        country: selectedLocation.country,
+        source: 'search',
+        query_length: trimmedQuery.length,
+        result_rank: resultRank || undefined,
+      });
       this.openLocation(selectedLocation.organizationId);
     } else {
       this.loadLocation(trimmedQuery);
@@ -411,6 +428,13 @@ export class MainSearchComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
+          this.posthog.capture('search_location_selected', {
+            location_id: data.organizationId,
+            location_name: data.name,
+            country: data.countryName,
+            source: 'search',
+            query_length: locationName.length,
+          });
           this.openLocation(data.organizationId);
         },
         error: () => {

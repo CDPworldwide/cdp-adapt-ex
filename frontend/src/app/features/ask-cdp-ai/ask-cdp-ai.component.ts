@@ -19,6 +19,8 @@ import {
 } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
+import { PosthogService } from '../../core/analytics/posthog.service';
+import { locationProperties } from '../../core/analytics/analytics-events';
 
 declare let gtag: Function;
 
@@ -34,6 +36,7 @@ export class AskCdpAiComponent implements OnChanges {
   private sanitizer = inject(DomSanitizer);
   private destroyRef = inject(DestroyRef);
   private mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
+  private posthog = inject(PosthogService);
 
   @Input() locationData: LocationProfile | null = null;
   @Input() contextArea: AskCdpAiContextArea = 'hazards';
@@ -57,6 +60,13 @@ export class AskCdpAiComponent implements OnChanges {
     if (changes['locationData'] || changes['contextArea']) {
       this.askCdpAiService.setLocationContext(this.locationData, this.contextArea);
     }
+
+    if (changes['isOpen']?.currentValue === true && changes['isOpen'].previousValue !== true) {
+      this.posthog.capture('ai_chat_opened', {
+        ...locationProperties(this.locationData),
+        context_area: this.contextArea,
+      });
+    }
   }
 
   toggleOpen() {
@@ -69,7 +79,14 @@ export class AskCdpAiComponent implements OnChanges {
     if (typeof globalGtag === 'function') {
       globalGtag('event', 'chatbot_query_submit');
     }
-    this.executeChatQuery(this.userQuery.trim());
+    const query = this.userQuery.trim();
+    this.posthog.capture('ai_chat_query_submitted', {
+      ...locationProperties(this.locationData),
+      context_area: this.contextArea,
+      query_length: query.length,
+      source: 'manual',
+    });
+    this.executeChatQuery(query);
     this.userQuery = '';
   }
 
@@ -87,6 +104,12 @@ export class AskCdpAiComponent implements OnChanges {
     if (typeof globalGtag === 'function') {
       globalGtag('event', 'chatbot_suggest_click', { query_text: question });
     }
+    this.posthog.capture('ai_chat_followup_clicked', {
+      ...locationProperties(this.locationData),
+      context_area: this.contextArea,
+      query_length: question.length,
+      source: 'followup',
+    });
     this.executeChatQuery(question);
   }
 

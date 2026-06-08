@@ -13,6 +13,8 @@ import { OrgTypeEnum } from '@pac-api/client';
 import type { LocationPin } from '@pac-api/client';
 import { Subscription } from 'rxjs';
 import { GoogleMapsLoaderService } from 'src/app/shared/services/google-maps-loader.service';
+import { PosthogService } from '../../core/analytics/posthog.service';
+import { pinProperties } from '../../core/analytics/analytics-events';
 
 // Circle-on-stick pin shape (a filled disc with a vertical bar trailing
 // downward). Single fill — the selected variant uses a darker shade.
@@ -64,6 +66,7 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
     private locationPinsService: LocationPinsService,
     private ngZone: NgZone,
     private googleMapsLoader: GoogleMapsLoaderService,
+    private posthog: PosthogService,
   ) {}
 
   ngOnInit(): void {
@@ -225,6 +228,10 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
         );
 
         this.googleMap.panTo(newCenter!);
+        this.posthog.capture('map_pin_selected', {
+          ...pinProperties(location),
+          zoom_level: this.googleMap.getZoom(),
+        });
 
         google.maps.event.addListenerOnce(this.googleMap, 'idle', () => {
           this.googleMap.setZoom(zoomLevel);
