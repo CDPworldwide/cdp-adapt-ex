@@ -56,3 +56,4 @@ data/overture/geometry.json
 /scripts/seed_db.py
 /hazards-updated-050726.csv
 backend/app/data/gee_hazards_2025.json
+/.web-tests

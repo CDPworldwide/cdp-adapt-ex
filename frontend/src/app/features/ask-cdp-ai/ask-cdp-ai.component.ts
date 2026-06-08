@@ -18,6 +18,7 @@ import {
   type AskCdpAiContextArea,
 } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 
 declare let gtag: Function;
 
@@ -32,6 +33,7 @@ export class AskCdpAiComponent implements OnChanges {
   private askCdpAiService = inject(AskCdpAiService);
   private sanitizer = inject(DomSanitizer);
   private destroyRef = inject(DestroyRef);
+  private mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
 
   @Input() locationData: LocationProfile | null = null;
   @Input() contextArea: AskCdpAiContextArea = 'hazards';
@@ -69,6 +71,13 @@ export class AskCdpAiComponent implements OnChanges {
     }
     this.executeChatQuery(this.userQuery.trim());
     this.userQuery = '';
+  }
+
+  onInputFocus(event: FocusEvent): void {
+    const input = event.target;
+    if (input instanceof HTMLElement) {
+      this.mobileKeyboardViewportService.keepElementVisible(input);
+    }
   }
 
   onFollowUpClick(question: string) {

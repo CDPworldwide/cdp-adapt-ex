@@ -16,6 +16,7 @@ import { AskCdpAiLogoIconComponent } from '../../shared/icons/ask-cdp-ai-logo-ic
 import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { LanguageService } from '../../shared/services/language.service';
 import { FeedbackService } from '../../shared/services/feedback.service';
+import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 
 const DEFAULT_TAB: LocationCardTabKey = 'hazards';
 const VALID_TABS: readonly LocationCardTabKey[] = ['hazards', 'actions', 'solutions'];
@@ -48,6 +49,7 @@ export class CityDetailPageComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private languageService = inject(LanguageService);
   private feedbackService = inject(FeedbackService);
+  private mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
 
   constructor(
     private locationService: LocationService,
@@ -66,7 +68,7 @@ export class CityDetailPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.syncVisualViewportHeight();
+    this.mobileKeyboardViewportService.startTracking(this.destroyRef);
 
     combineLatest([this.route.paramMap, this.route.data])
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -102,40 +104,6 @@ export class CityDetailPageComponent implements OnInit {
     }
 
     this.router.navigate(['/org', this.organizationId, tab]);
-  }
-
-  private syncVisualViewportHeight(): void {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    const visualViewport = window.visualViewport;
-    const rootStyle = document.documentElement.style;
-    const updateViewportMetrics = () => {
-      rootStyle.setProperty(
-        '--app-visual-viewport-height',
-        `${visualViewport?.height ?? window.innerHeight}px`,
-      );
-      rootStyle.setProperty(
-        '--app-visual-viewport-offset-top',
-        `${visualViewport?.offsetTop ?? 0}px`,
-      );
-    };
-
-    updateViewportMetrics();
-    window.addEventListener('resize', updateViewportMetrics);
-    window.addEventListener('orientationchange', updateViewportMetrics);
-    visualViewport?.addEventListener('resize', updateViewportMetrics);
-    visualViewport?.addEventListener('scroll', updateViewportMetrics);
-
-    this.destroyRef.onDestroy(() => {
-      window.removeEventListener('resize', updateViewportMetrics);
-      window.removeEventListener('orientationchange', updateViewportMetrics);
-      visualViewport?.removeEventListener('resize', updateViewportMetrics);
-      visualViewport?.removeEventListener('scroll', updateViewportMetrics);
-      rootStyle.removeProperty('--app-visual-viewport-height');
-      rootStyle.removeProperty('--app-visual-viewport-offset-top');
-    });
   }
 
   private loadLocationByOrganizationId(organizationId: string): void {
