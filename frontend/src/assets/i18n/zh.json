@@ -521,12 +521,15 @@
   },
   "disclosureTrends": {
     "title": "披露趋势",
-    "adaptationPlan": "拥有适应计划的城市、州和地区",
-    "waterSecurityRisks": "报告面临水安全风险的司法管辖区",
+    "disclosingJurisdictions": "来自 {{countries}} 个国家的城市、州和地区披露了信息",
+    "adaptationActions": "报告的适应行动总数",
+    "waterSecurityRisks": "识别水安全风险的司法管辖区",
+    "floodingRisks": "识别洪水风险的司法管辖区",
     "topHazards": "主要报告风险",
+    "ofJurisdictions": "司法管辖区",
     "noHazardsReported": "未报告风险",
-    "projectsSeekingFinance": "寻求融资的气候适应项目",
-    "populationExposed": "已经面临重大气候风险的司法管辖区"
+    "climateProjects": "报告的气候项目总数",
+    "significantHazards": "面临重大气候风险的司法管辖区"
   },
   "methodology": {
     "lastUpdated": "最后更新：{{date}}",

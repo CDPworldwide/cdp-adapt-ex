@@ -1,29 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable, from } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import {
+  STATIC_DISCLOSURE_TRENDS_2025,
   type DisclosureTrendsSummary,
-  getDisclosureTrendsApiV1DisclosureTrendsGet,
-} from '@pac-api/client';
-import { createApiClient } from '../../../shared/services/api-client';
+} from './disclosure-trends.stats';
 
 /**
  * Provides dataset-wide disclosure trends for the homepage.
  */
 @Injectable({ providedIn: 'root' })
 export class DisclosureTrendsStatsService {
-  private client = createApiClient();
-
   getSummary(year: number): Observable<DisclosureTrendsSummary> {
-    return from(
-      getDisclosureTrendsApiV1DisclosureTrendsGet({
-        client: this.client,
-        query: { year },
-      }).then((res) => {
-        if (res.error) {
-          throw res.error;
-        }
-        return res.data as DisclosureTrendsSummary;
-      }),
-    );
+    if (year !== 2025) {
+      throw new Error(`Static disclosure trends are only available for 2025, received ${year}.`);
+    }
+    return of(STATIC_DISCLOSURE_TRENDS_2025);
   }
 }

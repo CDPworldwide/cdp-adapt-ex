@@ -521,12 +521,15 @@
   },
   "disclosureTrends": {
     "title": "Tendências de divulgação",
-    "adaptationPlan": "Cidades, estados e regiões que têm um plano de adaptação",
-    "waterSecurityRisks": "Jurisdições que relatam enfrentar riscos de segurança hídrica",
+    "disclosingJurisdictions": "Cidades, estados e regiões de {{countries}} países divulgaram informações",
+    "adaptationActions": "Total de ações de adaptação reportadas",
+    "waterSecurityRisks": "Jurisdições que identificam riscos de segurança hídrica",
+    "floodingRisks": "Jurisdições que identificam riscos de inundação",
     "topHazards": "Principais riscos reportados",
+    "ofJurisdictions": "das jurisdições",
     "noHazardsReported": "Nenhum risco reportado",
-    "projectsSeekingFinance": "Projetos de adaptação climática buscando financiamento",
-    "populationExposed": "Jurisdições que já enfrentam riscos climáticos significativos"
+    "climateProjects": "Total de projetos climáticos reportados",
+    "significantHazards": "Jurisdições que enfrentam riscos climáticos significativos"
   },
   "methodology": {
     "lastUpdated": "Última atualização: {{date}}",
