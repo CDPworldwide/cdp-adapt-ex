@@ -84,9 +84,12 @@ export class LocationService {
               name: location.name,
               country: location.country?.trim() || undefined,
               // `disclosure_status` is "Submitted" if the jurisdiction returned
-              // a questionnaire this cycle. Anything else (including
-              // "non-disclosed" or NULL) is treated as a non-discloser.
-              disclosesToCDP: locationSummary.disclosure_status === 'Submitted',
+              // a questionnaire this cycle, or "Amended" if they updated a
+              // prior submission. Both count as disclosers. Anything else
+              // (including "non-disclosed" or NULL) is treated as a non-discloser.
+              disclosesToCDP: ['Submitted', 'Amended'].includes(
+                locationSummary.disclosure_status ?? '',
+              ),
               isReportingLeader: locationSummary.is_reporting_leader ?? false,
             },
           ];
