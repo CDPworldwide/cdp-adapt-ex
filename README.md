@@ -40,9 +40,12 @@ cdp-adapt-ex/
 │   │   └── shared/    # Reusable components & UI building blocks
 │   └── tailwind.config.js
 ├── data/              # Seed data, migration sources, and climate layer scripts
+├── scripts/           # CSTAR data pipeline (notebook, BQ finalize, validation, schema SQL)
 ├── docs/              # Canonical handoff and technical documentation
 └── Makefile           # Project automation (install, test, lint)
 ```
+
+The CSTAR 2025 data pipeline (notebook -> BQ -> Cloud SQL) is documented in [`backend/scripts/README.md`](backend/scripts/README.md), which covers the four pipeline stages and the CloudSQL migration.
 
 ### Infrastructure & Cloud Architecture
 
