@@ -14,6 +14,7 @@ import { NgZone } from '@angular/core';
 class MockAdvancedMarkerElement {
   public content: any;
   public zIndex: number;
+  public addEventListener = jasmine.createSpy('addEventListener');
   public addListener = jasmine.createSpy('addListener');
   constructor(options: any) {
     this.content = options.content;

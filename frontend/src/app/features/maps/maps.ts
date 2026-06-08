@@ -213,7 +213,7 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
 
     this.markers.set(location.name, { marker, orgType });
 
-    marker.addListener('click', () => {
+    const handlePinClick = () => {
       this.ngZone.run(() => {
         const zoomLevel = 8;
         const mapHeight = this.mapElementRef.nativeElement.offsetHeight;
@@ -239,7 +239,18 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
 
         this.mapSelectionService.selectLocation(location);
       });
-    });
+    };
+
+    const markerElement = marker as google.maps.marker.AdvancedMarkerElement & {
+      addEventListener?: EventTarget['addEventListener'];
+      addListener: google.maps.MVCObject['addListener'];
+    };
+
+    if (typeof markerElement.addEventListener === 'function') {
+      markerElement.addEventListener('gmp-click', handlePinClick);
+    } else {
+      markerElement.addListener('click', handlePinClick);
+    }
   }
 
   private resetMap(): void {
