@@ -6,6 +6,17 @@
   padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
 
+[data-testid='ask-ai-input'] {
+  scroll-margin-bottom: max(5rem, var(--app-keyboard-inset-bottom, 0px));
+}
+
+@media (max-width: 767px) {
+  [data-testid='ask-ai-input'] {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+}
+
 @media (max-height: 480px) {
   .chat-panel-header {
     padding-bottom: 0.5rem;

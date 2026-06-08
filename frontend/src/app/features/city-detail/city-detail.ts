@@ -16,6 +16,7 @@ import { AskCdpAiLogoIconComponent } from '../../shared/icons/ask-cdp-ai-logo-ic
 import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { LanguageService } from '../../shared/services/language.service';
 import { FeedbackService } from '../../shared/services/feedback.service';
+import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 
 const DEFAULT_TAB: LocationCardTabKey = 'hazards';
 const VALID_TABS: readonly LocationCardTabKey[] = ['hazards', 'actions', 'solutions'];
@@ -48,6 +49,7 @@ export class CityDetailPageComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private languageService = inject(LanguageService);
   private feedbackService = inject(FeedbackService);
+  private mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
 
   constructor(
     private locationService: LocationService,
@@ -66,7 +68,7 @@ export class CityDetailPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.syncVisualViewportHeight();
+    this.mobileKeyboardViewportService.startTracking(this.destroyRef);
 
     combineLatest([this.route.paramMap, this.route.data])
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -102,35 +104,6 @@ export class CityDetailPageComponent implements OnInit {
     }
 
     this.router.navigate(['/org', this.organizationId, tab]);
-  }
-
-  private syncVisualViewportHeight(): void {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    const visualViewport = window.visualViewport;
-    const rootStyle = document.documentElement.style;
-    const updateHeight = () => {
-      rootStyle.setProperty(
-        '--app-visual-viewport-height',
-        `${visualViewport?.height ?? window.innerHeight}px`,
-      );
-    };
-
-    updateHeight();
-    window.addEventListener('resize', updateHeight);
-    window.addEventListener('orientationchange', updateHeight);
-    visualViewport?.addEventListener('resize', updateHeight);
-    visualViewport?.addEventListener('scroll', updateHeight);
-
-    this.destroyRef.onDestroy(() => {
-      window.removeEventListener('resize', updateHeight);
-      window.removeEventListener('orientationchange', updateHeight);
-      visualViewport?.removeEventListener('resize', updateHeight);
-      visualViewport?.removeEventListener('scroll', updateHeight);
-      rootStyle.removeProperty('--app-visual-viewport-height');
-    });
   }
 
   private loadLocationByOrganizationId(organizationId: string): void {
