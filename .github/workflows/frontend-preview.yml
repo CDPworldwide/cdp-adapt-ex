@@ -133,6 +133,9 @@ jobs:
           FRONTEND_AUTH_DISABLED='false' \
           FRONTEND_DEBUG_MODE='true' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
+          FRONTEND_POSTHOG_KEY='${{ vars.FRONTEND_POSTHOG_KEY }}' \
+          FRONTEND_POSTHOG_HOST='${{ vars.FRONTEND_POSTHOG_HOST }}' \
+          FRONTEND_POSTHOG_ENABLED='${{ vars.FRONTEND_POSTHOG_ENABLED }}' \
           bash scripts/write-environment.sh
 
       - name: Validate generated frontend environment
@@ -153,6 +156,7 @@ jobs:
               'aiServerUrl': extract('aiServerUrl'),
               'apiKey': extract('apiKey'),
               'aiServerApiKey': extract('aiServerApiKey'),
+              'posthogKey': extract('key'),
           }
 
           for key, value in values.items():
@@ -160,7 +164,8 @@ jobs:
               if value:
                   print(f"{key}_length={len(value)}")
 
-          missing = [key for key in values if not values[key]]
+          required = ('baseUrl', 'aiServerUrl', 'apiKey', 'aiServerApiKey')
+          missing = [key for key in required if not values[key]]
           if missing:
               raise SystemExit(f"Missing generated frontend environment values: {', '.join(missing)}")
           PY

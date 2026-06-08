@@ -34,6 +34,12 @@ import {
 import { ReplaySubject, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Footer } from '../../core/footer/footer';
+import { PosthogService } from '../../core/analytics/posthog.service';
+import {
+  hazardKeyProperties,
+  hazardProperties,
+  locationProperties,
+} from '../../core/analytics/analytics-events';
 
 import {
   buildHazardActionFilter,
@@ -76,6 +82,9 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
   @Output()
   activeTabChange = new EventEmitter<LocationCardTabKey>();
 
+  @Output()
+  actionHazardFilterChange = new EventEmitter<string | null>();
+
   @Input()
   activeTab: LocationCardTabKey = DEFAULT_LOCATION_CARD_TAB;
   selectedHazardFilter: string | null = null;
@@ -108,6 +117,7 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
     private destroyRef: DestroyRef,
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
+    private posthog: PosthogService,
   ) {}
 
   ngOnInit(): void {
@@ -171,7 +181,7 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['data'] && changes['data'].currentValue) {
-      this.selectedHazardFilter = null;
+      this.updateSelectedHazardFilter(null, false);
 
       const currentData = changes['data'].currentValue as LocationData;
       // Only fire tracking if data represents a full profile (includes hazards)
@@ -185,6 +195,7 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
         if (typeof gtag === 'function') {
           gtag('event', 'location_viewed', { location_id: currentData.name });
         }
+        this.posthog.capture('location_viewed', locationProperties(currentData));
       }
 
       // Push the new geometry to the stream
@@ -198,12 +209,20 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
     }
 
     if (changes['activeTab'] && shouldClearHazardFilter(changes['activeTab'].currentValue)) {
-      this.selectedHazardFilter = null;
+      this.updateSelectedHazardFilter(null);
     }
   }
 
   setActiveTab(tab: LocationCardTabKey): void {
+    const previousTab = this.activeTab;
     this.updateActiveTab(tab);
+    if (previousTab !== tab) {
+      this.posthog.capture('location_tab_changed', {
+        ...locationProperties(this.data),
+        from_tab: previousTab,
+        to_tab: tab,
+      });
+    }
     // Each tab is its own logical "page"; reset scroll so the content
     // doesn't open partway down. Mirrors what `exploreHazardActions` does
     // when it programmatically switches to the actions tab.
@@ -213,9 +232,13 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
   private updateActiveTab(tab: LocationCardTabKey): void {
     this.activeTab = tab;
     if (shouldClearHazardFilter(tab)) {
-      this.selectedHazardFilter = null;
+      this.updateSelectedHazardFilter(null);
     }
     this.activeTabChange.emit(tab);
+  }
+
+  onActionHazardFilterChange(filter: string | null): void {
+    this.updateSelectedHazardFilter(filter);
   }
 
   goBackToMap(): void {
@@ -223,9 +246,68 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
   }
 
   exploreHazardActions(hazard: Hazard): void {
-    this.selectedHazardFilter = buildHazardActionFilter(hazard);
+    const actionCount = this.countActionsForHazard(hazard);
+    this.posthog.capture('hazard_actions_explore_clicked', {
+      ...locationProperties(this.data),
+      ...hazardProperties(hazard),
+      action_count: actionCount,
+    });
+    this.updateSelectedHazardFilter(buildHazardActionFilter(hazard));
+    const previousTab = this.activeTab;
     this.updateActiveTab('actions');
+    if (previousTab !== 'actions') {
+      this.posthog.capture('location_tab_changed', {
+        ...locationProperties(this.data),
+        from_tab: previousTab,
+        to_tab: 'actions',
+        source: 'hazard_actions_explore',
+      });
+    }
     this.scrollRoot?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  private updateSelectedHazardFilter(filter: string | null, track = true): void {
+    if (this.selectedHazardFilter === filter) {
+      return;
+    }
+
+    const previousFilter = this.selectedHazardFilter;
+    this.selectedHazardFilter = filter;
+    this.actionHazardFilterChange.emit(filter);
+
+    if (!track) {
+      return;
+    }
+
+    if (filter) {
+      this.posthog.capture('action_hazard_filter_applied', {
+        ...locationProperties(this.data),
+        ...hazardKeyProperties(filter),
+        matching_action_count: this.countActionsForHazardKey(filter),
+      });
+      return;
+    }
+
+    this.posthog.capture('action_hazard_filter_cleared', {
+      ...locationProperties(this.data),
+      ...hazardKeyProperties(previousFilter),
+    });
+  }
+
+  private countActionsForHazardKey(filter: string): number {
+    const [hazardType, otherDetails = ''] = filter.split('|');
+    return (
+      this.data?.governmentActions?.actions?.filter((action) =>
+        action.hazardsAddressed?.some(
+          (hazard) =>
+            hazard.hazardType === hazardType && (hazard.otherHazardDetails || '') === otherDetails,
+        ),
+      ).length ?? 0
+    );
+  }
+
+  private countActionsForHazard(hazard: Hazard): number {
+    return this.countActionsForHazardKey(buildHazardActionFilter(hazard));
   }
 
   formatPopulation(value: number | null | undefined): string {

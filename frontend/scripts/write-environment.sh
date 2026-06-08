@@ -18,6 +18,9 @@ AI_SERVER_API_KEY_HEADER_NAME="${FRONTEND_AI_SERVER_API_KEY_HEADER_NAME:-${AI_SE
 AUTH_DISABLED="${FRONTEND_AUTH_DISABLED:-false}"
 DEBUG_MODE="${FRONTEND_DEBUG_MODE:-true}"
 MAPS_API_KEY="${FRONTEND_MAPS_API_KEY:-}"
+POSTHOG_KEY="${FRONTEND_POSTHOG_KEY:-}"
+POSTHOG_HOST="${FRONTEND_POSTHOG_HOST:-https://eu.i.posthog.com}"
+POSTHOG_ENABLED="${FRONTEND_POSTHOG_ENABLED:-false}"
 
 cat > src/environments/environment.ts <<EOF
 export const environment = {
@@ -33,6 +36,11 @@ export const environment = {
   isDebugMode: ${DEBUG_MODE},
   mapsConfig: {
     apiKey: '${MAPS_API_KEY}',
+  },
+  posthog: {
+    key: '${POSTHOG_KEY}',
+    host: '${POSTHOG_HOST}',
+    enabled: ${POSTHOG_ENABLED},
   },
 };
 EOF
