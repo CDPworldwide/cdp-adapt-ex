@@ -90,11 +90,12 @@ CREATE TABLE "CSTAR_2025_Fact_Hazard" (
 ALTER TABLE "CSTAR_2025_Fact_Hazard"
 ALTER COLUMN cdp_disclosing_org_number SET NOT NULL,
 ALTER COLUMN hazard_rank SET NOT NULL,
-ALTER COLUMN disclosing_year SET NOT NULL;
+ALTER COLUMN disclosing_year SET NOT NULL,
+ALTER COLUMN public_status SET NOT NULL;
 
 -- 2. Create the composite Primary Key
 ALTER TABLE "CSTAR_2025_Fact_Hazard"
-ADD PRIMARY KEY (cdp_disclosing_org_number, hazard_rank, disclosing_year);
+ADD PRIMARY KEY (cdp_disclosing_org_number, hazard_rank, disclosing_year, public_status);
 
 -- FACT GOAL TABLE --
 --drop table "CSTAR_2025_Fact_Goal";
@@ -142,19 +143,22 @@ CREATE TABLE "CSTAR_2025_Fact_Action" (
     "action_status_english" text,
     "total_cost_usd" NUMERIC,
     "action_index" INTEGER,
-    "disclosing_year" INTEGER
+    "disclosing_year" INTEGER,
+    "row_order" INTEGER
 );
 
--- add primary key for "CSTAR_2025_Fact_Goal"
+-- add primary key for "CSTAR_2025_Fact_Action"
+-- row_order is in the PK so an org can disclose two examples of actions with same title
 -- 1. Make ALL involved columns Not Null
 ALTER TABLE "CSTAR_2025_Fact_Action"
 ALTER COLUMN cdp_disclosing_org_number SET NOT NULL,
 ALTER COLUMN disclosing_year SET NOT NULL,
-ALTER COLUMN action_index SET NOT NULL;
+ALTER COLUMN action_index SET NOT NULL,
+ALTER COLUMN row_order SET NOT NULL;
 
 -- 2. Create the composite Primary Key
 ALTER TABLE "CSTAR_2025_Fact_Action"
-ADD PRIMARY KEY (cdp_disclosing_org_number, disclosing_year, action_index);
+ADD PRIMARY KEY (cdp_disclosing_org_number, disclosing_year, action_index, row_order);
 
 
 -- FACT FUNDING GAP TABLE --
@@ -239,7 +243,8 @@ CREATE TABLE "CSTAR_2025_Solution_Examples" (
     funding_source_english TEXT,   -- Use TEXT for potentially long strings
     action_status_english TEXT, -- Use VARCHAR for shorter strings, specify length
     total_cost_usd NUMERIC, -- Use NUMERIC for monetary values, specify precision and scale
-    completeness_score INTEGER
+    completeness_score INTEGER,
+    row_order INTEGER
 );
 
 -- add primary key
@@ -249,8 +254,9 @@ ALTER COLUMN disclosing_year SET NOT NULL,
 ALTER COLUMN target_org_id SET NOT NULL,
 ALTER COLUMN hazard_filter SET NOT NULL,
 ALTER COLUMN peer_org_id SET NOT NULL,
-ALTER COLUMN action_index SET NOT NULL;
+ALTER COLUMN action_index SET NOT NULL,
+ALTER COLUMN row_order SET NOT NULL;
 
 -- 2. Create the composite Primary Key
 ALTER TABLE "CSTAR_2025_Solution_Examples"
-ADD PRIMARY KEY (disclosing_year, target_org_id, hazard_filter, peer_org_id, action_index);
+ADD PRIMARY KEY (disclosing_year, target_org_id, hazard_filter, peer_org_id, action_index, row_order);
