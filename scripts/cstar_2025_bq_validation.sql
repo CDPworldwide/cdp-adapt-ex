@@ -154,9 +154,10 @@ ORDER BY cdp_disclosing_org_number;
 -- public-facing tables; uncomment the filter in `dim` if you want to
 -- scope the check to disclosing orgs only.
 --
--- Known expected exceptions (these are data gaps, not regressions):
---   - Anchorage
---   - <TBD second org>
+-- Known expected exceptions (data gaps, not regressions): both have
+-- hazards but no peer_solutions / solution_examples rows.
+--   - City of Anchorage, AK (org 50566, Public/Submitted)
+--   - Brava (org 73144, GEE-Derived/non-disclosed)
 -- ============================================================
 WITH dim AS (
   SELECT DISTINCT cdp_disclosing_org_number, disclosing_organization, public_status, disclosure_status
@@ -423,51 +424,27 @@ ORDER BY filter_kind, bucket;
 -- ============================================================
 -- 9. peer_solutions <-> solution_examples alignment (_TEST tables)
 --
--- Scoped to DISCLOSERS only.
+-- The post-notebook pipeline writes peer_solutions and
+-- solution_examples symmetrically, so alignment must hold for ALL
+-- targets (disclosers and non-disclosers).
 --
--- The _TEST tables aren't a clean snapshot of the _final tables: the
--- second-pipeline (non-discloser/GEE) workflow adds net-new rows to
--- peer_solutions_final_TEST without always populating
--- solution_examples_TEST. So strict alignment is only required for
--- discloser targets.
---
--- Empirically, broken down by hazard_filter kind:
---   specific_hazard discloser rows: zero orphans -- alignment holds.
---   All_branch discloser rows: a small fraction (~2%) are orphans.
---     This is a real gap, not structural -- peer_list_filtered does
---     carry top_hazard='All' rows for most targets, and 98% of the
---     All branch produces examples. Worth tracking the trend.
---
--- Expected (disclosers):
---   9a: zero rows. Discloser example pointing at a solution that
---       was capped out of peer_solutions_final_TEST.
---   9b: small or zero. Discloser peer-solution with no example to
---       render. Small counts can be legitimate (no usable
---       fact_action row); large counts mean cell WyyjG56RePFx is
---       dropping rows.
---   9c: zero rows. Drift between action_index in the two tables.
---   9d: one-row summary roll-up (disclosers).
---
--- Informational (no pass/fail):
---   9e: same orphan counts for non-disclosers. Net-new from the
---       second pipeline -- expect a non-trivial number here, just
---       useful to track over time.
+-- Expected results:
+--   9a: zero rows. Example pointing at a capped-out peer_solutions row.
+--   9b: small or zero. Peer-solution with no example. Large counts
+--       mean upstream is dropping rows.
+--   9c: zero rows. action_index drift between the two tables.
+--   9d: one-row summary roll-up, broken down by discloser / non-discloser.
+--   9e: zero for both metrics. Non-discloser-only scalar; redundant
+--       with 9a/9b but handy as a focused regression detector.
 -- ============================================================
 
--- 9a. Discloser solution_examples rows whose key is absent from peer_solutions
---     (hazard_filter = 'All' excluded -- structural, see header).
-WITH disclosers AS (
-  SELECT DISTINCT cdp_disclosing_org_number AS target_org_id
-  FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.dim_cdp_geo_and_ecoregion_TEST`
-  WHERE disclosure_status IS DISTINCT FROM 'non-disclosed'
-)
+-- 9a. solution_examples rows whose key is absent from peer_solutions.
 SELECT
   se.target_org_id,
   se.hazard_filter,
   se.action_english,
   COUNT(*) AS orphan_example_rows
 FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.solution_examples_TEST` se
-INNER JOIN disclosers d USING (target_org_id)
 LEFT JOIN `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.peer_solutions_final_TEST` ps
   ON  se.target_org_id  = ps.target_org_id
   AND se.hazard_filter  = ps.hazard_filter
@@ -476,13 +453,7 @@ WHERE ps.target_org_id IS NULL
 GROUP BY se.target_org_id, se.hazard_filter, se.action_english
 ORDER BY orphan_example_rows DESC, se.target_org_id, se.hazard_filter;
 
--- 9b. Discloser peer_solutions rows with no matching example
---     (hazard_filter = 'All' excluded -- structural, see header).
-WITH disclosers AS (
-  SELECT DISTINCT cdp_disclosing_org_number AS target_org_id
-  FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.dim_cdp_geo_and_ecoregion_TEST`
-  WHERE disclosure_status IS DISTINCT FROM 'non-disclosed'
-)
+-- 9b. peer_solutions rows with no matching example.
 SELECT
   ps.target_org_id,
   ps.hazard_filter,
@@ -490,7 +461,6 @@ SELECT
   ps.action_count,
   ps.action_rank
 FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.peer_solutions_final_TEST` ps
-INNER JOIN disclosers d USING (target_org_id)
 LEFT JOIN `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.solution_examples_TEST` se
   ON  ps.target_org_id  = se.target_org_id
   AND ps.hazard_filter  = se.hazard_filter
@@ -498,13 +468,7 @@ LEFT JOIN `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.solution_examp
 WHERE se.target_org_id IS NULL
 ORDER BY ps.action_count DESC, ps.target_org_id, ps.hazard_filter;
 
--- 9c. Discloser action_index drift between the two tables
---     (hazard_filter = 'All' excluded -- structural, see header).
-WITH disclosers AS (
-  SELECT DISTINCT cdp_disclosing_org_number AS target_org_id
-  FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.dim_cdp_geo_and_ecoregion_TEST`
-  WHERE disclosure_status IS DISTINCT FROM 'non-disclosed'
-)
+-- 9c. action_index drift between the two tables.
 SELECT
   ps.target_org_id,
   ps.hazard_filter,
@@ -513,7 +477,6 @@ SELECT
   se.action_index AS solution_examples_action_index,
   COUNT(*) AS n_rows
 FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.peer_solutions_final_TEST` ps
-INNER JOIN disclosers d USING (target_org_id)
 INNER JOIN `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.solution_examples_TEST` se
   ON  ps.target_org_id  = se.target_org_id
   AND ps.hazard_filter  = se.hazard_filter
@@ -592,11 +555,10 @@ LEFT JOIN `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.solution_examp
 WHERE se.target_org_id IS NULL;
 
 -- ============================================================
--- 10. Post-translation-fix validation (notebook re-run).
+-- 10. Post-translation-fix validation.
 --
--- Verifies the new other_hazard_segments_map cell ran and that the
--- CombinedTranslations patch in 4dzZkdt9T-8M / eBK6kws2bwoU /
--- uxWYq-YZT-1B propagated through downstream tables.
+-- Verifies the other_hazard_segments_map ran and the
+-- CombinedTranslations patch propagated through downstream tables.
 -- ============================================================
 
 -- 10a. Map exists, has expected size, no duplicate raw keys, no NULLs.
@@ -712,15 +674,17 @@ FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.fact_hazard_final_T
 WHERE hazard_english IS NULL;
 
 
--- ============================================================================
--- 12 — Did Other: hazard-segment translations actually land?
--- ============================================================================
--- After the notebook re-runs with the de-correlated CombinedTranslations + new
--- other_hazard_segments_map, any 'Other: <foreign-language text>' that the
--- static map covered should now be the English form. This single query finds
--- non-ASCII 'Other:' segments still appearing in the final fact tables.
--- A clean run should return 0 rows (or only segments we knowingly didn't map).
--- ============================================================================
+-- ============================================================
+-- 11. Did Other: hazard-segment translations actually land?
+--
+-- After the notebook + post_notebook_finalize_tables.sql run with the
+-- de-correlated CombinedTranslations + other_hazard_segments_map, any
+-- 'Other: <foreign-language text>' covered by the static map should
+-- now be the English form. A clean run returns 0 rows from 11a-11c
+-- (11d is a discovery query, no pass/fail).
+-- ============================================================
+
+-- 11a. Non-ASCII 'Other:' segments still appearing in final fact tables.
 
 WITH all_hazard_segments AS (
   SELECT TRIM(seg) AS seg, 'fact_action.hazard_addressed' AS source
@@ -746,10 +710,10 @@ ORDER BY occurrences DESC
 LIMIT 100;
 
 
--- 12b — Direct map-applied check: for every `raw` value in the static map,
--- confirm it no longer appears in any fact table. If the new pipeline wired
--- up correctly, this returns 0 rows. Any rows are entries the map should have
--- caught but didn't — investigate the JOIN.
+-- 11b. Direct map-applied check: for every `raw` value in the static map,
+-- confirm it no longer appears in any fact table. Returns 0 rows on success.
+-- Any rows are entries the map should have caught but didn't — investigate
+-- the JOIN.
 WITH all_hazard_segments AS (
   SELECT TRIM(seg) AS seg
   FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.fact_action_final_TEST`,
@@ -777,10 +741,10 @@ GROUP BY eg.raw, eg.clean
 ORDER BY occurrences DESC;
 
 
--- 12c — Coverage-gap check: short non-ASCII `Other:` segments NOT in the map.
--- These are candidates the map *should* arguably handle. Use this to confirm
--- before narrowing a post-patch to a single value — if many appear, prefer
--- adding to static_other_hazard_map.sql + re-running the pipeline.
+-- 11c. Coverage-gap check: short non-ASCII `Other:` segments NOT in the map.
+-- Candidates the map should arguably handle. If many appear, prefer adding
+-- to static_other_hazard_map.sql + re-running the pipeline over a per-value
+-- post-patch.
 WITH all_segs AS (
   SELECT TRIM(seg) AS seg
   FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.fact_action_final_TEST`,
@@ -809,13 +773,11 @@ GROUP BY seg
 ORDER BY occurrences DESC, seg;
 
 
--- ============================================================================
--- 12d — Discovery: all foreign-language `Other:` segments across every
--- text column in every fact + solutions table. Pipe-splits each column,
--- filters segments starting with 'Other:' that contain non-ASCII chars.
--- Result groups by (source table.column, segment) with occurrence counts —
--- the inventory of every place the Other: translation gap manifests.
--- ============================================================================
+-- 11d. Discovery (no pass/fail): all foreign-language `Other:` segments
+-- across every text column in every fact + solutions table. Pipe-splits
+-- each column, filters segments starting with 'Other:' that contain
+-- non-ASCII chars. Groups by (source table.column, segment) — an
+-- inventory of every place the Other: translation gap manifests.
 
 WITH all_other_segments AS (
   -- fact_hazard
