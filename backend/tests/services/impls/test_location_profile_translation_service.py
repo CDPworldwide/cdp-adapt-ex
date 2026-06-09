@@ -189,6 +189,7 @@ async def test_translate_profile_translates_manifest_fields_once():
                         peer_actions=[
                             {
                                 "peer_name": "San Jose",
+                                "country": "United States of America",
                                 "action": {
                                     "title": "Install green roofs",
                                     "description": "Add vegetation to public buildings.",
@@ -227,7 +228,8 @@ async def test_translate_profile_translates_manifest_fields_once():
     translated = await service.translate_profile(profile, "Spanish")
 
     assert translated.reporting_language == "es"
-    assert translated.name == "City of Mountain View"
+    assert translated.name == "es:City of Mountain View"
+    assert translated.country_name == "es:United States of America"
     assert translated.hazards.hazards[0].description == (
         "es:Mountain View faces a high drought risk."
     )
@@ -250,6 +252,7 @@ async def test_translate_profile_translates_manifest_fields_once():
     solution = translated.solutions.solutions["ENGINEERED_BUILT_ENVIRONMENT"][0]
     assert solution.solution == "es:Green roofs"
     assert solution.peer_actions[0].peer_name == "es:San Jose"
+    assert solution.peer_actions[0].country == "es:United States of America"
     assert solution.peer_actions[0].action.description == (
         "es:Add vegetation to public buildings."
     )
@@ -262,6 +265,8 @@ async def test_translate_profile_translates_manifest_fields_once():
     call = translate_client.calls[0]
     assert call["target_language"] == "es"
     assert call["source_language"] == "en"
+    assert call["texts"].count("City of Mountain View") == 1
+    assert call["texts"].count("United States of America") == 1
     assert call["texts"].count("Custom climate anomaly") == 1
     assert call["texts"].count("Local food markets") == 1
 
@@ -301,10 +306,12 @@ async def test_translate_profile_reuses_persistent_cache_before_google():
     translated = await service.translate_profile(profile, "es")
 
     assert translated.hazards.hazards[0].vulnerable_groups == ["es:cached children"]
+    assert translated.name == "es:Mountain View"
+    assert translated.country_name == "es:United States of America"
     assert translated.hazards.hazards[0].description == "es:Drought risk"
     assert translate_client.calls == [
         {
-            "texts": ["Drought risk"],
+            "texts": ["Mountain View", "United States of America", "Drought risk"],
             "target_language": "es",
             "source_language": "en",
         }
@@ -313,7 +320,11 @@ async def test_translate_profile_reuses_persistent_cache_before_google():
         {
             "source_language": "en",
             "target_language": "es",
-            "translations": {"Drought risk": "es:Drought risk"},
+            "translations": {
+                "Mountain View": "es:Mountain View",
+                "United States of America": "es:United States of America",
+                "Drought risk": "es:Drought risk",
+            },
         }
     ]
 
@@ -354,7 +365,7 @@ async def test_translate_profile_ignores_cached_translations_with_missing_acrony
     assert translated.hazards.hazards[0].description == "es:EPA resilience plan"
     assert translate_client.calls == [
         {
-            "texts": ["EPA resilience plan"],
+            "texts": ["Mountain View", "United States of America", "EPA resilience plan"],
             "target_language": "es",
             "source_language": "en",
         }
@@ -363,7 +374,11 @@ async def test_translate_profile_ignores_cached_translations_with_missing_acrony
         {
             "source_language": "en",
             "target_language": "es",
-            "translations": {"EPA resilience plan": "es:EPA resilience plan"},
+            "translations": {
+                "Mountain View": "es:Mountain View",
+                "United States of America": "es:United States of America",
+                "EPA resilience plan": "es:EPA resilience plan",
+            },
         }
     ]
 
@@ -421,6 +436,8 @@ async def test_translate_profile_translates_english_normalized_fields_for_japane
     translated = await service.translate_profile(profile, "ja")
 
     assert translated.reporting_language == "ja"
+    assert translated.name == "ja:City of Sapporo"
+    assert translated.country_name == "ja:Japan"
     assert translated.hazards.hazards[0].description == (
         "ja:Sapporo faces a high risk of extreme heat."
     )
@@ -431,6 +448,8 @@ async def test_translate_profile_translates_english_normalized_fields_for_japane
     assert translate_client.calls == [
         {
             "texts": [
+                "City of Sapporo",
+                "Japan",
                 "Sapporo faces a high risk of extreme heat.",
                 "Elderly",
                 "Outdoor workers",

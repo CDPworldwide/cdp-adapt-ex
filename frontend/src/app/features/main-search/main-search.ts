@@ -177,6 +177,17 @@ export class MainSearchComponent implements OnInit {
     return this.selectedLocationData?.disclosureYear ?? new Date().getFullYear();
   }
 
+  get selectedLocationDisplay(): LocationPin | null {
+    if (!this.selectedLocation) {
+      return null;
+    }
+
+    return {
+      ...this.selectedLocation,
+      name: this.selectedLocationData?.name ?? this.selectedLocation.name,
+    };
+  }
+
   private processLocationData(data: LocationData): void {
     this.selectedLocationData = data;
     this.totalHazardsCount = data.hazards?.hazards?.length || 0;

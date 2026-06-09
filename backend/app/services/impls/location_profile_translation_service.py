@@ -42,6 +42,8 @@ LANGUAGE_ALIASES: dict[str, str] = {
 }
 
 TRANSLATION_FIELDS: tuple[str, ...] = (
+    "name",
+    "country_name",
     "hazards.statistics.vulnerable_sectors[].other_sector_details",
     "hazards.hazards[].hazard.other_hazard_details",
     "hazards.hazards[].description",
@@ -69,6 +71,7 @@ TRANSLATION_FIELDS: tuple[str, ...] = (
     "solutions.solutions.*[].solution",
     "solutions.solutions.*[].solution_hazards_addressed[].other_hazard_details",
     "solutions.solutions.*[].peer_actions[].peer_name",
+    "solutions.solutions.*[].peer_actions[].country",
     "solutions.solutions.*[].peer_actions[].action.title",
     "solutions.solutions.*[].peer_actions[].action.description",
     "solutions.solutions.*[].peer_actions[].action.timeframe",
