@@ -19,7 +19,7 @@ SELECT 'dim_cdp_geo_and_ecoregion_TEST' AS tbl, COUNT(*) AS n
 FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.dim_cdp_geo_and_ecoregion_TEST`
 UNION ALL SELECT 'fact_hazard_final_TEST',      COUNT(*)
 FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.fact_hazard_final_TEST`
-UNION ALL SELECT 'fact_goal_final_TEST',             COUNT(*)
+UNION ALL SELECT 'fact_goal_final',             COUNT(*)
 FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.fact_goal_final_TEST`
 UNION ALL SELECT 'fact_action_final_TEST',      COUNT(*)
 FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.fact_action_final_TEST`
@@ -107,14 +107,14 @@ FROM (
 GROUP BY bucket
 ORDER BY bucket;
 
--- Same cap, applied to solution_examples for consistency.
+-- Same cap check, applied to solution_examples (1250 max) for consistency.
 SELECT
   target_org_id,
   hazard_filter,
   COUNT(*) AS n_examples
 FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.solution_examples_TEST`
 GROUP BY target_org_id, hazard_filter
-HAVING n_examples > 25
+HAVING n_examples > 1250
 ORDER BY n_examples DESC;
 
 -- ============================================================
@@ -635,7 +635,7 @@ WITH downstream_segments AS (
     UNNEST(SPLIT(hazard_addressed_english, '|')) AS s
   UNION ALL
   SELECT 'fact_goal_final_TEST', TRIM(s)
-  FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.fact_goal_final_TEST`,
+  FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.fact_goal_final`,
     UNNEST(SPLIT(hazard_addressed_english, '|')) AS s
 )
 SELECT src, seg, COUNT(*) AS n
@@ -666,7 +666,7 @@ FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.fact_action_final_T
 WHERE hazard_addressed_english IS NULL
 UNION ALL
 SELECT 'fact_goal_final_TEST', COUNT(*)
-FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.fact_goal_final_TEST`
+FROM `project-bb4fd058-24e7-4ccb-b06.CSTAR_2025_processed_v2.fact_goal_final`
 WHERE hazard_addressed_english IS NULL
 UNION ALL
 SELECT 'fact_hazard_final_TEST', COUNT(*)
