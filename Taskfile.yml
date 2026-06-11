@@ -4,4 +4,4 @@ tasks:
   docs:
     desc: Run the Mintlify docs site
     cmds:
-      - bash scripts/run-mintlify.sh dev --no-open
+      - bash tools/run-mintlify.sh dev --no-open
