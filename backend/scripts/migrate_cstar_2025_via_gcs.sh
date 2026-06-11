@@ -662,9 +662,9 @@ BEGIN
 
   SELECT COUNT(*) INTO invalid_count
   FROM (
-    SELECT cdp_disclosing_org_number, disclosing_year, action_index
+    SELECT cdp_disclosing_org_number, disclosing_year, action_index, row_order
     FROM "_cstar_2025_fact_action_stage"
-    GROUP BY 1, 2, 3
+    GROUP BY 1, 2, 3, 4
     HAVING COUNT(*) > 1
   ) d;
   IF invalid_count <> 0 THEN RAISE EXCEPTION 'action duplicate primary keys: %', invalid_count; END IF;
@@ -689,9 +689,9 @@ BEGIN
 
   SELECT COUNT(*) INTO invalid_count
   FROM (
-    SELECT disclosing_year, target_org_id, hazard_filter, peer_org_id, action_index
+    SELECT disclosing_year, target_org_id, hazard_filter, peer_org_id, action_index, row_order
     FROM "_cstar_2025_solution_examples_stage"
-    GROUP BY 1, 2, 3, 4, 5
+    GROUP BY 1, 2, 3, 4, 5, 6
     HAVING COUNT(*) > 1
   ) d;
   IF invalid_count <> 0 THEN RAISE EXCEPTION 'examples duplicate primary keys: %', invalid_count; END IF;

@@ -21,7 +21,7 @@ import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { MapSelectionService } from './map-selection.service';
-import { SEARCH_ALIASES, COUNTRY_ALIASES } from './search-aliases';
+import { SEARCH_ALIASES, COUNTRY_ALIASES, LOCATION_SEARCH_KEYWORDS } from './search-aliases';
 import { STATE_ABBREV_TO_NAME } from './state-abbrev';
 import { Maps } from '../maps/maps';
 import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
@@ -329,7 +329,10 @@ export class MainSearchComponent implements OnInit {
     const normalized = this.normalizeForSearch(name);
     const m = name.match(/,\s*([A-Z]{2,3})\s*$/);
     const expansion = m ? STATE_ABBREV_TO_NAME[m[1]] : undefined;
-    return expansion ? `${normalized} ${this.normalizeForSearch(expansion)}` : normalized;
+    const extra = LOCATION_SEARCH_KEYWORDS[normalized];
+    return [normalized, expansion && this.normalizeForSearch(expansion), extra]
+      .filter(Boolean)
+      .join(' ');
   }
 
   private _filter(
