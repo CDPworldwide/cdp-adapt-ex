@@ -40,7 +40,8 @@ cdp-adapt-ex/
 │   │   └── shared/    # Reusable components & UI building blocks
 │   └── tailwind.config.js
 ├── data/              # Seed data, migration sources, and climate layer scripts
-├── scripts/           # CSTAR data pipeline (notebook, BQ finalize, validation, schema SQL)
+├── scripts/           # CSTAR BQ data pipeline (notebooks, BQ-side SQL helpers, validation)
+├── tools/             # Repo-level developer utilities (docs build, frontend data sync)
 ├── docs/              # Canonical handoff and technical documentation
 └── Makefile           # Project automation (install, test, lint)
 ```

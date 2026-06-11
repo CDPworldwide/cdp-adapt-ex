@@ -22,4 +22,4 @@ Ask CDP AI chat and follow-up generation are owned by the separate [AI Server](/
 
 - CSTAR analytical tables are managed outside the app. The backend only auto-creates app-owned write tables, currently `UserRoleSelection`.
 - Location detail reads still need a disclosure-year filtering decision before multiple disclosure years can safely coexist in the same table set.
-- The database schema script lives at `scripts/create_empty_tables.sql`, not under `docs/`.
+- The database schema script lives at `backend/scripts/create_empty_tables.sql`, not under `docs/`.
