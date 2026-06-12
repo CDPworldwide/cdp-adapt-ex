@@ -193,7 +193,7 @@ async def test_get_location_by_org_id_rejects_unsupported_target_language(
 
 
 @pytest.mark.asyncio
-async def test_get_location_by_org_id_handles_null_has_local_action(client):
+async def test_get_location_by_org_id_preserves_null_has_local_action(client):
     repository = AsyncMock()
     repository.has_organization.return_value = True
     repository.get_metadata.return_value = DimCentral(
@@ -239,7 +239,7 @@ async def test_get_location_by_org_id_handles_null_has_local_action(client):
     solution_cards = response_body["location"]["solutions"]["solutions"][
         "ENGINEERED_BUILT_ENVIRONMENT"
     ]
-    assert solution_cards[0]["hasLocalAction"] is False
+    assert solution_cards[0]["hasLocalAction"] is None
     repository.has_organization.assert_awaited_once_with(834406)
     app.dependency_overrides.clear()
 

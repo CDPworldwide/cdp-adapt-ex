@@ -97,11 +97,11 @@ class LocationProfileBuilder:
             )
             raise CityNotFoundException(fallback_name)
 
-        dummy_statistics = RegionalStatistics(
+        statistics = RegionalStatistics(
             population_exposed_value=None,
-            population_exposed_percentage=50,
+            population_exposed_percentage=None,
             gdp_at_risk_value=None,
-            gdp_at_risk_percentage=25,
+            gdp_at_risk_percentage=None,
             gdp_at_risk_currency_code=None,
             vulnerable_sectors=self.sector_mapper.split_and_map_sectors(
                 metadata.ranked_sectors, org_id=org_id
@@ -137,7 +137,7 @@ class LocationProfileBuilder:
             ),
             hazards=HazardsTab(
                 hazards=mapped_hazards,
-                statistics=dummy_statistics,
+                statistics=statistics,
             ),
             government_actions=ActionsTab(
                 goals=mapped_goals,

@@ -270,7 +270,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
         assert solution_cards[0].has_local_action is True
 
-    async def test_get_location_defaults_null_has_local_action_to_false(
+    async def test_get_location_preserves_null_has_local_action(
         self,
         location_details_service: LocationDetailsService,
         mock_repository: AsyncMock,
@@ -289,7 +289,7 @@ class TestGetEligibleLocationDetailsByName:
         solution_cards = result.solutions.solutions[
             SolutionCategoryEnum.ENGINEERED_BUILT_ENVIRONMENT
         ]
-        assert solution_cards[0].has_local_action is False
+        assert solution_cards[0].has_local_action is None
 
     async def test_solution_examples_join_ignores_hazard_filter(
         self,
