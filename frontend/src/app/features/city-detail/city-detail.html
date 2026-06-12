@@ -196,7 +196,10 @@
         [ngClass]="{ 'w-full': !isAiOpen, 'lg:w-3/4': isAiOpen }"
       >
         <div class="flex-1 overflow-y-auto">
-          <nav [attr.aria-label]="'shared.mainNavigation' | translate" class="bg-cdp-bg flex-shrink-0">
+          <nav
+            [attr.aria-label]="'shared.mainNavigation' | translate"
+            class="bg-cdp-bg flex-shrink-0"
+          >
             <app-header></app-header>
           </nav>
           <div id="page-content" tabindex="-1" class="relative focus:outline-none">
@@ -205,6 +208,7 @@
               [activeTab]="activeTab"
               (backToMap)="onBackHome()"
               (activeTabChange)="onTabChange($event)"
+              (actionHazardFilterChange)="onActionHazardFilterChange($event)"
             ></app-location-card>
           </div>
         </div>

@@ -12,6 +12,7 @@ import { LocationPin, OrgTypeEnum } from '@pac-api/client';
 import { NgZone } from '@angular/core';
 
 class MockAdvancedMarkerElement {
+  static instances: MockAdvancedMarkerElement[] = [];
   public content: any;
   public zIndex: number;
   public addEventListener = jasmine.createSpy('addEventListener');
@@ -19,6 +20,7 @@ class MockAdvancedMarkerElement {
   constructor(options: any) {
     this.content = options.content;
     this.zIndex = options.zIndex;
+    MockAdvancedMarkerElement.instances.push(this);
   }
 }
 
@@ -38,6 +40,7 @@ describe('Maps', () => {
   const selectedMapLocation$ = new BehaviorSubject<LocationPin | null>(null);
 
   beforeEach(async () => {
+    MockAdvancedMarkerElement.instances = [];
     spyOnProperty(window, 'innerWidth').and.returnValue(1024);
     googleMapsLoaderService = jasmine.createSpyObj('GoogleMapsLoaderService', ['loadApi']);
     googleMapsLoaderService.loadApi.and.returnValue(of(true));
@@ -57,6 +60,7 @@ describe('Maps', () => {
       addListener: jasmine.createSpy('addListener'),
       panTo: jasmine.createSpy('panTo'),
       setZoom: jasmine.createSpy('setZoom'),
+      getZoom: jasmine.createSpy('getZoom').and.returnValue(2),
     };
 
     (window as any).google = {
@@ -119,6 +123,23 @@ describe('Maps', () => {
   });
 
   describe('Marker Updates', () => {
+    it('should select a location from the standard marker click event', () => {
+      (window.google.maps.geometry.spherical.computeOffset as jasmine.Spy).and.returnValue({
+        lat: 9,
+        lng: 20,
+      });
+      const marker = MockAdvancedMarkerElement.instances[0];
+
+      expect(marker.addListener).toHaveBeenCalledWith('click', jasmine.any(Function));
+      expect(marker.addEventListener).toHaveBeenCalledWith('gmp-click', jasmine.any(Function));
+
+      const clickHandler = marker.addListener.calls.mostRecent().args[1];
+      clickHandler();
+
+      expect(mapSelectionService.selectLocation).toHaveBeenCalledWith(mockPins[0]);
+      expect(mockMapInstance.panTo).toHaveBeenCalledWith({ lat: 9, lng: 20 });
+    });
+
     it('should update marker appearance when a location is selected', fakeAsync(() => {
       // Initially no selection
       const cityAMarkerData = (component as any).markers.get('City A');

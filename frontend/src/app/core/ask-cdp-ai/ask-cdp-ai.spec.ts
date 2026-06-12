@@ -27,8 +27,26 @@ describe('AskCdpAiService', () => {
       hazards: [],
     },
     governmentActions: {
-      goals: [],
-      actions: [],
+      goals: [
+        {
+          title: 'Heat goal',
+          hazardsAddressed: [{ hazardType: 'EXTREME_HEAT' as any }],
+        },
+        {
+          title: 'Flood goal',
+          hazardsAddressed: [{ hazardType: 'URBAN_FLOODING' as any }],
+        },
+      ],
+      actions: [
+        {
+          title: 'Heat action',
+          hazardsAddressed: [{ hazardType: 'EXTREME_HEAT' as any }],
+        },
+        {
+          title: 'Flood action',
+          hazardsAddressed: [{ hazardType: 'URBAN_FLOODING' as any }],
+        },
+      ],
       projects: [],
     },
     solutions: {
@@ -288,6 +306,47 @@ describe('AskCdpAiService', () => {
         readRequestBodyAt(0).then((body) => {
           expect(body.contextArea).toBe('solutions');
           expect(body.metadata.contextArea).toBe('solutions');
+          done();
+        });
+      });
+    });
+
+    it('should send filtered actions-tab context when a hazard filter is active', (done) => {
+      service.setLocationContext(mockLocationData, 'actions', 'EXTREME_HEAT|');
+      (window.fetch as jasmine.Spy).and.callFake((url: string) => {
+        if (String(url).includes('/v1/chat/completions')) {
+          return Promise.resolve(
+            new Response(
+              [
+                'data: {"choices":[{"delta":{"content":"Filtered response"}}]}',
+                '',
+                'data: [DONE]',
+                '',
+              ].join('\n'),
+              {
+                status: 200,
+                headers: { 'Content-Type': 'text/event-stream' },
+              },
+            ),
+          );
+        }
+
+        return Promise.resolve(
+          new Response(JSON.stringify({ follow_up_questions: ['Question 1'] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        );
+      });
+      spyOn(service, 'parseToHtml').and.returnValue('<p>Filtered response</p>');
+
+      service.sendChatQuery('How many goals are visible?').subscribe(() => {
+        readRequestBodyAt(0).then((body) => {
+          expect(body.contextArea).toBe('actions');
+          expect(body.metadata.locationData.governmentActions.goals.length).toBe(1);
+          expect(body.metadata.locationData.governmentActions.goals[0].title).toBe('Heat goal');
+          expect(body.metadata.locationData.governmentActions.actions.length).toBe(1);
+          expect(body.metadata.locationData.governmentActions.actions[0].title).toBe('Heat action');
           done();
         });
       });

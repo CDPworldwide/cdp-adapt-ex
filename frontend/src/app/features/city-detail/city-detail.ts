@@ -42,6 +42,7 @@ export class CityDetailPageComponent implements OnInit {
   organizationId: string | null = null;
   activeTab: LocationCardTabKey = DEFAULT_TAB;
   isAiOpen = false;
+  selectedActionHazardFilter: string | null = null;
   private loadedOrganizationId: string | null = null;
   private loadedLanguage: string | null = null;
   private locationLoadRequestId = 0;
@@ -155,11 +156,28 @@ export class CityDetailPageComponent implements OnInit {
     }
 
     this.updateFeedbackContext();
-    this.askCdpAiService.setLocationContext(this.locationData, this.activeTab);
+    this.updateAiLocationContext();
     this.askCdpAiService
       .loadStarterQuestions()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
+  }
+
+  onActionHazardFilterChange(filter: string | null): void {
+    this.selectedActionHazardFilter = filter;
+    this.updateAiLocationContext();
+  }
+
+  private updateAiLocationContext(): void {
+    if (!this.locationData) {
+      return;
+    }
+
+    this.askCdpAiService.setLocationContext(
+      this.locationData,
+      this.activeTab,
+      this.activeTab === 'actions' ? this.selectedActionHazardFilter : null,
+    );
   }
 
   private normalizeTab(tab: string | null): LocationCardTabKey {

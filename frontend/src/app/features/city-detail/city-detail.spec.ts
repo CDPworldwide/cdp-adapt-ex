@@ -36,6 +36,7 @@ class StubLocationCardComponent {
   activeTab = input<LocationCardTabKey>('hazards');
   backToMap = output<void>();
   activeTabChange = output<LocationCardTabKey>();
+  actionHazardFilterChange = output<string | null>();
 }
 
 describe('CityDetailPageComponent', () => {
@@ -139,6 +140,7 @@ describe('CityDetailPageComponent', () => {
     expect(askCdpAiServiceMock.setLocationContext).toHaveBeenCalledWith(
       MOCK_LOCATION_DATA,
       'hazards',
+      null,
     );
 
     routeParamMap$.next(convertToParamMap({ organizationId: '867355', tab: 'solutions' }));
@@ -147,6 +149,7 @@ describe('CityDetailPageComponent', () => {
     expect(askCdpAiServiceMock.setLocationContext).toHaveBeenCalledWith(
       MOCK_LOCATION_DATA,
       'solutions',
+      null,
     );
   });
 
@@ -154,8 +157,24 @@ describe('CityDetailPageComponent', () => {
     expect(askCdpAiServiceMock.setLocationContext).toHaveBeenCalledWith(
       MOCK_LOCATION_DATA,
       'hazards',
+      null,
     );
     expect(askCdpAiServiceMock.loadStarterQuestions).toHaveBeenCalled();
+  });
+
+  it('passes the selected actions hazard filter into the AI context', () => {
+    routeParamMap$.next(convertToParamMap({ organizationId: '867355', tab: 'actions' }));
+    fixture.detectChanges();
+    askCdpAiServiceMock.setLocationContext.calls.reset();
+
+    component.onActionHazardFilterChange('EXTREME_HEAT|');
+
+    expect(component.selectedActionHazardFilter).toBe('EXTREME_HEAT|');
+    expect(askCdpAiServiceMock.setLocationContext).toHaveBeenCalledWith(
+      MOCK_LOCATION_DATA,
+      'actions',
+      'EXTREME_HEAT|',
+    );
   });
 
   it('sets not found when API fails', () => {

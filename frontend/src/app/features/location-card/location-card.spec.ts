@@ -303,11 +303,13 @@ describe('LocationCardComponent', () => {
     });
 
     it('should set filter and switch to tab 1 when exploreHazardActions is called', () => {
+      const emitSpy = spyOn(component.actionHazardFilterChange, 'emit');
       const heatHazard = { hazardType: 'EXTREME_HEAT' as any };
       component.exploreHazardActions(heatHazard);
 
       expect(component.selectedHazardFilter).toBe('EXTREME_HEAT|');
       expect(component.activeTab).toBe('actions');
+      expect(emitSpy).toHaveBeenCalledWith('EXTREME_HEAT|');
     });
 
     it('should handle "OTHERS" in exploreHazardActions', () => {
@@ -316,6 +318,17 @@ describe('LocationCardComponent', () => {
 
       expect(component.selectedHazardFilter).toBe('OTHERS|Wildfire');
       expect(component.activeTab).toBe('actions');
+    });
+
+    it('emits null when leaving the actions tab clears the hazard filter', () => {
+      const emitSpy = spyOn(component.actionHazardFilterChange, 'emit');
+      component.exploreHazardActions({ hazardType: 'EXTREME_HEAT' as any });
+      emitSpy.calls.reset();
+
+      component.setActiveTab('hazards');
+
+      expect(component.selectedHazardFilter).toBeNull();
+      expect(emitSpy).toHaveBeenCalledWith(null);
     });
   });
 });

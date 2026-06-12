@@ -1,7 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of, from } from 'rxjs';
 import { tap, map, catchError, switchMap } from 'rxjs/operators';
-import { type LocationProfile } from '@pac-api/client';
+import {
+  type AdaptationAction,
+  type AdaptationGoal,
+  type Hazard,
+  type LocationProfile,
+} from '@pac-api/client';
 import { Chat } from '@ai-sdk/angular';
 import { type ChatTransport, type UIMessage, type UIMessageChunk } from 'ai';
 import { marked } from 'marked';
@@ -41,24 +46,32 @@ export class AskCdpAiService {
 
   private locationContext: LocationProfile | null = null;
   private contextArea: AskCdpAiContextArea = 'hazards';
+  private selectedActionHazardFilter: string | null = null;
   private locationContextKey: string | null = null;
   private readonly aiChat = this.createAiChat();
 
   setLocationContext(
     locationData: LocationProfile | null | undefined,
     contextArea: AskCdpAiContextArea = 'hazards',
+    selectedActionHazardFilter: string | null = null,
   ): void {
     const nextLocationContext = locationData ?? null;
-    const nextLocationContextKey = this.buildLocationContextKey(nextLocationContext, contextArea);
+    const nextLocationContextKey = this.buildLocationContextKey(
+      nextLocationContext,
+      contextArea,
+      selectedActionHazardFilter,
+    );
 
     if (nextLocationContextKey === this.locationContextKey) {
       this.locationContext = nextLocationContext;
       this.contextArea = contextArea;
+      this.selectedActionHazardFilter = selectedActionHazardFilter;
       return;
     }
 
     this.locationContext = nextLocationContext;
     this.contextArea = contextArea;
+    this.selectedActionHazardFilter = selectedActionHazardFilter;
     this.locationContextKey = nextLocationContextKey;
     this.resetConversationState();
   }
@@ -300,7 +313,31 @@ export class AskCdpAiService {
   }
 
   private buildAiLocationData(): LocationProfile | null {
-    return this.locationContext;
+    if (
+      !this.locationContext ||
+      this.contextArea !== 'actions' ||
+      !this.selectedActionHazardFilter
+    ) {
+      return this.locationContext;
+    }
+
+    const governmentActions = this.locationContext.governmentActions;
+    if (!governmentActions) {
+      return this.locationContext;
+    }
+
+    return {
+      ...this.locationContext,
+      governmentActions: {
+        ...governmentActions,
+        goals: (governmentActions.goals || []).filter((goal: AdaptationGoal) =>
+          this.matchesSelectedActionHazard(goal.hazardsAddressed),
+        ),
+        actions: (governmentActions.actions || []).filter((action: AdaptationAction) =>
+          this.matchesSelectedActionHazard(action.hazardsAddressed),
+        ),
+      },
+    };
   }
 
   private buildAiServerMessages(): OpenAiMessage[] {
@@ -454,6 +491,7 @@ export class AskCdpAiService {
   private buildLocationContextKey(
     locationData: LocationProfile | null,
     contextArea: AskCdpAiContextArea,
+    selectedActionHazardFilter: string | null,
   ): string | null {
     if (!locationData) {
       return null;
@@ -463,8 +501,25 @@ export class AskCdpAiService {
 
     return JSON.stringify({
       contextArea,
+      selectedActionHazardFilter,
       locationData: locationContextForKey,
     });
+  }
+
+  private matchesSelectedActionHazard(hazards: Hazard[] | null | undefined): boolean {
+    if (!this.selectedActionHazardFilter) {
+      return true;
+    }
+
+    return (
+      hazards?.some(
+        (hazard: Hazard) => this.hazardFilterKey(hazard) === this.selectedActionHazardFilter,
+      ) ?? false
+    );
+  }
+
+  private hazardFilterKey(hazard: Hazard): string {
+    return `${hazard.hazardType}|${hazard.otherHazardDetails || ''}`;
   }
 
   private resetConversationState(): void {
@@ -496,28 +551,25 @@ export class AskCdpAiService {
         .map((line) => line.match(/^\[\^(\d+)\]:\s*(.+)$/))
         .filter((match): match is RegExpMatchArray => Boolean(match));
 
-      const uniqueSources = parsedSources.reduce<Array<{ text: string }>>(
-        (sources, match) => {
-          const [, , sourceText] = match;
-          const existingSource = sources.find(
-            (source) => this.normalizeSourceText(source.text) === this.normalizeSourceText(sourceText),
-          );
+      const uniqueSources = parsedSources.reduce<Array<{ text: string }>>((sources, match) => {
+        const [, , sourceText] = match;
+        const existingSource = sources.find(
+          (source) =>
+            this.normalizeSourceText(source.text) === this.normalizeSourceText(sourceText),
+        );
 
-          if (existingSource) {
-            return sources;
-          }
+        if (existingSource) {
+          return sources;
+        }
 
-          return [...sources, { text: sourceText }];
-        },
-        [],
-      );
+        return [...sources, { text: sourceText }];
+      }, []);
 
       if (uniqueSources.length) {
         formattedContent = content.slice(0, sourcesMatch.index ?? 0).trimEnd();
         const sourcesLabel = this.getSourcesLabel();
         const sourceItems = uniqueSources.map(
-          (source) =>
-            `<li>${this.linkifySourceText(source.text)}</li>`,
+          (source) => `<li>${this.linkifySourceText(source.text)}</li>`,
         );
         sourcesHtml = [
           `<section class="ai-sources" aria-label="${this.escapeHtml(sourcesLabel)}">`,
