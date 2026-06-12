@@ -57,3 +57,8 @@ data/overture/geometry.json
 /hazards-updated-050726.csv
 backend/app/data/gee_hazards_2025.json
 /.web-tests
+*.yml
+!.github/workflows/*.yml
+/docs/.vitepress/cache
+/docs/.vitepress/.temp
+/docs/.vitepress/dist

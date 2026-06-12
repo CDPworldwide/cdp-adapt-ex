@@ -9,7 +9,7 @@ The backend is the FastAPI service. It serves non-AI application APIs:
 - Disclosure trend summaries.
 - Onboarding role-selection telemetry.
 
-Ask CDP AI chat and follow-up generation are owned by the separate [AI Server](/ai%20server).
+Ask CDP AI chat and follow-up generation are owned by the separate [AI Server](/ai-server/).
 
 ## Documents
 

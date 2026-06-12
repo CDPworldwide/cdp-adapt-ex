@@ -23,10 +23,10 @@ At a high level, the app combines public CSTAR disclosure data, climate hazard l
 
 | Area | What it covers |
 |------|----------------|
-| [Backend](backend/index) | FastAPI APIs, Cloud SQL repositories, Earth Engine hazard layers, translation, disclosure trends, and onboarding telemetry. |
-| [AI Server](<ai server/index>) | OpenAI-compatible Ask CDP AI routes, prompt handling, Gemini integration, and reviewed-question testing. |
+| [Backend](backend/) | FastAPI APIs, Cloud SQL repositories, Earth Engine hazard layers, translation, disclosure trends, and onboarding telemetry. |
+| [AI Server](ai-server/) | OpenAI-compatible Ask CDP AI routes, prompt handling, Gemini integration, and reviewed-question testing. |
 | [Data Setup](data) | CSTAR 2025 Cloud SQL table setup, BigQuery export notes, PostGIS cleanup, and table schema summary. |
 | [Deployment](deployment) | Cloud Run services, GitHub Actions workflows, Secret Manager, WIF, and preview deployments. |
 | [Translation](translation) | Static frontend translations and dynamic Google Cloud Translate flow. |
 
-See [Recommended Additions](recommended-additions) for docs that should still be added as the project continues to settle.
+See the sidebar for additional docs that should still be added as the project continues to settle.

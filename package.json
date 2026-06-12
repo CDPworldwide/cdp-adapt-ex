@@ -26,13 +26,18 @@
     "client:verify": "cd client && npm run verify",
     "client:build": "cd client && npm run build",
     "client:install": "cd client && npm install",
-    "docs:dev": "bash tools/run-mintlify.sh dev --no-open",
-    "docs:validate": "bash tools/run-mintlify.sh validate",
+    "docs:dev": "vitepress dev docs --host 127.0.0.1",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs --host 127.0.0.1",
+    "docs:validate": "npm run docs:build",
     "frontend:verify": "cd frontend && bash scripts/write-environment.sh && npm run build",
     "sync:org-data": "npm run client:build && node tools/sync-org-data.mjs",
     "i18n:coverage": "cd frontend && npm run i18n:coverage"
   },
   "dependencies": {
     "fuzzysort": "^3.1.0"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
   }
 }

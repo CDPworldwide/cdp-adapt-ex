@@ -1,5 +1,7 @@
 # Translation System
 
+::: v-pre
+
 The application supports multilingual content through two complementary systems:
 
 1. **Static translations** (ngx-translate) for UI strings like labels, headings, and button text
@@ -252,3 +254,5 @@ cd backend && pytest tests/api/v1/test_translate.py -v
 ### Frontend
 
 Component tests that use `AutoTranslatePipe` need `HttpClient` providers (for the SDK client's fetch layer). The `WebTranslationService` can be mocked in tests to return original text.
+
+:::

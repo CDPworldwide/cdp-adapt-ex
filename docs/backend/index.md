@@ -18,7 +18,7 @@ The backend is the FastAPI service. It serves non-AI application APIs and owns t
 | Disclosure trends | Dataset-wide disclosure summaries for a selected year. |
 | Onboarding telemetry | App-owned role-selection table created by the backend on startup. |
 
-Ask CDP AI chat and follow-up generation are owned by the separate [AI Server](/ai%20server).
+Ask CDP AI chat and follow-up generation are owned by the separate [AI Server](/ai-server/).
 
 ## Backend Docs
 
