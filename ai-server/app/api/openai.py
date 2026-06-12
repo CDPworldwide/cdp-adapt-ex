@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -18,6 +19,7 @@ from app.schemas import (
 )
 from app.settings import Settings, get_settings
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 EMPTY_ASK_AI_RESPONSE = """What would you like to know about this location's climate resilience disclosure?
@@ -63,6 +65,10 @@ async def chat_completions(
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
+        logger.exception(
+            "Unexpected error while handling chat completion: %s",
+            type(exc).__name__,
+        )
         raise_llm_http_exception(exc)
         raise HTTPException(
             status_code=500, detail="An unexpected error occurred"

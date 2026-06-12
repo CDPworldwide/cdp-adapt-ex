@@ -18,7 +18,6 @@ env:
   REGION: us-central1
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
   SERVICE_NAME: cdp-ai-server
-  SYSTEM_PROMPT_URL: https://gist.githubusercontent.com/andrewm-bakerst/fa841de953aed344794b1fc0281069d1/raw/system_prompt.md
 
 jobs:
   deploy:
@@ -96,7 +95,6 @@ jobs:
             AI_SERVER_API_KEY=shared-AI_SERVER_API_KEY:latest
           env_vars: |
             LLM_MODEL=gemini-2.5-flash
-            SYSTEM_PROMPT=${{ env.SYSTEM_PROMPT_URL }}
             SYSTEM_PROMPT_CACHE_SECONDS=60
           env_vars_update_strategy: overwrite
 
@@ -125,7 +123,7 @@ jobs:
           HEADERS=$(mktemp)
           STATUS=$(curl -s -o /tmp/cors-preflight-body -D "$HEADERS" -w "%{http_code}" \
             -X OPTIONS \
-            -H "Origin: https://frontend-pbybuiwoxq-uc.a.run.app" \
+            -H "Origin: https://cdp-action-explorer.net" \
             -H "Access-Control-Request-Method: POST" \
             -H "Access-Control-Request-Headers: authorization,content-type,x-api-key" \
             "$URL/v1/suggest-follow-ups" || echo "000")

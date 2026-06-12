@@ -1,3 +1,5 @@
+import logging
+
 import pydantic
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -9,6 +11,7 @@ from app.providers.gemini import GeminiProvider
 from app.schemas import ChatCompletionRequest, SuggestFollowUpsResponse
 from app.settings import Settings, get_settings
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -48,6 +51,10 @@ async def suggest_follow_ups(
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
+        logger.exception(
+            "Unexpected error while suggesting follow-ups: %s",
+            type(exc).__name__,
+        )
         raise_llm_http_exception(exc)
         raise HTTPException(
             status_code=500, detail="An unexpected error occurred"

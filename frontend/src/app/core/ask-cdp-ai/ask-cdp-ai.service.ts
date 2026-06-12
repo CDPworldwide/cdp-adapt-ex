@@ -183,7 +183,7 @@ export class AskCdpAiService {
         });
 
         if (!response.ok) {
-          throw new Error((await response.text()) || 'Failed to fetch the chat response.');
+          throw new Error((await response.text()) || 'Failed to fetch the AI chat response.');
         }
 
         if (!response.body) {
