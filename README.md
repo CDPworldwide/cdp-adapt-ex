@@ -40,12 +40,13 @@ cdp-adapt-ex/
 │   │   └── shared/    # Reusable components & UI building blocks
 │   └── tailwind.config.js
 ├── data/              # Seed data, migration sources, and climate layer scripts
-├── scripts/           # CSTAR data pipeline (notebook, BQ finalize, validation, schema SQL)
+├── scripts/           # CSTAR BQ data pipeline (notebooks, BQ-side SQL helpers, validation)
+├── tools/             # Repo-level developer utilities (docs build, frontend data sync)
 ├── docs/              # Canonical handoff and technical documentation
 └── Makefile           # Project automation (install, test, lint)
 ```
 
-The CSTAR 2025 data pipeline (notebook -> BQ -> Cloud SQL) is documented in [`backend/scripts/README.md`](backend/scripts/README.md), which covers the four pipeline stages and the CloudSQL migration.
+The CSTAR 2025 data pipeline (notebook -> BQ -> Cloud SQL) is documented in [`docs/data_pipeline.md`](docs/data_pipeline.md), which covers the four pipeline stages and the CloudSQL migration.
 
 ### Infrastructure & Cloud Architecture
 
@@ -72,6 +73,7 @@ For detailed information on automatic CI/CD pipelines and manual deployment step
 | ⚙️ **[Backend Docs](docs/backend/README.md)** | FastAPI architecture, services, and database repository pattern. |
 | 🤖 **[AI Server Docs](docs/ai%20server/README.md)** | Ask CDP AI routes, prompt workflow, and testing notes. |
 | 📊 **[Data & DB Docs](docs/data.md)** | Database schema, seed data, and data management details. |
+| 🔄 **[Data Pipeline](docs/data_pipeline.md)** | End-to-end runbook for full application data updates (BQ notebooks → Cloud SQL migration). |
 | 🎨 **[Frontend Docs](frontend/README.md)** | Angular 20 structure, Tailwind CSS usage, and component patterns. |
 | 🔒 **[SECURITY.md](SECURITY.md)** | Vulnerability reporting and security policies. |
 | 📄 **[LICENSE](LICENSE)** | Project licensing information. |

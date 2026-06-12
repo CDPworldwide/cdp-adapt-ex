@@ -329,7 +329,7 @@ class SolutionCard(APIBaseModel):
     pct_peer_taking_action: float | None = Field(None, ge=0, le=100)
     solution_hazards_addressed: list[Hazard] | None = Field(default_factory=list)
     hazard_filter: str | None = None
-    has_local_action: bool = False
+    has_local_action: bool | None = None
 
 
 class SolutionsTab(APIBaseModel):

@@ -201,7 +201,7 @@ class PeerSolutions(SQLModel, table=True):
     peer_org_cnt: int | None = None
     action_count: int | None = None
     pct_peers: Decimal | None = None
-    has_local_action: bool
+    has_local_action: bool | None = None
 
 
 class SolutionsExamples(SQLModel, table=True):
