@@ -187,22 +187,22 @@
       "EXTREME_HEAT": "Calor extremo",
       "EXTREME_COLD": "Frio extremo",
       "SNOW_AND_ICE": "Neve e gelo",
-      "FIRE_WEATHER": "Condições de incêndio",
-      "DROUGHT": "Seca",
+      "FIRE_WEATHER": "Temporada de incêndio (risco de incêndios florestais)",
+      "DROUGHT": "Estiagem",
       "WATER_STRESS": "Estresse hídrico",
       "INCREASED_WATER_DEMAND": "Aumento da demanda de água",
       "URBAN_FLOODING": "Inundações urbanas",
-      "RIVER_FLOODING": "Inundação do rio",
-      "COASTAL_FLOODING": "Inundações costeiras",
-      "TROPICAL_CYCLONE": "Furacões/Tufões",
+      "RIVER_FLOODING": "Transbordamento de rios",
+      "COASTAL_FLOODING": "Inundação costeira (incluindo o aumento no nível do mar)",
+      "TROPICAL_CYCLONE": "Furacões, ciclones e/ou tufões",
       "EXTREME_WIND": "Vento extremo",
       "STORM": "Tempestade",
       "HEAVY_PRECIPITATION": "Precipitação intensa",
       "MASS_MOVEMENT": "Movimento de massas",
-      "LOSS_OF_GREEN_SPACE": "Perda de espaços verdes",
-      "SOIL_DEGRADATION_EROSION": "Degradação do solo",
+      "LOSS_OF_GREEN_SPACE": "Perda de espaço verde/cobertura verde",
+      "SOIL_DEGRADATION_EROSION": "Degradação do solo/erosão",
       "LANDSLIDES": "Deslizamentos de terra",
-      "LANDSCAPE_SHIFT_DEGRADATION": "Outra mudança de cenário",
+      "LANDSCAPE_SHIFT_DEGRADATION": "Outras formas de mudança/degradação da paisagem induzidas pelo clima",
       "INFECTIOUS_DISEASE": "Doenças infecciosas",
       "BIODIVERSITY_LOSS": "Perda de biodiversidade",
       "OTHER_COASTAL_EVENTS": "Outros eventos costeiros",
@@ -480,13 +480,13 @@
     },
     "geeHazardLabels": {
       "WATER_STRESS": "Estresse hídrico",
-      "RIVER_FLOODING": "Inundações fluviais",
-      "COASTAL_FLOODING": "Inundações costeiras (incluindo elevação do nível do mar)",
-      "FIRE_WEATHER": "Condições de incêndio (risco de incêndios florestais)",
+      "RIVER_FLOODING": "Transbordamento de rios",
+      "COASTAL_FLOODING": "Inundação costeira (incluindo o aumento no nível do mar)",
+      "FIRE_WEATHER": "Temporada de incêndio (risco de incêndios florestais)",
       "EXTREME_HEAT": "Calor extremo | Estresse térmico",
       "EXTREME_COLD": "Frio extremo",
       "HEAVY_PRECIPITATION": "Precipitação intensa",
-      "SOIL_DEGRADATION_EROSION": "Degradação do solo/Erosão"
+      "SOIL_DEGRADATION_EROSION": "Degradação do solo/erosão"
     }
   },
   "askCdpAi": {
@@ -567,11 +567,11 @@
         "description": "Os dados globais sobre risco hídrico foram obtidos do Atlas de Risco Hídrico de Aquedutos 4.0 do Instituto de Recursos Mundiais (WRI) e agregados à unidade de nível 6 do HydroBASINS. Os valores são fornecidos pelo WRI em uma escala de 0 a 5."
       },
       "flooding": {
-        "title": "Inundações fluviais (de rios) e costeiras",
-        "description": "A profundidade das cheias fluviais e costeiras foi obtida do conjunto de dados do Mapa de Risco de Inundação de Aquedutos do Instituto de Recursos Mundiais (World Resources Institute). Os dados são fornecidos com resolução de 1 km para cheias com período de retorno de 100 anos (ou seja, com probabilidade de ocorrência de 1 em 100 em um determinado ano), sob um cenário de alta elevação do nível do mar e considerando a subsidência. Esses valores foram calculados com base nos RCPs (trajetórias de concentração representativas), que eram as formas anteriormente reconhecidas para descrever as trajetórias climáticas."
+        "title": "Transbordamento de rios e inundação costeira",
+        "description": "A profundidade do transbordamento de rios e da inundação costeira foi obtida do conjunto de dados do Mapa de Risco de Inundação de Aquedutos do Instituto de Recursos Mundiais (World Resources Institute). Os dados são fornecidos com resolução de 1 km para inundações com período de retorno de 100 anos (ou seja, com probabilidade de ocorrência de 1 em 100 em um determinado ano), sob um cenário de alta elevação do nível do mar e considerando a subsidência. Esses valores foram calculados com base nos RCPs (trajetórias de concentração representativas), que eram as formas anteriormente reconhecidas para descrever as trajetórias climáticas."
       },
       "fireWeather": {
-        "title": "Condições de incêndio",
+        "title": "Temporada de incêndio (risco de incêndios florestais)",
         "description": "Este estudo utiliza dados do Índice de Risco de Incêndio (FWI, na sigla em inglês) da NASA, que por sua vez se baseia nas projeções NEX-GDDP-CMIP6. O FWI representa a relação entre as condições climáticas e o elevado risco de incêndio. O número de dias por ano em que o FWI ultrapassa o limite de 45 é utilizado, representando dias com alto perigo de incêndio."
       },
       "extremeHeat": {
