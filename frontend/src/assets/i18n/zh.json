@@ -605,7 +605,7 @@
     "solutions": {
       "title": "行动方案",
       "p1": "此标签页展示了其他辖区正在采取的相关行动信息，这些信息来源于问卷调查中的报告。此处重点介绍的辖区与特定城市、州或地区位于同一<a href=\"https://ecoregions.appspot.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">生物群落</a>，并且其采取的行动旨在应对该城市、州或地区面临的四大主要灾害中的一项或多项。<strong class=\"font-medium text-cdp-dark\">行动方案</strong>部分重点介绍了各辖区为适应气候灾害而采取的行动类型。城市、州和地区在报告其正在采取的行动时，可以从一份涵盖广泛解决方案的列表中选择相应的行动方案。",
-      "p2": "为了帮助用户了解其他地区为适应气候灾害所采取的措施，系统会展示同一生态区域内其他地区的相关行动。这些地区的行动会被汇总，并按解决方案类别（例如工程和建筑环境措施、行为措施）和解决方案类型（例如海堤和海岸防护结构、基因技术）进行分组。完整的解决方案类型列表可在<a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">CDP问卷指南的</a>9.1节中找到。系统会从该列表中选择前25个解决方案，这些解决方案所报告的相关行动数量最多。每个解决方案类别最多选择5个解决方案，以突出不同领域的努力。对于每个解决方案，系统会选择一部分行动作为示例进行展示。"
+      "p2": "为了帮助用户了解其他地区为适应气候灾害所采取的措施，系统会展示同一生态区域内其他地区的相关行动。这些地区的行动会被汇总，并按解决方案类别（例如工程和建筑环境措施、行为措施）和解决方案类型（例如海堤和海岸防护结构、基因技术）进行分组。完整的解决方案类型列表可在<a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">CDP问卷指南的</a>9.1节中找到。系统会从该列表中选择前25个解决方案，这些解决方案所报告的相关行动数量最多。每个解决方案类别最多选择5个解决方案，以突出不同领域的努力。对于每个解决方案，系统会优先根据报告详细程度选择一部分行动作为示例进行展示。"
     },
     "minimumCriteria": {
       "title": "最低要求：数据清洗",
