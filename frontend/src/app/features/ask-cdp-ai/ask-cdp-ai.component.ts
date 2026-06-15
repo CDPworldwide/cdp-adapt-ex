@@ -83,6 +83,7 @@ export class AskCdpAiComponent implements OnChanges {
     this.posthog.capture('ai_chat_query_submitted', {
       ...locationProperties(this.locationData),
       context_area: this.contextArea,
+      query: this.sanitizeAnalyticsQuery(query),
       query_length: query.length,
       source: 'manual',
     });
@@ -107,6 +108,7 @@ export class AskCdpAiComponent implements OnChanges {
     this.posthog.capture('ai_chat_followup_clicked', {
       ...locationProperties(this.locationData),
       context_area: this.contextArea,
+      query: this.sanitizeAnalyticsQuery(question),
       query_length: question.length,
       source: 'followup',
     });
@@ -130,5 +132,9 @@ export class AskCdpAiComponent implements OnChanges {
 
   public getSafeHtml(html: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  private sanitizeAnalyticsQuery(query: string): string {
+    return query.replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 1000);
   }
 }
