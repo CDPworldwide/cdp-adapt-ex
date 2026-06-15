@@ -231,6 +231,7 @@
             [location]="selectedLocationDisplay"
             [isLoading]="isLoadingHazardData"
             [isReportingLeader]="selectedLocationData?.isReportingLeader ?? false"
+            [isNonPublic]="selectedLocationData?.publicStatus === 'Non-Public'"
             [totalHazards]="totalHazardsCount"
             [topHazards]="topFourHazards"
             [disclosedActions]="disclosedActionsCount"

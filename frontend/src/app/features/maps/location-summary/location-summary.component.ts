@@ -23,6 +23,7 @@ export class LocationSummaryComponent {
   @Input() location: LocationPin | null = null;
   @Input() isLoading = false;
   @Input() isReportingLeader = false;
+  @Input() isNonPublic = false;
   @Input() totalHazards = 0;
   @Input() topHazards: Hazard[] = [];
   @Input() disclosedActions = 0;
