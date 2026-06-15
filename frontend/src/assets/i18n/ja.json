@@ -61,6 +61,7 @@
     "projectsSeekingFunding": "資金調達を目指すプロジェクト",
     "learnMore": "詳細を見る",
     "reportingLeader": "CDPレポートリーダー",
+    "nonPublicDisclosure": "この管轄区域のCDP報告書は公開表示できません。ハザード情報と行動案は利用できます。",
     "noHazardData": "このハザード（災害）に関する地図データは利用できません。",
     "hazardLegend": {
       "source": "原因",
