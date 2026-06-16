@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, NgZone, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import posthog from 'posthog-js';
 import { filter } from 'rxjs';
@@ -10,6 +10,7 @@ type PosthogEventProperties = Record<string, string | number | boolean | null | 
 @Injectable({ providedIn: 'root' })
 export class PosthogService {
   private initialized = false;
+  private ngZone = inject(NgZone);
   private router = inject(Router);
 
   init(): void {
@@ -19,24 +20,27 @@ export class PosthogService {
       return;
     }
 
-    posthog.init(config.key, {
-      api_host: config.host,
-      capture_pageview: false,
-      capture_exceptions: true,
-      autocapture: {
-        url_allowlist: [
-          /^https:\/\/cdp-action-explorer\.net(?:\/.*)?$/,
-          /^https?:\/\/localhost:\d+(?:\/.*)?$/,
-          /^https?:\/\/127\.0\.0\.1:\d+(?:\/.*)?$/,
-        ],
-      },
-      disable_session_recording: true,
-      session_recording: {
-        maskAllInputs: true,
-        maskTextSelector: '*',
-        blockSelector: '.sensitive-data, [data-ph-no-capture]',
-      },
-      debug: environment.isDebugMode,
+    this.ngZone.runOutsideAngular(() => {
+      posthog.init(config.key, {
+        api_host: config.host,
+        defaults: '2026-01-30',
+        capture_pageview: false,
+        capture_exceptions: true,
+        autocapture: {
+          url_allowlist: [
+            /^https:\/\/cdp-action-explorer\.net(?:\/.*)?$/,
+            /^https?:\/\/localhost:\d+(?:\/.*)?$/,
+            /^https?:\/\/127\.0\.0\.1:\d+(?:\/.*)?$/,
+          ],
+        },
+        disable_session_recording: config.sessionReplayEnabled === false,
+        session_recording: {
+          maskAllInputs: true,
+          maskTextSelector: '*',
+          blockSelector: '.sensitive-data, [data-ph-no-capture]',
+        },
+        debug: environment.isDebugMode,
+      });
     });
 
     this.initialized = true;
