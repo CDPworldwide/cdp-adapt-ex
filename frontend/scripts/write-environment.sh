@@ -21,6 +21,11 @@ MAPS_API_KEY="${FRONTEND_MAPS_API_KEY:-}"
 POSTHOG_KEY="${FRONTEND_POSTHOG_KEY:-}"
 POSTHOG_HOST="${FRONTEND_POSTHOG_HOST:-https://eu.i.posthog.com}"
 POSTHOG_ENABLED="${FRONTEND_POSTHOG_ENABLED:-false}"
+SENTRY_DSN="${FRONTEND_SENTRY_DSN:-}"
+SENTRY_ENABLED="${FRONTEND_SENTRY_ENABLED:-false}"
+SENTRY_ENVIRONMENT="${FRONTEND_SENTRY_ENVIRONMENT:-production}"
+SENTRY_RELEASE="${FRONTEND_SENTRY_RELEASE:-}"
+SENTRY_TRACES_SAMPLE_RATE="${FRONTEND_SENTRY_TRACES_SAMPLE_RATE:-0.05}"
 
 cat > src/environments/environment.ts <<EOF
 export const environment = {
@@ -41,6 +46,13 @@ export const environment = {
     key: '${POSTHOG_KEY}',
     host: '${POSTHOG_HOST}',
     enabled: ${POSTHOG_ENABLED},
+  },
+  sentry: {
+    dsn: '${SENTRY_DSN}',
+    enabled: ${SENTRY_ENABLED},
+    environment: '${SENTRY_ENVIRONMENT}',
+    release: '${SENTRY_RELEASE}',
+    tracesSampleRate: ${SENTRY_TRACES_SAMPLE_RATE},
   },
 };
 EOF

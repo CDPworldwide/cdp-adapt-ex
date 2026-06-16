@@ -26,4 +26,11 @@ export const environment = {
     host: 'https://eu.i.posthog.com',
     enabled: false,
   },
+  sentry: {
+    dsn: '',
+    enabled: false,
+    environment: 'development',
+    release: '',
+    tracesSampleRate: 0.05,
+  },
 };

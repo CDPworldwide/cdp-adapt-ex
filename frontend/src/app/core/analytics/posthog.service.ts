@@ -1,4 +1,4 @@
-import { ErrorHandler, Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import posthog from 'posthog-js';
 import { filter } from 'rxjs';
@@ -69,15 +69,5 @@ export class PosthogService {
       path: window.location.pathname,
       search: window.location.search,
     });
-  }
-}
-
-@Injectable()
-export class PosthogErrorHandler implements ErrorHandler {
-  private posthog = inject(PosthogService);
-
-  handleError(error: unknown): void {
-    this.posthog.captureException(error);
-    console.error(error);
   }
 }

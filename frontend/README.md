@@ -26,6 +26,7 @@ It is built with **Angular 20**, **Tailwind CSS**, and **Angular Material**.
    - Set `aiServerUrl` to your AI server domain. Ask CDP AI calls this service directly, so chat and follow-up requests do not go through the backend `baseUrl`.
    - If the AI server has `AI_SERVER_API_KEY` configured, set `aiServerApiKey` locally or `AI_SERVER_API_KEY`/`FRONTEND_AI_SERVER_API_KEY` in `.env`/CI.
    - If your backend has `API_KEY` configured, also set `apiKey` and `apiKeyHeaderName` so frontend requests include the required header.
+   - Optional analytics and error reporting are disabled by default. Set PostHog and Sentry values in `.env` or the environment files when you need local telemetry.
 
 ### 3. Build the API Client (CRITICAL)
 If you haven't built the client yet, or if the backend API has changed:
