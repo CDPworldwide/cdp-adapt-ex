@@ -1,0 +1,16 @@
+<span
+  class="inline-flex items-center justify-center px-2 py-[3px] rounded-[6px] bg-cdp-red text-white font-roboto-mono text-[13px] font-light leading-[25px] [font-feature-settings:'liga'_off,'clig'_off]"
+>
+  {{ 'maps.reportingLeader' | translate }}
+</span>
+<app-linked-info-tooltip
+  class="ml-1 self-center"
+  [ariaLabel]="'maps.reportingLeaderAriaLabel' | translate"
+  [linkLabel]="'maps.reportingLeaderLink' | translate"
+  href="https://www.cdp.net/en/data/scores"
+  linkTarget="_blank"
+  linkRel="noopener noreferrer"
+  triggerClass="relative inline-flex items-center justify-center p-1 rounded-full text-cdp-neutral-05 hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 before:absolute before:content-[''] before:-inset-3"
+>
+  <app-info-icon size="14" aria-hidden="true"></app-info-icon>
+</app-linked-info-tooltip>

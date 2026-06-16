@@ -5,6 +5,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HazardIconComponent } from '../../../shared/components/hazard-icon/hazard-icon.component';
 import { CloseIconComponent } from '../../../shared/icons';
 import type { Hazard, LocationPin } from '@pac-api/client';
+import { ReportingLeaderChipComponent } from '../../../shared/components/reporting-leader-chip/reporting-leader-chip.component';
 
 @Component({
   selector: 'app-location-summary',
@@ -15,6 +16,7 @@ import type { Hazard, LocationPin } from '@pac-api/client';
     MatProgressSpinnerModule,
     HazardIconComponent,
     CloseIconComponent,
+    ReportingLeaderChipComponent,
   ],
   templateUrl: './location-summary.component.html',
   styleUrls: ['./location-summary.component.css'],
