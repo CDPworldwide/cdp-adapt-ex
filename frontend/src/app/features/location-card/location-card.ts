@@ -35,6 +35,7 @@ import { ReplaySubject, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Footer } from '../../core/footer/footer';
 import { PosthogService } from '../../core/analytics/posthog.service';
+import { ReportingLeaderChipComponent } from '../../shared/components/reporting-leader-chip/reporting-leader-chip.component';
 import {
   hazardKeyProperties,
   hazardProperties,
@@ -68,6 +69,7 @@ declare let gtag: Function;
     MatProgressSpinnerModule,
     SolutionsComponent,
     Footer,
+    ReportingLeaderChipComponent,
   ],
   templateUrl: './location-card.html',
   styleUrls: ['./location-card.css'],

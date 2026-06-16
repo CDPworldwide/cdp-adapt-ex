@@ -58,6 +58,8 @@
     "projectsSeekingFunding": "Projects seeking funding",
     "learnMore": "Learn more",
     "reportingLeader": "CDP Reporting Leader",
+    "reportingLeaderLink": "View CDP Scores and A Lists.",
+    "reportingLeaderAriaLabel": "Learn about CDP Reporting Leader status",
     "nonPublicDisclosure": "This jurisdiction’s CDP report is not available to public display; hazard information and action ideas are available.",
     "noHazardData": "No map data available for this hazard",
     "hazardLegend": {

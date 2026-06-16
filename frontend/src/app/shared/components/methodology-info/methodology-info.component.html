@@ -1,21 +1,8 @@
-<button
-  type="button"
-  (click)="open_()"
-  [attr.aria-label]="'locationCard.solutions.seeMethodology' | translate"
-  [attr.aria-expanded]="open"
-  class="relative inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 before:absolute before:content-[''] before:-inset-3"
+<app-linked-info-tooltip
+  [ariaLabel]="'locationCard.solutions.seeMethodology' | translate"
+  [linkLabel]="'locationCard.solutions.seeMethodology' | translate"
+  routerLink="/methodology"
+  triggerClass="relative inline-flex items-center justify-center p-1 rounded-full text-cdp-text-secondary hover:text-cdp-red hover:bg-cdp-neutral-01 active:bg-cdp-neutral-02 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 before:absolute before:content-[''] before:-inset-3"
 >
   <app-info-icon size="14"></app-info-icon>
-</button>
-@if (open) {
-  <span
-    role="tooltip"
-    class="absolute bottom-full left-1/2 z-50 mb-2 w-max max-w-[220px] -translate-x-1/2 rounded bg-cdp-dark px-3 py-2 text-xs not-italic font-normal leading-snug text-white shadow-lg"
-  >
-    <a
-      routerLink="/methodology"
-      class="text-white underline underline-offset-2 hover:text-white"
-      >{{ 'locationCard.solutions.seeMethodology' | translate }}</a
-    >
-  </span>
-}
+</app-linked-info-tooltip>
