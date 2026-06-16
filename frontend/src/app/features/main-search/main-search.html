@@ -199,19 +199,35 @@
       >
         {{ 'homepage.hero.orExploreOnMap' | translate }}
       </span>
-      <div class="flex items-center gap-6 lg:absolute lg:left-12">
-        <div class="flex items-center gap-2">
-          <div class="w-3 h-3 bg-cdp-blue rounded-full"></div>
-          <div class="text-black text-xs font-normal font-roboto-mono leading-3 tracking-wide">
+      <div
+        class="flex items-center gap-3 lg:absolute lg:left-12"
+        role="group"
+        aria-label="Map category filters"
+      >
+        <button
+          type="button"
+          class="flex items-center gap-2 px-2 py-1 rounded-sm transition-colors hover:bg-cdp-neutral-01 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 focus-visible:ring-offset-cdp-bg"
+          [class.bg-cdp-neutral-01]="selectedMapCategoryFilter === 'states-regions'"
+          [attr.aria-pressed]="selectedMapCategoryFilter === 'states-regions'"
+          (click)="setMapCategoryFilter('states-regions')"
+        >
+          <span class="w-3 h-3 bg-cdp-blue rounded-full" aria-hidden="true"></span>
+          <span class="text-black text-xs font-normal font-roboto-mono leading-3 tracking-wide">
             {{ 'homepage.legend.statesAndRegions' | translate }}
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <div class="w-3 h-3 bg-cdp-red rounded-full"></div>
-          <div class="text-black text-xs font-normal font-roboto-mono leading-3 tracking-wide">
+          </span>
+        </button>
+        <button
+          type="button"
+          class="flex items-center gap-2 px-2 py-1 rounded-sm transition-colors hover:bg-cdp-neutral-01 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 focus-visible:ring-offset-cdp-bg"
+          [class.bg-cdp-neutral-01]="selectedMapCategoryFilter === 'cities'"
+          [attr.aria-pressed]="selectedMapCategoryFilter === 'cities'"
+          (click)="setMapCategoryFilter('cities')"
+        >
+          <span class="w-3 h-3 bg-cdp-red rounded-full" aria-hidden="true"></span>
+          <span class="text-black text-xs font-normal font-roboto-mono leading-3 tracking-wide">
             {{ 'homepage.legend.cities' | translate }}
-          </div>
-        </div>
+          </span>
+        </button>
       </div>
     </div>
 
@@ -220,7 +236,10 @@
       class="relative flex-1 mx-4 md:mx-8 lg:mx-12 mb-4 md:mb-6 rounded-2xl overflow-hidden border border-cdp-neutral-02 bg-cdp-neutral-01 shadow-sm"
       [class.invisible]="isOverlayOpen"
     >
-      <app-maps class="block h-full w-full"></app-maps>
+      <app-maps
+        class="block h-full w-full"
+        [categoryFilter]="selectedMapCategoryFilter"
+      ></app-maps>
 
       <!-- On mobile the cards sit above the scroll-down arrow (bottom-20) so it
            stays visible/tappable; desktop keeps them at bottom-6 (left card,

@@ -23,7 +23,7 @@ import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { MapSelectionService } from './map-selection.service';
 import { SEARCH_ALIASES, COUNTRY_ALIASES, LOCATION_SEARCH_KEYWORDS } from './search-aliases';
 import { STATE_ABBREV_TO_NAME } from './state-abbrev';
-import { Maps } from '../maps/maps';
+import { Maps, type MapCategoryFilter } from '../maps/maps';
 import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
 import type { Hazard, HazardProfile, LocationPin } from '@pac-api/client';
 import { CdpLogoIconComponent, WarningIconComponent } from '../../shared/icons';
@@ -77,6 +77,7 @@ export class MainSearchComponent implements OnInit {
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
   activeSuggestionIndex = -1;
   private visibleSuggestions: LocationSuggestion[] = [];
+  selectedMapCategoryFilter: MapCategoryFilter = 'all';
 
   selectedLocation: LocationPin | null = null;
   selectedLocationData: LocationData | null = null;
@@ -236,6 +237,16 @@ export class MainSearchComponent implements OnInit {
 
   dismissInfoCard(): void {
     this.isInfoCardDismissed = true;
+  }
+
+  setMapCategoryFilter(filter: Exclude<MapCategoryFilter, 'all'>): void {
+    const nextFilter: MapCategoryFilter =
+      this.selectedMapCategoryFilter === filter ? 'all' : filter;
+    this.selectedMapCategoryFilter = nextFilter;
+    this.posthog.capture('map_category_filter_selected', {
+      category: nextFilter,
+      source: 'homepage_legend',
+    });
   }
 
   scrollToTrends(): void {

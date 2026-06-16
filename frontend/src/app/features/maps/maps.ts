@@ -6,6 +6,9 @@ import {
   ElementRef,
   OnDestroy,
   NgZone,
+  Input,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { MapSelectionService } from '../main-search/map-selection.service';
 import { LocationPinsService } from './location-pins.service';
@@ -39,19 +42,24 @@ const REGION_PIN_ICON_URL = pinDataUrl(REGION_FILL);
 const CITY_PIN_SELECTED_ICON_URL = pinDataUrl(CITY_FILL_SELECTED);
 const REGION_PIN_SELECTED_ICON_URL = pinDataUrl(REGION_FILL_SELECTED);
 
+export type MapCategoryFilter = 'all' | 'cities' | 'states-regions';
+
 @Component({
   selector: 'app-maps',
   imports: [],
   templateUrl: './maps.html',
   styleUrls: ['../shared-feature-styles.css', './maps.css'],
 })
-export class Maps implements OnInit, AfterViewInit, OnDestroy {
+export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+  @Input() categoryFilter: MapCategoryFilter = 'all';
+
   @ViewChild('map', { static: true }) mapElementRef!: ElementRef;
   private googleMap!: google.maps.Map;
   private markers: Map<
     string,
     { marker: google.maps.marker.AdvancedMarkerElement; orgType: OrgTypeEnum }
   > = new Map();
+  private allPins: LocationPin[] = [];
 
   // Computed from the actual pin set after pins load. Used as the "global view"
   // for resetMap() and to clamp minZoom so the user can't dolly out to blank
@@ -77,11 +85,14 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
       this.subscriptions.push(
         this.locationPinsService.getAllLocationPins().subscribe({
           next: (pins) => {
+            this.allPins = pins;
             this.initMap(pins);
             pins.forEach((location) => this.addPin(location));
+            this.applyCategoryFilter();
           },
           error: (err) => {
             console.error('Failed to load location pins:', err);
+            this.allPins = [];
             this.initMap([]);
           },
         }),
@@ -99,6 +110,12 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['categoryFilter']) {
+      this.applyCategoryFilter();
+    }
+  }
 
   private isDesktop(): boolean {
     return window.innerWidth >= 768;
@@ -222,6 +239,9 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
       lastHandledClickAt = now;
 
       this.ngZone.run(() => {
+        const map = this.googleMap;
+        if (!map) return;
+
         const zoomLevel = 8;
         const mapHeight = this.mapElementRef.nativeElement.offsetHeight;
         const offsetPixels = mapHeight / 4;
@@ -234,14 +254,16 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
           180,
         );
 
-        this.googleMap.panTo(newCenter!);
+        map.panTo(newCenter!);
         this.posthog.capture('map_pin_selected', {
           ...pinProperties(location),
-          zoom_level: this.googleMap.getZoom(),
+          zoom_level: map.getZoom(),
         });
 
-        google.maps.event.addListenerOnce(this.googleMap, 'idle', () => {
-          this.googleMap.setZoom(zoomLevel);
+        google.maps.event.addListenerOnce(map, 'idle', () => {
+          if (this.googleMap === map) {
+            map.setZoom(zoomLevel);
+          }
         });
 
         this.mapSelectionService.selectLocation(location);
@@ -260,13 +282,74 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private resetMap(): void {
-    if (!this.googleMap) return;
-    const center = this.defaultCenter ?? { lat: 20, lng: -20 };
-    const zoom = this.defaultZoom ?? (this.isDesktop() ? 2 : 1.25);
-    this.googleMap.panTo(center);
-    google.maps.event.addListenerOnce(this.googleMap, 'idle', () => {
-      this.googleMap.setZoom(zoom);
+    const map = this.googleMap;
+    if (!map) return;
+
+    const { center, zoom } = this.getVisiblePinFit();
+    map.panTo(center);
+    google.maps.event.addListenerOnce(map, 'idle', () => {
+      if (this.googleMap === map) {
+        map.setZoom(zoom);
+      }
     });
+  }
+
+  private applyCategoryFilter(): void {
+    if (!this.googleMap) {
+      return;
+    }
+
+    this.markers.forEach(({ marker, orgType }) => {
+      marker.map = this.isOrgTypeVisible(orgType) ? this.googleMap : null;
+    });
+
+    const selectedLocation = this.mapSelectionService.getSelectedLocation();
+    if (selectedLocation && !this.isPinVisible(selectedLocation)) {
+      this.mapSelectionService.clearSelection();
+      return;
+    }
+
+    this.refitMapToVisiblePins();
+  }
+
+  private refitMapToVisiblePins(): void {
+    const map = this.googleMap;
+    if (!map) return;
+
+    const { center, zoom } = this.getVisiblePinFit();
+    map.setOptions?.({ minZoom: zoom });
+    map.panTo(center);
+    map.setZoom(zoom);
+  }
+
+  private getVisiblePinFit(): { center: google.maps.LatLngLiteral; zoom: number } {
+    if (this.categoryFilter === 'all') {
+      return {
+        center: this.defaultCenter ?? { lat: 20, lng: -20 },
+        zoom: this.defaultZoom ?? (this.isDesktop() ? 2 : 1.25),
+      };
+    }
+
+    return this.computeFit(
+      this.allPins.filter((pin) => this.isPinVisible(pin)),
+      this.isDesktop(),
+    );
+  }
+
+  private isPinVisible(location: LocationPin): boolean {
+    return this.isOrgTypeVisible(location.orgType ?? OrgTypeEnum.CITY);
+  }
+
+  private isOrgTypeVisible(orgType: OrgTypeEnum): boolean {
+    if (this.categoryFilter === 'cities') {
+      return orgType === OrgTypeEnum.CITY;
+    }
+
+    if (this.categoryFilter === 'states-regions') {
+      return orgType === OrgTypeEnum.STATE_AND_REGION;
+    }
+
+    return true;
   }
 
   private getPinStyle(orgType: OrgTypeEnum, isSelected: boolean) {
