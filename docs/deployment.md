@@ -93,13 +93,20 @@ Sensitive variables must be defined in Secret Manager with the appropriate envir
 | `ALLOWED_ORIGINS` | CORS origins (comma-separated). |
 | `GOOGLE_MAPS_API_KEY` | Google Maps API Key. |
 
-Optional frontend analytics are configured through GitHub Actions variables:
+Optional frontend analytics and error reporting are configured through GitHub Actions variables:
 
 | Variable Name | Description |
 |---------------|-------------|
 | `FRONTEND_POSTHOG_KEY` | PostHog project key compiled into the frontend when analytics should be enabled. |
 | `FRONTEND_POSTHOG_HOST` | PostHog ingestion host. Defaults to `https://eu.i.posthog.com` when unset. |
 | `FRONTEND_POSTHOG_ENABLED` | Set to `true` to enable PostHog during frontend builds. Defaults to `false` when unset. |
+| `FRONTEND_SENTRY_DSN` | Sentry frontend DSN compiled into the frontend when browser exception reporting should be enabled. |
+| `FRONTEND_SENTRY_ENABLED` | Set to `true` to enable Sentry during frontend builds. Defaults to `false` when unset. |
+| `FRONTEND_SENTRY_TRACES_SAMPLE_RATE` | Sentry performance tracing sample rate. Defaults to `0.05` when unset. |
+
+Frontend builds set the Sentry release to the GitHub commit SHA and the Sentry environment to the workflow environment.
+
+Slack notifications for large or recurring frontend errors should be configured in Sentry, not through a frontend webhook. Connect the Sentry Slack integration and add alert rules for production frontend issues, regressions, and error volume thresholds such as `10 events in 10 minutes`.
 
 ### 📈 Monitoring & Logs
 
@@ -184,7 +191,7 @@ sequenceDiagram
 
 ### 1. Production (`deploy.yml`)
 Triggered on **push** to the `production` branch or by manual dispatch.
-- **Orchestration**: Deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, Google Maps key, and optional PostHog analytics settings injected at compile time.
+- **Orchestration**: Deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, Google Maps key, and optional PostHog analytics and Sentry error reporting settings injected at compile time.
 - **Verification**: Automatically rolls back if the backend health check fails.
 
 ### 2. PR Previews (`backend-deploy.yml` & `frontend.yml`)

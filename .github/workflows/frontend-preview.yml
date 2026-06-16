@@ -136,6 +136,11 @@ jobs:
           FRONTEND_POSTHOG_KEY='${{ vars.FRONTEND_POSTHOG_KEY }}' \
           FRONTEND_POSTHOG_HOST='${{ vars.FRONTEND_POSTHOG_HOST }}' \
           FRONTEND_POSTHOG_ENABLED='${{ vars.FRONTEND_POSTHOG_ENABLED }}' \
+          FRONTEND_SENTRY_DSN='${{ vars.FRONTEND_SENTRY_DSN }}' \
+          FRONTEND_SENTRY_ENABLED='${{ vars.FRONTEND_SENTRY_ENABLED }}' \
+          FRONTEND_SENTRY_ENVIRONMENT='${{ env.ENVIRONMENT }}' \
+          FRONTEND_SENTRY_RELEASE='${{ github.sha }}' \
+          FRONTEND_SENTRY_TRACES_SAMPLE_RATE='${{ vars.FRONTEND_SENTRY_TRACES_SAMPLE_RATE }}' \
           bash scripts/write-environment.sh
 
       - name: Validate generated frontend environment
