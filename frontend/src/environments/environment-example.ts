@@ -25,6 +25,7 @@ export const environment = {
     key: '',
     host: 'https://eu.i.posthog.com',
     enabled: false,
+    sessionReplayEnabled: true,
   },
   sentry: {
     dsn: '',
