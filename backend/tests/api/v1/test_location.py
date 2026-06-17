@@ -10,6 +10,7 @@ from app.models.location_details import DimCentral, OrganizationSummary, PeerSol
 from app.schemas.location import (
     ActionsTab,
     HazardsTab,
+    LocationSeoSummary,
     LocationProfile,
     RegionalStatistics,
     SolutionsTab,
@@ -297,4 +298,43 @@ async def test_get_all_location_names_returns_organization_summaries(
         location.model_dump(by_alias=True) for location in expected_locations
     ]
     mock_location_details_service.get_all_location_summaries.assert_called_once_with()
+    app.dependency_overrides.clear()
+
+
+@pytest.mark.asyncio
+async def test_get_location_seo_summaries_returns_lightweight_org_metadata(
+    client, mock_location_details_service
+):
+    expected_locations = [
+        LocationSeoSummary(
+            id=867355,
+            name="London",
+            country="United Kingdom",
+            organization_type="City",
+            population=8982000,
+            disclosure_status="Submitted",
+            public_status="Public",
+            disclosure_year=2025,
+            top_hazards=["Extreme heat", "Urban flooding"],
+            action_count=12,
+            goal_count=3,
+            project_count=2,
+            solution_count=8,
+        )
+    ]
+    mock_location_details_service.get_location_seo_summaries.return_value = (
+        expected_locations
+    )
+
+    app.dependency_overrides[get_location_details_service] = (
+        lambda: mock_location_details_service
+    )
+
+    response = await client.get("/api/v1/locations/seo")
+
+    assert response.status_code == 200
+    assert response.json()["locations"] == [
+        location.model_dump(by_alias=True) for location in expected_locations
+    ]
+    mock_location_details_service.get_location_seo_summaries.assert_called_once_with()
     app.dependency_overrides.clear()

@@ -51,6 +51,7 @@ describe('CityDetailPageComponent', () => {
   let routeData$: BehaviorSubject<any>;
 
   const MOCK_LOCATION_DATA = {
+    organizationId: 867355,
     name: 'Junagadh',
     countryName: 'India',
     lat: 21.5222,
@@ -74,7 +75,9 @@ describe('CityDetailPageComponent', () => {
     mockRouter.isActive.and.returnValue(false);
     mockHazardMapService = jasmine.createSpyObj('HazardMapService', ['getHazardLayer']);
     mockGoogleMapsLoaderService = jasmine.createSpyObj('GoogleMapsLoaderService', ['loadApi']);
-    routeParamMap$ = new BehaviorSubject(convertToParamMap({ organizationId: '867355' }));
+    routeParamMap$ = new BehaviorSubject(
+      convertToParamMap({ organizationSlug: '867355-junagadh-india' }),
+    );
     askCdpAiServiceMock = {
       conversationHistory: signal<any[]>([]),
       disclosure: signal<string | null>(null),
@@ -143,7 +146,9 @@ describe('CityDetailPageComponent', () => {
       null,
     );
 
-    routeParamMap$.next(convertToParamMap({ organizationId: '867355', tab: 'solutions' }));
+    routeParamMap$.next(
+      convertToParamMap({ organizationSlug: '867355-junagadh-india', tab: 'solutions' }),
+    );
     fixture.detectChanges();
 
     expect(askCdpAiServiceMock.setLocationContext).toHaveBeenCalledWith(
@@ -163,7 +168,9 @@ describe('CityDetailPageComponent', () => {
   });
 
   it('passes the selected actions hazard filter into the AI context', () => {
-    routeParamMap$.next(convertToParamMap({ organizationId: '867355', tab: 'actions' }));
+    routeParamMap$.next(
+      convertToParamMap({ organizationSlug: '867355-junagadh-india', tab: 'actions' }),
+    );
     fixture.detectChanges();
     askCdpAiServiceMock.setLocationContext.calls.reset();
 
@@ -182,7 +189,7 @@ describe('CityDetailPageComponent', () => {
       throwError(() => new Error('404')),
     );
 
-    routeParamMap$.next(convertToParamMap({ organizationId: '999999' }));
+    routeParamMap$.next(convertToParamMap({ organizationSlug: '999999' }));
     fixture.detectChanges();
 
     expect(component.isLoading).toBeFalse();
@@ -234,7 +241,19 @@ describe('CityDetailPageComponent', () => {
   it('navigates when tabs change', () => {
     component.onTabChange('actions');
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '867355', 'actions']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '867355-junagadh-india', 'actions']);
+  });
+
+  it('canonicalizes legacy numeric org routes after loading location details', () => {
+    mockRouter.navigate.calls.reset();
+
+    routeParamMap$.next(convertToParamMap({ organizationSlug: '867355', tab: 'hazards' }));
+    fixture.detectChanges();
+
+    expect(mockLocationService.getLocationByOrganizationId).toHaveBeenCalledWith('867355');
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '867355-junagadh-india', 'hazards'], {
+      replaceUrl: true,
+    });
   });
 
   it('should open the AI sidebar without fetching starter questions again', () => {

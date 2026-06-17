@@ -42,6 +42,7 @@ describe('MainSearchComponent', () => {
   let mockRouter: jasmine.SpyObj<Router>;
   let translate: TranslateService;
   const MOCK_LOCATION_DATA = {
+    organizationId: 101,
     name: 'London',
     countryName: 'United Kingdom',
     lat: 51.5074,
@@ -68,9 +69,30 @@ describe('MainSearchComponent', () => {
   } as any;
 
   const MOCK_SUGGESTIONS = [
-    { organizationId: 101, name: 'London', disclosesToCDP: true, isReportingLeader: false },
-    { organizationId: 102, name: 'Los Angeles', disclosesToCDP: false, isReportingLeader: false },
-    { organizationId: 103, name: 'Vegas', disclosesToCDP: true, isReportingLeader: false },
+    {
+      organizationId: 101,
+      slug: '101-london-united-kingdom',
+      name: 'London',
+      country: 'United Kingdom',
+      disclosesToCDP: true,
+      isReportingLeader: false,
+    },
+    {
+      organizationId: 102,
+      slug: '102-los-angeles-united-states',
+      name: 'Los Angeles',
+      country: 'United States',
+      disclosesToCDP: false,
+      isReportingLeader: false,
+    },
+    {
+      organizationId: 103,
+      slug: '103-vegas-united-states',
+      name: 'Vegas',
+      country: 'United States',
+      disclosesToCDP: true,
+      isReportingLeader: false,
+    },
   ];
 
   const recreateComponent = () => {
@@ -214,12 +236,54 @@ describe('MainSearchComponent', () => {
 
     it('should limit the number of suggestions to 5', fakeAsync(() => {
       const manySuggestions = [
-        { organizationId: 201, name: 'Paris', disclosesToCDP: true, isReportingLeader: false },
-        { organizationId: 202, name: 'Perth', disclosesToCDP: false, isReportingLeader: false },
-        { organizationId: 203, name: 'Porto', disclosesToCDP: true, isReportingLeader: false },
-        { organizationId: 204, name: 'Prague', disclosesToCDP: false, isReportingLeader: false },
-        { organizationId: 205, name: 'Phoenix', disclosesToCDP: true, isReportingLeader: false },
-        { organizationId: 206, name: 'Portland', disclosesToCDP: true, isReportingLeader: false },
+        {
+          organizationId: 201,
+          slug: '201-paris-france',
+          name: 'Paris',
+          country: 'France',
+          disclosesToCDP: true,
+          isReportingLeader: false,
+        },
+        {
+          organizationId: 202,
+          slug: '202-perth-australia',
+          name: 'Perth',
+          country: 'Australia',
+          disclosesToCDP: false,
+          isReportingLeader: false,
+        },
+        {
+          organizationId: 203,
+          slug: '203-porto-portugal',
+          name: 'Porto',
+          country: 'Portugal',
+          disclosesToCDP: true,
+          isReportingLeader: false,
+        },
+        {
+          organizationId: 204,
+          slug: '204-prague-czechia',
+          name: 'Prague',
+          country: 'Czechia',
+          disclosesToCDP: false,
+          isReportingLeader: false,
+        },
+        {
+          organizationId: 205,
+          slug: '205-phoenix-united-states',
+          name: 'Phoenix',
+          country: 'United States',
+          disclosesToCDP: true,
+          isReportingLeader: false,
+        },
+        {
+          organizationId: 206,
+          slug: '206-portland-united-states',
+          name: 'Portland',
+          country: 'United States',
+          disclosesToCDP: true,
+          isReportingLeader: false,
+        },
       ];
       mockLocationService.getAllLocationNames.and.returnValue(of(manySuggestions));
 
@@ -260,7 +324,7 @@ describe('MainSearchComponent', () => {
       component.onSearchKeydown(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
       component.onSearchKeydown(new KeyboardEvent('keydown', { key: 'Enter' }));
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', 101]);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '101-london-united-kingdom']);
     });
 
     it('should select the first visible suggestion when Enter is pressed without an active suggestion', () => {
@@ -269,7 +333,7 @@ describe('MainSearchComponent', () => {
 
       component.onSearchKeydown(new KeyboardEvent('keydown', { key: 'Enter' }));
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', 101]);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '101-london-united-kingdom']);
     });
   });
 
@@ -333,13 +397,13 @@ describe('MainSearchComponent', () => {
 
       component.onSearch();
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', 101]);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '101-london-united-kingdom']);
     });
 
     it('should navigate to org route when selecting autocomplete suggestion', () => {
       component.onSearch('Los Angeles');
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', 102]);
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '102-los-angeles-united-states']);
     });
 
     it('opens the search overlay when openSearchOverlay is called', () => {

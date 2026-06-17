@@ -34,6 +34,15 @@ import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends
 import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
 import { Footer } from '../../core/footer/footer';
 import { PosthogService } from '../../core/analytics/posthog.service';
+import { buildOrganizationSlugSegment } from '../../shared/utils/org-slug.util';
+
+type LocationRouteTarget = {
+  organizationId: number;
+  name: string;
+  country?: string;
+  countryName?: string;
+  slug?: string;
+};
 
 // `São Paulo` → `sao paulo`. NFD-strip combining marks; preserves length.
 function stripDiacritics(value: string): string {
@@ -216,7 +225,7 @@ export class MainSearchComponent implements OnInit {
         source: 'map_pin',
       });
       this.mapSelectionService.clearSelection();
-      this.router.navigate(['/org', suggestion.organizationId]);
+      this.openLocation(suggestion);
     }
   }
 
@@ -416,7 +425,7 @@ export class MainSearchComponent implements OnInit {
         query_length: trimmedQuery.length,
         result_rank: resultRank || undefined,
       });
-      this.openLocation(selectedLocation.organizationId);
+      this.openLocation(selectedLocation);
     } else {
       this.loadLocation(trimmedQuery);
     }
@@ -429,9 +438,14 @@ export class MainSearchComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  private openLocation(organizationId: number) {
+  private openLocation(location: LocationRouteTarget) {
     this.closeSearchOverlay();
-    this.router.navigate(['/org', organizationId]);
+    const country = location.country ?? location.countryName;
+    const slug =
+      location.slug ??
+      buildOrganizationSlugSegment(location.organizationId, location.name, country);
+
+    this.router.navigate(['/org', slug]);
   }
 
   private loadLocation(locationName: string) {
@@ -449,7 +463,7 @@ export class MainSearchComponent implements OnInit {
             source: 'search',
             query_length: locationName.length,
           });
-          this.openLocation(data.organizationId);
+          this.openLocation(data);
         },
         error: () => {
           this.isNotFound = true;

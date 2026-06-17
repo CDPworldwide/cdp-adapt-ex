@@ -17,6 +17,10 @@ import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { LanguageService } from '../../shared/services/language.service';
 import { FeedbackService } from '../../shared/services/feedback.service';
 import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
+import {
+  buildOrganizationSlugSegment,
+  extractOrganizationIdFromRouteSegment,
+} from '../../shared/utils/org-slug.util';
 
 const DEFAULT_TAB: LocationCardTabKey = 'hazards';
 const VALID_TABS: readonly LocationCardTabKey[] = ['hazards', 'actions', 'solutions'];
@@ -40,12 +44,14 @@ export class CityDetailPageComponent implements OnInit {
   isLoading = true;
   isNotFound = false;
   organizationId: string | null = null;
+  private organizationRouteSegment: string | null = null;
   activeTab: LocationCardTabKey = DEFAULT_TAB;
   isAiOpen = false;
   selectedActionHazardFilter: string | null = null;
   private loadedOrganizationId: string | null = null;
   private loadedLanguage: string | null = null;
   private locationLoadRequestId = 0;
+  private isChatRoute = false;
 
   private destroyRef = inject(DestroyRef);
   private languageService = inject(LanguageService);
@@ -74,10 +80,13 @@ export class CityDetailPageComponent implements OnInit {
     combineLatest([this.route.paramMap, this.route.data])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([params, data]) => {
-        const organizationId = params.get('organizationId');
+        const organizationSegment = params.get('organizationSlug') ?? params.get('organizationId');
+        const organizationId = extractOrganizationIdFromRouteSegment(organizationSegment);
+        this.organizationRouteSegment = organizationSegment;
         this.organizationId = organizationId;
         this.activeTab = this.normalizeTab(params.get('tab'));
-        this.isAiOpen = data['openAiPanel'] === true || this.isAiOpen;
+        this.isChatRoute = data['openAiPanel'] === true;
+        this.isAiOpen = this.isChatRoute || this.isAiOpen;
 
         if (!organizationId) {
           this.isLoading = false;
@@ -91,6 +100,9 @@ export class CityDetailPageComponent implements OnInit {
           return;
         }
 
+        if (this.locationData) {
+          this.ensureCanonicalOrganizationRoute(this.locationData);
+        }
         this.prefetchStarterQuestions();
       });
   }
@@ -104,7 +116,7 @@ export class CityDetailPageComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/org', this.organizationId, tab]);
+    this.router.navigate(['/org', this.currentOrganizationRouteSegment(), tab]);
   }
 
   private loadLocationByOrganizationId(organizationId: string): void {
@@ -124,6 +136,7 @@ export class CityDetailPageComponent implements OnInit {
             return;
           }
           this.locationData = data;
+          this.ensureCanonicalOrganizationRoute(data);
           this.updateFeedbackContext();
           this.isLoading = false;
           this.prefetchStarterQuestions();
@@ -178,6 +191,38 @@ export class CityDetailPageComponent implements OnInit {
       this.activeTab,
       this.activeTab === 'actions' ? this.selectedActionHazardFilter : null,
     );
+  }
+
+  private currentOrganizationRouteSegment(): string {
+    if (this.locationData && this.organizationId) {
+      return buildOrganizationSlugSegment(
+        this.organizationId,
+        this.locationData.name,
+        this.locationData.countryName,
+      );
+    }
+
+    return this.organizationRouteSegment ?? this.organizationId ?? '';
+  }
+
+  private ensureCanonicalOrganizationRoute(locationData: LocationData): void {
+    if (!this.organizationId) {
+      return;
+    }
+
+    const canonicalSegment = buildOrganizationSlugSegment(
+      this.organizationId,
+      locationData.name,
+      locationData.countryName,
+    );
+
+    if (this.organizationRouteSegment === canonicalSegment) {
+      return;
+    }
+
+    this.organizationRouteSegment = canonicalSegment;
+    const routeSuffix = this.isChatRoute ? 'chat' : this.activeTab;
+    this.router.navigate(['/org', canonicalSegment, routeSuffix], { replaceUrl: true });
   }
 
   private normalizeTab(tab: string | null): LocationCardTabKey {
