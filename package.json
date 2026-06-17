@@ -28,6 +28,7 @@
     "client:install": "cd client && npm install",
     "docs:dev": "vitepress dev docs --host 127.0.0.1",
     "docs:build": "vitepress build docs",
+    "docs:build:frontend": "vitepress build docs --outDir frontend/dist/frontend/browser/docs",
     "docs:preview": "vitepress preview docs --host 127.0.0.1",
     "docs:validate": "npm run docs:build",
     "frontend:verify": "cd frontend && bash scripts/write-environment.sh && npm run build",

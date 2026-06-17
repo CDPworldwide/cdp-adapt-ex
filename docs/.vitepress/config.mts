@@ -4,7 +4,7 @@ export default defineConfig({
   title: "CDP Adaptation & Action Explorer",
   description:
     "How the CDP Adaptation & Action Explorer is structured and operated.",
-  base: "/cdp-adapt-ex/",
+  base: "/docs/",
   cleanUrls: true,
   ignoreDeadLinks: [
     (url) => url.startsWith("../") || url.startsWith("./../"),

@@ -2,7 +2,7 @@
 
 A unified platform to synthesize fragmented environmental hazard data and siloed resilience best practices, empowering subnational governments to drive Earth-positive action.
 
-Deployment URLs are managed in Google Cloud Run. See [docs/deployment.md](docs/deployment.md) for the current deployment topology.
+Deployment URLs are managed in Google Cloud Run. The VitePress docs are served from [https://cdp-action-explorer.net/docs/](https://cdp-action-explorer.net/docs/). See [docs/deployment.md](docs/deployment.md) for the current deployment topology.
 
 ## 📱 Preview
 
