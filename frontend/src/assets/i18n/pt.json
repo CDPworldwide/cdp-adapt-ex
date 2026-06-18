@@ -61,6 +61,8 @@
     "projectsSeekingFunding": "Projetos que buscam financiamento",
     "learnMore": "Saber mais",
     "reportingLeader": "Líder de Relatórios do CDP",
+    "reportingLeaderLink": "Ver pontuações e Listas A do CDP.",
+    "reportingLeaderAriaLabel": "Saiba mais sobre o status de Líder de Relatórios do CDP",
     "nonPublicDisclosure": "O relatório CDP desta jurisdição não está disponível para exibição pública; informações sobre riscos e ideias de ação estão disponíveis.",
     "noHazardData": "Não há dados de mapa disponíveis para este perigo.",
     "hazardLegend": {
@@ -98,6 +100,10 @@
     "mainNavigation": "Navegação principal",
     "siteFooter": "Rodapé do site",
     "methodology": "Metodologia",
+    "settingsMenu": {
+      "label": "Configurações",
+      "roleHeading": "Tipo de usuário"
+    },
     "legacyNav": {
       "main": "Principal",
       "maps": "Mapas",

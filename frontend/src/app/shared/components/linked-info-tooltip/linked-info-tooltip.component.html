@@ -1,0 +1,33 @@
+<button
+  type="button"
+  (click)="openTooltip()"
+  [attr.aria-label]="ariaLabel"
+  [attr.aria-expanded]="open"
+  [ngClass]="triggerClass"
+>
+  <ng-content></ng-content>
+</button>
+
+@if (open) {
+  <span
+    role="tooltip"
+    class="absolute bottom-full z-50 mb-2 w-max max-w-[min(220px,calc(100vw-2rem))] rounded bg-cdp-dark px-3 py-2 text-xs not-italic font-normal leading-snug text-white shadow-lg"
+    [ngClass]="tooltipPositionClass"
+  >
+    @if (href) {
+      <a
+        [href]="href"
+        [target]="linkTarget"
+        [rel]="linkRel"
+        class="text-white underline underline-offset-2 hover:text-white"
+        >{{ linkLabel }}</a
+      >
+    } @else if (routerLink) {
+      <a
+        [routerLink]="routerLink"
+        class="text-white underline underline-offset-2 hover:text-white"
+        >{{ linkLabel }}</a
+      >
+    }
+  </span>
+}

@@ -49,7 +49,8 @@ We maintain separate environments for development, staging (previews), and produ
 | Workflow / Branch | Environment | Backend Service | Frontend Service | AI Service | Cloud SQL Instance | Secret Prefix |
 |--------|-------------|-----------------|------------------|------------|-------------------|---------------|
 | `deploy.yml` on `production` | `production` | `cdp-server-prod` | `frontend` | `cdp-ai-server` | `cdp-prod` | `production-` |
-| PR previews | `development` / preview | `cdp-server-preview-pr-X` | `frontend-preview-pr-X` | shared `cdp-ai-server` | `cdp-test` | `development-` |
+| Frontend PR previews | `development` / preview | shared `cdp-server-dev` | `frontend-preview-pr-X` | shared `cdp-ai-server` | `cdp-test` | `development-` |
+| Backend PR previews | `development` / preview | `cdp-server-preview-pr-X` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
 | Manual backend workflow on `main` | `development` | `cdp-server-dev` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
 
 ### 🛠 One-Time Infrastructure Setup
@@ -194,9 +195,10 @@ Triggered on **push** to the `production` branch or by manual dispatch.
 - **Orchestration**: Deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, Google Maps key, and optional PostHog analytics and Sentry error reporting settings injected at compile time.
 - **Verification**: Automatically rolls back if the backend health check fails.
 
-### 2. PR Previews (`backend-deploy.yml` & `frontend.yml`)
+### 2. PR Previews (`backend-deploy.yml` & `frontend-preview.yml`)
 Triggered on **pull request** updates.
-- **Isolation**: Each PR gets a unique service name (`*-pr-{NUMBER}`).
+- **Frontend previews**: Each frontend PR gets a unique frontend service name (`frontend-preview-pr-{NUMBER}`) and builds against the shared `cdp-server-dev` backend deployed from `main`.
+- **Backend previews**: Backend PRs get a unique backend service name (`cdp-server-preview-pr-{NUMBER}`) when backend code or backend deployment workflow files change.
 - **Database**: Uses the `development` database and secrets.
 - **Cleanup**: Previews are automatically deleted when PRs are closed.
 
