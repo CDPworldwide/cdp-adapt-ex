@@ -7,6 +7,8 @@ import { environment } from '@env/environment';
 
 type PosthogEventProperties = Record<string, string | number | boolean | null | undefined>;
 
+const USER_TYPE_STORAGE_KEY = 'cdp-user-role';
+
 @Injectable({ providedIn: 'root' })
 export class PosthogService {
   private initialized = false;
@@ -44,6 +46,7 @@ export class PosthogService {
     });
 
     this.initialized = true;
+    this.registerStoredUserType();
     this.capturePageView();
 
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
@@ -56,7 +59,15 @@ export class PosthogService {
       return;
     }
 
-    posthog.capture(eventName, properties);
+    posthog.capture(eventName, this.withStoredUserType(properties));
+  }
+
+  register(properties: PosthogEventProperties): void {
+    if (!this.initialized) {
+      return;
+    }
+
+    posthog.register(properties);
   }
 
   captureException(error: unknown): void {
@@ -68,10 +79,34 @@ export class PosthogService {
   }
 
   private capturePageView(): void {
-    posthog.capture('$pageview', {
+    posthog.capture('$pageview', this.withStoredUserType({
       $current_url: window.location.href,
       path: window.location.pathname,
       search: window.location.search,
-    });
+    }));
+  }
+
+  private registerStoredUserType(): void {
+    const userType = this.readStoredUserType();
+    if (userType) {
+      posthog.register({ user_type: userType });
+    }
+  }
+
+  private withStoredUserType(properties: PosthogEventProperties = {}): PosthogEventProperties {
+    const userType = this.readStoredUserType();
+    if (!userType || properties['user_type']) {
+      return properties;
+    }
+
+    return { ...properties, user_type: userType };
+  }
+
+  private readStoredUserType(): string | null {
+    try {
+      return localStorage.getItem(USER_TYPE_STORAGE_KEY);
+    } catch {
+      return null;
+    }
   }
 }

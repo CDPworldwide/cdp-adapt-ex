@@ -3,8 +3,8 @@ import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '@env/environment';
 import { FeedbackService } from '../../shared/services/feedback.service';
+import { PosthogService } from '../../core/analytics/posthog.service';
 
-const STORAGE_KEY = 'cdp-welcome-dismissed';
 const ROLE_STORAGE_KEY = 'cdp-user-role';
 
 interface RoleOption {
@@ -19,6 +19,7 @@ interface RoleOption {
 })
 export class WelcomeModalComponent implements OnInit {
   readonly feedbackService = inject(FeedbackService);
+  private readonly posthog = inject(PosthogService);
   isOpen = false;
   selectedRole: string | null = null;
 
@@ -35,7 +36,7 @@ export class WelcomeModalComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.isOpen = !this.readDismissedFlag();
+    this.isOpen = !this.readRole();
   }
 
   selectRole(roleId: string): void {
@@ -52,7 +53,6 @@ export class WelcomeModalComponent implements OnInit {
   }
 
   dismiss(): void {
-    this.writeDismissedFlag();
     this.isOpen = false;
   }
 
@@ -63,19 +63,11 @@ export class WelcomeModalComponent implements OnInit {
     }
   }
 
-  private readDismissedFlag(): boolean {
+  private readRole(): string | null {
     try {
-      return localStorage.getItem(STORAGE_KEY) === 'true';
+      return localStorage.getItem(ROLE_STORAGE_KEY);
     } catch {
-      return false;
-    }
-  }
-
-  private writeDismissedFlag(): void {
-    try {
-      localStorage.setItem(STORAGE_KEY, 'true');
-    } catch {
-      // storage unavailable — modal still dismisses for the session.
+      return null;
     }
   }
 
@@ -88,6 +80,12 @@ export class WelcomeModalComponent implements OnInit {
   }
 
   private reportRole(roleId: string): void {
+    this.posthog.register({ user_type: roleId });
+    this.posthog.capture('user_role_selected', {
+      user_type: roleId,
+      role: roleId,
+    });
+
     // Fire-and-forget: never block dismissal on the network.
     void fetch(`${environment.baseUrl}/api/v1/onboarding/role`, {
       method: 'POST',
