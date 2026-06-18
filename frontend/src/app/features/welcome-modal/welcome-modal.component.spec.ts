@@ -62,7 +62,7 @@ describe('WelcomeModalComponent', () => {
       previous_role: null,
       source: 'welcome_modal',
     });
-    expect(fetchSpy).toHaveBeenCalledWith('/api/v1/onboarding/role', {
+    expect(fetchSpy).toHaveBeenCalledOnceWith(jasmine.stringMatching(/\/api\/v1\/onboarding\/role$/), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role: 'governmentDiscloser' }),
