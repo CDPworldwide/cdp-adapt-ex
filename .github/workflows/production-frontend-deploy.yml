@@ -1,0 +1,189 @@
+name: Production Frontend Deploy
+
+on:
+  push:
+    branches: [production]
+    paths:
+      - "frontend/**"
+      - "client/**"
+      - ".github/actions/setup-frontend-build/**"
+      - ".github/workflows/production-frontend-deploy.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: us-central1
+  ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
+  AI_SERVER_URL: https://cdp-ai-server-pbybuiwoxq-uc.a.run.app
+  ENVIRONMENT: production
+  NODE_VERSION: "20.x"
+  SERVICE_NAME_BACKEND: cdp-server-prod
+  SERVICE_NAME_FRONTEND: frontend-prod
+
+jobs:
+  deploy-frontend:
+    name: Production / deploy frontend
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup frontend build
+        uses: ./.github/actions/setup-frontend-build
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Determine production backend URL
+        id: backend-url
+        run: |
+          BACKEND_URL=$(gcloud run services describe ${{ env.SERVICE_NAME_BACKEND }} \
+            --region=${{ env.REGION }} \
+            --format='value(status.url)')
+
+          if [ -z "$BACKEND_URL" ]; then
+            echo "Could not resolve URL for Cloud Run service ${{ env.SERVICE_NAME_BACKEND }} in ${{ env.REGION }}"
+            exit 1
+          fi
+
+          echo "url=$BACKEND_URL" >> "$GITHUB_OUTPUT"
+          echo "Resolved production backend URL: $BACKEND_URL"
+
+      - name: Get Frontend Secrets from Secret Manager
+        id: frontend-secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: |-
+            API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
+            AI_SERVER_API_KEY:${{ env.PROJECT_ID }}/shared-AI_SERVER_API_KEY
+            GOOGLE_MAPS_API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
+
+      - name: Create production environment.ts
+        working-directory: frontend
+        run: |
+          FRONTEND_BASE_URL='${{ steps.backend-url.outputs.url }}' \
+          FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
+          FRONTEND_API_KEY='${{ steps.frontend-secrets.outputs.API_KEY }}' \
+          FRONTEND_AI_SERVER_API_KEY='${{ steps.frontend-secrets.outputs.AI_SERVER_API_KEY }}' \
+          FRONTEND_DEBUG_MODE='false' \
+          FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
+          FRONTEND_POSTHOG_KEY='${{ vars.FRONTEND_POSTHOG_KEY }}' \
+          FRONTEND_POSTHOG_HOST='${{ vars.FRONTEND_POSTHOG_HOST }}' \
+          FRONTEND_POSTHOG_ENABLED='${{ vars.FRONTEND_POSTHOG_ENABLED }}' \
+          FRONTEND_SENTRY_DSN='${{ vars.FRONTEND_SENTRY_DSN }}' \
+          FRONTEND_SENTRY_ENABLED='${{ vars.FRONTEND_SENTRY_ENABLED }}' \
+          FRONTEND_SENTRY_ENVIRONMENT='${{ env.ENVIRONMENT }}' \
+          FRONTEND_SENTRY_RELEASE='${{ github.sha }}' \
+          FRONTEND_SENTRY_TRACES_SAMPLE_RATE='${{ vars.FRONTEND_SENTRY_TRACES_SAMPLE_RATE }}' \
+          bash scripts/write-environment.sh
+
+      - name: Validate generated frontend environment
+        working-directory: frontend
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          text = Path('src/environments/environment.ts').read_text(encoding='utf-8')
+
+          def extract(name: str) -> str:
+              match = re.search(rf"{name}: '([^']*)'", text)
+              return match.group(1) if match else ''
+
+          values = {
+              'baseUrl': extract('baseUrl'),
+              'aiServerUrl': extract('aiServerUrl'),
+              'apiKey': extract('apiKey'),
+              'apiKeyHeaderName': extract('apiKeyHeaderName'),
+              'aiServerApiKey': extract('aiServerApiKey'),
+              'aiServerApiKeyHeaderName': extract('aiServerApiKeyHeaderName'),
+              'posthogKey': extract('key'),
+          }
+
+          for key, value in values.items():
+              print(f"{key}_set={'yes' if value else 'no'}")
+              if value:
+                  print(f"{key}_length={len(value)}")
+
+          missing = [key for key in ('baseUrl', 'aiServerUrl', 'apiKey', 'aiServerApiKey') if not values[key]]
+          if missing:
+              raise SystemExit(f"Missing generated frontend environment values: {', '.join(missing)}")
+          PY
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Run frontend tests
+        working-directory: frontend
+        run: npm run test:ci
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
+
+      - name: Build and push frontend Docker image
+        working-directory: frontend
+        run: |
+          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_FRONTEND }}:${{ github.sha }}"
+          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_FRONTEND }}:latest"
+          IMAGE_ENV="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_FRONTEND }}:${{ env.ENVIRONMENT }}"
+
+          docker build -t $IMAGE_TAG -t $IMAGE_LATEST -t $IMAGE_ENV .
+          docker push $IMAGE_TAG
+          docker push $IMAGE_LATEST
+          docker push $IMAGE_ENV
+
+      - name: Deploy frontend to Cloud Run
+        id: deploy-frontend
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME_FRONTEND }}
+          region: ${{ env.REGION }}
+          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_FRONTEND }}:${{ github.sha }}
+          flags: |
+            --allow-unauthenticated
+            --min-instances=0
+            --max-instances=10
+            --memory=512Mi
+            --cpu=1
+            --timeout=60
+            --port=8080
+          labels: |
+            environment=${{ env.ENVIRONMENT }}
+            managed-by=github-actions
+            commit-sha=${{ github.sha }}
+
+      - name: Verify frontend deployment health
+        run: |
+          URL="${{ steps.deploy-frontend.outputs.url }}"
+          echo "Checking health of ${{ env.ENVIRONMENT }} frontend at $URL..."
+          for i in {1..10}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
+            if [ "$STATUS" = "200" ]; then
+              echo "Frontend deployment is healthy (HTTP $STATUS)"
+              echo "Backend URL wired into frontend: ${{ steps.backend-url.outputs.url }}"
+              exit 0
+            fi
+            echo "Attempt $i/10: HTTP $STATUS, waiting 5s..."
+            sleep 5
+          done
+          echo "Frontend deployment health check failed"
+          exit 1
