@@ -92,6 +92,10 @@
     "scrollRight": "Scroll right",
     "showLess": "Show less",
     "methodology": "Methodology",
+    "settingsMenu": {
+      "label": "Settings",
+      "roleHeading": "User type"
+    },
     "legacyNav": {
       "main": "Main",
       "maps": "Maps",

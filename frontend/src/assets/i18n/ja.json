@@ -100,6 +100,10 @@
     "mainNavigation": "メインナビゲーション",
     "siteFooter": "サイトフッター",
     "methodology": "方法論",
+    "settingsMenu": {
+      "label": "設定",
+      "roleHeading": "ユーザーの種類"
+    },
     "legacyNav": {
       "main": "メイン",
       "maps": "マップ",
