@@ -5,7 +5,6 @@ on:
     branches: [production]
     paths:
       - "backend/**"
-      - ".github/workflows/production-backend-deploy.yml"
   workflow_dispatch:
 
 concurrency:
