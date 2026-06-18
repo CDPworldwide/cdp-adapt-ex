@@ -39,6 +39,76 @@ export const routes: Routes = [
       import('./features/learn-more/learn-more').then((m) => m.LearnMoreComponent),
   },
   {
+    path: 'solutions',
+    redirectTo: 'solutions/climate-risk-data-for-banks',
+    pathMatch: 'full',
+  },
+  {
+    path: 'solutions/climate-risk-data-for-banks',
+    loadComponent: () =>
+      import('./features/commercial-landing/commercial-landing').then(
+        (m) => m.CommercialLandingComponent,
+      ),
+    data: {
+      commercialLandingKey: 'climateRiskDataForBanks',
+    },
+  },
+  {
+    path: 'solutions/city-climate-risk-intelligence',
+    loadComponent: () =>
+      import('./features/commercial-landing/commercial-landing').then(
+        (m) => m.CommercialLandingComponent,
+      ),
+    data: {
+      commercialLandingKey: 'cityClimateRiskIntelligence',
+    },
+  },
+  {
+    path: 'solutions/adaptation-project-pipeline',
+    loadComponent: () =>
+      import('./features/commercial-landing/commercial-landing').then(
+        (m) => m.CommercialLandingComponent,
+      ),
+    data: {
+      commercialLandingKey: 'adaptationProjectPipeline',
+    },
+  },
+  {
+    path: 'industries',
+    redirectTo: 'industries/insurance',
+    pathMatch: 'full',
+  },
+  {
+    path: 'industries/insurance',
+    loadComponent: () =>
+      import('./features/commercial-landing/commercial-landing').then(
+        (m) => m.CommercialLandingComponent,
+      ),
+    data: {
+      commercialLandingKey: 'insurance',
+    },
+  },
+  {
+    path: 'industries/infrastructure-investors',
+    loadComponent: () =>
+      import('./features/commercial-landing/commercial-landing').then(
+        (m) => m.CommercialLandingComponent,
+      ),
+    data: {
+      commercialLandingKey: 'infrastructureInvestors',
+    },
+  },
+  {
+    path: 'industries/climate-consultants',
+    loadComponent: () =>
+      import('./features/commercial-landing/commercial-landing').then(
+        (m) => m.CommercialLandingComponent,
+      ),
+    data: {
+      commercialLandingKey: 'climateConsultants',
+    },
+  },
+  {
     path: '**',
     component: NotFound,
   },

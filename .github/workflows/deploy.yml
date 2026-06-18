@@ -279,6 +279,10 @@ jobs:
         working-directory: frontend
         run: npm run test:ci
 
+      - name: Generate commercial landing pages and sitemap
+        working-directory: frontend
+        run: npm run commercial:generate
+
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
 

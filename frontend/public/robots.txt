@@ -18,3 +18,5 @@ Disallow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://cdp-action-explorer.net/sitemap.xml
