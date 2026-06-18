@@ -76,9 +76,7 @@
                 >
                   @if (hazard.hazard.otherHazardDetails) {
                     <span
-                      [innerHTML]="
-                        hazard.hazard.otherHazardDetails | protectedTranslationHtml
-                      "
+                      [innerHTML]="hazard.hazard.otherHazardDetails | protectedTranslationHtml"
                     ></span>
                   } @else {
                     {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
@@ -159,10 +157,7 @@
                       >
                         @if (sector.sectorType === 'OTHERS') {
                           <span
-                            [innerHTML]="
-                              (sector.otherSectorDetails ?? '')
-                                | protectedTranslationHtml
-                            "
+                            [innerHTML]="sector.otherSectorDetails ?? '' | protectedTranslationHtml"
                           ></span>
                         } @else {
                           {{ 'locationCard.sectorNames.' + sector.sectorType | translate }}
@@ -218,8 +213,7 @@
             >
               {{
                 'locationCard.hazardDetail.topNHazards'
-                  | translate
-                    : { count: disclosedHazards.length < 4 ? disclosedHazards.length : 4 }
+                  | translate: { count: disclosedHazards.length < 4 ? disclosedHazards.length : 4 }
               }}
             </h2>
             <span
@@ -267,6 +261,8 @@
           <a
             href="https://data.cdp.net/"
             target="_blank"
+            rel="noopener noreferrer"
+            (click)="trackOpenDataExport('hazard_overview_open_data_portal')"
             class="bg-zinc-100 rounded border border-cdp-neutral-05 px-4 py-2.5 flex justify-center items-center hover:bg-zinc-200 transition-colors cursor-pointer no-underline w-full lg:w-auto"
           >
             <span
@@ -353,9 +349,7 @@
               >
                 @if (hazard.hazard.otherHazardDetails) {
                   <span
-                    [innerHTML]="
-                      hazard.hazard.otherHazardDetails | protectedTranslationHtml
-                    "
+                    [innerHTML]="hazard.hazard.otherHazardDetails | protectedTranslationHtml"
                   ></span>
                 } @else {
                   {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
@@ -459,8 +453,9 @@
               #dataFieldContent
               class="transition-[padding-bottom] duration-500 ease-in-out"
               [ngClass]="{
-                'h-full overflow-hidden max-h-[400px] lg:max-h-none':
-                  !isHazardExpanded(hazard.hazard),
+                'h-full overflow-hidden max-h-[400px] lg:max-h-none': !isHazardExpanded(
+                  hazard.hazard
+                ),
                 'h-auto pb-20': isHazardExpanded(hazard.hazard),
               }"
             >
@@ -544,10 +539,7 @@
                       <li *ngFor="let sector of hazard.mostExposedSectors">
                         @if (sector.sectorType === 'OTHERS') {
                           <span
-                            [innerHTML]="
-                              (sector.otherSectorDetails ?? '')
-                                | protectedTranslationHtml
-                            "
+                            [innerHTML]="sector.otherSectorDetails ?? '' | protectedTranslationHtml"
                           ></span>
                         } @else {
                           {{ 'locationCard.sectorNames.' + sector.sectorType | translate }}
@@ -670,9 +662,7 @@
               <span class="text-white font-roboto text-sm font-normal leading-5">
                 @if (hazard.hazard.otherHazardDetails) {
                   <span
-                    [innerHTML]="
-                      hazard.hazard.otherHazardDetails | protectedTranslationHtml
-                    "
+                    [innerHTML]="hazard.hazard.otherHazardDetails | protectedTranslationHtml"
                   ></span>
                 } @else {
                   {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
@@ -707,9 +697,7 @@
                 >
                   @if (hazard.hazard.otherHazardDetails) {
                     <span
-                      [innerHTML]="
-                        hazard.hazard.otherHazardDetails | protectedTranslationHtml
-                      "
+                      [innerHTML]="hazard.hazard.otherHazardDetails | protectedTranslationHtml"
                     ></span>
                   } @else {
                     {{ 'locationCard.hazardNames.' + hazard.hazard.hazardType | translate }}
@@ -720,9 +708,7 @@
                 class="min-h-10 text-cdp-dark font-roboto text-sm font-normal leading-5 tracking-cdp-tight"
               >
                 @if (hazard.description) {
-                  <span
-                    [innerHTML]="hazard.description | protectedTranslationHtml"
-                  ></span>
+                  <span [innerHTML]="hazard.description | protectedTranslationHtml"></span>
                 } @else {
                   {{ 'locationCard.hazards.geeSummary.' + hazard.hazard.hazardType | translate }}
                 }

@@ -27,7 +27,9 @@
       </header>
 
       <!-- CDP Questionnaire -->
-      <section class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0">
+      <section
+        class="rounded-2xl border border-stone-200 bg-white px-5 py-6 md:px-8 md:py-8 min-w-0"
+      >
         <h2 class="text-xl md:text-2xl font-normal text-cdp-dark font-roboto mb-3 md:mb-4">
           {{ 'methodology.questionnaire.title' | translate }}
         </h2>
@@ -240,6 +242,7 @@
                               [href]="link.url"
                               target="_blank"
                               rel="noopener noreferrer"
+                              (click)="trackRawDatasetExport(row, link.url)"
                               class="text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors"
                               >{{ link.labelKey | translate }}</a
                             >
@@ -252,7 +255,9 @@
                   </td>
                   <td
                     class="py-4 text-sm leading-relaxed text-cdp-text-secondary font-inter"
-                    [innerHTML]="'methodology.minimumCriteria.rows.' + row.id + '.criteria' | translate"
+                    [innerHTML]="
+                      'methodology.minimumCriteria.rows.' + row.id + '.criteria' | translate
+                    "
                   ></td>
                 </tr>
               }

@@ -7,11 +7,13 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { GeometryService } from '../../shared/services/geometry.service';
 import { of } from 'rxjs';
+import { PosthogService } from '../../core/analytics/posthog.service';
 
 describe('LocationCardComponent', () => {
   let component: LocationCardComponent;
   let fixture: ComponentFixture<LocationCardComponent>;
   let geometryServiceSpy: jasmine.SpyObj<GeometryService>;
+  let posthog: jasmine.SpyObj<PosthogService>;
 
   const mockLocationData: LocationProfile = {
     organizationId: 12345,
@@ -85,6 +87,7 @@ describe('LocationCardComponent', () => {
 
     const geoSpy = jasmine.createSpyObj('GeometryService', ['calculateBounds']);
     geoSpy.calculateBounds.and.returnValue(of(new (window as any).google.maps.LatLngBounds()));
+    posthog = jasmine.createSpyObj<PosthogService>('PosthogService', ['capture']);
 
     await TestBed.configureTestingModule({
       imports: [LocationCardComponent, TranslateModule.forRoot()],
@@ -93,6 +96,7 @@ describe('LocationCardComponent', () => {
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: GeometryService, useValue: geoSpy },
+        { provide: PosthogService, useValue: posthog },
       ],
     }).compileComponents();
 
@@ -230,6 +234,32 @@ describe('LocationCardComponent', () => {
       component.setActiveTab('actions');
 
       expect(emitSpy).toHaveBeenCalledWith('actions');
+    });
+
+    it('tracks tab changes with legacy and section engagement events', () => {
+      component.data = mockLocationData;
+
+      component.setActiveTab('actions');
+
+      expect(posthog.capture).toHaveBeenCalledWith(
+        'location_tab_changed',
+        jasmine.objectContaining({
+          from_tab: 'hazards',
+          previous_section: 'hazards',
+          section: 'actions',
+          to_tab: 'actions',
+        }),
+      );
+      expect(posthog.capture).toHaveBeenCalledWith(
+        'section_engaged',
+        jasmine.objectContaining({
+          engagement_type: 'tab_change',
+          from_tab: 'hazards',
+          previous_section: 'hazards',
+          section: 'actions',
+          to_tab: 'actions',
+        }),
+      );
     });
   });
 

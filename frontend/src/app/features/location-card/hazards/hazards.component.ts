@@ -33,6 +33,7 @@ import {
 } from '@pac-api/client';
 import { PosthogService } from '../../../core/analytics/posthog.service';
 import { hazardProperties, locationProperties } from '../../../core/analytics/analytics-events';
+import { ExportTrackingService } from '../../../core/analytics/export-tracking.service';
 
 @Component({
   selector: 'app-hazards',
@@ -85,6 +86,7 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
     private posthog: PosthogService,
+    private exportTracking: ExportTrackingService,
   ) {}
 
   get requesters(): string[] {
@@ -316,6 +318,16 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
 
   onExploreActions(hazard: Hazard): void {
     this.exploreActions.emit(hazard);
+  }
+
+  trackOpenDataExport(source: string): void {
+    const destinationUrl = 'https://data.cdp.net/';
+    this.exportTracking.trackExternalExport({
+      ...locationProperties(this.data),
+      destination_url: destinationUrl,
+      export_type: 'location_open_data',
+      source,
+    });
   }
 
   private findHazardProfile(hazard: Hazard): HazardProfile | undefined {

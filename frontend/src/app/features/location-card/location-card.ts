@@ -219,11 +219,7 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
     const previousTab = this.activeTab;
     this.updateActiveTab(tab);
     if (previousTab !== tab) {
-      this.posthog.capture('location_tab_changed', {
-        ...locationProperties(this.data),
-        from_tab: previousTab,
-        to_tab: tab,
-      });
+      this.trackSectionEngagement(previousTab, tab);
     }
     // Each tab is its own logical "page"; reset scroll so the content
     // doesn't open partway down. Mirrors what `exploreHazardActions` does
@@ -258,12 +254,7 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
     const previousTab = this.activeTab;
     this.updateActiveTab('actions');
     if (previousTab !== 'actions') {
-      this.posthog.capture('location_tab_changed', {
-        ...locationProperties(this.data),
-        from_tab: previousTab,
-        to_tab: 'actions',
-        source: 'hazard_actions_explore',
-      });
+      this.trackSectionEngagement(previousTab, 'actions', 'hazard_actions_explore');
     }
     this.scrollRoot?.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -310,6 +301,27 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
 
   private countActionsForHazard(hazard: Hazard): number {
     return this.countActionsForHazardKey(buildHazardActionFilter(hazard));
+  }
+
+  private trackSectionEngagement(
+    fromTab: LocationCardTabKey,
+    toTab: LocationCardTabKey,
+    source?: string,
+  ): void {
+    const properties = {
+      ...locationProperties(this.data),
+      from_tab: fromTab,
+      to_tab: toTab,
+      previous_section: fromTab,
+      section: toTab,
+      ...(source ? { source } : {}),
+    };
+
+    this.posthog.capture('location_tab_changed', properties);
+    this.posthog.capture('section_engaged', {
+      ...properties,
+      engagement_type: 'tab_change',
+    });
   }
 
   formatPopulation(value: number | null | undefined): string {

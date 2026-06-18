@@ -4,10 +4,13 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import type { LocationProfile } from '@pac-api/client';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { PosthogService } from '../../../core/analytics/posthog.service';
+import { ExportTrackingService } from '../../../core/analytics/export-tracking.service';
 
 describe('HazardsComponent', () => {
   let component: HazardsComponent;
   let fixture: ComponentFixture<HazardsComponent>;
+  let exportTracking: jasmine.SpyObj<ExportTrackingService>;
 
   const mockLocationData: LocationProfile = {
     organizationId: 12345,
@@ -79,10 +82,21 @@ describe('HazardsComponent', () => {
         },
       },
     };
+    exportTracking = jasmine.createSpyObj<ExportTrackingService>('ExportTrackingService', [
+      'trackExternalExport',
+    ]);
 
     await TestBed.configureTestingModule({
       imports: [HazardsComponent, TranslateModule.forRoot()],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: PosthogService,
+          useValue: jasmine.createSpyObj<PosthogService>('PosthogService', ['capture']),
+        },
+        { provide: ExportTrackingService, useValue: exportTracking },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HazardsComponent);
@@ -143,6 +157,22 @@ describe('HazardsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('tracks open data portal exports with location context', () => {
+    component.data = mockLocationData;
+
+    component.trackOpenDataExport('hazard_overview_open_data_portal');
+
+    expect(exportTracking.trackExternalExport).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        destination_url: 'https://data.cdp.net/',
+        export_type: 'location_open_data',
+        location_id: 12345,
+        location_name: 'Minas Gerais',
+        source: 'hazard_overview_open_data_portal',
+      }),
+    );
   });
 
   describe('Hazard Header Calculation', () => {

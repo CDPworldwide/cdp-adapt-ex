@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
+import { ExportTrackingService } from '../../core/analytics/export-tracking.service';
 
 interface HazardLayer {
   id: string;
@@ -92,6 +93,8 @@ export class MethodologyComponent {
 
   private readonly openAccordions = signal<Set<string>>(new Set());
 
+  constructor(private exportTracking: ExportTrackingService) {}
+
   isOpen(id: string): boolean {
     return this.openAccordions().has(id);
   }
@@ -105,6 +108,16 @@ export class MethodologyComponent {
         next.add(id);
       }
       return next;
+    });
+  }
+
+  trackRawDatasetExport(row: MinimumCriterion, url: string): void {
+    this.exportTracking.trackExternalExport({
+      destination_url: url,
+      export_type: 'raw_dataset',
+      methodology_topic: row.id,
+      question_number: row.questionNumber,
+      source: 'methodology_raw_data_link',
     });
   }
 }
