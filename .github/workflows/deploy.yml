@@ -1,18 +1,6 @@
-name: Deploy Orchestrator
+name: Production Full-stack Deploy
 
 on:
-  push:
-    branches: [production]
-    paths:
-      - "backend/**"
-      - "frontend/**"
-      - "client/**"
-      - ".github/actions/setup-frontend-build/**"
-      - ".github/workflows/deploy.yml"
-      - ".github/workflows/backend-deploy.yml"
-      - ".github/workflows/frontend.yml"
-      - ".github/workflows/frontend-dev-deploy.yml"
-      - ".github/workflows/frontend-preview.yml"
   workflow_dispatch:
 
 concurrency:
