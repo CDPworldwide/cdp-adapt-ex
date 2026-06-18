@@ -23,9 +23,6 @@ describe('WelcomeModalComponent', () => {
         { provide: PosthogService, useValue: posthog },
       ],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(WelcomeModalComponent);
-    component = fixture.componentInstance;
   });
 
   afterEach(() => {
@@ -34,6 +31,7 @@ describe('WelcomeModalComponent', () => {
 
   it('opens when an older dismissed flag exists but no role has been stored', () => {
     localStorage.setItem('cdp-welcome-dismissed', 'true');
+    createComponent();
 
     component.ngOnInit();
 
@@ -42,6 +40,7 @@ describe('WelcomeModalComponent', () => {
 
   it('stays closed when a role has already been stored', () => {
     localStorage.setItem('cdp-user-role', 'ngo');
+    createComponent();
 
     component.ngOnInit();
 
@@ -49,6 +48,8 @@ describe('WelcomeModalComponent', () => {
   });
 
   it('tracks selected user type in PostHog when the role is confirmed', () => {
+    createComponent();
+
     component.selectRole('governmentDiscloser');
 
     component.confirm();
@@ -58,6 +59,8 @@ describe('WelcomeModalComponent', () => {
     expect(posthog.capture).toHaveBeenCalledWith('user_role_selected', {
       user_type: 'governmentDiscloser',
       role: 'governmentDiscloser',
+      previous_role: null,
+      source: 'welcome_modal',
     });
     expect(fetchSpy).toHaveBeenCalledWith('/api/v1/onboarding/role', {
       method: 'POST',
@@ -65,4 +68,9 @@ describe('WelcomeModalComponent', () => {
       body: JSON.stringify({ role: 'governmentDiscloser' }),
     });
   });
+
+  function createComponent(): void {
+    fixture = TestBed.createComponent(WelcomeModalComponent);
+    component = fixture.componentInstance;
+  }
 });

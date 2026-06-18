@@ -4,10 +4,9 @@ import posthog from 'posthog-js';
 import { filter } from 'rxjs';
 
 import { environment } from '@env/environment';
+import { readStoredUserRole } from './user-role';
 
 type PosthogEventProperties = Record<string, string | number | boolean | null | undefined>;
-
-const USER_TYPE_STORAGE_KEY = 'cdp-user-role';
 
 @Injectable({ providedIn: 'root' })
 export class PosthogService {
@@ -79,34 +78,29 @@ export class PosthogService {
   }
 
   private capturePageView(): void {
-    posthog.capture('$pageview', this.withStoredUserType({
-      $current_url: window.location.href,
-      path: window.location.pathname,
-      search: window.location.search,
-    }));
+    posthog.capture(
+      '$pageview',
+      this.withStoredUserType({
+        $current_url: window.location.href,
+        path: window.location.pathname,
+        search: window.location.search,
+      }),
+    );
   }
 
   private registerStoredUserType(): void {
-    const userType = this.readStoredUserType();
+    const userType = readStoredUserRole();
     if (userType) {
       posthog.register({ user_type: userType });
     }
   }
 
   private withStoredUserType(properties: PosthogEventProperties = {}): PosthogEventProperties {
-    const userType = this.readStoredUserType();
+    const userType = readStoredUserRole();
     if (!userType || properties['user_type']) {
       return properties;
     }
 
     return { ...properties, user_type: userType };
-  }
-
-  private readStoredUserType(): string | null {
-    try {
-      return localStorage.getItem(USER_TYPE_STORAGE_KEY);
-    } catch {
-      return null;
-    }
   }
 }

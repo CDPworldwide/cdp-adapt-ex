@@ -13,6 +13,16 @@
     <button
       type="button"
       class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
+      [matMenuTriggerFor]="settingsMenu"
+      [attr.aria-label]="'shared.settingsMenu.label' | translate"
+    >
+      <mat-icon class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center"
+        >settings</mat-icon
+      >
+    </button>
+    <button
+      type="button"
+      class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
       [matMenuTriggerFor]="helpMenu"
       [attr.aria-label]="'shared.helpMenu.label' | translate"
     >
@@ -30,6 +40,31 @@
     </button>
   </div>
 </div>
+
+<mat-menu #settingsMenu="matMenu" xPosition="before">
+  <div
+    class="px-4 py-2 text-xs uppercase tracking-cdp-eyebrow text-cdp-neutral-05"
+    role="presentation"
+  >
+    {{ 'shared.settingsMenu.roleHeading' | translate }}
+  </div>
+  @for (role of userRoleService.roles; track role.id) {
+    <button
+      mat-menu-item
+      type="button"
+      [attr.aria-pressed]="userRoleService.role() === role.id"
+      [class.font-bold]="userRoleService.role() === role.id"
+      (click)="setRole(role.id)"
+    >
+      <mat-icon
+        class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center"
+        [class.invisible]="userRoleService.role() !== role.id"
+        >check</mat-icon
+      >
+      <span>{{ role.labelKey | translate }}</span>
+    </button>
+  }
+</mat-menu>
 
 <mat-menu #helpMenu="matMenu" xPosition="before" [class]="'help-menu-panel'">
   <a
