@@ -7,7 +7,6 @@ on:
       - "frontend/**"
       - "client/**"
       - ".github/actions/setup-frontend-build/**"
-      - ".github/workflows/production-frontend-deploy.yml"
   workflow_dispatch:
 
 concurrency:
