@@ -243,8 +243,11 @@ jobs:
             done
 
             if [ -z "$BACKEND_URL" ]; then
-              echo "❌ Backend service $BACKEND_SERVICE not found after 10 minutes"
-              exit 1
+              FALLBACK_BACKEND_SERVICE="cdp-server-dev"
+              echo "::warning title=Backend preview unavailable::Backend service $BACKEND_SERVICE not found after 10 minutes; falling back to $FALLBACK_BACKEND_SERVICE for frontend CI."
+              BACKEND_URL=$(gcloud run services describe $FALLBACK_BACKEND_SERVICE \
+                --region=us-central1 \
+                --format='value(status.url)')
             fi
 
           elif [ "${{ github.ref }}" = "refs/heads/production" ]; then
