@@ -6,11 +6,6 @@ inputs:
     description: Node.js version to install.
     required: false
     default: "20.x"
-  api-url:
-    description: API URL used when generating the client.
-    required: false
-    default: http://127.0.0.1:4352
-
 runs:
   using: composite
   steps:
@@ -26,31 +21,12 @@ runs:
     - name: Install client dependencies
       working-directory: client
       shell: bash
-      run: npm ci
+      run: npm ci --prefer-offline --no-audit --no-fund
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version-file: "backend/.python-version"
-
-    - name: Install uv
-      uses: astral-sh/setup-uv@v7
-      with:
-        version: "0.9.18"
-        enable-cache: true
-
-    - name: Install Graphviz
-      shell: bash
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libgraphviz-dev
-
-    - name: Generate API client from OpenAPI spec
+    - name: Generate API client from tracked OpenAPI spec
       working-directory: client
       shell: bash
-      run: ./scripts/generate.sh
-      env:
-        API_URL: ${{ inputs.api-url }}
+      run: npm run generate
 
     - name: Verify client package
       working-directory: client
@@ -60,4 +36,4 @@ runs:
     - name: Install frontend dependencies
       working-directory: frontend
       shell: bash
-      run: npm ci
+      run: npm ci --prefer-offline --no-audit --no-fund
