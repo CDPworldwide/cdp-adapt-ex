@@ -60,6 +60,8 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
   private defaultCenter: google.maps.LatLngLiteral | null = null;
 
   private subscriptions: Subscription[] = [];
+  private mapIdleListeners: google.maps.MapsEventListener[] = [];
+  private isDestroyed = false;
 
   constructor(
     private mapSelectionService: MapSelectionService,
@@ -70,23 +72,29 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.googleMapsLoader.loadApi().subscribe((loaded) => {
-      if (!loaded) return;
-      // Load pins first so the map can boot at the fitted zoom level instead
-      // of animating in from a wider initial view.
-      this.subscriptions.push(
-        this.locationPinsService.getAllLocationPins().subscribe({
-          next: (pins) => {
-            this.initMap(pins);
-            pins.forEach((location) => this.addPin(location));
-          },
-          error: (err) => {
-            console.error('Failed to load location pins:', err);
-            this.initMap([]);
-          },
-        }),
-      );
-    });
+    this.isDestroyed = false;
+
+    this.subscriptions.push(
+      this.googleMapsLoader.loadApi().subscribe((loaded) => {
+        if (!loaded || this.isDestroyed) return;
+        // Load pins first so the map can boot at the fitted zoom level instead
+        // of animating in from a wider initial view.
+        this.subscriptions.push(
+          this.locationPinsService.getAllLocationPins().subscribe({
+            next: (pins) => {
+              if (this.isDestroyed) return;
+              this.initMap(pins);
+              pins.forEach((location) => this.addPin(location));
+            },
+            error: (err) => {
+              if (this.isDestroyed) return;
+              console.error('Failed to load location pins:', err);
+              this.initMap([]);
+            },
+          }),
+        );
+      }),
+    );
 
     this.subscriptions.push(
       this.mapSelectionService.selectedMapLocation$.subscribe((location) => {
@@ -105,6 +113,10 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.isDestroyed = true;
+    this.mapIdleListeners.forEach((listener) => listener.remove());
+    this.mapIdleListeners = [];
+
     if (this.googleMap) {
       this.googleMap = null!;
     }
@@ -113,6 +125,8 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initMap(pins: LocationPin[]): void {
+    if (this.isDestroyed) return;
+
     const isDesktop = this.isDesktop();
     const { center, zoom } = this.computeFit(pins, isDesktop);
     this.defaultCenter = center;
@@ -222,6 +236,9 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
       lastHandledClickAt = now;
 
       this.ngZone.run(() => {
+        if (!this.googleMap || this.isDestroyed) return;
+
+        const map = this.googleMap;
         const zoomLevel = 8;
         const mapHeight = this.mapElementRef.nativeElement.offsetHeight;
         const offsetPixels = mapHeight / 4;
@@ -234,15 +251,13 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
           180,
         );
 
-        this.googleMap.panTo(newCenter!);
+        map.panTo(newCenter!);
         this.posthog.capture('map_pin_selected', {
           ...pinProperties(location),
-          zoom_level: this.googleMap.getZoom(),
+          zoom_level: map.getZoom(),
         });
 
-        google.maps.event.addListenerOnce(this.googleMap, 'idle', () => {
-          this.googleMap.setZoom(zoomLevel);
-        });
+        this.setZoomAfterIdle(map, zoomLevel);
 
         this.mapSelectionService.selectLocation(location);
       });
@@ -261,12 +276,21 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy {
 
   private resetMap(): void {
     if (!this.googleMap) return;
+    const map = this.googleMap;
     const center = this.defaultCenter ?? { lat: 20, lng: -20 };
     const zoom = this.defaultZoom ?? (this.isDesktop() ? 2 : 1.25);
-    this.googleMap.panTo(center);
-    google.maps.event.addListenerOnce(this.googleMap, 'idle', () => {
-      this.googleMap.setZoom(zoom);
+    map.panTo(center);
+    this.setZoomAfterIdle(map, zoom);
+  }
+
+  private setZoomAfterIdle(map: google.maps.Map, zoom: number): void {
+    const listener = google.maps.event.addListenerOnce(map, 'idle', () => {
+      this.mapIdleListeners = this.mapIdleListeners.filter((candidate) => candidate !== listener);
+      if (this.isDestroyed || this.googleMap !== map) return;
+      map.setZoom(zoom);
     });
+
+    this.mapIdleListeners.push(listener);
   }
 
   private getPinStyle(orgType: OrgTypeEnum, isSelected: boolean) {
