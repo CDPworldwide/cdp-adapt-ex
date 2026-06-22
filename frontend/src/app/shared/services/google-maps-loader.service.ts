@@ -14,6 +14,7 @@ declare global {
 export class GoogleMapsLoaderService {
   private apiLoaded: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   private isApiLoading = false;
+  private isApiLoaded = false;
   private hasWarnedMissingApiKey = false;
 
   constructor() {}
@@ -27,16 +28,29 @@ export class GoogleMapsLoaderService {
       return of(false);
     }
 
+    if (window.google && window.google.maps) {
+      this.isApiLoaded = true;
+      return of(true);
+    }
+
+    if (this.isApiLoaded && window.google?.maps) {
+      return of(true);
+    }
+
+    this.isApiLoaded = false;
+
     if (this.isApiLoading) {
       return this.apiLoaded.asObservable();
     }
 
-    if (window.google && window.google.maps) {
-      this.apiLoaded.next(true);
-      return this.apiLoaded.asObservable();
-    }
-
     this.isApiLoading = true;
+    const loadResult = new ReplaySubject<boolean>(1);
+    this.apiLoaded = loadResult;
+
+    document
+      .querySelectorAll('script[src^="https://maps.googleapis.com/maps/api/js"]')
+      .forEach((existingScript) => existingScript.remove());
+
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.mapsConfig.apiKey}&libraries=geometry,marker`;
     script.async = true;
@@ -44,17 +58,21 @@ export class GoogleMapsLoaderService {
 
     script.onload = () => {
       this.isApiLoading = false;
-      this.apiLoaded.next(true);
-      this.apiLoaded.complete();
+      this.isApiLoaded = true;
+      loadResult.next(true);
+      loadResult.complete();
     };
 
     script.onerror = () => {
       this.isApiLoading = false;
-      this.apiLoaded.error('Google Maps API script failed to load.');
+      console.error('Google Maps API script failed to load.');
+      loadResult.next(false);
+      loadResult.complete();
+      this.apiLoaded = new ReplaySubject<boolean>(1);
     };
 
     document.head.appendChild(script);
 
-    return this.apiLoaded.asObservable();
+    return loadResult.asObservable();
   }
 }
