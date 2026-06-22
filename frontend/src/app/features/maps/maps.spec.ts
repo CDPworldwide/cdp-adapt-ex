@@ -31,6 +31,7 @@ describe('Maps', () => {
   let locationPinsService: jasmine.SpyObj<LocationPinsService>;
   let mapSelectionService: jasmine.SpyObj<MapSelectionService>;
   let mockMapInstance: any;
+  let idleListeners: Array<{ remove: jasmine.Spy }>;
 
   const mockPins: LocationPin[] = [
     { name: 'City A', lat: 10, lng: 20, orgType: OrgTypeEnum.CITY },
@@ -41,6 +42,8 @@ describe('Maps', () => {
 
   beforeEach(async () => {
     MockAdvancedMarkerElement.instances = [];
+    selectedMapLocation$.next(null);
+    idleListeners = [];
     spyOnProperty(window, 'innerWidth').and.returnValue(1024);
     googleMapsLoaderService = jasmine.createSpyObj('GoogleMapsLoaderService', ['loadApi']);
     googleMapsLoaderService.loadApi.and.returnValue(of(true));
@@ -71,7 +74,13 @@ describe('Maps', () => {
           AdvancedMarkerElement: MockAdvancedMarkerElement,
         },
         event: {
-          addListenerOnce: jasmine.createSpy('addListenerOnce'),
+          addListenerOnce: jasmine
+            .createSpy('addListenerOnce')
+            .and.callFake((_map: unknown, _eventName: string, _callback: () => void) => {
+              const listener = { remove: jasmine.createSpy('remove') };
+              idleListeners.push(listener);
+              return listener;
+            }),
         },
         geometry: {
           spherical: {
@@ -138,6 +147,41 @@ describe('Maps', () => {
 
       expect(mapSelectionService.selectLocation).toHaveBeenCalledWith(mockPins[0]);
       expect(mockMapInstance.panTo).toHaveBeenCalledWith({ lat: 9, lng: 20 });
+    });
+
+    it('should remove pending map idle listeners when destroyed', () => {
+      (window.google.maps.geometry.spherical.computeOffset as jasmine.Spy).and.returnValue({
+        lat: 9,
+        lng: 20,
+      });
+      const marker = MockAdvancedMarkerElement.instances[0];
+      const clickHandler = marker.addListener.calls.mostRecent().args[1];
+
+      clickHandler();
+      const listener = idleListeners[idleListeners.length - 1];
+
+      fixture.destroy();
+
+      expect(listener?.remove).toHaveBeenCalled();
+    });
+
+    it('should ignore queued idle zoom callbacks after the map is destroyed', () => {
+      (window.google.maps.geometry.spherical.computeOffset as jasmine.Spy).and.returnValue({
+        lat: 9,
+        lng: 20,
+      });
+      const marker = MockAdvancedMarkerElement.instances[0];
+      const clickHandler = marker.addListener.calls.mostRecent().args[1];
+
+      clickHandler();
+      const idleCallback = (
+        window.google.maps.event.addListenerOnce as jasmine.Spy
+      ).calls.mostRecent().args[2] as () => void;
+
+      fixture.destroy();
+
+      expect(() => idleCallback()).not.toThrow();
+      expect(mockMapInstance.setZoom).not.toHaveBeenCalledWith(8);
     });
 
     it('should update marker appearance when a location is selected', fakeAsync(() => {
