@@ -13,11 +13,14 @@ import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '@env/environment';
+import { buildOrganizationSlugSegment } from '../../shared/utils/org-slug.util';
 
 type ConversationMessage = { role: 'user' | 'assistant' | 'system'; content: string };
 type OpenAiMessage = { role: 'user' | 'assistant'; content: string };
+type ResponsesInputMessage = { role: 'user' | 'assistant'; content: string };
 type SuggestFollowUpsResponse = { follow_up_questions?: string[] };
 export type AskCdpAiContextArea = 'hazards' | 'actions' | 'solutions';
+type SourceLocation = { orgId: number; name: string; countryName?: string | null };
 type AiRequestBody = {
   model: string;
   stream: boolean;
@@ -27,6 +30,18 @@ type AiRequestBody = {
     contextArea: AskCdpAiContextArea;
   };
   locationData: LocationProfile | null;
+  contextArea: AskCdpAiContextArea;
+};
+type AiResponsesRequestBody = {
+  model: string;
+  stream: boolean;
+  input: string | ResponsesInputMessage[];
+  max_tokens: number;
+  orgId: number | null;
+  metadata: {
+    orgId: number | null;
+    contextArea: AskCdpAiContextArea;
+  };
   contextArea: AskCdpAiContextArea;
 };
 
@@ -48,6 +63,7 @@ export class AskCdpAiService {
   private contextArea: AskCdpAiContextArea = 'hazards';
   private selectedActionHazardFilter: string | null = null;
   private locationContextKey: string | null = null;
+  private latestResponseSourceLocations: SourceLocation[] = [];
   private readonly aiChat = this.createAiChat();
 
   setLocationContext(
@@ -148,6 +164,7 @@ export class AskCdpAiService {
 
   private async sendAiSdkMessage(query: string): Promise<string> {
     this.aiChat.clearError();
+    this.latestResponseSourceLocations = this.currentSourceLocations();
     await this.aiChat.sendMessage({ text: query });
 
     if (this.aiChat.error) {
@@ -178,7 +195,9 @@ export class AskCdpAiService {
             'Content-Type': 'application/json',
             ...this.buildAiHeaders(),
           },
-          body: JSON.stringify(this.buildAiRequestBody(true, this.toOpenAiMessages(messages))),
+          body: JSON.stringify(
+            this.buildAiResponsesRequestBody(true, this.toResponsesInput(messages)),
+          ),
           signal: abortSignal,
         });
 
@@ -194,17 +213,18 @@ export class AskCdpAiService {
 
         if (contentType.includes('application/json')) {
           const data = await response.json();
-          return this.textToUiMessageStream(data.choices?.[0]?.message?.content || '');
+          this.captureResponseSourceLocations(data);
+          return this.textToUiMessageStream(this.extractAiResponseText(data));
         }
 
-        return this.openAiEventStreamToUiMessageStream(response.body);
+        return this.aiEventStreamToUiMessageStream(response.body);
       },
       reconnectToStream: async () => null,
     };
   }
 
   private buildAiChatUrl(): string {
-    return `${this.buildAiServerBaseUrl()}/v1/chat/completions`;
+    return `${this.buildAiServerBaseUrl()}/v1/responses`;
   }
 
   private buildAiHeaders(): Record<string, string> {
@@ -252,6 +272,11 @@ export class AskCdpAiService {
     }
 
     return '';
+  }
+
+  private toResponsesInput(messages: UIMessage[]): string | ResponsesInputMessage[] {
+    const input = this.toOpenAiMessages(messages);
+    return input.length === 1 ? input[0].content : input;
   }
 
   private getMessageText(message: UIMessage): string {
@@ -312,6 +337,26 @@ export class AskCdpAiService {
     };
   }
 
+  private buildAiResponsesRequestBody(
+    stream: boolean,
+    input = this.buildAiResponsesInput(),
+  ): AiResponsesRequestBody {
+    const orgId = this.locationContext?.organizationId ?? null;
+
+    return {
+      model: environment.aiModel || 'cdp-gemini',
+      stream,
+      input,
+      max_tokens: 900,
+      orgId,
+      metadata: {
+        orgId,
+        contextArea: this.contextArea,
+      },
+      contextArea: this.contextArea,
+    };
+  }
+
   private buildAiLocationData(): LocationProfile | null {
     if (
       !this.locationContext ||
@@ -363,6 +408,11 @@ export class AskCdpAiService {
     return [{ role: 'user', content: this.buildStarterPrompt() }];
   }
 
+  private buildAiResponsesInput(): string | ResponsesInputMessage[] {
+    const messages = this.buildAiServerMessages();
+    return messages.length === 1 ? messages[0].content : messages;
+  }
+
   private stripHtml(content: string): string {
     const parser = new DOMParser();
     return parser.parseFromString(content, 'text/html').documentElement.textContent || content;
@@ -403,7 +453,7 @@ export class AskCdpAiService {
     });
   }
 
-  private openAiEventStreamToUiMessageStream(
+  private aiEventStreamToUiMessageStream(
     stream: ReadableStream<Uint8Array>,
   ): ReadableStream<UIMessageChunk> {
     const decoder = new TextDecoder();
@@ -420,7 +470,7 @@ export class AskCdpAiService {
             const separator = buffer.slice(eventBoundary).match(/^\r?\n\r?\n/)?.[0] || '\n\n';
             const event = buffer.slice(0, eventBoundary).trim();
             buffer = buffer.slice(eventBoundary + separator.length);
-            this.enqueueOpenAiEventContent(event, controller);
+            this.enqueueAiEventContent(event, controller);
             eventBoundary = buffer.search(/\r?\n\r?\n/);
           }
         };
@@ -443,7 +493,7 @@ export class AskCdpAiService {
           }
 
           if (buffer.trim()) {
-            this.enqueueOpenAiEventContent(buffer.trim(), controller);
+            this.enqueueAiEventContent(buffer.trim(), controller);
           }
 
           controller.enqueue({ type: 'text-end', id: 'text-1' });
@@ -459,7 +509,7 @@ export class AskCdpAiService {
     });
   }
 
-  private enqueueOpenAiEventContent(
+  private enqueueAiEventContent(
     event: string,
     controller: ReadableStreamDefaultController<UIMessageChunk>,
   ): void {
@@ -476,8 +526,7 @@ export class AskCdpAiService {
 
       try {
         const parsed = JSON.parse(data);
-        const content =
-          parsed.choices?.[0]?.delta?.content || parsed.choices?.[0]?.message?.content || '';
+        const content = this.extractAiStreamDelta(parsed);
 
         if (content) {
           controller.enqueue({ type: 'text-delta', id: 'text-1', delta: content });
@@ -486,6 +535,37 @@ export class AskCdpAiService {
         controller.enqueue({ type: 'text-delta', id: 'text-1', delta: data });
       }
     }
+  }
+
+  private extractAiResponseText(data: any): string {
+    if (typeof data?.output_text === 'string') {
+      return data.output_text;
+    }
+
+    const outputText = data?.output
+      ?.flatMap?.((item: any) => item?.content || [])
+      ?.filter((part: any) => part?.type === 'output_text' && typeof part?.text === 'string')
+      ?.map((part: any) => part.text)
+      ?.join('');
+    if (outputText) {
+      return outputText;
+    }
+
+    return data?.choices?.[0]?.message?.content || '';
+  }
+
+  private extractAiStreamDelta(parsed: any): string {
+    this.captureResponseSourceLocations(parsed);
+
+    if (typeof parsed?.delta === 'string' && parsed?.type === 'response.output_text.delta') {
+      return parsed.delta;
+    }
+
+    if (typeof parsed?.text === 'string' && parsed?.type === 'response.output_text.done') {
+      return '';
+    }
+
+    return parsed.choices?.[0]?.delta?.content || parsed.choices?.[0]?.message?.content || '';
   }
 
   private buildLocationContextKey(
@@ -568,13 +648,11 @@ export class AskCdpAiService {
       if (uniqueSources.length) {
         formattedContent = content.slice(0, sourcesMatch.index ?? 0).trimEnd();
         const sourcesLabel = this.getSourcesLabel();
-        const sourceItems = uniqueSources.map(
-          (source) => `<li>${this.linkifySourceText(source.text)}</li>`,
-        );
+        const sourcesText = this.formatSourcesText(uniqueSources.map((source) => source.text));
         sourcesHtml = [
           `<section class="ai-sources" aria-label="${this.escapeHtml(sourcesLabel)}">`,
           `<p class="ai-sources-title">${this.escapeHtml(sourcesLabel)}</p>`,
-          `<ul>${sourceItems.join('')}</ul>`,
+          `<p>${sourcesText}</p>`,
           '</section>',
         ].join('');
       }
@@ -600,6 +678,154 @@ export class AskCdpAiService {
       /`?(https?:\/\/[^\s`<]+)`?/g,
       '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>',
     );
+  }
+
+  private formatSourcesText(sourceTexts: string[]): string {
+    const disclosureSources = sourceTexts
+      .map((sourceText) => this.parseDisclosureSource(sourceText))
+      .filter(
+        (
+          source,
+        ): source is {
+          locationName: string;
+          year: string;
+          disclosureLabel: string;
+          suffix: string;
+        } => Boolean(source),
+      );
+
+    if (disclosureSources.length === sourceTexts.length && disclosureSources.length > 0) {
+      const firstSource = disclosureSources[0];
+      const sameDisclosure = disclosureSources.every(
+        (source) =>
+          source.year === firstSource.year &&
+          source.disclosureLabel === firstSource.disclosureLabel &&
+          source.suffix === firstSource.suffix,
+      );
+
+      if (sameDisclosure) {
+        const linkedLocations = disclosureSources.map((source) =>
+          this.linkLocationName(source.locationName),
+        );
+        const disclosureLabel = firstSource.disclosureLabel.replace(
+          /\bdisclosure\b/i,
+          'disclosures',
+        );
+        return `${this.joinHtmlList(linkedLocations)} ${this.escapeHtml(
+          `${firstSource.year} ${disclosureLabel}${firstSource.suffix}`,
+        )}.`;
+      }
+    }
+
+    return sourceTexts.map((sourceText) => this.linkifySourceText(sourceText)).join('; ');
+  }
+
+  private parseDisclosureSource(sourceText: string): {
+    locationName: string;
+    year: string;
+    disclosureLabel: string;
+    suffix: string;
+  } | null {
+    const match = sourceText.match(
+      /^(.+?)\s+(\d{4})\s+(CDP(?:-ICLEI Track| States & Regions Questionnaire)? disclosure)(.*?)[.]?$/i,
+    );
+    if (!match) {
+      return null;
+    }
+
+    const [, locationName, year, disclosureLabel, suffix] = match;
+    return {
+      locationName: locationName.trim(),
+      year,
+      disclosureLabel: disclosureLabel.trim(),
+      suffix: suffix.trim(),
+    };
+  }
+
+  private linkLocationName(locationName: string): string {
+    const location = this.findSourceLocation(locationName);
+    if (!location) {
+      return this.escapeHtml(locationName);
+    }
+
+    const routeSegment = buildOrganizationSlugSegment(
+      location.orgId,
+      location.name,
+      location.countryName,
+    );
+    return `<a href="/org/${this.escapeHtml(routeSegment)}/hazards">${this.escapeHtml(
+      locationName,
+    )}</a>`;
+  }
+
+  private findSourceLocation(locationName: string): SourceLocation | null {
+    const sourceKey = this.normalizeSourceLocationName(locationName);
+    return (
+      this.latestResponseSourceLocations.find((location) => {
+        const locationKey = this.normalizeSourceLocationName(location.name);
+        return (
+          sourceKey === locationKey ||
+          locationKey.includes(sourceKey) ||
+          sourceKey.includes(locationKey)
+        );
+      }) ?? null
+    );
+  }
+
+  private normalizeSourceLocationName(value: string): string {
+    return value
+      .toLowerCase()
+      .replace(/\b(city of|ville de|municipality of|state of)\b/g, '')
+      .replace(/\b(ny|qc|usa|united states of america|united states)\b/g, '')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  }
+
+  private joinHtmlList(items: string[]): string {
+    if (items.length <= 1) {
+      return items[0] ?? '';
+    }
+    if (items.length === 2) {
+      return `${items[0]} and ${items[1]}`;
+    }
+    return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
+  }
+
+  private currentSourceLocations(): SourceLocation[] {
+    if (!this.locationContext?.organizationId || !this.locationContext.name) {
+      return [];
+    }
+    return [
+      {
+        orgId: this.locationContext.organizationId,
+        name: this.locationContext.name,
+        countryName: this.locationContext.countryName,
+      },
+    ];
+  }
+
+  private captureResponseSourceLocations(event: any): void {
+    const steps = event?.steps ?? event?.response?.steps;
+    if (!Array.isArray(steps)) {
+      return;
+    }
+
+    const cloudSqlFetch = steps.find((step) => step?.type === 'cloudsql_fetch');
+    const locations = cloudSqlFetch?.data?.locations;
+    if (!Array.isArray(locations)) {
+      return;
+    }
+
+    const nextLocations = locations
+      .filter((location) => location?.orgId && location?.name)
+      .map((location) => ({
+        orgId: Number(location.orgId),
+        name: String(location.name),
+        countryName: location.countryName ?? null,
+      }));
+    if (nextLocations.length) {
+      this.latestResponseSourceLocations = nextLocations;
+    }
   }
 
   private escapeHtml(value: string): string {

@@ -205,13 +205,15 @@ describe('AskCdpAiService', () => {
     it('should successfully send chat query and then load follow-up questions', (done) => {
       service.setLocationContext(mockLocationData);
       (window.fetch as jasmine.Spy).and.callFake((url: string) => {
-        if (String(url).includes('/v1/chat/completions')) {
+        if (String(url).includes('/v1/responses')) {
           return Promise.resolve(
             new Response(
               [
-                'data: {"choices":[{"delta":{"role":"assistant"},"finish_reason":null}]}',
+                'event: response.created',
+                'data: {"type":"response.created"}',
                 '',
-                'data: {"choices":[{"delta":{"content":"Chat response"},"finish_reason":null}]}',
+                'event: response.output_text.delta',
+                'data: {"type":"response.output_text.delta","delta":"Chat response"}',
                 '',
                 'data: [DONE]',
                 '',
@@ -249,10 +251,10 @@ describe('AskCdpAiService', () => {
         Promise.all([readRequestBodyAt(0), readRequestBodyAt(1)]).then(
           ([chatBody, followUpBody]) => {
             expect(String((window.fetch as jasmine.Spy).calls.argsFor(0)[0])).toContain(
-              '/v1/chat/completions',
+              '/v1/responses',
             );
             expect(String((window.fetch as jasmine.Spy).calls.argsFor(0)[0])).toBe(
-              `${environment.aiServerUrl}/v1/chat/completions`,
+              `${environment.aiServerUrl}/v1/responses`,
             );
             expect(String((window.fetch as jasmine.Spy).calls.argsFor(1)[0])).toContain(
               '/v1/suggest-follow-ups',
@@ -260,10 +262,12 @@ describe('AskCdpAiService', () => {
             expect(String((window.fetch as jasmine.Spy).calls.argsFor(1)[0])).toBe(
               `${environment.aiServerUrl}/v1/suggest-follow-ups`,
             );
-            expect(chatBody.metadata.locationData).toEqual(mockLocationData);
+            expect(chatBody.orgId).toBe(mockLocationData.organizationId);
+            expect(chatBody.max_tokens).toBe(900);
             expect(chatBody.contextArea).toBe('hazards');
             expect(chatBody.metadata.contextArea).toBe('hazards');
-            expect(chatBody.messages.at(-1)?.content).toBe('Hello');
+            expect(chatBody.input).toBe('Hello');
+            expect(chatBody.locationData).toBeUndefined();
             expect(followUpBody.messages.at(-1)?.content).toBe('Chat response');
             const lastMessage = service.conversationHistory().at(-1);
             expect(lastMessage?.content).toBe('<p>Chat response</p>');
@@ -276,11 +280,12 @@ describe('AskCdpAiService', () => {
     it('should send the active page context area to the AI server', (done) => {
       service.setLocationContext(mockLocationData, 'solutions');
       (window.fetch as jasmine.Spy).and.callFake((url: string) => {
-        if (String(url).includes('/v1/chat/completions')) {
+        if (String(url).includes('/v1/responses')) {
           return Promise.resolve(
             new Response(
               [
-                'data: {"choices":[{"delta":{"content":"Solutions response"}}]}',
+                'event: response.output_text.delta',
+                'data: {"type":"response.output_text.delta","delta":"Solutions response"}',
                 '',
                 'data: [DONE]',
                 '',
@@ -311,14 +316,15 @@ describe('AskCdpAiService', () => {
       });
     });
 
-    it('should send filtered actions-tab context when a hazard filter is active', (done) => {
+    it('should send org id and actions context area when a hazard filter is active', (done) => {
       service.setLocationContext(mockLocationData, 'actions', 'EXTREME_HEAT|');
       (window.fetch as jasmine.Spy).and.callFake((url: string) => {
-        if (String(url).includes('/v1/chat/completions')) {
+        if (String(url).includes('/v1/responses')) {
           return Promise.resolve(
             new Response(
               [
-                'data: {"choices":[{"delta":{"content":"Filtered response"}}]}',
+                'event: response.output_text.delta',
+                'data: {"type":"response.output_text.delta","delta":"Filtered response"}',
                 '',
                 'data: [DONE]',
                 '',
@@ -343,10 +349,9 @@ describe('AskCdpAiService', () => {
       service.sendChatQuery('How many goals are visible?').subscribe(() => {
         readRequestBodyAt(0).then((body) => {
           expect(body.contextArea).toBe('actions');
-          expect(body.metadata.locationData.governmentActions.goals.length).toBe(1);
-          expect(body.metadata.locationData.governmentActions.goals[0].title).toBe('Heat goal');
-          expect(body.metadata.locationData.governmentActions.actions.length).toBe(1);
-          expect(body.metadata.locationData.governmentActions.actions[0].title).toBe('Heat action');
+          expect(body.metadata.contextArea).toBe('actions');
+          expect(body.orgId).toBe(mockLocationData.organizationId);
+          expect(body.locationData).toBeUndefined();
           done();
         });
       });
@@ -379,7 +384,50 @@ describe('AskCdpAiService', () => {
       expect(html).not.toContain('[^1]');
       expect(doc.querySelector('.ai-citation')).toBeNull();
       expect(doc.querySelector('.ai-sources-title')?.textContent).toBe('Sources');
-      expect(doc.querySelectorAll('.ai-sources li').length).toBe(1);
+      expect(doc.querySelectorAll('.ai-sources li').length).toBe(0);
+      expect(doc.querySelector('.ai-sources p:last-child')?.textContent).toBe(
+        'George Local Municipality 2025 CDP-ICLEI Track disclosures.',
+      );
+    });
+
+    it('combines comparison disclosure sources into one linked sentence', () => {
+      (service as any).latestResponseSourceLocations = [
+        {
+          orgId: 3417,
+          name: 'New York City, NY',
+          countryName: 'United States of America',
+        },
+        {
+          orgId: 3203,
+          name: 'City of Chicago',
+          countryName: 'United States of America',
+        },
+      ];
+
+      const html = service.parseToHtml(
+        [
+          'New York and Chicago both report adaptation actions.[^1][^2]',
+          '',
+          'Sources:',
+          '[^1]: New York City 2025 CDP-ICLEI Track disclosure, as represented in the platform data available for this page.',
+          '[^2]: City of Chicago 2025 CDP-ICLEI Track disclosure, as represented in the platform data available for this page.',
+        ].join('\n'),
+      );
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const sourceParagraph = doc.querySelector('.ai-sources p:last-child');
+      const sourceLinks = Array.from(doc.querySelectorAll('.ai-sources a'));
+
+      expect(sourceParagraph?.textContent).toBe(
+        'New York City and City of Chicago 2025 CDP-ICLEI Track disclosures, as represented in the platform data available for this page.',
+      );
+      expect(sourceLinks.map((link) => link.textContent)).toEqual([
+        'New York City',
+        'City of Chicago',
+      ]);
+      expect(sourceLinks.map((link) => link.getAttribute('href'))).toEqual([
+        '/org/3417-new-york-city-ny-united-states-of-america/hazards',
+        '/org/3203-city-of-chicago-united-states-of-america/hazards',
+      ]);
     });
 
     it('uses a readable sources label when translations are not ready', () => {
