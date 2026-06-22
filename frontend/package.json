@@ -26,7 +26,7 @@
   },
   "private": true,
   "dependencies": {
-    "@ai-sdk/angular": "^2.0.175",
+    "@ai-sdk/angular": "^2.0.209",
     "@angular/cdk": "^20.2.11",
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",
@@ -42,7 +42,7 @@
     "@pac-api/client": "file:../client",
     "@sentry/angular": "^10.58.0",
     "@types/marked": "^5.0.2",
-    "ai": "^6.0.174",
+    "ai": "^6.0.208",
     "dompurify": "^3.3.3",
     "fuzzysort": "^3.1.0",
     "marked": "^17.0.2",

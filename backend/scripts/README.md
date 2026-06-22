@@ -13,6 +13,9 @@ For the full BQ → Cloud SQL data-pipeline runbook (Stage 1 notebook → Stage
 - [`migrate_cstar_2025_via_gcs.sh`](migrate_cstar_2025_via_gcs.sh) — BQ
   `*_TEST` → GCS staging → Cloud SQL migration (Stage 3 of the data pipeline).
   Full runbook: [`docs/data_pipeline.md`](../../docs/data_pipeline.md#migration-runbook-cloud-shell).
+- [`export_cstar_2025_csv_archive.sh`](export_cstar_2025_csv_archive.sh) —
+  BQ `*_TEST` / `_final` → seven public CSV files for the external setup
+  archive described in [`docs/data.md`](../../docs/data.md).
 - [`start_cloud_sql_proxy.sh`](start_cloud_sql_proxy.sh) — Docker Cloud SQL
   Auth Proxy → `cdp-test:55432`. Repoint at `cdp-prod` by editing
   `INSTANCE_CONNECTION_NAME`.
