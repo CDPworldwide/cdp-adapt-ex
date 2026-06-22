@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { LocationService } from './location.service';
+import { LocationService, organizationIdFromRouteParam } from './location.service';
 import type { LocationProfile } from '@pac-api/client';
 import { LanguageService } from './language.service';
 
@@ -122,5 +122,23 @@ describe('LocationService', () => {
       expect(typeof mockLocationData.lat).toBe('number');
       expect(typeof mockLocationData.hazards).toBe('object');
     });
+  });
+});
+
+describe('organizationIdFromRouteParam', () => {
+  it('should parse numeric organization route params', () => {
+    expect(organizationIdFromRouteParam('3203')).toBe(3203);
+  });
+
+  it('should parse slugged organization route params generated for links', () => {
+    expect(organizationIdFromRouteParam('3203-city-of-chicago-united-states-of-america')).toBe(
+      3203,
+    );
+  });
+
+  it('should reject route params without a numeric organization id prefix', () => {
+    expect(() => organizationIdFromRouteParam('city-of-chicago')).toThrowError(
+      /Invalid organization id route parameter/,
+    );
   });
 });
