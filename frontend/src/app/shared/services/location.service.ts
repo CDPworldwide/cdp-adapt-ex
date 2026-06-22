@@ -17,6 +17,16 @@ type LocationNameSummary = LocationNamesResponse['locations'][number] & {
   is_reporting_leader?: boolean;
 };
 
+export function organizationIdFromRouteParam(organizationId: string): number {
+  const match = organizationId.match(/^(\d+)(?:$|-)/);
+
+  if (!match) {
+    throw new Error(`Invalid organization id route parameter: ${organizationId}`);
+  }
+
+  return Number(match[1]);
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -46,7 +56,7 @@ export class LocationService {
     return from(
       getLocationByOrgIdApiV1LocationsIdOrganizationIdGet({
         client: this.client,
-        path: { organization_id: Number(organizationId) },
+        path: { organization_id: organizationIdFromRouteParam(organizationId) },
         query: this.locationTranslationQuery(),
       } as unknown as Parameters<typeof getLocationByOrgIdApiV1LocationsIdOrganizationIdGet>[0]),
     ).pipe(
