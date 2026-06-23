@@ -105,7 +105,8 @@ Optional frontend analytics and error reporting are configured through GitHub Ac
 | Variable Name | Description |
 |---------------|-------------|
 | `FRONTEND_POSTHOG_KEY` | PostHog project key compiled into the frontend when analytics should be enabled. |
-| `FRONTEND_POSTHOG_HOST` | PostHog ingestion host. Defaults to `https://eu.i.posthog.com` when unset. |
+| `FRONTEND_POSTHOG_HOST` | PostHog ingestion host. Defaults to the first-party `/_cdp` reverse proxy path when unset. |
+| `FRONTEND_POSTHOG_UI_HOST` | PostHog app host used for toolbar and dashboard links when ingestion is proxied. Defaults to `https://eu.posthog.com`. |
 | `FRONTEND_POSTHOG_ENABLED` | Set to `true` to enable PostHog during frontend builds. Defaults to `false` when unset. |
 | `FRONTEND_SENTRY_DSN` | Sentry frontend DSN compiled into the frontend when browser exception reporting should be enabled. |
 | `FRONTEND_SENTRY_ENABLED` | Set to `true` to enable Sentry during frontend builds. Defaults to `false` when unset. |
