@@ -8,6 +8,10 @@ import { readStoredUserRole } from './user-role';
 
 type PosthogEventProperties = Record<string, string | number | boolean | null | undefined>;
 
+export function isPosthogHostAllowed(hostname: string): boolean {
+  return hostname === 'cdp-action-explorer.net' || hostname === 'localhost' || hostname === '127.0.0.1';
+}
+
 @Injectable({ providedIn: 'root' })
 export class PosthogService {
   private initialized = false;
@@ -17,7 +21,12 @@ export class PosthogService {
   init(): void {
     const config = environment.posthog;
 
-    if (this.initialized || !config?.enabled || !config.key) {
+    if (
+      this.initialized ||
+      !config?.enabled ||
+      !config.key ||
+      !isPosthogHostAllowed(window.location.hostname)
+    ) {
       return;
     }
 
