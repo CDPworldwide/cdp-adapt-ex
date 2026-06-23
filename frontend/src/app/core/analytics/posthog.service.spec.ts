@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import posthog from 'posthog-js';
 
 import { environment } from '@env/environment';
-import { PosthogService } from './posthog.service';
+import { PosthogService, isPosthogHostAllowed } from './posthog.service';
 
 describe('PosthogService', () => {
   let service: PosthogService;
@@ -48,6 +48,14 @@ describe('PosthogService', () => {
         capture_pageleave: true,
       }),
     );
+  });
+
+  it('allows analytics only on the canonical production and local development hosts', () => {
+    expect(isPosthogHostAllowed('cdp-action-explorer.net')).toBeTrue();
+    expect(isPosthogHostAllowed('localhost')).toBeTrue();
+    expect(isPosthogHostAllowed('127.0.0.1')).toBeTrue();
+    expect(isPosthogHostAllowed('frontend-prod-pbybuiwoxq-uc.a.run.app')).toBeFalse();
+    expect(isPosthogHostAllowed('frontend-dev-pbybuiwoxq-uc.a.run.app')).toBeFalse();
   });
 
   it('adds the stored user type to captured events', () => {
