@@ -24,8 +24,10 @@ export class PosthogService {
     this.ngZone.runOutsideAngular(() => {
       posthog.init(config.key, {
         api_host: config.host,
+        ui_host: config.uiHost,
         defaults: '2026-01-30',
         capture_pageview: false,
+        capture_pageleave: true,
         capture_exceptions: true,
         autocapture: {
           url_allowlist: [
