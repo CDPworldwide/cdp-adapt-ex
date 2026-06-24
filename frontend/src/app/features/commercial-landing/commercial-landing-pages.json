@@ -1,0 +1,460 @@
+{
+  "pages": [
+    {
+      "key": "climateRiskDataForBanks",
+      "path": "/solutions/climate-risk-data-for-banks",
+      "eyebrow": "Commercial climate intelligence",
+      "audience": "Banks and lenders",
+      "title": "Climate risk data for banks and lenders",
+      "summary": "Use CDP's public city, state, and regional adaptation data to screen physical climate exposure, local resilience action, and financing signals before deeper diligence.",
+      "metaTitle": "Climate risk data for banks and lenders | CDP",
+      "metaDescription": "Screen local climate hazards, adaptation actions, and projects seeking funding with CDP city, state, and regional disclosure data.",
+      "heroImage": "/social-preview.png",
+      "primaryCta": {
+        "label": "Explore live locations",
+        "href": "/"
+      },
+      "secondaryCta": {
+        "label": "Contact CDP",
+        "href": "https://cdp.net/en/contact-us",
+        "external": true
+      },
+      "metrics": [
+        {
+          "label": "Use case",
+          "value": "Portfolio screening"
+        },
+        {
+          "label": "Signals",
+          "value": "Hazards, actions, projects"
+        },
+        {
+          "label": "Audience",
+          "value": "Credit and risk teams"
+        }
+      ],
+      "commercialQuestions": [
+        "Which markets disclose material climate hazards?",
+        "Where are local governments already acting on resilience?",
+        "Which projects indicate future financing demand?"
+      ],
+      "sections": [
+        {
+          "heading": "Screen exposure with local context",
+          "body": "Compare disclosed hazards, exposed sectors, vulnerable populations, and assessment status across locations so early credit or market screening starts from place-specific evidence.",
+          "items": [
+            "Jurisdiction-level hazard profiles",
+            "Climate risk and vulnerability assessment signals",
+            "Public disclosure context and source links"
+          ]
+        },
+        {
+          "heading": "Find adaptation demand signals",
+          "body": "Surface reported actions, goals, and projects seeking funding to understand where resilience planning is moving from risk identification into implementation.",
+          "items": [
+            "Adaptation goals and actions",
+            "Projects seeking finance",
+            "Peer solution ideas by hazard profile"
+          ]
+        }
+      ],
+      "workflow": [
+        {
+          "title": "Search a market",
+          "body": "Start with a city, state, or region and review the latest available public profile."
+        },
+        {
+          "title": "Check hazard and action depth",
+          "body": "Use the hazards, government actions, and action ideas tabs to understand disclosure maturity."
+        },
+        {
+          "title": "Prioritize follow-up",
+          "body": "Identify locations where risk, disclosed action, and funding needs point to commercial conversations."
+        }
+      ],
+      "relatedPageKeys": ["adaptationProjectPipeline", "infrastructureInvestors", "insurance"]
+    },
+    {
+      "key": "cityClimateRiskIntelligence",
+      "path": "/solutions/city-climate-risk-intelligence",
+      "eyebrow": "Local resilience intelligence",
+      "audience": "City resilience and partnership teams",
+      "title": "City climate risk intelligence for partnership teams",
+      "summary": "Turn public climate disclosure into a practical view of local hazards, adaptation priorities, and peer actions for resilience partnerships.",
+      "metaTitle": "City climate risk intelligence for resilience teams | CDP",
+      "metaDescription": "Explore city climate hazards, adaptation priorities, and peer resilience actions using CDP public disclosure data.",
+      "heroImage": "/social-preview.png",
+      "primaryCta": {
+        "label": "Search cities and regions",
+        "href": "/"
+      },
+      "secondaryCta": {
+        "label": "View methodology",
+        "href": "/methodology"
+      },
+      "metrics": [
+        {
+          "label": "Use case",
+          "value": "Local prioritization"
+        },
+        {
+          "label": "Signals",
+          "value": "Hazards and actions"
+        },
+        {
+          "label": "Audience",
+          "value": "Partnership teams"
+        }
+      ],
+      "commercialQuestions": [
+        "Which cities have disclosed priority hazards?",
+        "Where can partners support existing adaptation plans?",
+        "Which peers are already implementing comparable solutions?"
+      ],
+      "sections": [
+        {
+          "heading": "Build a common view of local risk",
+          "body": "Give commercial, public-sector, and delivery teams a shared starting point for discussing hazards, exposed sectors, and resilience priorities.",
+          "items": [
+            "Disclosed and derived hazard context",
+            "Sector and vulnerable population indicators",
+            "Links back to underlying public sources"
+          ]
+        },
+        {
+          "heading": "Move from research to engagement",
+          "body": "Use adaptation actions and peer solutions to frame practical partnership opportunities around the work jurisdictions are already reporting.",
+          "items": [
+            "Government adaptation actions",
+            "Funding-ready project signals",
+            "Comparable action ideas from peers"
+          ]
+        }
+      ],
+      "workflow": [
+        {
+          "title": "Identify the place",
+          "body": "Search by city, state, or region and open the public profile."
+        },
+        {
+          "title": "Review resilience priorities",
+          "body": "Scan hazards, exposed sectors, and disclosed actions to understand the local agenda."
+        },
+        {
+          "title": "Prepare the conversation",
+          "body": "Use peer examples and project signals to shape a focused partnership discussion."
+        }
+      ],
+      "relatedPageKeys": [
+        "climateConsultants",
+        "adaptationProjectPipeline",
+        "climateRiskDataForBanks"
+      ]
+    },
+    {
+      "key": "adaptationProjectPipeline",
+      "path": "/solutions/adaptation-project-pipeline",
+      "eyebrow": "Adaptation finance signals",
+      "audience": "Investors and project origination teams",
+      "title": "Adaptation project pipeline intelligence",
+      "summary": "Use reported projects seeking funding to spot where local governments are moving from climate risk disclosure toward financeable adaptation work.",
+      "metaTitle": "Adaptation project pipeline intelligence | CDP",
+      "metaDescription": "Find local adaptation projects seeking funding and related climate hazard context using CDP public disclosure data.",
+      "heroImage": "/social-preview.png",
+      "primaryCta": {
+        "label": "Explore project signals",
+        "href": "/"
+      },
+      "secondaryCta": {
+        "label": "Download public data",
+        "href": "https://data.cdp.net/",
+        "external": true
+      },
+      "metrics": [
+        {
+          "label": "Use case",
+          "value": "Project origination"
+        },
+        {
+          "label": "Signals",
+          "value": "Funding needs"
+        },
+        {
+          "label": "Audience",
+          "value": "Finance teams"
+        }
+      ],
+      "commercialQuestions": [
+        "Where are jurisdictions reporting projects seeking funding?",
+        "Which hazards are these projects designed to address?",
+        "Which locations may merit further origination research?"
+      ],
+      "sections": [
+        {
+          "heading": "Spot disclosed funding needs",
+          "body": "Find public project records and connect them to local hazard context before investing time in deeper market research.",
+          "items": [
+            "Projects seeking finance",
+            "Reported finance status and project area where available",
+            "Hazards addressed by disclosed projects"
+          ]
+        },
+        {
+          "heading": "Prioritize by local resilience context",
+          "body": "Pair project signals with disclosed risks and adaptation actions to understand which opportunities sit inside a broader resilience agenda.",
+          "items": [
+            "Local hazard severity context",
+            "Related adaptation actions",
+            "Comparable peer solution categories"
+          ]
+        }
+      ],
+      "workflow": [
+        {
+          "title": "Search target locations",
+          "body": "Open city, state, or regional profiles that matter to your market strategy."
+        },
+        {
+          "title": "Review funding signals",
+          "body": "Use the government actions tab to find projects seeking finance and disclosed implementation details."
+        },
+        {
+          "title": "Build an origination shortlist",
+          "body": "Prioritize follow-up where local hazards, action plans, and funding needs align."
+        }
+      ],
+      "relatedPageKeys": ["infrastructureInvestors", "climateRiskDataForBanks", "insurance"]
+    },
+    {
+      "key": "insurance",
+      "path": "/industries/insurance",
+      "eyebrow": "Industry use case",
+      "audience": "Insurance and reinsurance teams",
+      "title": "Climate adaptation intelligence for insurance teams",
+      "summary": "Support market research, engagement planning, and resilience conversations with public local-government climate hazard and action data.",
+      "metaTitle": "Climate adaptation intelligence for insurance teams | CDP",
+      "metaDescription": "Use CDP local climate hazard and adaptation action data to support insurance market research and resilience engagement.",
+      "heroImage": "/social-preview.png",
+      "primaryCta": {
+        "label": "Explore local hazards",
+        "href": "/"
+      },
+      "secondaryCta": {
+        "label": "See project pipeline signals",
+        "href": "/solutions/adaptation-project-pipeline"
+      },
+      "metrics": [
+        {
+          "label": "Use case",
+          "value": "Market insight"
+        },
+        {
+          "label": "Signals",
+          "value": "Hazard profiles"
+        },
+        {
+          "label": "Audience",
+          "value": "Insurance teams"
+        }
+      ],
+      "commercialQuestions": [
+        "Which locations disclose severe or emerging hazards?",
+        "Where are governments taking adaptation action?",
+        "Which local priorities can inform resilience conversations?"
+      ],
+      "sections": [
+        {
+          "heading": "Add local context to market research",
+          "body": "Use disclosed hazards, exposed sectors, and adaptation actions to support conversations about resilience, loss prevention, and local climate preparedness.",
+          "items": [
+            "City and regional hazard profiles",
+            "Exposed economic sector context",
+            "Adaptation action and assessment signals"
+          ]
+        },
+        {
+          "heading": "Support engagement with evidence",
+          "body": "Ground client, broker, and public-sector conversations in the climate risks and actions jurisdictions have publicly reported.",
+          "items": [
+            "Traceable public disclosure records",
+            "Peer solution examples",
+            "Projects seeking funding where disclosed"
+          ]
+        }
+      ],
+      "workflow": [
+        {
+          "title": "Compare local hazards",
+          "body": "Search for target markets and review their top disclosed climate hazards."
+        },
+        {
+          "title": "Understand local preparedness",
+          "body": "Check assessment status, adaptation goals, and reported actions."
+        },
+        {
+          "title": "Plan engagement",
+          "body": "Use public evidence to frame resilience discussions with local stakeholders."
+        }
+      ],
+      "relatedPageKeys": [
+        "climateRiskDataForBanks",
+        "cityClimateRiskIntelligence",
+        "adaptationProjectPipeline"
+      ]
+    },
+    {
+      "key": "infrastructureInvestors",
+      "path": "/industries/infrastructure-investors",
+      "eyebrow": "Industry use case",
+      "audience": "Infrastructure investors",
+      "title": "Climate resilience intelligence for infrastructure investors",
+      "summary": "Screen places, hazards, and adaptation priorities to support infrastructure market research and resilience-focused investment conversations.",
+      "metaTitle": "Climate resilience intelligence for infrastructure investors | CDP",
+      "metaDescription": "Explore local climate hazards, adaptation actions, and public project signals for infrastructure investment research.",
+      "heroImage": "/social-preview.png",
+      "primaryCta": {
+        "label": "Screen locations",
+        "href": "/"
+      },
+      "secondaryCta": {
+        "label": "Review finance signals",
+        "href": "/solutions/adaptation-project-pipeline"
+      },
+      "metrics": [
+        {
+          "label": "Use case",
+          "value": "Investment screening"
+        },
+        {
+          "label": "Signals",
+          "value": "Local resilience"
+        },
+        {
+          "label": "Audience",
+          "value": "Infrastructure teams"
+        }
+      ],
+      "commercialQuestions": [
+        "Which locations disclose infrastructure-relevant hazards?",
+        "Where are adaptation actions already underway?",
+        "Which public project signals deserve further diligence?"
+      ],
+      "sections": [
+        {
+          "heading": "Connect hazard exposure to local priorities",
+          "body": "Review disclosed hazards alongside economic sectors, vulnerable groups, and adaptation actions to understand the resilience context around infrastructure decisions.",
+          "items": [
+            "Flooding, heat, drought, and other hazard profiles",
+            "Local action and planning evidence",
+            "Source links for further diligence"
+          ]
+        },
+        {
+          "heading": "Find places moving toward implementation",
+          "body": "Use adaptation project and action signals to understand where local governments are reporting needs, plans, and potential funding demand.",
+          "items": [
+            "Projects seeking funding",
+            "Action status and implementation context",
+            "Peer solution categories"
+          ]
+        }
+      ],
+      "workflow": [
+        {
+          "title": "Map target geographies",
+          "body": "Search locations that overlap with priority markets or assets."
+        },
+        {
+          "title": "Assess resilience context",
+          "body": "Review hazards, disclosed actions, and project signals together."
+        },
+        {
+          "title": "Prioritize diligence",
+          "body": "Use public data to focus deeper technical and commercial assessment."
+        }
+      ],
+      "relatedPageKeys": [
+        "adaptationProjectPipeline",
+        "climateRiskDataForBanks",
+        "climateConsultants"
+      ]
+    },
+    {
+      "key": "climateConsultants",
+      "path": "/industries/climate-consultants",
+      "eyebrow": "Industry use case",
+      "audience": "Climate advisors and consultants",
+      "title": "Local climate intelligence for advisors and consultants",
+      "summary": "Use CDP public disclosure data to accelerate city, regional, and sector research for climate adaptation strategy work.",
+      "metaTitle": "Local climate intelligence for climate consultants | CDP",
+      "metaDescription": "Accelerate local climate adaptation research with CDP public city, state, and regional disclosure data.",
+      "heroImage": "/social-preview.png",
+      "primaryCta": {
+        "label": "Start local research",
+        "href": "/"
+      },
+      "secondaryCta": {
+        "label": "Read methodology",
+        "href": "/methodology"
+      },
+      "metrics": [
+        {
+          "label": "Use case",
+          "value": "Client research"
+        },
+        {
+          "label": "Signals",
+          "value": "Local disclosure"
+        },
+        {
+          "label": "Audience",
+          "value": "Advisory teams"
+        }
+      ],
+      "commercialQuestions": [
+        "What has this jurisdiction disclosed about climate hazards?",
+        "Which adaptation actions and goals are already reported?",
+        "Which peer examples can inform client recommendations?"
+      ],
+      "sections": [
+        {
+          "heading": "Accelerate place-based research",
+          "body": "Give advisory teams a fast starting point for local climate risk and adaptation work before moving into bespoke analysis.",
+          "items": [
+            "Hazard summaries by location",
+            "Adaptation goals and action records",
+            "Methodology and public source context"
+          ]
+        },
+        {
+          "heading": "Translate disclosure into practical recommendations",
+          "body": "Use peer solution ideas and funding signals to frame recommendations around comparable actions already reported elsewhere.",
+          "items": [
+            "Peer solution examples",
+            "Projects seeking funding",
+            "Comparable hazard profiles"
+          ]
+        }
+      ],
+      "workflow": [
+        {
+          "title": "Open the local profile",
+          "body": "Search the jurisdiction and review its disclosed hazards and action tabs."
+        },
+        {
+          "title": "Capture the evidence",
+          "body": "Use source links, action records, and peer ideas as inputs to advisory work."
+        },
+        {
+          "title": "Shape recommendations",
+          "body": "Connect local needs to practical adaptation actions and project signals."
+        }
+      ],
+      "relatedPageKeys": [
+        "cityClimateRiskIntelligence",
+        "infrastructureInvestors",
+        "climateRiskDataForBanks"
+      ]
+    }
+  ]
+}
