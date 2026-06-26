@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 
+import { AnalyticsEvent } from '../../core/analytics/analytics-events';
 import { PosthogService } from '../../core/analytics/posthog.service';
 import { FeedbackService } from '../../shared/services/feedback.service';
 import { WelcomeModalComponent } from './welcome-modal.component';
@@ -66,6 +67,31 @@ describe('WelcomeModalComponent', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role: 'governmentDiscloser' }),
+    });
+  });
+
+  it('tracks when the welcome modal is skipped without a selected role', () => {
+    createComponent();
+
+    component.skip();
+
+    expect(component.isOpen).toBeFalse();
+    expect(posthog.capture).toHaveBeenCalledWith(AnalyticsEvent.WelcomeModalSkipped, {
+      selected_role: null,
+      had_selected_role: false,
+    });
+  });
+
+  it('tracks selected role context when the welcome modal is skipped', () => {
+    createComponent();
+    component.selectRole('business');
+
+    component.skip();
+
+    expect(component.isOpen).toBeFalse();
+    expect(posthog.capture).toHaveBeenCalledWith(AnalyticsEvent.WelcomeModalSkipped, {
+      selected_role: 'business',
+      had_selected_role: true,
     });
   });
 

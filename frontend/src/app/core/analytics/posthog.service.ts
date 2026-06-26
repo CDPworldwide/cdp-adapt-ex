@@ -4,12 +4,42 @@ import posthog from 'posthog-js';
 import { filter } from 'rxjs';
 
 import { environment } from '@env/environment';
+import {
+  AnalyticsEvent,
+  type AnalyticsEventName,
+  type AnalyticsProperties,
+} from './analytics-events';
 import { readStoredUserRole } from './user-role';
 
-type PosthogEventProperties = Record<string, string | number | boolean | null | undefined>;
+type PosthogConfig = typeof environment.posthog;
+
+export type PosthogDiagnostics = AnalyticsProperties & {
+  initialized: boolean;
+  enabled: boolean;
+  keyConfigured: boolean;
+  hostAllowed: boolean;
+  hostname: string;
+  apiHost: string;
+  uiHost: string;
+  capturePageleave: boolean;
+  sessionReplayEnabled: boolean;
+  debug: boolean;
+  release?: string;
+  environment?: string;
+};
+
+declare global {
+  interface Window {
+    __cdpAnalyticsDebug?: () => PosthogDiagnostics;
+  }
+}
 
 export function isPosthogHostAllowed(hostname: string): boolean {
-  return hostname === 'cdp-action-explorer.net' || hostname === 'localhost' || hostname === '127.0.0.1';
+  return (
+    hostname === 'cdp-action-explorer.net' ||
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1'
+  );
 }
 
 @Injectable({ providedIn: 'root' })
@@ -20,6 +50,7 @@ export class PosthogService {
 
   init(): void {
     const config = environment.posthog;
+    this.exposeDiagnostics(config);
 
     if (
       this.initialized ||
@@ -57,6 +88,7 @@ export class PosthogService {
 
     this.initialized = true;
     this.registerStoredUserType();
+    this.capture(AnalyticsEvent.AnalyticsInitialized, this.diagnostics(config));
     this.capturePageView();
 
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
@@ -64,7 +96,7 @@ export class PosthogService {
     });
   }
 
-  capture(eventName: string, properties?: PosthogEventProperties): void {
+  capture(eventName: AnalyticsEventName, properties?: AnalyticsProperties): void {
     if (!this.initialized) {
       return;
     }
@@ -72,7 +104,7 @@ export class PosthogService {
     posthog.capture(eventName, this.withStoredUserType(properties));
   }
 
-  register(properties: PosthogEventProperties): void {
+  register(properties: AnalyticsProperties): void {
     if (!this.initialized) {
       return;
     }
@@ -90,7 +122,7 @@ export class PosthogService {
 
   private capturePageView(): void {
     posthog.capture(
-      '$pageview',
+      AnalyticsEvent.Pageview,
       this.withStoredUserType({
         $current_url: window.location.href,
         path: window.location.pathname,
@@ -106,12 +138,41 @@ export class PosthogService {
     }
   }
 
-  private withStoredUserType(properties: PosthogEventProperties = {}): PosthogEventProperties {
+  private withStoredUserType(properties: AnalyticsProperties = {}): AnalyticsProperties {
     const userType = readStoredUserRole();
     if (!userType || properties['user_type']) {
       return properties;
     }
 
     return { ...properties, user_type: userType };
+  }
+
+  private diagnostics(config: PosthogConfig): PosthogDiagnostics {
+    return {
+      initialized: this.initialized,
+      enabled: config?.enabled === true,
+      keyConfigured: Boolean(config?.key),
+      hostAllowed: isPosthogHostAllowed(window.location.hostname),
+      hostname: window.location.hostname,
+      apiHost: config?.host || '',
+      uiHost: config?.uiHost || '',
+      capturePageleave: true,
+      sessionReplayEnabled: config?.sessionReplayEnabled !== false,
+      debug: environment.isDebugMode,
+      release: environment.sentry?.release || undefined,
+      environment: environment.sentry?.environment || undefined,
+    };
+  }
+
+  private exposeDiagnostics(config: PosthogConfig): void {
+    const isLocalHost =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+    if (!environment.isDebugMode && !isLocalHost) {
+      delete window.__cdpAnalyticsDebug;
+      return;
+    }
+
+    window.__cdpAnalyticsDebug = () => this.diagnostics(config);
   }
 }
