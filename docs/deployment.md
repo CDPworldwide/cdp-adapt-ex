@@ -116,8 +116,6 @@ Frontend builds set the Sentry release to the GitHub commit SHA and the Sentry e
 
 Slack notifications for large or recurring frontend errors should be configured in Sentry, not through a frontend webhook. Connect the Sentry Slack integration and add alert rules for production frontend issues, regressions, and error volume thresholds such as `10 events in 10 minutes`.
 
-For PostHog health checks, dashboard coverage, and alert expectations, see [Analytics Monitoring](analytics-monitoring.md).
-
 ### 📈 Monitoring & Logs
 
 #### View Deployment Logs

@@ -32,7 +32,6 @@
     "docs:preview": "vitepress preview docs --host 127.0.0.1",
     "docs:validate": "npm run docs:build",
     "frontend:verify": "cd frontend && bash scripts/write-environment.sh && npm run build",
-    "sync:org-data": "npm run client:build && node tools/sync-org-data.mjs",
     "i18n:coverage": "cd frontend && npm run i18n:coverage"
   },
   "dependencies": {
