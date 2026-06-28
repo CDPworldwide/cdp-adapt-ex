@@ -8,6 +8,7 @@ from google.genai import types
 from pydantic import BaseModel
 
 from app.errors import LLMAuthError, LLMRateLimitError, LLMServiceError
+from app.observability import generation_observation
 from app.prompts import build_system_prompt
 from app.schemas import ChatCompletionRequest
 from app.settings import Settings
@@ -97,12 +98,40 @@ class GeminiProvider:
                 system_instruction=str(config.system_instruction or ""),
             )
 
+        model_parameters = {
+            "temperature": (
+                request.temperature
+                if request.temperature is not None
+                else self.settings.default_temperature
+            ),
+            "max_output_tokens": min(
+                request.max_tokens or self.settings.max_tokens,
+                self.settings.max_tokens,
+            ),
+            "response_mime_type": getattr(config, "response_mime_type", None),
+        }
+
         try:
-            return await self.client.aio.models.generate_content(
+            with generation_observation(
+                request=request,
+                prompt_name=prompt_name,
                 model=self.settings.llm_model,
-                contents=contents,
-                config=config,
-            )
+                model_parameters={
+                    key: value
+                    for key, value in model_parameters.items()
+                    if value is not None
+                },
+            ) as observation:
+                response = await self.client.aio.models.generate_content(
+                    model=self.settings.llm_model,
+                    contents=contents,
+                    config=config,
+                )
+                observation.update(
+                    output=_safe_response_text(response),
+                    usage_details=_response_usage_details(response),
+                )
+                return response
         except Exception as exc:
             _raise_typed_llm_error(exc)
 
@@ -196,6 +225,24 @@ def _build_completion(response) -> GeminiCompletion:
         prompt_tokens=prompt_tokens,
         completion_tokens=completion_tokens,
     )
+
+
+def _safe_response_text(response) -> str:
+    try:
+        return _extract_response_text(response)
+    except Exception:
+        return ""
+
+
+def _response_usage_details(response) -> dict[str, int]:
+    usage_metadata = getattr(response, "usage_metadata", None)
+    prompt_tokens = getattr(usage_metadata, "prompt_token_count", 0) or 0
+    completion_tokens = getattr(usage_metadata, "candidates_token_count", 0) or 0
+    return {
+        "prompt_tokens": prompt_tokens,
+        "completion_tokens": completion_tokens,
+        "total_tokens": prompt_tokens + completion_tokens,
+    }
 
 
 def _raise_if_truncated(response) -> None:

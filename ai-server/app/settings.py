@@ -17,6 +17,7 @@ SUGGEST_FOLLOW_UPS_MAX_TOKENS = 256
 LLM_REQUEST_TIMEOUT_SECONDS = 60
 CORS_ALLOW_METHODS = ["GET", "POST", "OPTIONS"]
 CORS_ALLOW_HEADERS = ["Authorization", "Content-Type", "X-API-Key"]
+OBSERVABILITY_CAPTURE_CONTENT = True
 
 
 class Settings:
@@ -42,6 +43,27 @@ class Settings:
             os.getenv("AI_SERVER_LOG_PROMPTS"),
             os.getenv("LOG_LEVEL", "").upper() == "DEBUG",
         )
+        self.raggle_otel_enabled = _parse_bool(
+            os.getenv("RAGGLE_OTEL_ENABLED"),
+            False,
+        )
+        self.raggle_otel_base_url = os.getenv(
+            "RAGGLE_OTEL_BASE_URL",
+            "https://otelapi.raggle.co",
+        )
+        self.raggle_otel_api_token = os.getenv("RAGGLE_OTEL_API_TOKEN", "")
+        self.raggle_otel_project_id = os.getenv(
+            "RAGGLE_OTEL_PROJECT_ID",
+            "cdp-ai-server",
+        )
+        self.raggle_otel_capture_content = _parse_bool(
+            os.getenv("RAGGLE_OTEL_CAPTURE_CONTENT"),
+            OBSERVABILITY_CAPTURE_CONTENT,
+        )
+        self.raggle_otel_timeout_seconds = _parse_float(
+            os.getenv("RAGGLE_OTEL_TIMEOUT_SECONDS"),
+            10.0,
+        )
 
 
 def _parse_list(value: str | None, default: list[str]) -> list[str]:
@@ -54,6 +76,15 @@ def _parse_bool(value: str | None, default: bool) -> bool:
     if value is None:
         return default
     return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _parse_float(value: str | None, default: float) -> float:
+    if value is None:
+        return default
+    try:
+        return float(value)
+    except ValueError:
+        return default
 
 
 @lru_cache(maxsize=1)

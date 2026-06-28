@@ -4,15 +4,17 @@ from starlette.responses import JSONResponse
 
 from app.api.follow_ups import router as follow_ups_router
 from app.api.openai import router as openai_router
+from app.observability import get_observability
 from app.settings import Settings, get_settings
 
 app = FastAPI(title="CDP AI Server")
+PUBLIC_HEALTH_PATHS = {"/healthz", "/health/observability"}
 
 
 @app.middleware("http")
 async def require_api_key(request: Request, call_next):
     settings = get_settings()
-    if request.url.path == "/healthz":
+    if request.url.path in PUBLIC_HEALTH_PATHS:
         return await call_next(request)
     if not settings.api_key:
         return await call_next(request)
@@ -44,3 +46,13 @@ app.include_router(follow_ups_router, prefix="/v1")
 @app.get("/healthz")
 async def healthz(settings: Settings = Depends(get_settings)):
     return {"status": "healthy", "model": settings.public_model_name}
+
+
+@app.get("/health/observability")
+async def observability_health():
+    return {"status": "healthy", "observability": get_observability().status()}
+
+
+@app.on_event("shutdown")
+def flush_observability():
+    get_observability().flush()
