@@ -114,9 +114,15 @@ Optional frontend analytics and error reporting are configured through GitHub Ac
 
 Frontend builds set the Sentry release to the GitHub commit SHA and the Sentry environment to the workflow environment.
 
-Slack notifications for large or recurring frontend errors should be configured in Sentry, not through a frontend webhook. Connect the Sentry Slack integration and add alert rules for production frontend issues, regressions, and error volume thresholds such as `10 events in 10 minutes`.
+PostHog proxy health can be checked from any environment with:
 
-For PostHog health checks, dashboard coverage, and alert expectations, see [Analytics Monitoring](analytics-monitoring.md).
+```bash
+FRONTEND_POSTHOG_KEY=<project-token> npm run frontend:check:posthog
+```
+
+The command checks the first-party `/_cdp` config route, verifies the proxied PostHog static asset route, and sends a harmless `posthog_proxy_smoke_test` event to `/_cdp/e/`. It requires `FRONTEND_POSTHOG_KEY` or `POSTHOG_KEY` so project tokens are not hardcoded in the repository. Override `POSTHOG_SMOKE_BASE_URL` or `POSTHOG_SMOKE_EVENT_NAME` to test another deployment or event name. Local/debug builds also expose `window.__cdpAnalyticsDebug?.()` for non-secret analytics state such as whether the host is allowed, whether a key is configured, and which proxy hosts are compiled into the bundle.
+
+Slack notifications for large or recurring frontend errors should be configured in Sentry, not through a frontend webhook. Connect the Sentry Slack integration and add alert rules for production frontend issues, regressions, and error volume thresholds such as `10 events in 10 minutes`.
 
 ### 📈 Monitoring & Logs
 

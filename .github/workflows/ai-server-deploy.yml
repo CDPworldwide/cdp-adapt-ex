@@ -96,6 +96,12 @@ jobs:
           env_vars: |
             LLM_MODEL=gemini-2.5-flash
             SYSTEM_PROMPT_CACHE_SECONDS=60
+            RAGGLE_OTEL_ENABLED=true
+            RAGGLE_OTEL_BASE_URL=https://otelapi.raggle.co
+            RAGGLE_OTEL_API_TOKEN=${{ secrets.RAGGLE_OTEL_API_TOKEN }}
+            RAGGLE_OTEL_PROJECT_ID=cdp-ai-server
+            RAGGLE_OTEL_CAPTURE_CONTENT=true
+            RAGGLE_OTEL_TIMEOUT_SECONDS=10
           env_vars_update_strategy: overwrite
 
       - name: Verify deployment health

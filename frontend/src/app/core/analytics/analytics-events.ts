@@ -10,6 +10,37 @@ import type {
 
 export type AnalyticsProperties = Record<string, string | number | boolean | null | undefined>;
 
+export const AnalyticsEvent = {
+  AdaptationGoalOpened: 'adaptation_goal_opened',
+  AiChatFollowupClicked: 'ai_chat_followup_clicked',
+  AiChatOpened: 'ai_chat_opened',
+  AiChatQuerySubmitted: 'ai_chat_query_submitted',
+  AnalyticsInitialized: 'analytics_initialized',
+  ExportClicked: 'export_clicked',
+  ExportCompleted: 'export_completed',
+  ExportFailed: 'export_failed',
+  FeedbackOpened: 'feedback_opened',
+  FundingProjectOpened: 'funding_project_opened',
+  GovernmentActionOpened: 'government_action_opened',
+  HazardActionsExploreClicked: 'hazard_actions_explore_clicked',
+  HazardDetailExpanded: 'hazard_detail_expanded',
+  LocationTabChanged: 'location_tab_changed',
+  LocationViewed: 'location_viewed',
+  MapPinSelected: 'map_pin_selected',
+  Pageview: '$pageview',
+  SearchLocationSelected: 'search_location_selected',
+  SectionEngaged: 'section_engaged',
+  SolutionDetailOpened: 'solution_detail_opened',
+  SolutionHazardFilterApplied: 'solution_hazard_filter_applied',
+  SolutionHazardFilterCleared: 'solution_hazard_filter_cleared',
+  ActionHazardFilterApplied: 'action_hazard_filter_applied',
+  ActionHazardFilterCleared: 'action_hazard_filter_cleared',
+  UserRoleSelected: 'user_role_selected',
+  WelcomeModalSkipped: 'welcome_modal_skipped',
+} as const;
+
+export type AnalyticsEventName = (typeof AnalyticsEvent)[keyof typeof AnalyticsEvent];
+
 export function locationProperties(
   location: LocationProfile | null | undefined,
 ): AnalyticsProperties {

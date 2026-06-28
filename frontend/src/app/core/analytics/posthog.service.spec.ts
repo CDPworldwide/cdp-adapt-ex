@@ -3,12 +3,17 @@ import { provideRouter } from '@angular/router';
 import posthog from 'posthog-js';
 
 import { environment } from '@env/environment';
+import { AnalyticsEvent } from './analytics-events';
 import { PosthogService, isPosthogHostAllowed } from './posthog.service';
 
 describe('PosthogService', () => {
   let service: PosthogService;
   let captureSpy: jasmine.Spy;
-  const originalPosthogConfig = { ...environment.posthog };
+  const originalEnvironmentConfig = {
+    isDebugMode: environment.isDebugMode,
+    posthog: { ...environment.posthog },
+    sentry: { ...environment.sentry },
+  };
 
   beforeEach(() => {
     localStorage.clear();
@@ -24,7 +29,10 @@ describe('PosthogService', () => {
 
   afterEach(() => {
     localStorage.clear();
-    Object.assign(environment.posthog, originalPosthogConfig);
+    environment.isDebugMode = originalEnvironmentConfig.isDebugMode;
+    Object.assign(environment.posthog, originalEnvironmentConfig.posthog);
+    Object.assign(environment.sentry, originalEnvironmentConfig.sentry);
+    delete window.__cdpAnalyticsDebug;
   });
 
   it('enables pageleave capture when automatic pageviews are disabled', () => {
@@ -46,6 +54,66 @@ describe('PosthogService', () => {
         ui_host: 'https://eu.posthog.com',
         capture_pageview: false,
         capture_pageleave: true,
+      }),
+    );
+  });
+
+  it('captures a non-secret analytics initialization health event', () => {
+    spyOn(posthog, 'init');
+    Object.assign(environment.posthog, {
+      enabled: true,
+      key: 'phc_test',
+      host: '/_cdp',
+      uiHost: 'https://eu.posthog.com',
+      sessionReplayEnabled: true,
+    });
+    Object.assign(environment.sentry, {
+      environment: 'production',
+      release: 'abc123',
+    });
+    (service as unknown as { initialized: boolean }).initialized = false;
+
+    service.init();
+
+    expect(captureSpy).toHaveBeenCalledWith(
+      AnalyticsEvent.AnalyticsInitialized,
+      jasmine.objectContaining({
+        initialized: true,
+        enabled: true,
+        keyConfigured: true,
+        hostAllowed: true,
+        apiHost: '/_cdp',
+        uiHost: 'https://eu.posthog.com',
+        capturePageleave: true,
+        sessionReplayEnabled: true,
+        release: 'abc123',
+        environment: 'production',
+      }),
+    );
+  });
+
+  it('exposes local diagnostics when debug mode is enabled', () => {
+    environment.isDebugMode = true;
+    Object.assign(environment.posthog, {
+      enabled: false,
+      key: '',
+      host: '/_cdp',
+      uiHost: 'https://eu.posthog.com',
+    });
+    (service as unknown as { initialized: boolean }).initialized = false;
+
+    service.init();
+
+    expect(window.__cdpAnalyticsDebug).toEqual(jasmine.any(Function));
+    expect(window.__cdpAnalyticsDebug?.()).toEqual(
+      jasmine.objectContaining({
+        initialized: false,
+        enabled: false,
+        keyConfigured: false,
+        hostAllowed: true,
+        apiHost: '/_cdp',
+        uiHost: 'https://eu.posthog.com',
+        debug: true,
       }),
     );
   });
