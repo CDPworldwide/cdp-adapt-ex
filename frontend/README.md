@@ -23,7 +23,7 @@ It is built with **Angular 20**, **Tailwind CSS**, and **Angular Material**.
    ```
    **CRITICAL**: Open `src/environments/environment.development.ts` and set the `baseUrl` to match your running backend.
    - If running via `uv run fastapi dev`, the default is usually `http://localhost:8000`.
-   - Set `aiServerUrl` to your AI server domain. Ask CDP AI calls this service directly, so chat and follow-up requests do not go through the backend `baseUrl`.
+   - Set `aiServerUrl` to your AI server domain. Ask the AI Explorer calls this service directly, so chat and follow-up requests do not go through the backend `baseUrl`.
    - If the AI server has `AI_SERVER_API_KEY` configured, set `aiServerApiKey` locally or `AI_SERVER_API_KEY`/`FRONTEND_AI_SERVER_API_KEY` in `.env`/CI.
    - If your backend has `API_KEY` configured, also set `apiKey` and `apiKeyHeaderName` so frontend requests include the required header.
    - Optional analytics and error reporting are disabled by default. Set PostHog and Sentry values in `.env` or the environment files when you need local telemetry.

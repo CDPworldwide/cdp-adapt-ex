@@ -36,9 +36,9 @@ repo = database_service.location_details
 
 ## Entity Models
 
-The system uses several SQLModel entities mapped to the CSTAR datasets.
+The system uses several SQLModel entities mapped to the Cities, States and Regions datasets.
 
-### Core Models (CSTAR 2025)
+### Core Models (Cities, States and Regions 2025)
 
 - **`DimCentral`**: Central dimension table for jurisdiction metadata and geometry.
 - **`FactHazards`**: Environmental hazards reported by jurisdictions.

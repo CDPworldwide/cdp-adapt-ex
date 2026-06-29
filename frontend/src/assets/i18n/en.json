@@ -612,18 +612,18 @@
     "lastUpdated": "Last updated: {{date}}",
     "lastUpdatedDate": "April 2026",
     "title": "About the Explorer",
-    "intro": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. The CDP Adaptation & Action Explorer brings together fragmented climate disclosure, hazard, and resilience information into a single workspace so subnational governments can find what matters fastest.",
+    "intro": "The CDP Adaptation & Action Explorer brings together climate disclosure, hazard, and resilience information in a single workspace so cities, states, regions, and their partners can find what matters fastest.",
     "what": {
       "title": "What you'll find here",
-      "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+      "body": "Explore reported climate hazards, adaptation goals, actions, projects seeking funding, peer action ideas, and source links to public CDP disclosure data."
     },
     "audience": {
       "title": "Who it's for",
-      "body": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt."
+      "body": "The Explorer is designed for cities, states, and regions, and can also support economic development authorities, businesses, funders, non-governmental organizations, journalists, and researchers."
     },
     "howToUse": {
       "title": "How to use it",
-      "body": "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit."
+      "body": "Search for a jurisdiction, review its hazard and action profile, compare relevant peer actions, and use Ask the AI Explorer to ask location-specific questions."
     },
     "faq": {
       "title": "Frequently asked questions",
@@ -631,23 +631,23 @@
       "items": {
         "data": {
           "question": "Where does the data come from?",
-          "answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam. Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt."
+          "answer": "The Explorer uses public CDP disclosure data from cities, states, and regions, alongside climate hazard layers, jurisdiction geometry, and CDP analysis."
         },
         "updates": {
           "question": "How often is the Explorer updated?",
-          "answer": "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur."
+          "answer": "The underlying disclosure data is refreshed around CDP disclosure cycles. Some supporting datasets and analysis outputs may be updated separately."
         },
         "coverage": {
           "question": "Why doesn't my city or region appear?",
-          "answer": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi."
+          "answer": "A jurisdiction may be missing if it did not disclose public data for the selected year, if its disclosure is not yet available, or if its location data could not be matched confidently."
         },
         "contribute": {
           "question": "Can I contribute data or feedback?",
-          "answer": "Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus."
+          "answer": "You can share feedback with the CDP team. Jurisdiction disclosure data should be submitted through the appropriate CDP disclosure process."
         },
         "use": {
           "question": "Can I cite or reuse what's in the Explorer?",
-          "answer": "Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur."
+          "answer": "Use the source links and CDP Open Data Portal records when citing underlying data. Check the relevant dataset license and attribution requirements before reuse."
         }
       }
     }
