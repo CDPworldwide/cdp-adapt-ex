@@ -139,6 +139,12 @@ jobs:
         run: npm run build
 
       - name: Build docs into frontend artifact
+        env:
+          FRONTEND_POSTHOG_KEY: ${{ vars.FRONTEND_POSTHOG_KEY }}
+          FRONTEND_POSTHOG_HOST: ${{ vars.FRONTEND_POSTHOG_HOST }}
+          FRONTEND_POSTHOG_UI_HOST: ${{ vars.FRONTEND_POSTHOG_UI_HOST }}
+          FRONTEND_POSTHOG_ENABLED: ${{ vars.FRONTEND_POSTHOG_ENABLED }}
+          FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED: ${{ vars.FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED }}
         run: npm run docs:build:frontend
 
       - name: Configure Docker for Artifact Registry
