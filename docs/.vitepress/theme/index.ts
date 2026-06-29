@@ -1,0 +1,72 @@
+import DefaultTheme from "vitepress/theme";
+import { inBrowser, type Theme } from "vitepress";
+import posthog from "posthog-js";
+
+type DocsPosthogConfig = {
+  enabled: boolean;
+  key: string;
+  host: string;
+  uiHost: string;
+  sessionReplayEnabled: boolean;
+};
+
+declare const __DOCS_POSTHOG__: DocsPosthogConfig;
+
+function isPosthogHostAllowed(hostname: string): boolean {
+  return (
+    hostname === "cdp-action-explorer.net" ||
+    hostname === "localhost" ||
+    hostname === "127.0.0.1"
+  );
+}
+
+function capturePageView(): void {
+  posthog.capture("$pageview", {
+    $current_url: window.location.href,
+    path: window.location.pathname,
+    search: window.location.search,
+    surface: "docs",
+  });
+}
+
+const theme: Theme = {
+  extends: DefaultTheme,
+  enhanceApp({ router }) {
+    if (
+      !inBrowser ||
+      !__DOCS_POSTHOG__.enabled ||
+      !__DOCS_POSTHOG__.key ||
+      !isPosthogHostAllowed(window.location.hostname)
+    ) {
+      return;
+    }
+
+    posthog.init(__DOCS_POSTHOG__.key, {
+      api_host: __DOCS_POSTHOG__.host,
+      ui_host: __DOCS_POSTHOG__.uiHost,
+      defaults: "2026-01-30",
+      capture_pageview: false,
+      capture_pageleave: true,
+      autocapture: {
+        url_allowlist: [
+          /^https:\/\/cdp-action-explorer\.net(?:\/.*)?$/,
+          /^https?:\/\/localhost:\d+(?:\/.*)?$/,
+          /^https?:\/\/127\.0\.0\.1:\d+(?:\/.*)?$/,
+        ],
+      },
+      disable_session_recording: __DOCS_POSTHOG__.sessionReplayEnabled === false,
+      session_recording: {
+        maskAllInputs: true,
+        maskTextSelector: "*",
+        blockSelector: ".sensitive-data, [data-ph-no-capture]",
+      },
+    });
+
+    capturePageView();
+    router.onAfterRouteChanged = () => {
+      capturePageView();
+    };
+  },
+};
+
+export default theme;

@@ -1,6 +1,6 @@
 # AI Server Docs
 
-The AI server is the standalone OpenAI-compatible service for Ask CDP AI. The Angular frontend calls it directly for chat and suggested follow-up questions.
+The AI server is the standalone OpenAI-compatible service for Ask the AI Explorer. The Angular frontend calls it directly for chat and suggested follow-up questions.
 
 ## Runtime Contract
 

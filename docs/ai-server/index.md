@@ -1,11 +1,11 @@
 ---
 title: "AI Server"
-description: "Standalone OpenAI-compatible service for Ask CDP AI chat and follow-up questions."
+description: "Standalone OpenAI-compatible service for Ask the AI Explorer chat and follow-up questions."
 ---
 
 # AI Server
 
-The AI server is the standalone OpenAI-compatible service for Ask CDP AI. The Angular frontend calls it directly for chat and suggested follow-up questions.
+The AI server is the standalone OpenAI-compatible service for Ask the AI Explorer. The Angular frontend calls it directly for chat and suggested follow-up questions.
 
 ## Runtime Contract
 
@@ -22,7 +22,7 @@ Location context may be sent as `metadata.locationData` or top-level `locationDa
 
 | Page | Purpose |
 |------|---------|
-| [Testing Ask CDP AI](testing) | Reviewed-question testing, batch evals, and prompt iteration workflow. |
+| [Testing Ask the AI Explorer](testing) | Reviewed-question testing, batch evals, and prompt iteration workflow. |
 
 ## Local Run
 
