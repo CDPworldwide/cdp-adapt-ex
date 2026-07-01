@@ -21,6 +21,7 @@ export function locationProperties(
     location_id: location.organizationId,
     location_name: location.name,
     country: location.countryName,
+    population: location.population,
     public_status: location.publicStatus,
     disclosure_year: location.disclosureYear,
     hazards_count: location.hazards?.hazards?.length ?? 0,
