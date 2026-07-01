@@ -182,7 +182,24 @@ jobs:
       - name: Determine backend URL
         id: backend-url
         run: |
-          if [ "${{ github.ref }}" = "refs/heads/production" ]; then
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BACKEND_SERVICE="cdp-server-preview-pr-${{ github.event.pull_request.number }}"
+            echo "Checking for backend service $BACKEND_SERVICE..."
+            BACKEND_URL=$(gcloud run services describe "$BACKEND_SERVICE" \
+              --region=us-central1 \
+              --format='value(status.url)' 2>/dev/null || echo "")
+
+            if [ -z "$BACKEND_URL" ]; then
+              BACKEND_SERVICE="cdp-server-dev"
+              echo "Backend preview not found; using shared dev backend $BACKEND_SERVICE"
+              BACKEND_URL=$(gcloud run services describe "$BACKEND_SERVICE" \
+                --region=us-central1 \
+                --format='value(status.url)')
+            else
+              echo "✓ Backend preview found: $BACKEND_URL"
+            fi
+
+          elif [ "${{ github.ref }}" = "refs/heads/production" ]; then
             BACKEND_SERVICE="cdp-server-prod"
             BACKEND_URL=$(gcloud run services describe $BACKEND_SERVICE \
               --region=us-central1 \
