@@ -26,7 +26,7 @@
     "client:verify": "cd client && npm run verify",
     "client:build": "cd client && npm run build",
     "client:install": "cd client && npm install",
-    "docs:dev": "VITEPRESS_BASE=/docs/ vitepress dev docs --host localhost --port 5174",
+    "docs:dev": "vitepress dev docs --host localhost --port 5174",
     "docs:dev:with-frontend": "bash -lc 'trap \"kill 0\" EXIT; npm run docs:dev & cd frontend && npm run start'",
     "docs:build": "vitepress build docs",
     "docs:build:frontend": "vitepress build docs --outDir frontend/dist/frontend/browser/docs",
