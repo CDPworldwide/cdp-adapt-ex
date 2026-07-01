@@ -23,7 +23,8 @@ export const environment = {
   },
   posthog: {
     key: '',
-    host: 'https://eu.i.posthog.com',
+    host: '/_cdp',
+    uiHost: 'https://eu.posthog.com',
     enabled: false,
     sessionReplayEnabled: true,
   },

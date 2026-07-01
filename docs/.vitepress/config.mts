@@ -1,8 +1,7 @@
 import { defineConfig } from "vitepress";
 
 const posthogEnabled = process.env.FRONTEND_POSTHOG_ENABLED === "true";
-const posthogHost =
-  process.env.FRONTEND_POSTHOG_HOST || "https://eu.i.posthog.com";
+const posthogHost = process.env.FRONTEND_POSTHOG_HOST || "/_cdp";
 const posthogUiHost =
   process.env.FRONTEND_POSTHOG_UI_HOST || "https://eu.posthog.com";
 const posthogSessionReplayEnabled =

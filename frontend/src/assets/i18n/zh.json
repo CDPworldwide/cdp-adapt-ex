@@ -100,6 +100,10 @@
     "mainNavigation": "主导航",
     "siteFooter": "网站页脚",
     "methodology": "方法论",
+    "settingsMenu": {
+      "label": "设置",
+      "roleHeading": "用户类型"
+    },
     "legacyNav": {
       "main": "主页",
       "maps": "地图",

@@ -1,22 +1,21 @@
-name: Frontend Preview Deploy
+name: Production Frontend Deploy
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [main, production]
+  push:
+    branches: [production]
     paths:
       - "frontend/**"
-      - "test/**"
       - "client/**"
       - "docs/**"
       - "package.json"
       - "package-lock.json"
       - ".nvmrc"
       - ".github/actions/setup-frontend-build/**"
-      - ".github/workflows/frontend-preview.yml"
+      - ".github/workflows/production-frontend-deploy.yml"
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -24,20 +23,18 @@ env:
   REGION: us-central1
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
   AI_SERVER_URL: https://cdp-ai-server-pbybuiwoxq-uc.a.run.app
-  BACKEND_SERVICE_NAME: cdp-server-dev
-  SERVICE_NAME: frontend-preview-pr-${{ github.event.pull_request.number }}
-  ENVIRONMENT: development
+  ENVIRONMENT: production
   NODE_VERSION: "20.x"
+  SERVICE_NAME_BACKEND: cdp-server-prod
+  SERVICE_NAME_FRONTEND: frontend-prod
 
 jobs:
-  deploy-preview:
-    name: Frontend preview / deploy
+  deploy-frontend:
+    name: Production / deploy frontend
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     permissions:
       contents: read
       id-token: write
-      pull-requests: write
 
     steps:
       - name: Checkout repository
@@ -62,20 +59,20 @@ jobs:
         with:
           project_id: ${{ env.PROJECT_ID }}
 
-      - name: Determine backend URL
+      - name: Determine production backend URL
         id: backend-url
         run: |
-          BACKEND_URL=$(gcloud run services describe ${{ env.BACKEND_SERVICE_NAME }} \
+          BACKEND_URL=$(gcloud run services describe ${{ env.SERVICE_NAME_BACKEND }} \
             --region=${{ env.REGION }} \
-            --format='value(status.url)' 2>/dev/null || echo "")
+            --format='value(status.url)')
 
           if [ -z "$BACKEND_URL" ]; then
-            echo "Backend service ${{ env.BACKEND_SERVICE_NAME }} not found"
+            echo "Could not resolve URL for Cloud Run service ${{ env.SERVICE_NAME_BACKEND }} in ${{ env.REGION }}"
             exit 1
           fi
 
           echo "url=$BACKEND_URL" >> "$GITHUB_OUTPUT"
-          echo "Backend URL (${{ env.BACKEND_SERVICE_NAME }}): $BACKEND_URL"
+          echo "Resolved production backend URL: $BACKEND_URL"
 
       - name: Get Frontend Secrets from Secret Manager
         id: frontend-secrets
@@ -86,15 +83,14 @@ jobs:
             AI_SERVER_API_KEY:${{ env.PROJECT_ID }}/shared-AI_SERVER_API_KEY
             GOOGLE_MAPS_API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
 
-      - name: Create environment.ts
+      - name: Create production environment.ts
         working-directory: frontend
         run: |
           FRONTEND_BASE_URL='${{ steps.backend-url.outputs.url }}' \
           FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
           FRONTEND_API_KEY='${{ steps.frontend-secrets.outputs.API_KEY }}' \
           FRONTEND_AI_SERVER_API_KEY='${{ steps.frontend-secrets.outputs.AI_SERVER_API_KEY }}' \
-          FRONTEND_AUTH_DISABLED='false' \
-          FRONTEND_DEBUG_MODE='true' \
+          FRONTEND_DEBUG_MODE='false' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
           FRONTEND_POSTHOG_KEY='${{ vars.FRONTEND_POSTHOG_KEY }}' \
           FRONTEND_POSTHOG_HOST='${{ vars.FRONTEND_POSTHOG_HOST }}' \
@@ -124,7 +120,9 @@ jobs:
               'baseUrl': extract('baseUrl'),
               'aiServerUrl': extract('aiServerUrl'),
               'apiKey': extract('apiKey'),
+              'apiKeyHeaderName': extract('apiKeyHeaderName'),
               'aiServerApiKey': extract('aiServerApiKey'),
+              'aiServerApiKeyHeaderName': extract('aiServerApiKeyHeaderName'),
               'posthogKey': extract('key'),
           }
 
@@ -133,8 +131,7 @@ jobs:
               if value:
                   print(f"{key}_length={len(value)}")
 
-          required = ('baseUrl', 'aiServerUrl', 'apiKey', 'aiServerApiKey')
-          missing = [key for key in required if not values[key]]
+          missing = [key for key in ('baseUrl', 'aiServerUrl', 'apiKey', 'aiServerApiKey') if not values[key]]
           if missing:
               raise SystemExit(f"Missing generated frontend environment values: {', '.join(missing)}")
           PY
@@ -142,6 +139,10 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         run: npm run build
+
+      - name: Run frontend tests
+        working-directory: frontend
+        run: npm run test:ci
 
       - name: Build docs into frontend artifact
         env:
@@ -155,78 +156,51 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
 
-      - name: Build and push Docker image
+      - name: Build and push frontend Docker image
         working-directory: frontend
         run: |
-          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}"
-          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:latest"
+          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_FRONTEND }}:${{ github.sha }}"
+          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_FRONTEND }}:latest"
+          IMAGE_ENV="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_FRONTEND }}:${{ env.ENVIRONMENT }}"
 
-          docker build -t $IMAGE_TAG -t $IMAGE_LATEST .
+          docker build -t $IMAGE_TAG -t $IMAGE_LATEST -t $IMAGE_ENV .
           docker push $IMAGE_TAG
           docker push $IMAGE_LATEST
+          docker push $IMAGE_ENV
 
-      - name: Deploy to Cloud Run
-        id: deploy
+      - name: Deploy frontend to Cloud Run
+        id: deploy-frontend
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: ${{ env.SERVICE_NAME }}
+          service: ${{ env.SERVICE_NAME_FRONTEND }}
           region: ${{ env.REGION }}
-          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_FRONTEND }}:${{ github.sha }}
           flags: |
             --allow-unauthenticated
             --min-instances=0
-            --max-instances=2
+            --max-instances=10
             --memory=512Mi
             --cpu=1
             --timeout=60
             --port=8080
           labels: |
-            environment=preview
+            environment=${{ env.ENVIRONMENT }}
             managed-by=github-actions
             commit-sha=${{ github.sha }}
-            pr-number=${{ github.event.pull_request.number }}
 
-      - name: Verify deployment health
+      - name: Verify frontend deployment health
         run: |
-          URL="${{ steps.deploy.outputs.url }}"
-          echo "Checking health of $URL..."
+          URL="${{ steps.deploy-frontend.outputs.url }}"
+          echo "Checking health of ${{ env.ENVIRONMENT }} frontend at $URL..."
           for i in {1..10}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
-            DOCS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL/docs/" || echo "000")
-            if [ "$STATUS" = "200" ] && [ "$DOCS_STATUS" = "200" ]; then
-              echo "Deployment is healthy (HTTP $STATUS)"
-              echo "Docs are healthy (HTTP $DOCS_STATUS)"
+            if [ "$STATUS" = "200" ]; then
+              echo "Frontend deployment is healthy (HTTP $STATUS)"
+              echo "Backend URL wired into frontend: ${{ steps.backend-url.outputs.url }}"
               exit 0
             fi
-            echo "Attempt $i/10: frontend HTTP $STATUS, docs HTTP $DOCS_STATUS, waiting 5s..."
+            echo "Attempt $i/10: HTTP $STATUS, waiting 5s..."
             sleep 5
           done
-          echo "Deployment health check failed"
+          echo "Frontend deployment health check failed"
           exit 1
-
-      - name: Comment PR with preview URL
-        if: github.event_name == 'pull_request'
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## Frontend Preview Deployed
-
-            **URL:** ${{ steps.deploy.outputs.url }}
-            **Commit:** `${{ github.sha }}`
-            **Environment:** preview (PR #${{ github.event.pull_request.number }})
-            **Backend:** ${{ steps.backend-url.outputs.url }} (`${{ env.BACKEND_SERVICE_NAME }}`)
-            **AI Server:** ${{ env.AI_SERVER_URL }}
-            **Docs:** ${{ steps.deploy.outputs.url }}/docs/
-
-            ### Test Credentials
-            Use these credentials to login to the preview:
-            - **Email:** `test@example.com`
-            - **Password:** `TestPassword123!`
-
-            ### Quick Test
-            ```bash
-            open ${{ steps.deploy.outputs.url }}
-            ```
-
-            This preview environment is isolated per PR and will remain active until the PR is closed.
