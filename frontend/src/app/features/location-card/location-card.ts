@@ -16,6 +16,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { GovernmentActionsComponent } from './government-actions/government-actions.component';
@@ -36,6 +37,7 @@ import { switchMap } from 'rxjs/operators';
 import { Footer } from '../../core/footer/footer';
 import { PosthogService } from '../../core/analytics/posthog.service';
 import { ReportingLeaderChipComponent } from '../../shared/components/reporting-leader-chip/reporting-leader-chip.component';
+import { GlobalSearchService } from '../../core/global-search/global-search.service';
 import {
   hazardKeyProperties,
   hazardProperties,
@@ -60,6 +62,7 @@ declare let gtag: Function;
   imports: [
     CommonModule,
     MatTabsModule,
+    MatIconModule,
     TranslateModule,
     GovernmentActionsComponent,
     HazardsComponent,
@@ -120,6 +123,7 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
     private posthog: PosthogService,
+    private globalSearchService: GlobalSearchService,
   ) {}
 
   ngOnInit(): void {
@@ -245,6 +249,10 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
 
   goBackToMap(): void {
     this.backToMap.emit();
+  }
+
+  openGlobalSearch(): void {
+    this.globalSearchService.open();
   }
 
   exploreHazardActions(hazard: Hazard): void {
