@@ -1,16 +1,52 @@
 import { defineConfig } from "vitepress";
 
+const posthogEnabled = process.env.FRONTEND_POSTHOG_ENABLED === "true";
+const posthogHost = process.env.FRONTEND_POSTHOG_HOST || "/_cdp";
+const posthogUiHost =
+  process.env.FRONTEND_POSTHOG_UI_HOST || "https://eu.posthog.com";
+const posthogSessionReplayEnabled =
+  process.env.FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED !== "false";
+
 export default defineConfig({
   title: "CDP Adaptation & Action Explorer",
   description:
     "How the CDP Adaptation & Action Explorer is structured and operated.",
-  base: "/cdp-adapt-ex/",
+  base: "/docs/",
+  head: [
+    ["link", { rel: "icon", href: "/docs/favicon.ico?v=cdp-20260617" }],
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/docs/icon.svg?v=cdp-20260617",
+      },
+    ],
+    [
+      "link",
+      {
+        rel: "apple-touch-icon",
+        href: "/docs/apple-icon.png?v=cdp-20260617",
+      },
+    ],
+  ],
   cleanUrls: true,
   ignoreDeadLinks: [
     (url) => url.startsWith("../") || url.startsWith("./../"),
   ],
+  vite: {
+    define: {
+      __DOCS_POSTHOG__: JSON.stringify({
+        enabled: posthogEnabled,
+        key: process.env.FRONTEND_POSTHOG_KEY || "",
+        host: posthogHost,
+        uiHost: posthogUiHost,
+        sessionReplayEnabled: posthogSessionReplayEnabled,
+      }),
+    },
+  },
   themeConfig: {
-    logo: "/images/landing-page.png",
+    logo: "/icon.svg",
     nav: [
       { text: "Overview", link: "/" },
       { text: "Data", link: "/data" },

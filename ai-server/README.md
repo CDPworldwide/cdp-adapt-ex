@@ -1,8 +1,8 @@
 # CDP AI Server
 
-Standalone OpenAI-compatible AI server for Ask CDP AI.
+Standalone OpenAI-compatible AI server for Ask the AI Explorer.
 
-Canonical handoff docs live in [`../docs/ai server`](../docs/ai%20server). Keep this service README focused on local commands and route contracts.
+Canonical handoff docs live in [`../docs/ai-server`](../docs/ai-server). Keep this service README focused on local commands and route contracts.
 
 ## Routes
 

@@ -187,6 +187,9 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Install docs dependencies
+        run: npm ci
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
@@ -268,6 +271,15 @@ jobs:
         working-directory: frontend
         run: npm run test:ci
 
+      - name: Build docs into frontend artifact
+        env:
+          FRONTEND_POSTHOG_KEY: ${{ vars.FRONTEND_POSTHOG_KEY }}
+          FRONTEND_POSTHOG_HOST: ${{ vars.FRONTEND_POSTHOG_HOST }}
+          FRONTEND_POSTHOG_UI_HOST: ${{ vars.FRONTEND_POSTHOG_UI_HOST }}
+          FRONTEND_POSTHOG_ENABLED: ${{ vars.FRONTEND_POSTHOG_ENABLED }}
+          FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED: ${{ vars.FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED }}
+        run: npm run docs:build:frontend
+
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
 
@@ -309,12 +321,14 @@ jobs:
           echo "Checking health of ${{ env.ENVIRONMENT }} frontend at $URL..."
           for i in {1..10}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
-            if [ "$STATUS" = "200" ]; then
+            DOCS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL/docs/" || echo "000")
+            if [ "$STATUS" = "200" ] && [ "$DOCS_STATUS" = "200" ]; then
               echo "Frontend deployment is healthy (HTTP $STATUS)"
+              echo "Docs deployment is healthy (HTTP $DOCS_STATUS)"
               echo "Backend URL wired into frontend: ${{ needs.deploy-backend.outputs.backend-url }}"
               exit 0
             fi
-            echo "Attempt $i/10: HTTP $STATUS, waiting 5s..."
+            echo "Attempt $i/10: frontend HTTP $STATUS, docs HTTP $DOCS_STATUS, waiting 5s..."
             sleep 5
           done
           echo "Frontend deployment health check failed"

@@ -2,12 +2,12 @@
 
 This repository provides the necessary data to replicate the tool. By following this guide, external developers can set up an independent instance of the dashboard in their own environment.
 
-We provide a static data dump consisting of CSTAR entities mapped to Overture geometry data. This combined dataset allows for a 1:1 replication of the product without requiring access to CDP's internal services.
+We provide a static data dump consisting of Cities, States and Regions entities mapped to Overture geometry data. This combined dataset allows for a 1:1 replication of the product without requiring access to CDP's internal services.
 
 # Data Privacy and Licensing
 
 * **Public Data Only:** The exported CSV files strictly exclude all non-public disclosure data to prevent the release of confidential information.
-* **Licensing:** CSTAR data is licensed for non-commercial use.
+* **Licensing:** Cities, States and Regions data is licensed for non-commercial use.
 
 # Prerequisites
 
@@ -26,7 +26,7 @@ To host your own instance, you will need:
 
 ## 1\. Download Data
 
-Download the data archive (7 CSV files) from (**TODO: ADD LINK**).
+Download or source the public data from CDP's [Cities, States and Regions Open Data Portal](https://data.cdp.net/browse?category=Cities%2C+States+%26+Regions).
 
 ## 2\. Prepare Your Database
 
@@ -147,10 +147,10 @@ For users preferring BigQuery, you can load the CSV files directly into your dat
 | Tables | Primary Key  | Description |
 | :---- | :---- | :---- |
 | CSTAR\_2025\_Dim\_Central | `disclosing_year + cdp_disclosing_org_number` | Central dimension table with all jurisdiction level info, including self disclosed and publicly available country/jurisdiction level metadata and geometry |
-| CSTAR\_2025\_Fact\_Hazard | `disclosing_year + cdp_disclosing_org_number + hazard_rank` | Hazards and hazard details reported by CSTAR jurisdictions |
-| CSTAR\_2025\_Fact\_Goal | `disclosing_year + cdp_disclosing_org_number + goal_index (unique at org level)` | Adaptation goals and related info reported by CSTAR jurisdictions |
-| CSTAR\_2025\_Fact\_Action | `disclosing_year + cdp_disclosing_org_number + action_index (unique at CSTAR level for easy solution sample retrieval)` | Adaptation actions and related info reported by CSTAR jurisdictions  |
-| CSTAR\_2025\_Fact\_Funding\_Gap | `disclosing_year + cdp_disclosing_org_number +  project_area_index (unique at CSTAR level) + project_index (unique at org level)` | Planned climate-related projects hoping to attract financing and related info reported by CSTAR jurisdictions |
+| CSTAR\_2025\_Fact\_Hazard | `disclosing_year + cdp_disclosing_org_number + hazard_rank` | Hazards and hazard details reported by Cities, States and Regions jurisdictions |
+| CSTAR\_2025\_Fact\_Goal | `disclosing_year + cdp_disclosing_org_number + goal_index (unique at org level)` | Adaptation goals and related info reported by Cities, States and Regions jurisdictions |
+| CSTAR\_2025\_Fact\_Action | `disclosing_year + cdp_disclosing_org_number + action_index (unique at Cities, States and Regions level for easy solution sample retrieval)` | Adaptation actions and related info reported by Cities, States and Regions jurisdictions  |
+| CSTAR\_2025\_Fact\_Funding\_Gap | `disclosing_year + cdp_disclosing_org_number +  project_area_index (unique at Cities, States and Regions level) + project_index (unique at org level)` | Planned climate-related projects hoping to attract financing and related info reported by Cities, States and Regions jurisdictions |
 | CSTAR\_2025\_Peer\_Solutions | `disclosing_year + target_org_id + action_index` | Adaptation actions taken by jurisdictions sharing the same ecoregion and hazards, with adaptation actions addressing at least one of the top 4 hazards for the jurisdiction.  has\_local\_action indicates if the target org has already taken that action or not. The goal is to help jurisdictions identify additional related actions they can take to address their top hazards  |
 | CSTAR\_2025\_Solution\_Examples | `disclosing_year + target_org_id + peer_org_id + action_index` | For each target\_org and action pair in the solution table, there are multiple peer\_orgs taking the same action, this table contains the top 10 peers taking that action, ranked based on information completeness. If there’re less than 10 peers taking that action, all are included in the table. |
 
