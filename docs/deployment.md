@@ -59,6 +59,8 @@ The Markdown docs in `docs/` are built with VitePress and served by the frontend
 
 The frontend nginx config has a dedicated `/docs/` route with clean URL handling for VitePress pages such as `/docs/data` and `/docs/backend/database`. The former GitHub Pages workflow is retained as docs CI only; it validates both the standalone docs build and the frontend docs artifact build, but no longer deploys to `https://cdpworldwide.github.io/cdp-adapt-ex/`.
 
+Docs builds can also compile in PostHog analytics from the same GitHub Actions variables used by the Angular frontend. Docs page views are tagged with `surface: "docs"`.
+
 ### 🛠 One-Time Infrastructure Setup
 
 Before the first deployment, the following GCP infrastructure must be configured.
@@ -106,7 +108,9 @@ Optional frontend analytics and error reporting are configured through GitHub Ac
 |---------------|-------------|
 | `FRONTEND_POSTHOG_KEY` | PostHog project key compiled into the frontend when analytics should be enabled. |
 | `FRONTEND_POSTHOG_HOST` | PostHog ingestion host. Defaults to `https://eu.i.posthog.com` when unset. |
+| `FRONTEND_POSTHOG_UI_HOST` | PostHog app host used for toolbar and dashboard links when ingestion is proxied. Defaults to `https://eu.posthog.com`. |
 | `FRONTEND_POSTHOG_ENABLED` | Set to `true` to enable PostHog during frontend builds. Defaults to `false` when unset. |
+| `FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED` | Set to `false` to disable session replay in the docs build. Defaults to enabled when PostHog is enabled. |
 | `FRONTEND_SENTRY_DSN` | Sentry frontend DSN compiled into the frontend when browser exception reporting should be enabled. |
 | `FRONTEND_SENTRY_ENABLED` | Set to `true` to enable Sentry during frontend builds. Defaults to `false` when unset. |
 | `FRONTEND_SENTRY_TRACES_SAMPLE_RATE` | Sentry performance tracing sample rate. Defaults to `0.05` when unset. |

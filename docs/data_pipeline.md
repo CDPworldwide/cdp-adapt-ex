@@ -51,7 +51,7 @@ The scripts referenced here live in two directories:
                                       │     • geometry-fixes      replace default Overture polygon matches
                                       │     • missing-data        missing discloser geometries
                                       ▼
-                          [Stage 1] CDP CSTAR run-to-rule-them-all-ETL.ipynb
+                          [Stage 1] Cities, States and Regions ETL notebook
                                       │
                                       ▼
    ┌────────────────────────────────────────────────────────────────────────────┐
@@ -69,7 +69,7 @@ The scripts referenced here live in two directories:
                                       │     • nondiscloser-       supplies geometries for
                                       │       geometries          nondiscloser orgs
                                       ▼
-                          [Stage 2] CDP CSTAR post-notebook-finalize.ipynb
+                          [Stage 2] Cities, States and Regions finalize notebook
                                       │
                                       ▼
    ┌────────────────────────────────────────────────────────────────────────────┐
@@ -167,7 +167,7 @@ Four sequential stages (1 → 2 → 3) plus the **Stage 1a** side input — `Mis
 
 ### 1. Notebook → `*_final` BQ tables
 
-[`scripts/CDP CSTAR run-to-rule-them-all-ETL.ipynb`](../scripts/CDP%20CSTAR%20run-to-rule-them-all-ETL.ipynb) - Translates / summarises / geocodes raw `CSTAR_2025_v2` BigQuery data → writes `CSTAR_2025_processed_v2.*_final`. Covers Public disclosers with structured `ranked_hazards` only.
+[`Stage 1 ETL notebook`](../scripts/CDP%20CSTAR%20run-to-rule-them-all-ETL.ipynb) - Translates / summarises / geocodes raw `CSTAR_2025_v2` BigQuery data → writes `CSTAR_2025_processed_v2.*_final`. Covers Public disclosers with structured `ranked_hazards` only.
 
 > **You can avoid re-running the translation cells for some fixes.** The `ML.TRANSLATE` cells (action / hazard / funding / goal translations, and the `other_segments_map` build) are the slowest and most expensive part of the run — typically 25–60 min combined, dominated by Google Translation API throughput and subject to backend variability. If you're iterating on downstream logic (peer ranking, `fact_action` grouping, `dim` build, etc.) and haven't changed the source text columns or the `static_other_segments_map.sql` curation file, you can skip the translation cells entirely and reuse the existing `*_translated` tables already in `CSTAR_2025_processed_v2`. Resume from the first cell after the translation block.
 
@@ -181,7 +181,7 @@ For one-off corrections that need to land in Cloud SQL **without** waiting for a
 
 ### 2. Post-notebook finalize → `*_TEST` BQ tables
 
-[`scripts/CDP CSTAR post-notebook-finalize.ipynb`](../scripts/CDP%20CSTAR%20post-notebook-finalize.ipynb)
+[`Stage 2 finalize notebook`](../scripts/CDP%20CSTAR%20post-notebook-finalize.ipynb)
 
 Finishes what the main notebook leaves unfinished. The main notebook only covers Public disclosers with structured `ranked_hazards`; this notebook adds:
 
@@ -196,7 +196,7 @@ Run cell-by-cell between the main-notebook rebuild and the migration. Transition
 
 ### 3. Migration → Cloud SQL
 
-[`migrate_cstar_2025_via_gcs.sh`](../backend/scripts/migrate_cstar_2025_via_gcs.sh): BQ `*_TEST` → GCS staging → Cloud SQL (`cdp-test` for dev, `cdp-prod` for prod). Validation runs against staging tables before swapping into the canonical CSTAR tables in one transaction. Source-table mapping:
+[`migrate_cstar_2025_via_gcs.sh`](../backend/scripts/migrate_cstar_2025_via_gcs.sh): BQ `*_TEST` → GCS staging → Cloud SQL (`cdp-test` for dev, `cdp-prod` for prod). Validation runs against staging tables before swapping into the canonical Cities, States and Regions tables in one transaction. Source-table mapping:
 
 | Canonical Cloud SQL table        | Default BQ source                |
 |----------------------------------|----------------------------------|
@@ -364,7 +364,7 @@ BACKEND_API_KEY="$API_KEY" \
 ## Notebook logic updates
 
 Substantive logic decisions baked into the notebook in
-[`scripts/CDP CSTAR run-to-rule-them-all-ETL.ipynb`](../scripts/CDP%20CSTAR%20run-to-rule-them-all-ETL.ipynb) that differ from the hand-off version.
+[`Stage 1 ETL notebook`](../scripts/CDP%20CSTAR%20run-to-rule-them-all-ETL.ipynb) that differ from the hand-off version.
 
 ### Peer-solutions ranking (now called "action ideas" on the frontend)
 
@@ -471,7 +471,7 @@ off from the reporter's `jdx_areasize`, fixes live in the separate
 **`cdp-geospatial-ops`** repo (source of truth). Per-account NDJSONs
 are published into BigQuery as `Missing_Data.geometry-fixes` /
 `Missing_Data.nondiscloser-geometries` and `COALESCE`-d in during
-[`scripts/CDP CSTAR post-notebook-finalize.ipynb`](../scripts/CDP%20CSTAR%20post-notebook-finalize.ipynb).
+[`Stage 2 finalize notebook`](../scripts/CDP%20CSTAR%20post-notebook-finalize.ipynb).
 
 For one-off corrections that don't change ecoregion assignment (so
 don't need a full re-run), apply directly to Cloud SQL via
@@ -515,7 +515,7 @@ PGPASSWORD="$DB_PASSWORD" psql \
 
 The notebook covers **Public disclosers with structured `ranked_hazards`**
 only. Groups left for the finalize stage
-([`scripts/CDP CSTAR post-notebook-finalize.ipynb`](../scripts/CDP%20CSTAR%20post-notebook-finalize.ipynb)):
+([`Stage 2 finalize notebook`](../scripts/CDP%20CSTAR%20post-notebook-finalize.ipynb)):
 
 - **Non-Public disclosers** — surfaces their own `ranked_hazards`; keeps them out of the *peer* pool so non-public actions don't leak as solutions.
 - **Non-disclosers (`GEE-Derived`)** — synthesizes hazards from GEE rasters keyed on org geometry.

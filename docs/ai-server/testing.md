@@ -1,6 +1,6 @@
-# Testing Ask CDP AI
+# Testing Ask the AI Explorer
 
-This repo includes a repeatable workflow for testing reviewed Ask CDP AI questions against the local AI server. Use it when improving answer quality, grounding, prompt behavior, or response reliability.
+This repo includes a repeatable workflow for testing reviewed Ask the AI Explorer questions against the local AI server. Use it when improving answer quality, grounding, prompt behavior, or response reliability.
 
 Run these commands from the `ai-server` directory unless noted otherwise.
 

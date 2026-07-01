@@ -1,5 +1,13 @@
 import { defineConfig } from "vitepress";
 
+const posthogEnabled = process.env.FRONTEND_POSTHOG_ENABLED === "true";
+const posthogHost =
+  process.env.FRONTEND_POSTHOG_HOST || "https://eu.i.posthog.com";
+const posthogUiHost =
+  process.env.FRONTEND_POSTHOG_UI_HOST || "https://eu.posthog.com";
+const posthogSessionReplayEnabled =
+  process.env.FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED !== "false";
+
 export default defineConfig({
   title: "CDP Adaptation & Action Explorer",
   description:
@@ -27,6 +35,17 @@ export default defineConfig({
   ignoreDeadLinks: [
     (url) => url.startsWith("../") || url.startsWith("./../"),
   ],
+  vite: {
+    define: {
+      __DOCS_POSTHOG__: JSON.stringify({
+        enabled: posthogEnabled,
+        key: process.env.FRONTEND_POSTHOG_KEY || "",
+        host: posthogHost,
+        uiHost: posthogUiHost,
+        sessionReplayEnabled: posthogSessionReplayEnabled,
+      }),
+    },
+  },
   themeConfig: {
     logo: "/icon.svg",
     nav: [
