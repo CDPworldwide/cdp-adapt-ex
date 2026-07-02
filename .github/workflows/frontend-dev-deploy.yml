@@ -1,17 +1,6 @@
 name: Frontend Development Deploy
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "frontend/**"
-      - "client/**"
-      - "docs/**"
-      - "package.json"
-      - "package-lock.json"
-      - ".nvmrc"
-      - ".github/actions/setup-frontend-build/**"
-      - ".github/workflows/frontend-dev-deploy.yml"
   workflow_dispatch:
 
 concurrency:
