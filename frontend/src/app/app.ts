@@ -46,11 +46,6 @@ export class App implements OnInit {
       return;
     }
 
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
-    document.head.appendChild(script);
-
     const windowWithGtag = window as typeof window & {
       dataLayer?: unknown[];
       gtag?: (...args: unknown[]) => void;
@@ -61,6 +56,11 @@ export class App implements OnInit {
     };
     windowWithGtag.gtag('js', new Date());
     windowWithGtag.gtag('config', measurementId, { debug_mode: environment.isDebugMode });
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+    document.head.appendChild(script);
   }
 
   @HostListener('window:keydown', ['$event'])
