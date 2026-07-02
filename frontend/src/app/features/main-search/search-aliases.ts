@@ -197,5 +197,5 @@ export const COUNTRY_ALIASES: Record<string, string> = {
 export const LOCATION_SEARCH_KEYWORDS: Record<string, string> = {
   'distrito federal brasil': 'federal district',
   'distrito federal brasilia': 'federal district',
-  'mexico city': 'distrito federal federal district',
+  'mexico city': 'distrito federal federal district distrito federal mexico federal district mexico',
 };

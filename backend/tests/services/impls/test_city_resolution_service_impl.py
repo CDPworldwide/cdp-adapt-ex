@@ -31,6 +31,23 @@ class TestCityResolutionService:
         assert result is None
         mock_repository.get_orgs_by_name.assert_called_once_with("Unknown City")
 
+    @pytest.mark.parametrize(
+        "legacy_name",
+        [
+            "CDMX",
+            "Distrito Federal",
+            "Federal District",
+            "Federal District, Mexico",
+        ],
+    )
+    async def test_resolve_org_id_redirects_mexico_city_legacy_names(
+        self, service, mock_repository, legacy_name
+    ):
+        result = await service.resolve_org_id(legacy_name)
+
+        assert result == 31172
+        mock_repository.get_orgs_by_name.assert_not_called()
+
     async def test_resolve_org_id_multiple_found(self, service, mock_repository):
         mock_repository.get_orgs_by_name.return_value = [
             OrganizationSummary(

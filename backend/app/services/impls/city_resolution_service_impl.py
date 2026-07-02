@@ -18,6 +18,15 @@ from app.services.interfaces.city_resolution_service import CityResolutionServic
 from app.shared.exceptions import MultipleCitiesFoundException
 
 
+MEXICO_CITY_ORG_ID = 31172
+MEXICO_CITY_LEGACY_NAMES = {
+    "cdmx",
+    "distrito federal",
+    "federal district",
+    "federal district, mexico",
+}
+
+
 class CityResolutionServiceImpl(CityResolutionService):
     def __init__(self, repository: LocationDetailsRepository):
         self.repository = repository
@@ -34,6 +43,9 @@ class CityResolutionServiceImpl(CityResolutionService):
         Raises:
             MultipleCitiesFoundException: If multiple cities match the name.
         """
+
+        if city_name.strip().lower() in MEXICO_CITY_LEGACY_NAMES:
+            return MEXICO_CITY_ORG_ID
 
         results = await self.repository.get_orgs_by_name(city_name)
 
