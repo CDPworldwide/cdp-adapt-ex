@@ -7,12 +7,18 @@ import { FeedbackModalComponent } from './shared/feedback-modal/feedback-modal';
 import { PosthogService } from './core/analytics/posthog.service';
 import { GlobalSearchOverlayComponent } from './core/global-search/global-search-overlay.component';
 import { GlobalSearchService } from './core/global-search/global-search.service';
+import { WelcomeModalComponent } from './features/welcome-modal/welcome-modal.component';
 
 declare let gtag: Function;
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FeedbackModalComponent, GlobalSearchOverlayComponent],
+  imports: [
+    RouterOutlet,
+    FeedbackModalComponent,
+    GlobalSearchOverlayComponent,
+    WelcomeModalComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

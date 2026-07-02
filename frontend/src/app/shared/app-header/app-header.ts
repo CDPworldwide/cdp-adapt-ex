@@ -7,6 +7,7 @@ import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
 import { GlobalSearchService } from '../../core/global-search/global-search.service';
+import { WelcomeModalService } from '../../features/welcome-modal/welcome-modal.service';
 import { CdpLogoWithTextIconComponent } from '../icons';
 import { FeedbackService } from '../services/feedback.service';
 import { LanguageService } from '../services/language.service';
@@ -31,6 +32,7 @@ export class AppHeaderComponent implements OnInit {
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly globalSearchService = inject(GlobalSearchService);
+  private readonly welcomeModalService = inject(WelcomeModalService);
   private readonly router = inject(Router);
 
   ngOnInit(): void {
@@ -46,6 +48,10 @@ export class AppHeaderComponent implements OnInit {
 
   openGlobalSearch(): void {
     this.globalSearchService.open();
+  }
+
+  openWelcomeModal(): void {
+    this.welcomeModalService.open();
   }
 
   private updateIsOrgPage(url?: string | null): void {

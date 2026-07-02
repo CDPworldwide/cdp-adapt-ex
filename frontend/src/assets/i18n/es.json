@@ -112,6 +112,7 @@
     "helpMenu": {
       "label": "Ayuda",
       "about": "Acerca de esta herramienta",
+      "customizeExperience": "Personalizar experiencia",
       "feedback": "Enviar comentarios",
       "externalIndicator": "(se abre en una nueva pestaña)"
     }

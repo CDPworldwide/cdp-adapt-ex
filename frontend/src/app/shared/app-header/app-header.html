@@ -62,6 +62,15 @@
   <a mat-menu-item routerLink="/methodology">
     {{ 'shared.methodology' | translate }}
   </a>
+  <button mat-menu-item type="button" (click)="openWelcomeModal()">
+    <span class="inline-flex items-center gap-2">
+      {{ 'shared.helpMenu.customizeExperience' | translate }}
+      <mat-icon
+        class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center text-cdp-text-secondary"
+        >person</mat-icon
+      >
+    </span>
+  </button>
   <button mat-menu-item type="button" (click)="feedbackService.open()">
     <span class="inline-flex items-center gap-2">
       {{ 'shared.helpMenu.feedback' | translate }}
