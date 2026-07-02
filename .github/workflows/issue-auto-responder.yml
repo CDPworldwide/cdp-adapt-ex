@@ -25,8 +25,13 @@ jobs:
           script: |
             const issue_number =
               context.eventName === 'workflow_dispatch'
-                ? Number(core.getInput('issue_number'))
+                ? Number(context.payload.inputs.issue_number)
                 : context.payload.issue.number;
+
+            if (!Number.isInteger(issue_number) || issue_number < 1) {
+              core.setFailed(`Invalid issue number: ${issue_number}`);
+              return;
+            }
 
             const body = `Thank you for your interest in the CDP Adaptation and Action Explorer. The cities, states, and regions dataset on which the tool is built is available via the Open Data Portal [here](https://data.cdp.net/). For further information or additional details, we invite you to get in touch with our Cities, States and Regions team at cstar@cdp.net. Many thanks.`;
 
