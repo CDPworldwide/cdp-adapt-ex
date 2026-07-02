@@ -467,7 +467,6 @@
       "sourceText": "CDPによる{{year}}年の同業都市からの開示情報の集計および分析",
       "ecoregionLabel": "類似した気候条件",
       "ecoregionText": "{{location}}は、共通するハザードと類似した気候条件に基づき、{{ecoregion}}の同等の管轄区域と照合されます。",
-      "ecoregionTooltip": "アクションアイデアは、報告済みまたはCDP由来のハザードを共有する同等の管轄区域から選定されます。利用可能な場合、エコリージョンにより類似した気候条件の文脈が追加されます。",
       "ecoregionFallbackText": "アクションアイデアは、同等の管轄区域と共有するハザードに基づいて照合されます。この地域では気候リージョンの文脈を利用できません。",
       "peerExampleCountText": "表示されている同等の管轄区域の例：{{count}}。",
       "climateHazards": "気候ハザード",

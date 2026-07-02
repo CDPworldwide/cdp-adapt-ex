@@ -466,7 +466,6 @@
       "sourceText": "Agregación y análisis de CDP de las divulgaciones de {{year}} de ciudades similares",
       "ecoregionLabel": "Condiciones climáticas similares",
       "ecoregionText": "{{location}} se empareja con jurisdicciones pares en {{ecoregion}} usando peligros compartidos y condiciones climáticas similares.",
-      "ecoregionTooltip": "Las ideas de acción se seleccionan de jurisdicciones pares que comparten peligros reportados o derivados por CDP. Cuando está disponible, la ecorregión añade contexto climático similar.",
       "ecoregionFallbackText": "Las ideas de acción se emparejan usando peligros compartidos de jurisdicciones pares; el contexto de región climática no está disponible para esta ubicación.",
       "peerExampleCountText": "Jurisdicciones pares de ejemplo mostradas: {{count}}.",
       "climateHazards": "Riesgos climáticos",
