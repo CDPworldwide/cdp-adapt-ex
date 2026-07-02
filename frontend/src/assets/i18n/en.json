@@ -104,6 +104,7 @@
     "helpMenu": {
       "label": "Help",
       "about": "About this tool",
+      "customizeExperience": "Customize experience",
       "feedback": "Give feedback",
       "externalIndicator": "(opens in a new tab)"
     }

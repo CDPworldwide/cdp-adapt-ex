@@ -112,6 +112,7 @@
     "helpMenu": {
       "label": "ヘルプ",
       "about": "このツールについて",
+      "customizeExperience": "エクスペリエンスをカスタマイズ",
       "feedback": "フィードバックを送る",
       "externalIndicator": "（新しいタブで開きます）"
     }
