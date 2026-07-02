@@ -1,0 +1,26 @@
+.VPNavBarTitle .title {
+  min-width: 0;
+  gap: 10px;
+}
+
+.VPNavBarTitle .title .logo {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.VPNavBarTitle .title span {
+  display: block;
+  min-width: 0;
+  max-width: clamp(180px, 32vw, 390px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .VPNavBarTitle .title span {
+    max-width: calc(100vw - 180px);
+  }
+}

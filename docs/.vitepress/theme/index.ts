@@ -1,6 +1,7 @@
 import DefaultTheme from "vitepress/theme";
 import { inBrowser, type Theme } from "vitepress";
 import posthog from "posthog-js";
+import "./custom.css";
 
 type DocsPosthogConfig = {
   enabled: boolean;
@@ -15,8 +16,10 @@ declare const __DOCS_POSTHOG__: DocsPosthogConfig;
 function isPosthogHostAllowed(hostname: string): boolean {
   return (
     hostname === "cdp-action-explorer.net" ||
+    hostname === "cdpworldwide.github.io" ||
     hostname === "localhost" ||
-    hostname === "127.0.0.1"
+    hostname === "127.0.0.1" ||
+    hostname.endsWith(".a.run.app")
   );
 }
 
@@ -50,6 +53,8 @@ const theme: Theme = {
       autocapture: {
         url_allowlist: [
           /^https:\/\/cdp-action-explorer\.net(?:\/.*)?$/,
+          /^https:\/\/cdpworldwide\.github\.io\/cdp-adapt-ex(?:\/.*)?$/,
+          /^https:\/\/[-a-z0-9]+\.a\.run\.app(?:\/.*)?$/,
           /^https?:\/\/localhost:\d+(?:\/.*)?$/,
           /^https?:\/\/127\.0\.0\.1:\d+(?:\/.*)?$/,
         ],
