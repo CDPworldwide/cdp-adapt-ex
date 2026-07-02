@@ -9,6 +9,7 @@ import { of, throwError, Observable, Subject, skip, take } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Maps } from '../maps/maps';
 import { ReactiveFormsModule } from '@angular/forms';
+import { PosthogService } from '../../core/analytics/posthog.service';
 
 class FakeLoader implements TranslateLoader {
   getTranslation(): Observable<any> {
@@ -31,7 +32,7 @@ class FakeLoader implements TranslateLoader {
   template: '',
 })
 class StubMapsComponent {
-  @Input() pinFilter: 'all' | 'city' | 'region' = 'all';
+  @Input() categoryFilter: 'all' | 'cities' | 'states-regions' = 'all';
 }
 
 describe('MainSearchComponent', () => {
@@ -40,6 +41,7 @@ describe('MainSearchComponent', () => {
   let mockSearchService: jasmine.SpyObj<SearchService>;
   let mockLocationService: jasmine.SpyObj<LocationService>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let mockPosthogService: jasmine.SpyObj<PosthogService>;
   let translate: TranslateService;
   const MOCK_LOCATION_DATA = {
     name: 'London',
@@ -93,6 +95,7 @@ describe('MainSearchComponent', () => {
     mockRouter.createUrlTree.and.returnValue({} as any);
     mockRouter.serializeUrl.and.returnValue('');
     mockRouter.isActive.and.returnValue(false);
+    mockPosthogService = jasmine.createSpyObj('PosthogService', ['capture']);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -108,6 +111,7 @@ describe('MainSearchComponent', () => {
         { provide: LocationService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: {} },
+        { provide: PosthogService, useValue: mockPosthogService },
       ],
     })
       .overrideComponent(MainSearchComponent, {
@@ -419,6 +423,20 @@ describe('MainSearchComponent', () => {
       component.onEscapeKey();
 
       expect(component.isOverlayOpen).toBeFalse();
+    });
+
+    it('toggles the map category filter from the legend', () => {
+      component.setMapCategoryFilter('cities');
+
+      expect(component.selectedMapCategoryFilter).toBe('cities');
+
+      component.setMapCategoryFilter('cities');
+
+      expect(component.selectedMapCategoryFilter).toBe('all');
+      expect(mockPosthogService.capture).toHaveBeenCalledWith('map_category_filter_selected', {
+        category: 'all',
+        source: 'homepage_legend',
+      });
     });
 
     it('splitMatch highlights the matched query within a name', () => {
