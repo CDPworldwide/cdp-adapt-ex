@@ -11,12 +11,12 @@ export const routes: Routes = [
     },
   },
   {
-    path: 'org/:organizationId',
-    redirectTo: 'org/:organizationId/hazards',
+    path: 'org/:organizationSlug',
+    redirectTo: 'org/:organizationSlug/hazards',
     pathMatch: 'full',
   },
   {
-    path: 'org/:organizationId/chat',
+    path: 'org/:organizationSlug/chat',
     loadComponent: () =>
       import('./features/city-detail/city-detail').then((m) => m.CityDetailPageComponent),
     data: {
@@ -24,7 +24,7 @@ export const routes: Routes = [
     },
   },
   {
-    path: 'org/:organizationId/:tab',
+    path: 'org/:organizationSlug/:tab',
     loadComponent: () =>
       import('./features/city-detail/city-detail').then((m) => m.CityDetailPageComponent),
   },

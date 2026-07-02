@@ -7,6 +7,7 @@ from app.schemas.location import (
     LocationProfile,
     LocationPinsResponse,
     LocationResponse,
+    LocationSeoResponse,
 )
 from app.services.impls.location_details_service import LocationDetailsService
 from app.services.impls.location_profile_translation_service import (
@@ -40,6 +41,15 @@ async def get_all_location_names(
     """
     locations = await location_service.get_all_location_summaries()
     return LocationNamesResponse(locations=locations)
+
+
+@router.get("/seo", response_model=LocationSeoResponse)
+async def get_location_seo_summaries(
+    location_service: LocationDetailsService = Depends(get_location_details_service),
+) -> LocationSeoResponse:
+    """Get lightweight organization metadata for static SEO artifact generation."""
+    locations = await location_service.get_location_seo_summaries()
+    return LocationSeoResponse(locations=locations)
 
 
 @router.get(
@@ -194,4 +204,6 @@ async def translate_location_response(
             status_code=400,
             detail=f"Unsupported target language: {target_language}",
         )
-    return await profile_translation_service.translate_profile(location, target_language)
+    return await profile_translation_service.translate_profile(
+        location, target_language
+    )

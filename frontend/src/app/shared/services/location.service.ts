@@ -11,6 +11,10 @@ import { LocationSuggestion } from './location-suggestion';
 import { createApiClient } from './api-client';
 import { LanguageService } from './language.service';
 import { normalizeTranslationLanguage } from './translation-language.util';
+import {
+  buildOrganizationSlugSegment,
+  extractOrganizationIdFromRouteSegment,
+} from '../utils/org-slug.util';
 
 type LocationNameSummary = LocationNamesResponse['locations'][number] & {
   disclosure_status?: string | null;
@@ -43,10 +47,15 @@ export class LocationService {
   }
 
   getLocationByOrganizationId(organizationId: string): Observable<LocationProfile> {
+    const normalizedOrganizationId = extractOrganizationIdFromRouteSegment(organizationId);
+    if (!normalizedOrganizationId) {
+      throw new Error(`Invalid organization ID: ${organizationId}`);
+    }
+
     return from(
       getLocationByOrgIdApiV1LocationsIdOrganizationIdGet({
         client: this.client,
-        path: { organization_id: Number(organizationId) },
+        path: { organization_id: Number(normalizedOrganizationId) },
         query: this.locationTranslationQuery(),
       } as unknown as Parameters<typeof getLocationByOrgIdApiV1LocationsIdOrganizationIdGet>[0]),
     ).pipe(
@@ -81,6 +90,7 @@ export class LocationService {
           return [
             {
               organizationId: location.id,
+              slug: buildOrganizationSlugSegment(location.id, location.name, location.country),
               name: location.name,
               country: location.country?.trim() || undefined,
               // `disclosure_status` is "Submitted" if the jurisdiction returned
