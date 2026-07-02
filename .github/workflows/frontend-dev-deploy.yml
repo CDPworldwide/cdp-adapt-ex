@@ -1,13 +1,6 @@
 name: Frontend Development Deploy
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "frontend/**"
-      - "client/**"
-      - ".github/actions/setup-frontend-build/**"
-      - ".github/workflows/frontend-dev-deploy.yml"
   workflow_dispatch:
 
 concurrency:
@@ -39,6 +32,9 @@ jobs:
         uses: ./.github/actions/setup-frontend-build
         with:
           node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install docs dependencies
+        run: npm ci
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -84,8 +80,11 @@ jobs:
           FRONTEND_AUTH_DISABLED='false' \
           FRONTEND_DEBUG_MODE='true' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
+          FRONTEND_GOOGLE_ANALYTICS_MEASUREMENT_ID='G-HF1JYR06EC' \
+          FRONTEND_GOOGLE_ANALYTICS_ENABLED='true' \
           FRONTEND_POSTHOG_KEY='${{ vars.FRONTEND_POSTHOG_KEY }}' \
           FRONTEND_POSTHOG_HOST='${{ vars.FRONTEND_POSTHOG_HOST }}' \
+          FRONTEND_POSTHOG_UI_HOST='${{ vars.FRONTEND_POSTHOG_UI_HOST }}' \
           FRONTEND_POSTHOG_ENABLED='${{ vars.FRONTEND_POSTHOG_ENABLED }}' \
           FRONTEND_SENTRY_DSN='${{ vars.FRONTEND_SENTRY_DSN }}' \
           FRONTEND_SENTRY_ENABLED='${{ vars.FRONTEND_SENTRY_ENABLED }}' \
@@ -130,6 +129,17 @@ jobs:
         working-directory: frontend
         run: npm run build
 
+      - name: Build docs into frontend artifact
+        env:
+          FRONTEND_GOOGLE_ANALYTICS_MEASUREMENT_ID: G-HF1JYR06EC
+          FRONTEND_GOOGLE_ANALYTICS_ENABLED: "true"
+          FRONTEND_POSTHOG_KEY: ${{ vars.FRONTEND_POSTHOG_KEY }}
+          FRONTEND_POSTHOG_HOST: ${{ vars.FRONTEND_POSTHOG_HOST }}
+          FRONTEND_POSTHOG_UI_HOST: ${{ vars.FRONTEND_POSTHOG_UI_HOST }}
+          FRONTEND_POSTHOG_ENABLED: ${{ vars.FRONTEND_POSTHOG_ENABLED }}
+          FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED: ${{ vars.FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED }}
+        run: npm run docs:build:frontend
+
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
 
@@ -169,11 +179,13 @@ jobs:
           echo "Checking health of $URL..."
           for i in {1..10}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
-            if [ "$STATUS" = "200" ]; then
+            DOCS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL/docs/" || echo "000")
+            if [ "$STATUS" = "200" ] && [ "$DOCS_STATUS" = "200" ]; then
               echo "Development deployment is healthy (HTTP $STATUS)"
+              echo "Development docs are healthy (HTTP $DOCS_STATUS)"
               exit 0
             fi
-            echo "Attempt $i/10: HTTP $STATUS, waiting 5s..."
+            echo "Attempt $i/10: frontend HTTP $STATUS, docs HTTP $DOCS_STATUS, waiting 5s..."
             sleep 5
           done
           echo "Development deployment health check failed"

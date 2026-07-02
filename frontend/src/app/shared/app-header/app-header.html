@@ -1,6 +1,8 @@
 <div class="flex items-center justify-between px-4 py-3 md:px-8">
   <a
-    routerLink="/"
+    href="https://www.cdp.net/en/cdp-adaptation-and-action-explorer"
+    target="_blank"
+    rel="noopener noreferrer"
     class="flex items-center gap-4 no-underline text-cdp-dark hover:opacity-80 transition-opacity"
     [attr.aria-label]="'shared.home' | translate"
   >
@@ -10,6 +12,18 @@
   </a>
 
   <div class="flex items-center gap-2">
+    @if (isOrgPage()) {
+      <button
+        type="button"
+        class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
+        (click)="openGlobalSearch()"
+        [attr.aria-label]="'homepage.hero.searchOrSelect' | translate"
+      >
+        <mat-icon class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center"
+          >search</mat-icon
+        >
+      </button>
+    }
     <button
       type="button"
       class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
@@ -50,6 +64,15 @@
   <a mat-menu-item routerLink="/methodology">
     {{ 'shared.methodology' | translate }}
   </a>
+  <button mat-menu-item type="button" (click)="openWelcomeModal()">
+    <span class="inline-flex items-center gap-2">
+      {{ 'shared.helpMenu.customizeExperience' | translate }}
+      <mat-icon
+        class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center text-cdp-text-secondary"
+        >person</mat-icon
+      >
+    </span>
+  </button>
   <button mat-menu-item type="button" (click)="feedbackService.open()">
     <span class="inline-flex items-center gap-2">
       {{ 'shared.helpMenu.feedback' | translate }}

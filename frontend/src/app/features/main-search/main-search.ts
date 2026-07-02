@@ -31,7 +31,6 @@ import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
 import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
 import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
-import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
 import { Footer } from '../../core/footer/footer';
 import { PosthogService } from '../../core/analytics/posthog.service';
 
@@ -58,7 +57,6 @@ function stripDiacritics(value: string): string {
     WarningIconComponent,
     AppHeaderComponent,
     DisclosureTrendsComponent,
-    WelcomeModalComponent,
     Footer,
   ],
 })

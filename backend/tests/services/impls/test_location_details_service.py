@@ -9,6 +9,7 @@ from app.models.location_details import (
     FactActions,
     FactAdaptationGoals,
     FactHazards,
+    OrganizationSummary,
     PeerSolutions,
     SolutionsExamples,
 )
@@ -712,6 +713,39 @@ class TestGetLocationDetailsByOrgId:
 
         assert exc_info.value.city_name == "999999"
         mock_repository.get_metadata.assert_not_awaited()
+
+
+class TestGetAllLocationSummaries:
+    """Tests for the get_all_location_summaries method."""
+
+    @pytest.fixture(autouse=True)
+    def _reset_summaries_cache(self):
+        LocationDetailsService._summaries_cache = None
+        yield
+        LocationDetailsService._summaries_cache = None
+
+    async def test_get_all_location_summaries_filters_stale_mexico_duplicate(
+        self,
+        location_details_service: LocationDetailsService,
+        mock_repository: AsyncMock,
+    ):
+        mock_repository.get_all_location_summaries.return_value = [
+            OrganizationSummary(id=31172, name="Mexico City", country="Mexico"),
+            OrganizationSummary(id=906800, name="Federal District", country="Mexico"),
+            OrganizationSummary(
+                id=50353,
+                name="Distrito Federal, Brasil",
+                country="Brazil",
+            ),
+        ]
+
+        result = await location_details_service.get_all_location_summaries()
+
+        assert [summary.id for summary in result] == [31172, 50353]
+        assert [summary.name for summary in result] == [
+            "Mexico City",
+            "Distrito Federal, Brasil",
+        ]
 
 
 class TestGetAllLocationPins:

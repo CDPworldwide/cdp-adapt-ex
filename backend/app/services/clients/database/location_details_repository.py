@@ -20,6 +20,8 @@ from app.models.location_details import (
     SolutionsExamples,
 )
 
+STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID = 906800
+
 
 # TODO (#442): Integrate disclosure year filter into data retrieval process
 # TODO (#269): Use sql alchemy mixins to simplify the code.
@@ -216,6 +218,8 @@ class LocationDetailsRepository:
                 )
                 .where(
                     DimCentral.has_geometry,
+                    DimCentral.cdp_disclosing_org_number
+                    != STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID,
                 )
                 .distinct()
             )
@@ -252,6 +256,8 @@ class LocationDetailsRepository:
                 )
                 .where(
                     DimCentral.has_geometry,
+                    DimCentral.cdp_disclosing_org_number
+                    != STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID,
                     # Disclosers (Public + Non-Public) only — non-disclosers
                     # (empty public_status as of May 7) appear in search but not on the map.
                     DimCentral.public_status.in_(["Public", "Non-Public"]),

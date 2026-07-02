@@ -1,0 +1,12 @@
+{
+  "/docs": {
+    "target": "http://localhost:5174",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/docs$": "/docs/"
+    }
+  }
+}

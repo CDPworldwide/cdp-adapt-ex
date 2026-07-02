@@ -53,6 +53,14 @@ We maintain separate environments for development, staging (previews), and produ
 | Backend PR previews | `development` / preview | `cdp-server-preview-pr-X` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
 | Manual backend workflow on `main` | `development` | `cdp-server-dev` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
 
+### Documentation Site
+
+The Markdown docs in `docs/` are built with VitePress and served by the frontend Cloud Run image at `https://cdp-action-explorer.net/docs/`. VitePress uses `base: "/docs/"`, and frontend deploy workflows run `npm run docs:build:frontend` after the Angular build so the generated site lands in `frontend/dist/frontend/browser/docs`.
+
+The frontend nginx config has a dedicated `/docs/` route with clean URL handling for VitePress pages such as `/docs/data` and `/docs/backend/database`. The former GitHub Pages workflow is retained as docs CI only; it validates both the standalone docs build and the frontend docs artifact build, but no longer deploys to `https://cdpworldwide.github.io/cdp-adapt-ex/`.
+
+Docs builds can also compile in PostHog analytics from the same GitHub Actions variables used by the Angular frontend. Docs page views are tagged with `surface: "docs"`.
+
 ### 🛠 One-Time Infrastructure Setup
 
 Before the first deployment, the following GCP infrastructure must be configured.
@@ -98,9 +106,13 @@ Optional frontend analytics and error reporting are configured through GitHub Ac
 
 | Variable Name | Description |
 |---------------|-------------|
+| `FRONTEND_GOOGLE_ANALYTICS_MEASUREMENT_ID` | GA4 web stream measurement ID, for example `G-XXXXXXXXXX`, compiled into the frontend when Google Analytics should be enabled. |
+| `FRONTEND_GOOGLE_ANALYTICS_ENABLED` | Set to `true` to enable Google Analytics during frontend builds. Defaults to `false` when unset. |
 | `FRONTEND_POSTHOG_KEY` | PostHog project key compiled into the frontend when analytics should be enabled. |
-| `FRONTEND_POSTHOG_HOST` | PostHog ingestion host. Defaults to `https://eu.i.posthog.com` when unset. |
+| `FRONTEND_POSTHOG_HOST` | PostHog ingestion host. Defaults to the first-party `/_cdp` reverse proxy path when unset. |
+| `FRONTEND_POSTHOG_UI_HOST` | PostHog app host used for toolbar and dashboard links when ingestion is proxied. Defaults to `https://eu.posthog.com`. |
 | `FRONTEND_POSTHOG_ENABLED` | Set to `true` to enable PostHog during frontend builds. Defaults to `false` when unset. |
+| `FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED` | Set to `false` to disable session replay in the docs build. Defaults to enabled when PostHog is enabled. |
 | `FRONTEND_SENTRY_DSN` | Sentry frontend DSN compiled into the frontend when browser exception reporting should be enabled. |
 | `FRONTEND_SENTRY_ENABLED` | Set to `true` to enable Sentry during frontend builds. Defaults to `false` when unset. |
 | `FRONTEND_SENTRY_TRACES_SAMPLE_RATE` | Sentry performance tracing sample rate. Defaults to `0.05` when unset. |
@@ -192,7 +204,7 @@ sequenceDiagram
 
 ### 1. Production (`deploy.yml`)
 Triggered on **push** to the `production` branch or by manual dispatch.
-- **Orchestration**: Deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, Google Maps key, and optional PostHog analytics and Sentry error reporting settings injected at compile time.
+- **Orchestration**: Deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, Google Maps key, and optional PostHog analytics and Sentry error reporting settings injected at compile time. The deploy also builds the VitePress docs into the frontend artifact under `/docs/`.
 - **Verification**: Automatically rolls back if the backend health check fails.
 
 ### 2. PR Previews (`backend-deploy.yml` & `frontend-preview.yml`)

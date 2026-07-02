@@ -1,16 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { Component, HostListener, OnInit, effect, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { environment } from '@env/environment';
 import { FeedbackService } from '../../shared/services/feedback.service';
+import { UserRoleId } from '../../core/analytics/user-role';
+import { UserRoleService } from '../../core/analytics/user-role.service';
+import { WelcomeModalService } from './welcome-modal.service';
 
-const STORAGE_KEY = 'cdp-welcome-dismissed';
-const ROLE_STORAGE_KEY = 'cdp-user-role';
-
-interface RoleOption {
-  id: string;
-  labelKey: string;
-}
+export const WELCOME_MODAL_SKIPPED_STORAGE_KEY = 'cdp-welcome-modal-skipped';
+const WELCOME_MODAL_SKIPPED_COOKIE = `${WELCOME_MODAL_SKIPPED_STORAGE_KEY}=true`;
 
 @Component({
   selector: 'app-welcome-modal',
@@ -19,26 +17,31 @@ interface RoleOption {
 })
 export class WelcomeModalComponent implements OnInit {
   readonly feedbackService = inject(FeedbackService);
-  isOpen = false;
-  selectedRole: string | null = null;
+  readonly userRoleService = inject(UserRoleService);
+  selectedRole: UserRoleId | null = null;
 
-  readonly roles: RoleOption[] = [
-    { id: 'governmentDiscloser', labelKey: 'homepage.welcomeModal.roles.governmentDiscloser' },
-    {
-      id: 'governmentNotDisclosing',
-      labelKey: 'homepage.welcomeModal.roles.governmentNotDisclosing',
-    },
-    { id: 'ngo', labelKey: 'homepage.welcomeModal.roles.ngo' },
-    { id: 'financial', labelKey: 'homepage.welcomeModal.roles.financial' },
-    { id: 'business', labelKey: 'homepage.welcomeModal.roles.business' },
-    { id: 'other', labelKey: 'homepage.welcomeModal.roles.other' },
-  ];
+  private readonly router = inject(Router);
+  private readonly welcomeModalService = inject(WelcomeModalService);
 
-  ngOnInit(): void {
-    this.isOpen = !this.readDismissedFlag();
+  constructor() {
+    effect(() => {
+      if (this.welcomeModalService.isOpen()) {
+        this.selectedRole = this.userRoleService.role();
+      }
+    });
   }
 
-  selectRole(roleId: string): void {
+  get isOpen(): boolean {
+    return this.welcomeModalService.isOpen();
+  }
+
+  ngOnInit(): void {
+    if (this.shouldAutoOpen()) {
+      this.welcomeModalService.open();
+    }
+  }
+
+  selectRole(roleId: UserRoleId): void {
     this.selectedRole = roleId;
   }
 
@@ -46,14 +49,57 @@ export class WelcomeModalComponent implements OnInit {
     if (!this.selectedRole) {
       return;
     }
-    this.persistRole(this.selectedRole);
-    this.reportRole(this.selectedRole);
-    this.dismiss();
+    this.userRoleService.setRole(this.selectedRole, 'welcome_modal');
+    this.close();
   }
 
   dismiss(): void {
-    this.writeDismissedFlag();
-    this.isOpen = false;
+    this.persistSkippedWelcomeModal();
+    this.close();
+  }
+
+  private close(): void {
+    this.welcomeModalService.close();
+  }
+
+  private shouldAutoOpen(): boolean {
+    return (
+      this.router.url.split('?')[0] === '/' &&
+      !this.userRoleService.role() &&
+      !this.hasSkippedWelcomeModal()
+    );
+  }
+
+  private hasSkippedWelcomeModal(): boolean {
+    try {
+      if (localStorage.getItem(WELCOME_MODAL_SKIPPED_STORAGE_KEY) === 'true') {
+        return true;
+      }
+    } catch {
+      // Fall back to cookies when local storage is blocked.
+    }
+
+    try {
+      return document.cookie
+        .split(';')
+        .some((cookie) => cookie.trim() === WELCOME_MODAL_SKIPPED_COOKIE);
+    } catch {
+      return false;
+    }
+  }
+
+  private persistSkippedWelcomeModal(): void {
+    try {
+      localStorage.setItem(WELCOME_MODAL_SKIPPED_STORAGE_KEY, 'true');
+    } catch {
+      // Fall back to cookies when local storage is blocked.
+    }
+
+    try {
+      document.cookie = `${WELCOME_MODAL_SKIPPED_COOKIE}; path=/; max-age=31536000; SameSite=Lax`;
+    } catch {
+      // Storage is non-critical; keep the modal closed for this page load.
+    }
   }
 
   @HostListener('document:keydown.escape')
@@ -61,40 +107,5 @@ export class WelcomeModalComponent implements OnInit {
     if (this.isOpen) {
       this.dismiss();
     }
-  }
-
-  private readDismissedFlag(): boolean {
-    try {
-      return localStorage.getItem(STORAGE_KEY) === 'true';
-    } catch {
-      return false;
-    }
-  }
-
-  private writeDismissedFlag(): void {
-    try {
-      localStorage.setItem(STORAGE_KEY, 'true');
-    } catch {
-      // storage unavailable — modal still dismisses for the session.
-    }
-  }
-
-  private persistRole(roleId: string): void {
-    try {
-      localStorage.setItem(ROLE_STORAGE_KEY, roleId);
-    } catch {
-      // storage unavailable — selection is non-critical metadata.
-    }
-  }
-
-  private reportRole(roleId: string): void {
-    // Fire-and-forget: never block dismissal on the network.
-    void fetch(`${environment.baseUrl}/api/v1/onboarding/role`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role: roleId }),
-    }).catch(() => {
-      // Telemetry only; ignore failures.
-    });
   }
 }
