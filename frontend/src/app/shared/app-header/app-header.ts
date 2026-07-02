@@ -36,7 +36,7 @@ export class AppHeaderComponent implements OnInit {
   private readonly router = inject(Router);
 
   ngOnInit(): void {
-    this.updateIsOrgPage(this.router.url);
+    this.updateIsOrgPage(this.router.url ?? '');
 
     this.router.events
       .pipe(
@@ -54,7 +54,7 @@ export class AppHeaderComponent implements OnInit {
     this.welcomeModalService.open();
   }
 
-  private updateIsOrgPage(url?: string | null): void {
-    this.isOrgPage.set((url ?? '').startsWith('/org/'));
+  private updateIsOrgPage(url: string): void {
+    this.isOrgPage.set(url.startsWith('/org/'));
   }
 }
