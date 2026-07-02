@@ -112,6 +112,7 @@
     "helpMenu": {
       "label": "帮助",
       "about": "关于此工具",
+      "customizeExperience": "自定义体验",
       "feedback": "提供反馈",
       "externalIndicator": "（在新标签页中打开）"
     }
