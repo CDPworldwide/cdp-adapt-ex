@@ -212,6 +212,59 @@ describe('MainSearchComponent', () => {
       expect(suggestions).toEqual([]);
     });
 
+    it('should preserve Federal District aliases for Mexico City and Brazil suggestions', fakeAsync(() => {
+      const federalDistrictSuggestions = [
+        {
+          organizationId: 31172,
+          name: 'Mexico City',
+          country: 'Mexico',
+          disclosesToCDP: true,
+          isReportingLeader: false,
+        },
+        {
+          organizationId: 50353,
+          name: 'Distrito Federal, Brasil',
+          country: 'Brazil',
+          disclosesToCDP: true,
+          isReportingLeader: false,
+        },
+        {
+          organizationId: 50354,
+          name: 'Distrito Federal, Brasília',
+          country: 'Brazil',
+          disclosesToCDP: true,
+          isReportingLeader: false,
+        },
+      ];
+      mockLocationService.getAllLocationNames.and.returnValue(of(federalDistrictSuggestions));
+
+      recreateComponent();
+
+      let suggestions: string[] = [];
+      component.filteredLocations.subscribe((opts) => {
+        suggestions = opts.map((option) => option.name);
+      });
+
+      component.searchControl.setValue('Federal District');
+      tick();
+
+      expect(suggestions).toContain('Mexico City');
+      expect(suggestions).toContain('Distrito Federal, Brasil');
+      expect(suggestions).toContain('Distrito Federal, Brasília');
+
+      component.searchControl.setValue('Federal District, Mexico');
+      tick();
+
+      expect(suggestions).toContain('Mexico City');
+
+      component.searchControl.setValue('Distrito Federal');
+      tick();
+
+      expect(suggestions).toContain('Mexico City');
+      expect(suggestions).toContain('Distrito Federal, Brasil');
+      expect(suggestions).toContain('Distrito Federal, Brasília');
+    }));
+
     it('should limit the number of suggestions to 5', fakeAsync(() => {
       const manySuggestions = [
         { organizationId: 201, name: 'Paris', disclosesToCDP: true, isReportingLeader: false },
