@@ -464,6 +464,8 @@
       "description": "Descrição",
       "sourceLabel": "Fonte:",
       "sourceText": "Agregação e análise do CDP de divulgações de {{year}} de cidades semelhantes",
+      "ecoregionLabel": "Condições climáticas semelhantes",
+      "ecoregionText": "{{location}} é pareada com jurisdições semelhantes em {{ecoregion}}.",
       "climateHazards": "Riscos climáticos",
       "statusOfAction": "Estado da ação",
       "coBenefits": "Benefícios colaterais",

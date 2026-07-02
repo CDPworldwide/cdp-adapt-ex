@@ -435,6 +435,8 @@
       "description": "Description",
       "sourceLabel": "Source:",
       "sourceText": "CDP aggregation and analysis of {{year}} disclosures from peer jurisdictions",
+      "ecoregionLabel": "Similar climate conditions",
+      "ecoregionText": "{{location}} is matched with peers in {{ecoregion}}.",
       "climateHazards": "Climate hazards",
       "statusOfAction": "Status of action",
       "coBenefits": "Co-benefits",

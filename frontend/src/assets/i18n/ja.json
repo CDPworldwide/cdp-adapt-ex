@@ -465,6 +465,8 @@
       "sourceDescription": "出典：CDPによる{{year}}年の同業都市からの開示情報の集計および分析",
       "sourceLabel": "出典：",
       "sourceText": "CDPによる{{year}}年の同業都市からの開示情報の集計および分析",
+      "ecoregionLabel": "類似した気候条件",
+      "ecoregionText": "{{location}}は{{ecoregion}}の同等の管轄区域と照合されます。",
       "climateHazards": "気候ハザード",
       "statusOfAction": "行動状況",
       "coBenefits": "コベネフィット",

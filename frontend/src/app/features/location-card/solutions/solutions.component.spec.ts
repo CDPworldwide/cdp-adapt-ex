@@ -46,6 +46,8 @@ describe('SolutionsComponent', () => {
           hazardFiltersTitle: 'Hazard Filters',
           popularSolutionsTitle: 'Action Ideas from Peer Cities',
           sourceDescription: 'Source',
+          ecoregionLabel: 'Similar climate conditions',
+          ecoregionText: '{{location}} is matched with peers in {{ecoregion}}.',
           noSolutionsBanner: {
             title: 'Not all information was disclosed',
           },
@@ -115,6 +117,13 @@ describe('SolutionsComponent', () => {
     component.selectHazard(HazardEnum.EXTREME_HEAT);
     expect(component.isSelected(HazardEnum.EXTREME_HEAT)).toBeTrue();
     expect(component.isSelected(null)).toBeFalse();
+  });
+
+  it('should show the location ecoregion when available', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.textContent).toContain('Similar climate conditions');
+    expect(compiled.textContent).toContain('Temperate Conifer Forests');
   });
 
   // TODO: restore Solutions "No hazard data" empty-state banner dropped during UI redesign port.

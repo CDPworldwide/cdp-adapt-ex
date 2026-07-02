@@ -366,6 +366,10 @@ class LocationProfile(APIBaseModel):
     reporting_language: str | None = None
     requesters: list[str] = Field(default_factory=list)
     population: float | None = None
+    ecoregion: str | None = Field(
+        None,
+        description="Biome/ecoregion assigned to the jurisdiction for peer action matching.",
+    )
 
     # Tabs
     hazards: HazardsTab
