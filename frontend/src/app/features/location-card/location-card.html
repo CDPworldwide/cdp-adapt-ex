@@ -36,6 +36,16 @@
               <span>, {{ data.countryName }}</span>
             }
           </h2>
+          <button
+            type="button"
+            class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-cdp-neutral-02 text-cdp-dark transition-colors hover:border-cdp-dark hover:bg-cdp-dark hover:text-white active:border-black active:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+            (click)="openGlobalSearch()"
+            [attr.aria-label]="'homepage.hero.searchOrSelect' | translate"
+          >
+            <mat-icon class="!flex !h-4 !w-4 !items-center !justify-center !text-base !leading-4"
+              >search</mat-icon
+            >
+          </button>
         </div>
         <div
           class="px-4 lg:px-6"
@@ -150,44 +160,60 @@
           ></app-hazard-map>
         }
       </div>
-      <div class="flex-1 flex flex-col">
-        @if (data.isReportingLeader) {
-          <app-reporting-leader-chip class="mb-1 self-start"></app-reporting-leader-chip>
-        }
-        <h1
-          class="text-4xl lg:text-6xl text-cdp-dark font-roboto font-normal leading-tight lg:leading-normal tracking-[-1.8px]"
-        >
-          {{ data.name }}
-          <span class="text-3xl lg:text-[40px] block -mt-1 lg:-mt-3">{{ data.countryName }}</span>
-        </h1>
+      <div class="flex-1 flex flex-col min-w-0">
+        <div class="flex items-start gap-4">
+          <div class="min-w-0 flex-1">
+            @if (data.isReportingLeader) {
+              <app-reporting-leader-chip class="mb-1 self-start"></app-reporting-leader-chip>
+            }
+            <h1
+              class="text-4xl lg:text-6xl text-cdp-dark font-roboto font-normal leading-tight lg:leading-normal tracking-[-1.8px]"
+            >
+              {{ data.name }}
+              <span class="text-3xl lg:text-[40px] block -mt-1 lg:-mt-3">{{
+                data.countryName
+              }}</span>
+            </h1>
 
-        @if (data.population) {
-          <div class="flex items-center gap-1 mt-2 lg:mt-auto">
-            <span
-              class="text-black font-roboto text-xs font-normal leading-normal tracking-cdp-eyebrow uppercase"
-            >
-              {{ 'locationCard.header.estimatedPopulation' | translate }} ~{{
-                formatPopulation(data.population)
-              }}
-            </span>
-            <div
-              #popTip="matTooltip"
-              matTooltip="{{
-                (data.publicStatus && data.publicStatus !== 'GEE-Derived'
-                  ? 'locationCard.header.populationTooltip'
-                  : 'locationCard.header.populationTooltipNonDiscloser'
-                ) | translate: { location: data.name }
-              }}"
-              (click)="popTip.show()"
-              class="relative flex items-center justify-center cursor-pointer group ml-1 before:absolute before:content-[''] before:-inset-3"
-            >
-              <app-info-icon
-                size="10"
-                class="text-cdp-neutral-05 group-hover:text-cdp-dark transition-colors"
-              ></app-info-icon>
-            </div>
+            @if (data.population) {
+              <div class="flex items-center gap-1 mt-2 lg:mt-auto">
+                <span
+                  class="text-black font-roboto text-xs font-normal leading-normal tracking-cdp-eyebrow uppercase"
+                >
+                  {{ 'locationCard.header.estimatedPopulation' | translate }} ~{{
+                    formatPopulation(data.population)
+                  }}
+                </span>
+                <div
+                  #popTip="matTooltip"
+                  matTooltip="{{
+                    (data.publicStatus && data.publicStatus !== 'GEE-Derived'
+                      ? 'locationCard.header.populationTooltip'
+                      : 'locationCard.header.populationTooltipNonDiscloser'
+                    ) | translate: { location: data.name }
+                  }}"
+                  (click)="popTip.show()"
+                  class="relative flex items-center justify-center cursor-pointer group ml-1 before:absolute before:content-[''] before:-inset-3"
+                >
+                  <app-info-icon
+                    size="10"
+                    class="text-cdp-neutral-05 group-hover:text-cdp-dark transition-colors"
+                  ></app-info-icon>
+                </div>
+              </div>
+            }
           </div>
-        }
+          <button
+            type="button"
+            class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-cdp-neutral-02 text-cdp-dark transition-colors hover:border-cdp-dark hover:bg-cdp-dark hover:text-white active:border-black active:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+            (click)="openGlobalSearch()"
+            [attr.aria-label]="'homepage.hero.searchOrSelect' | translate"
+          >
+            <mat-icon class="!flex !h-4 !w-4 !items-center !justify-center !text-base !leading-4"
+              >search</mat-icon
+            >
+          </button>
+        </div>
       </div>
     </div>
 

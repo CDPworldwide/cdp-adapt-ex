@@ -1,16 +1,18 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HazardMapService } from './features/hazard-map/hazard-map.service';
 import { LanguageService } from './shared/services/language.service';
 import { environment } from '../environments/environment';
 import { FeedbackModalComponent } from './shared/feedback-modal/feedback-modal';
 import { PosthogService } from './core/analytics/posthog.service';
+import { GlobalSearchOverlayComponent } from './core/global-search/global-search-overlay.component';
+import { GlobalSearchService } from './core/global-search/global-search.service';
 
 declare let gtag: Function;
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FeedbackModalComponent],
+  imports: [RouterOutlet, FeedbackModalComponent, GlobalSearchOverlayComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -18,6 +20,7 @@ export class App implements OnInit {
   private languageService = inject(LanguageService);
   private hazardMapService = inject(HazardMapService);
   private posthogService = inject(PosthogService);
+  private globalSearchService = inject(GlobalSearchService);
   protected readonly title = signal('frontend');
 
   skipToMain(event: Event) {
@@ -34,5 +37,15 @@ export class App implements OnInit {
     if (typeof gtag === 'function') {
       gtag('config', 'G-Z6QWJ09VM8', { debug_mode: environment.isDebugMode });
     }
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  onGlobalSearchKeydown(event: KeyboardEvent): void {
+    if (event.key.toLowerCase() !== 'k' || (!event.metaKey && !event.ctrlKey)) {
+      return;
+    }
+
+    event.preventDefault();
+    this.globalSearchService.open();
   }
 }
