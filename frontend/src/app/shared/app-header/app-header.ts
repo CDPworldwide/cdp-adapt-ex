@@ -48,7 +48,7 @@ export class AppHeaderComponent implements OnInit {
     this.globalSearchService.open();
   }
 
-  private updateIsOrgPage(url: string): void {
-    this.isOrgPage.set(url.startsWith('/org/'));
+  private updateIsOrgPage(url?: string | null): void {
+    this.isOrgPage.set((url ?? '').startsWith('/org/'));
   }
 }
