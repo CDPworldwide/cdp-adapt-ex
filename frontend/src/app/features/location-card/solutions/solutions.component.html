@@ -53,7 +53,12 @@
     </div>
     @if (data?.ecoregion) {
       <div class="flex flex-wrap items-baseline gap-x-1 mt-2 w-full text-left">
-        <span class="text-cdp-dark text-sm font-bold font-roboto leading-5 tracking-cdp-wide">
+        <span
+          class="text-cdp-dark text-sm font-bold font-roboto leading-5 tracking-cdp-wide"
+          [matTooltip]="'locationCard.solutions.ecoregionTooltip' | translate"
+          matTooltipPosition="above"
+          matTooltipTouchGestures="off"
+        >
           {{ 'locationCard.solutions.ecoregionLabel' | translate }}:
         </span>
         <span class="text-cdp-dark text-sm font-normal font-roboto leading-5 tracking-cdp-wide">
@@ -62,6 +67,19 @@
               | translate: { location: data?.name, ecoregion: data?.ecoregion }
           }}
         </span>
+        <app-methodology-info class="self-center"></app-methodology-info>
+      </div>
+      @if (peerExampleCount > 0) {
+        <div class="mt-1 w-full text-left text-cdp-dark text-sm font-normal font-roboto leading-5 tracking-cdp-wide">
+          {{
+            'locationCard.solutions.peerExampleCountText'
+              | translate: { count: peerExampleCount }
+          }}
+        </div>
+      }
+    } @else {
+      <div class="mt-2 w-full text-left text-cdp-dark text-sm font-normal font-roboto leading-5 tracking-cdp-wide">
+        {{ 'locationCard.solutions.ecoregionFallbackText' | translate }}
       </div>
     }
   </section>

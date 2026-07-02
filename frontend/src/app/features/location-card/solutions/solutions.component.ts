@@ -92,6 +92,24 @@ export class SolutionsComponent {
       .filter((cat) => cat.solutions.length > 0);
   }
 
+  get peerExampleCount(): number {
+    const peers = new Set<string>();
+    const solutionsByCategory = this.data?.solutions?.solutions;
+
+    if (!solutionsByCategory) return 0;
+
+    Object.values(solutionsByCategory).forEach((solutions) => {
+      (solutions || []).forEach((solution) => {
+        (solution.peerActions || []).forEach((peerAction) => {
+          const peerKey = [peerAction.peerName, peerAction.country].filter(Boolean).join('|');
+          if (peerKey) peers.add(peerKey);
+        });
+      });
+    });
+
+    return peers.size;
+  }
+
   selectHazard(hazardType: HazardEnum | null): void {
     this.selectedHazard = hazardType;
     this.posthog.capture(
