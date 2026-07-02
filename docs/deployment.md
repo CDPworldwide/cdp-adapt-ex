@@ -106,6 +106,8 @@ Optional frontend analytics and error reporting are configured through GitHub Ac
 
 | Variable Name | Description |
 |---------------|-------------|
+| `FRONTEND_GOOGLE_ANALYTICS_MEASUREMENT_ID` | GA4 web stream measurement ID, for example `G-XXXXXXXXXX`, compiled into the frontend when Google Analytics should be enabled. |
+| `FRONTEND_GOOGLE_ANALYTICS_ENABLED` | Set to `true` to enable Google Analytics during frontend builds. Defaults to `false` when unset. |
 | `FRONTEND_POSTHOG_KEY` | PostHog project key compiled into the frontend when analytics should be enabled. |
 | `FRONTEND_POSTHOG_HOST` | PostHog ingestion host. Defaults to the first-party `/_cdp` reverse proxy path when unset. |
 | `FRONTEND_POSTHOG_UI_HOST` | PostHog app host used for toolbar and dashboard links when ingestion is proxied. Defaults to `https://eu.posthog.com`. |

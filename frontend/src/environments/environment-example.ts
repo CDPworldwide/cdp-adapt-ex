@@ -21,6 +21,10 @@ export const environment = {
   mapsConfig: {
     apiKey: '',
   },
+  googleAnalytics: {
+    measurementId: '',
+    enabled: false,
+  },
   posthog: {
     key: '',
     host: '/_cdp',

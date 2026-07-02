@@ -9,8 +9,6 @@ import { GlobalSearchOverlayComponent } from './core/global-search/global-search
 import { GlobalSearchService } from './core/global-search/global-search.service';
 import { WelcomeModalComponent } from './features/welcome-modal/welcome-modal.component';
 
-declare let gtag: Function;
-
 @Component({
   selector: 'app-root',
   imports: [
@@ -39,10 +37,30 @@ export class App implements OnInit {
     this.languageService.init();
     this.hazardMapService.preloadHazardLayers().subscribe();
     this.posthogService.init();
+    this.initGoogleAnalytics();
+  }
 
-    if (typeof gtag === 'function') {
-      gtag('config', 'G-Z6QWJ09VM8', { debug_mode: environment.isDebugMode });
+  private initGoogleAnalytics(): void {
+    const measurementId = environment.googleAnalytics.measurementId;
+    if (!environment.googleAnalytics.enabled || !measurementId) {
+      return;
     }
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+    document.head.appendChild(script);
+
+    const windowWithGtag = window as typeof window & {
+      dataLayer?: unknown[];
+      gtag?: (...args: unknown[]) => void;
+    };
+    windowWithGtag.dataLayer = windowWithGtag.dataLayer || [];
+    windowWithGtag.gtag = (...args: unknown[]) => {
+      windowWithGtag.dataLayer?.push(args);
+    };
+    windowWithGtag.gtag('js', new Date());
+    windowWithGtag.gtag('config', measurementId, { debug_mode: environment.isDebugMode });
   }
 
   @HostListener('window:keydown', ['$event'])

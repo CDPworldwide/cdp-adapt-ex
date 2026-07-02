@@ -219,6 +219,8 @@ jobs:
           FRONTEND_AI_SERVER_API_KEY='${{ steps.frontend-secrets.outputs.AI_SERVER_API_KEY }}' \
           FRONTEND_DEBUG_MODE='false' \
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
+          FRONTEND_GOOGLE_ANALYTICS_MEASUREMENT_ID='G-HF1JYR06EC' \
+          FRONTEND_GOOGLE_ANALYTICS_ENABLED='true' \
           FRONTEND_POSTHOG_KEY='${{ vars.FRONTEND_POSTHOG_KEY }}' \
           FRONTEND_POSTHOG_HOST='${{ vars.FRONTEND_POSTHOG_HOST }}' \
           FRONTEND_POSTHOG_UI_HOST='${{ vars.FRONTEND_POSTHOG_UI_HOST }}' \
@@ -273,6 +275,8 @@ jobs:
 
       - name: Build docs into frontend artifact
         env:
+          FRONTEND_GOOGLE_ANALYTICS_MEASUREMENT_ID: G-HF1JYR06EC
+          FRONTEND_GOOGLE_ANALYTICS_ENABLED: "true"
           FRONTEND_POSTHOG_KEY: ${{ vars.FRONTEND_POSTHOG_KEY }}
           FRONTEND_POSTHOG_HOST: ${{ vars.FRONTEND_POSTHOG_HOST }}
           FRONTEND_POSTHOG_UI_HOST: ${{ vars.FRONTEND_POSTHOG_UI_HOST }}
