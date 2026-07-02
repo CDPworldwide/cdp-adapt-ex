@@ -46,12 +46,14 @@ flowchart TB
 
 We maintain separate environments for development, staging (previews), and production.
 
-| Workflow / Branch | Environment | Backend Service | Frontend Service | AI Service | Cloud SQL Instance | Secret Prefix |
+| Workflow / Trigger | Environment | Backend Service | Frontend Service | AI Service | Cloud SQL Instance | Secret Prefix |
 |--------|-------------|-----------------|------------------|------------|-------------------|---------------|
-| `deploy.yml` on `production` | `production` | `cdp-server-prod` | `frontend` | `cdp-ai-server` | `cdp-prod` | `production-` |
+| `production-backend-deploy.yml` on `main` | `production` | `cdp-server-prod` | n/a | shared `cdp-ai-server` | `cdp-prod` | `production-` |
+| `production-frontend-deploy.yml` on `main` | `production` | existing `cdp-server-prod` | `frontend-prod` | shared `cdp-ai-server` | `cdp-prod` | `production-` |
+| `deploy.yml` manual dispatch | `production` | `cdp-server-prod` | `frontend-prod` | shared `cdp-ai-server` | `cdp-prod` | `production-` |
 | Frontend PR previews | `development` / preview | shared `cdp-server-dev` | `frontend-preview-pr-X` | shared `cdp-ai-server` | `cdp-test` | `development-` |
 | Backend PR previews | `development` / preview | `cdp-server-preview-pr-X` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
-| Manual backend workflow on `main` | `development` | `cdp-server-dev` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
+| Manual backend preview workflow | `development` | `cdp-server-dev` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
 
 ### Documentation Site
 
@@ -202,10 +204,13 @@ sequenceDiagram
     GH-->>Dev: Show result
 ```
 
-### 1. Production (`deploy.yml`)
-Triggered on **push** to the `production` branch or by manual dispatch.
-- **Orchestration**: Deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, Google Maps key, and optional PostHog analytics and Sentry error reporting settings injected at compile time. The deploy also builds the VitePress docs into the frontend artifact under `/docs/`.
-- **Verification**: Automatically rolls back if the backend health check fails.
+### 1. Production (`production-backend-deploy.yml`, `production-frontend-deploy.yml`, `deploy.yml`)
+Production Cloud Run deploys are driven from `main` or by manual dispatch.
+
+- **Backend deploy**: `production-backend-deploy.yml` runs on pushes to `main` that touch `backend/**`, or by manual dispatch. It deploys `cdp-server-prod`.
+- **Frontend deploy**: `production-frontend-deploy.yml` runs on pushes to `main` that touch frontend, docs, package, or frontend build workflow files, or by manual dispatch. It builds the Angular app and VitePress docs into the `frontend-prod` image and deploys `frontend-prod`.
+- **Full-stack manual deploy**: `deploy.yml` is manual dispatch only. It deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, Google Maps key, and optional PostHog analytics and Sentry error reporting settings injected at compile time.
+- **Verification**: Production backend deploys run smoke tests. Production frontend deploys verify both `/` and `/docs/` return `200`.
 
 ### 2. PR Previews (`backend-deploy.yml` & `frontend-preview.yml`)
 Triggered on **pull request** updates.
