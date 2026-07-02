@@ -86,6 +86,7 @@ class DimCentral(SQLModel, table=True):
     reporting_language: str | None = None
     ranked_hazards: str | None = None
     ranked_sectors: str | None = None
+    ecoregion: str | None = None
     requesting_auth: str | None = None
     has_geometry: bool | None = None
     climate_assess_yn: str | None = None
