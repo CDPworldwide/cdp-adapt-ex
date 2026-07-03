@@ -9,7 +9,7 @@ import { of, throwError, Observable, Subject, skip, take } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Maps } from '../maps/maps';
 import { ReactiveFormsModule } from '@angular/forms';
-import { PosthogService } from '../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 
 class FakeLoader implements TranslateLoader {
   getTranslation(): Observable<any> {
@@ -41,7 +41,7 @@ describe('MainSearchComponent', () => {
   let mockSearchService: jasmine.SpyObj<SearchService>;
   let mockLocationService: jasmine.SpyObj<LocationService>;
   let mockRouter: jasmine.SpyObj<Router>;
-  let mockPosthogService: jasmine.SpyObj<PosthogService>;
+  let mockAnalyticsService: jasmine.SpyObj<AnalyticsService>;
   let translate: TranslateService;
   const MOCK_LOCATION_DATA = {
     name: 'London',
@@ -95,7 +95,7 @@ describe('MainSearchComponent', () => {
     mockRouter.createUrlTree.and.returnValue({} as any);
     mockRouter.serializeUrl.and.returnValue('');
     mockRouter.isActive.and.returnValue(false);
-    mockPosthogService = jasmine.createSpyObj('PosthogService', ['capture']);
+    mockAnalyticsService = jasmine.createSpyObj('AnalyticsService', ['capture']);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -111,7 +111,7 @@ describe('MainSearchComponent', () => {
         { provide: LocationService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: {} },
-        { provide: PosthogService, useValue: mockPosthogService },
+        { provide: AnalyticsService, useValue: mockAnalyticsService },
       ],
     })
       .overrideComponent(MainSearchComponent, {
@@ -433,7 +433,7 @@ describe('MainSearchComponent', () => {
       component.setMapCategoryFilter('cities');
 
       expect(component.selectedMapCategoryFilter).toBe('all');
-      expect(mockPosthogService.capture).toHaveBeenCalledWith('map_category_filter_selected', {
+      expect(mockAnalyticsService.capture).toHaveBeenCalledWith('map_category_filter_selected', {
         category: 'all',
         source: 'homepage_legend',
       });

@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { HazardMapService } from './features/hazard-map/hazard-map.service';
 import { LanguageService } from './shared/services/language.service';
 import { FeedbackModalComponent } from './shared/feedback-modal/feedback-modal';
-import { PosthogService } from './core/analytics/posthog.service';
+import { AnalyticsService } from './core/analytics/analytics.service';
 import { GlobalSearchOverlayComponent } from './core/global-search/global-search-overlay.component';
 import { GlobalSearchService } from './core/global-search/global-search.service';
 import { WelcomeModalComponent } from './features/welcome-modal/welcome-modal.component';
@@ -22,7 +22,7 @@ import { WelcomeModalComponent } from './features/welcome-modal/welcome-modal.co
 export class App implements OnInit {
   private languageService = inject(LanguageService);
   private hazardMapService = inject(HazardMapService);
-  private posthogService = inject(PosthogService);
+  private analytics = inject(AnalyticsService);
   private globalSearchService = inject(GlobalSearchService);
   protected readonly title = signal('frontend');
 
@@ -35,7 +35,7 @@ export class App implements OnInit {
   ngOnInit() {
     this.languageService.init();
     this.hazardMapService.preloadHazardLayers().subscribe();
-    this.posthogService.init();
+    this.analytics.init();
   }
 
   @HostListener('window:keydown', ['$event'])

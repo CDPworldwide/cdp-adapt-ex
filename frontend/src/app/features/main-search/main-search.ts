@@ -32,7 +32,7 @@ import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/di
 import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
 import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
 import { Footer } from '../../core/footer/footer';
-import { PosthogService } from '../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 
 // `São Paulo` → `sao paulo`. NFD-strip combining marks; preserves length.
 function stripDiacritics(value: string): string {
@@ -98,7 +98,7 @@ export class MainSearchComponent implements OnInit {
     private mapSelectionService: MapSelectionService,
     private router: Router,
     private disclosureTrendsStatsService: DisclosureTrendsStatsService,
-    private posthog: PosthogService,
+    private posthog: AnalyticsService,
   ) {}
 
   ngOnInit() {

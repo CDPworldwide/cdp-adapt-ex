@@ -23,7 +23,7 @@ import {
   SEARCH_ALIASES,
 } from '../../features/main-search/search-aliases';
 import { STATE_ABBREV_TO_NAME } from '../../features/main-search/state-abbrev';
-import { PosthogService } from '../analytics/posthog.service';
+import { AnalyticsService } from '../analytics/analytics.service';
 import { CdpLogoIconComponent, WarningIconComponent } from '../../shared/icons';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
@@ -170,7 +170,7 @@ export class GlobalSearchOverlayComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly globalSearchService = inject(GlobalSearchService);
   private readonly locationService = inject(LocationService);
-  private readonly posthog = inject(PosthogService);
+  private readonly posthog = inject(AnalyticsService);
   private readonly router = inject(Router);
   private readonly searchService = inject(SearchService);
 

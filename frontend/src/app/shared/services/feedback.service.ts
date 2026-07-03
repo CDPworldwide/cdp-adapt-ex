@@ -2,7 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { LanguageService } from './language.service';
-import { PosthogService } from '../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 
 export interface FeedbackLocationContext {
   locationId?: string | number | null;
@@ -17,7 +17,7 @@ export class FeedbackService {
   private readonly router = inject(Router);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly languageService = inject(LanguageService);
-  private readonly posthog = inject(PosthogService);
+  private readonly posthog = inject(AnalyticsService);
 
   readonly isOpen = signal(false);
   private readonly openCount = signal(0);

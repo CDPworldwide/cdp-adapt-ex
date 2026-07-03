@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { PosthogService } from '../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { FeedbackService } from '../../shared/services/feedback.service';
 import {
   WELCOME_MODAL_SKIPPED_STORAGE_KEY,
@@ -13,7 +13,7 @@ import { WelcomeModalService } from './welcome-modal.service';
 describe('WelcomeModalComponent', () => {
   let fixture: ComponentFixture<WelcomeModalComponent>;
   let component: WelcomeModalComponent;
-  let posthog: jasmine.SpyObj<PosthogService>;
+  let posthog: jasmine.SpyObj<AnalyticsService>;
   let fetchSpy: jasmine.Spy;
   let welcomeModalService: WelcomeModalService;
 
@@ -21,14 +21,14 @@ describe('WelcomeModalComponent', () => {
     localStorage.clear();
     clearSkippedCookie();
     fetchSpy = spyOn(window, 'fetch').and.resolveTo(new Response(null, { status: 204 }));
-    posthog = jasmine.createSpyObj<PosthogService>('PosthogService', ['capture', 'register']);
+    posthog = jasmine.createSpyObj<AnalyticsService>('AnalyticsService', ['capture', 'register']);
 
     await TestBed.configureTestingModule({
       imports: [WelcomeModalComponent, TranslateModule.forRoot()],
       providers: [
         provideRouter([]),
         { provide: FeedbackService, useValue: { open: jasmine.createSpy('open') } },
-        { provide: PosthogService, useValue: posthog },
+        { provide: AnalyticsService, useValue: posthog },
       ],
     }).compileComponents();
 

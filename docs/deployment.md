@@ -121,6 +121,8 @@ Optional frontend analytics and error reporting are configured through GitHub Ac
 
 Frontend builds set the Sentry release to the GitHub commit SHA and the Sentry environment to the workflow environment.
 
+Google Analytics and PostHog are intentionally split by purpose. GA4 receives public, low-cardinality reporting events for dashboard use: page views, `location_viewed`, `search_location_selected`, `ai_chat_opened`, `ai_chat_query_submitted`, `feedback_opened`, and `user_role_selected`. PostHog receives the full product analytics stream, including detailed interaction events, richer event properties, exceptions, and session replay. New frontend analytics events should go through `AnalyticsService`; add GA4 event/property allowlist entries only for events that should be visible in the Google Analytics dashboard.
+
 Slack notifications for large or recurring frontend errors should be configured in Sentry, not through a frontend webhook. Connect the Sentry Slack integration and add alert rules for production frontend issues, regressions, and error volume thresholds such as `10 events in 10 minutes`.
 
 ### 📈 Monitoring & Logs
