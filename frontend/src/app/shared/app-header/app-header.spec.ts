@@ -55,4 +55,16 @@ describe('AppHeaderComponent', () => {
     expect(chatLink).not.toBeNull();
     expect(chatLink?.getAttribute('aria-label')).toBe('askCdpAi.buttonText');
   });
+
+  it('shows the language chooser in the header when chatMode is true', () => {
+    fixture.componentInstance.chatMode = true;
+    fixture.detectChanges();
+
+    const languageButton: HTMLButtonElement | null = fixture.nativeElement.querySelector(
+      '[data-testid="ask-ai-language-selector"]',
+    );
+
+    expect(languageButton).not.toBeNull();
+    expect(languageButton?.getAttribute('aria-label')).toBe('shared.selectLanguage');
+  });
 });

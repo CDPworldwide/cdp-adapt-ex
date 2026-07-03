@@ -13,6 +13,7 @@ import {
 import { DOCUMENT } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
@@ -21,7 +22,7 @@ import { filterLocationSuggestions } from '../../shared/services/location-search
 @Component({
   selector: 'app-ask-cdp-ai-organization-selector',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './ask-cdp-ai-organization-selector.component.html',
 })
 export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges {
@@ -38,6 +39,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   private readonly destroyRef = inject(DestroyRef);
   private readonly document = inject(DOCUMENT);
   private readonly locationService = inject(LocationService);
+  private readonly translateService = inject(TranslateService);
   private allOrganizations: LocationSuggestion[] = [];
   private defaultOrganizationOptions: LocationSuggestion[] = [];
   private static readonly OPTION_LIMIT = 6;
@@ -68,7 +70,11 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   }
 
   get displayName(): string {
-    return this.currentDisplayName || this.selectedOrganizations[0]?.name || 'Select a location';
+    return (
+      this.currentDisplayName ||
+      this.selectedOrganizations[0]?.name ||
+      this.translateService.instant('askCdpAi.organizationSelector.defaultDisplayName')
+    );
   }
 
   get hasSelection(): boolean {

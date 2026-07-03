@@ -4,7 +4,7 @@
   (focusout)="onPickerFocusOut($event)"
 >
   <p class="flex flex-wrap items-center gap-1.5 text-sm font-medium text-gray-700">
-    <span>Ask a question about</span>
+    <span>{{ 'askCdpAi.organizationSelector.label' | translate }}</span>
     <span
       data-testid="ask-ai-organization-selector"
       class="inline-flex max-w-full flex-wrap items-center gap-1 rounded-xl border border-gray-300 bg-white px-1.5 py-1 text-left text-sm font-semibold text-gray-900 shadow-sm transition-colors focus-within:border-cdp-red focus-within:ring-2 focus-within:ring-cdp-red/20 hover:border-cdp-red"
@@ -27,7 +27,7 @@
           <button
             type="button"
             class="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-cdp-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red"
-            [attr.aria-label]="'Remove ' + organization.name"
+            [attr.aria-label]="'askCdpAi.organizationSelector.removeOrganization' | translate: { name: organization.name }"
             (click)="removeOrganization(organization)"
           >
             <svg
@@ -83,7 +83,7 @@
           [attr.aria-expanded]="isDropdownOpen"
           aria-controls="ask-ai-organization-options"
           (click)="togglePicker()"
-          aria-label="Add another location"
+          [attr.aria-label]="'askCdpAi.organizationSelector.addAnotherLocation' | translate"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -115,7 +115,7 @@
         (focus)="onSearchFocus()"
         (keydown)="onSearchKeydown($event)"
         class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:border-cdp-red focus:ring-2 focus:ring-cdp-red/20"
-        placeholder="Search organizations"
+        [placeholder]="'askCdpAi.organizationSelector.searchPlaceholder' | translate"
         role="combobox"
         aria-autocomplete="list"
         [attr.aria-expanded]="isDropdownOpen"

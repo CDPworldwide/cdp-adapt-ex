@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { AskCdpAiOrganizationSelectorComponent } from './ask-cdp-ai-organization-selector.component';
@@ -41,7 +43,7 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
     locationService.getAllLocationNames.and.returnValue(of(organizations));
 
     await TestBed.configureTestingModule({
-      imports: [AskCdpAiOrganizationSelectorComponent],
+      imports: [AskCdpAiOrganizationSelectorComponent, TranslateModule.forRoot()],
       providers: [{ provide: LocationService, useValue: locationService }],
     }).compileComponents();
 

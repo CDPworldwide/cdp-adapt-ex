@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 
 import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
@@ -15,6 +15,7 @@ describe('AskCdpAiComponent', () => {
   let askCdpAiService: jasmine.SpyObj<AskCdpAiService>;
   let posthog: jasmine.SpyObj<AnalyticsService>;
   let locationService: jasmine.SpyObj<LocationService>;
+  let translate: TranslateService;
 
   beforeEach(async () => {
     askCdpAiService = jasmine.createSpyObj<AskCdpAiService>(
@@ -62,6 +63,31 @@ describe('AskCdpAiComponent', () => {
 
     fixture = TestBed.createComponent(AskCdpAiComponent);
     component = fixture.componentInstance;
+
+    translate = TestBed.inject(TranslateService);
+    translate.use('en');
+    translate.setTranslation('en', {
+      askCdpAi: {
+        buttonText: 'Ask the AI Explorer',
+        betaDisclaimer:
+          'Beta: Trained on CDP disclosure data from cities, states, and regions. Results may be inaccurate and are not guaranteed.',
+        emptyState: {
+          title: 'Ask a question about {{location}}.',
+          description: 'Use the input below to ask about risks, actions, or climate context for this location.',
+        },
+        locationFallback: 'this location',
+        input: {
+          placeholder: 'Ask the AI Explorer...',
+        },
+        organizationSelector: {
+          label: 'Ask a question about',
+          defaultDisplayName: 'Select a location',
+          addAnotherLocation: 'Add another location',
+          searchPlaceholder: 'Search organizations',
+          removeOrganization: 'Remove {{name}}',
+        },
+      },
+    });
   });
 
   it('captures sanitized query text when a manual chat query is submitted', () => {

@@ -522,6 +522,13 @@
     },
     "feedback": {
       "wasThisHelpful": "这有帮助吗？"
+    },
+    "organizationSelector": {
+      "label": "询问有关",
+      "defaultDisplayName": "选择一个地点",
+      "addAnotherLocation": "添加另一个地点",
+      "searchPlaceholder": "搜索机构",
+      "removeOrganization": "移除 {{name}}"
     }
   },
   "cityDetail": {

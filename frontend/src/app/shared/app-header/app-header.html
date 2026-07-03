@@ -27,6 +27,15 @@
       </button>
       <button
         type="button"
+        data-testid="ask-ai-language-selector"
+        class="hidden items-center justify-center md:flex h-9 w-9 rounded-full border border-cdp-neutral-02 text-cdp-dark transition-colors hover:border-cdp-dark hover:bg-cdp-dark hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+        [matMenuTriggerFor]="languageMenu"
+        [attr.aria-label]="'shared.selectLanguage' | translate"
+      >
+        <mat-icon class="text-gray-500 !text-xl">language</mat-icon>
+      </button>
+      <button
+        type="button"
         data-testid="ask-ai-header-close"
         class="flex h-9 w-9 items-center justify-center rounded-full border border-cdp-neutral-02 text-cdp-dark transition-colors hover:border-cdp-dark hover:bg-cdp-dark hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
         (click)="closeChatMode()"
