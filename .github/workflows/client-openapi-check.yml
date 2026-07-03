@@ -1,0 +1,57 @@
+name: Client OpenAPI check
+
+on:
+  push:
+    branches: [main, production]
+    paths:
+      - "backend/**"
+      - "client/**"
+      - ".github/actions/setup-frontend-build/**"
+      - ".github/workflows/client-openapi-check.yml"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main, production]
+    paths:
+      - "backend/**"
+      - "client/**"
+      - ".github/actions/setup-frontend-build/**"
+      - ".github/workflows/client-openapi-check.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20.x"
+
+jobs:
+  verify-openapi:
+    name: Verify client/openapi.json is up-to-date
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup frontend build
+        uses: ./.github/actions/setup-frontend-build
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Check generated OpenAPI snapshot matches backend
+        working-directory: client
+        run: |
+          if ! git diff --exit-code openapi.json; then
+            echo
+            echo "::error::client/openapi.json is out of sync with the backend."
+            echo "To refresh the snapshot, run:"
+            echo "  ./client/scripts/generate.sh"
+            echo "Then commit the updated client/openapi.json."
+            exit 1
+          fi
+
+      - name: Report OpenAPI snapshot status
+        run: |
+          echo "✅ client/openapi.json matches the backend OpenAPI spec."
