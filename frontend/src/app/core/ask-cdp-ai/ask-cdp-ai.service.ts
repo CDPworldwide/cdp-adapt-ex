@@ -18,6 +18,11 @@ type ConversationMessage = { role: 'user' | 'assistant' | 'system'; content: str
 type OpenAiMessage = { role: 'user' | 'assistant'; content: string };
 type SuggestFollowUpsResponse = { follow_up_questions?: string[] };
 export type AskCdpAiContextArea = 'hazards' | 'actions' | 'solutions';
+export type AskCdpAiReferenceOrganization = {
+  organizationId: number;
+  name: string;
+  country?: string;
+};
 type AiRequestBody = {
   model: string;
   stream: boolean;
@@ -25,9 +30,11 @@ type AiRequestBody = {
   metadata: {
     locationData: LocationProfile | null;
     contextArea: AskCdpAiContextArea;
+    referenceOrganizations: AskCdpAiReferenceOrganization[];
   };
   locationData: LocationProfile | null;
   contextArea: AskCdpAiContextArea;
+  referenceOrganizations: AskCdpAiReferenceOrganization[];
 };
 
 @Injectable({
@@ -48,6 +55,8 @@ export class AskCdpAiService {
   private contextArea: AskCdpAiContextArea = 'hazards';
   private selectedActionHazardFilter: string | null = null;
   private locationContextKey: string | null = null;
+  private referenceOrganizations: AskCdpAiReferenceOrganization[] = [];
+  private referenceOrganizationsKey = '[]';
   private readonly aiChat = this.createAiChat();
 
   setLocationContext(
@@ -80,7 +89,30 @@ export class AskCdpAiService {
     this.locationContext = null;
     this.contextArea = 'hazards';
     this.locationContextKey = null;
+    this.referenceOrganizations = [];
+    this.referenceOrganizationsKey = '[]';
     this.resetConversationState();
+  }
+
+  setReferenceOrganizations(organizations: AskCdpAiReferenceOrganization[]): void {
+    const nextReferenceOrganizations = organizations.map(({ organizationId, name, country }) => ({
+      organizationId,
+      name,
+      ...(country ? { country } : {}),
+    }));
+    const nextReferenceOrganizationsKey = JSON.stringify(nextReferenceOrganizations);
+
+    if (nextReferenceOrganizationsKey === this.referenceOrganizationsKey) {
+      return;
+    }
+
+    this.referenceOrganizations = nextReferenceOrganizations;
+    this.referenceOrganizationsKey = nextReferenceOrganizationsKey;
+
+    if (!this.conversationHistory().length) {
+      this.followUpQuestions.set([]);
+      this.followUpError.set(null);
+    }
   }
 
   loadStarterQuestions(): Observable<void> {
@@ -298,6 +330,7 @@ export class AskCdpAiService {
     messages = this.buildAiServerMessages(),
   ): AiRequestBody {
     const locationData = this.buildAiLocationData();
+    const referenceOrganizations = [...this.referenceOrganizations];
 
     return {
       model: environment.aiModel || 'cdp-gemini',
@@ -306,9 +339,11 @@ export class AskCdpAiService {
       metadata: {
         locationData,
         contextArea: this.contextArea,
+        referenceOrganizations,
       },
       locationData,
       contextArea: this.contextArea,
+      referenceOrganizations,
     };
   }
 
@@ -379,9 +414,19 @@ export class AskCdpAiService {
         'adaptation solutions, peer actions, local projects, and implementation opportunities',
     };
 
-    return `Suggest follow-up questions for exploring ${
+    const referenceText = this.referenceOrganizations.length
+      ? ` Compare against these reference organizations where useful: ${this.referenceOrganizations
+          .map((organization) =>
+            [organization.name, organization.country, `ID ${organization.organizationId}`]
+              .filter(Boolean)
+              .join(', '),
+          )
+          .join('; ')}.`
+      : '';
+
+    return `Suggest concise follow-up questions under 70 characters for exploring ${
       focusByTab[this.contextArea]
-    } in ${locationName}.`;
+    } in ${locationName}.${referenceText}`;
   }
 
   private textToUiMessageStream(content: string): ReadableStream<UIMessageChunk> {

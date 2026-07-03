@@ -15,14 +15,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, combineLatest, map, of, startWith } from 'rxjs';
 import { catchError, filter, switchMap, tap } from 'rxjs/operators';
-import fuzzysort from 'fuzzysort';
 import { Router } from '@angular/router';
 import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { MapSelectionService } from './map-selection.service';
-import { SEARCH_ALIASES, COUNTRY_ALIASES, LOCATION_SEARCH_KEYWORDS } from './search-aliases';
-import { STATE_ABBREV_TO_NAME } from './state-abbrev';
+import {
+  filterLocationSuggestions,
+  normalizeLocationSearch,
+  stripDiacritics,
+} from '../../shared/services/location-search.util';
 import { Maps, type MapCategoryFilter } from '../maps/maps';
 import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
 import type { Hazard, HazardProfile, LocationPin } from '@pac-api/client';
@@ -33,11 +35,6 @@ import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends
 import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
 import { Footer } from '../../core/footer/footer';
 import { PosthogService } from '../../core/analytics/posthog.service';
-
-// `São Paulo` → `sao paulo`. NFD-strip combining marks; preserves length.
-function stripDiacritics(value: string): string {
-  return value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-}
 
 @Component({
   selector: 'app-main-search',
@@ -327,56 +324,16 @@ export class MainSearchComponent implements OnInit {
 
   private static readonly MAX_SUGGESTIONS = 5;
 
-  private normalizeForSearch(value: string): string {
-    const base = stripDiacritics(value)
-      .replace(/\bst\.?\b/gi, 'saint')
-      .replace(/\bste\.?\b/gi, 'sainte')
-      .replace(/\bmt\.?\b/gi, 'mount')
-      .replace(/\bft\.?\b/gi, 'fort')
-      .toLowerCase()
-      .replace(/[.,()'"]/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-    // Redirect well-known alternate names to their canonical form so e.g.
-    // "NYC" -> "new york", "U.K." -> "united kingdom", "Bombay" -> "mumbai".
-    return SEARCH_ALIASES[base] ?? COUNTRY_ALIASES[base] ?? base;
-  }
-
-  // Append the expanded admin-1 name when an entry ends in ", XX" (US/Canada
-  // codes). Lets queries like "California" or "Ontario" surface "City of Long
-  // Beach, CA" and "City of Toronto, ON" alongside the state-entity entries.
-  private buildSearchHaystack(name: string): string {
-    const normalized = this.normalizeForSearch(name);
-    const m = name.match(/,\s*([A-Z]{2,3})\s*$/);
-    const expansion = m ? STATE_ABBREV_TO_NAME[m[1]] : undefined;
-    const extra = LOCATION_SEARCH_KEYWORDS[normalized];
-    return [normalized, expansion && this.normalizeForSearch(expansion), extra]
-      .filter(Boolean)
-      .join(' ');
-  }
-
   private _filter(
     value: string,
     locations: LocationSuggestion[] = this.allLocations,
   ): LocationSuggestion[] {
-    if (!value) {
-      return this.defaultSuggestions.slice(0, MainSearchComponent.MAX_SUGGESTIONS);
-    }
-    // Search both name and country so a query like "thailand" surfaces every
-    // Thai jurisdiction even though it doesn't appear in their names.
-    const prepared = locations.map((loc) => ({
-      ...loc,
-      _normalizedName: this.buildSearchHaystack(loc.name),
-      _normalizedCountry: loc.country ? this.normalizeForSearch(loc.country) : '',
-    }));
-    const results = fuzzysort.go(this.normalizeForSearch(value), prepared, {
-      keys: ['_normalizedName', '_normalizedCountry'],
-      limit: MainSearchComponent.MAX_SUGGESTIONS,
-    });
-    return results.map((result) => {
-      const { _normalizedName, _normalizedCountry, ...rest } = result.obj;
-      return rest;
-    });
+    return filterLocationSuggestions(
+      value,
+      locations,
+      MainSearchComponent.MAX_SUGGESTIONS,
+      this.defaultSuggestions,
+    );
   }
 
   private moveActiveSuggestion(step: 1 | -1): void {
@@ -407,9 +364,9 @@ export class MainSearchComponent implements OnInit {
 
     const trimmedQuery = searchQuery.trim();
     // Accent-insensitive so "Sao Paulo" resolves to "São Paulo".
-    const normalizedQuery = this.normalizeForSearch(trimmedQuery);
+    const normalizedQuery = normalizeLocationSearch(trimmedQuery);
     const selectedLocation = this.allLocations.find(
-      (location) => this.normalizeForSearch(location.name) === normalizedQuery,
+      (location) => normalizeLocationSearch(location.name) === normalizedQuery,
     );
 
     if (selectedLocation) {

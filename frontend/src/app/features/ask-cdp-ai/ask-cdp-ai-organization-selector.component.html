@@ -1,0 +1,75 @@
+<div
+  class="relative"
+  data-testid="ask-ai-organization-picker"
+  (focusout)="onPickerFocusOut($event)"
+>
+  <p class="flex flex-wrap items-center gap-1.5 text-sm font-medium text-gray-700">
+    <span>Ask a question about</span>
+    <button
+      type="button"
+      data-testid="ask-ai-organization-selector"
+      class="inline-flex max-w-full items-center gap-1.5 rounded-full border border-gray-300 bg-white px-2.5 py-1 text-left text-sm font-semibold text-gray-900 shadow-sm transition-colors hover:border-cdp-red hover:text-cdp-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red sm:px-3 sm:py-1.5"
+      [attr.aria-expanded]="isDropdownOpen"
+      aria-controls="ask-ai-organization-options"
+      (click)="togglePicker()"
+    >
+      <span class="min-w-0 truncate">{{ displayName }}</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-4 w-4 flex-shrink-0"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+  </p>
+
+  @if (isDropdownOpen) {
+    <div class="relative mt-3 max-w-sm">
+      <input
+        id="ask-ai-organization-search"
+        data-testid="ask-ai-organization-search"
+        type="text"
+        [formControl]="searchControl"
+        (focus)="onSearchFocus()"
+        (keydown)="onSearchKeydown($event)"
+        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:border-cdp-red focus:ring-2 focus:ring-cdp-red/20"
+        placeholder="Search organizations"
+        role="combobox"
+        aria-autocomplete="list"
+        [attr.aria-expanded]="isDropdownOpen"
+        aria-controls="ask-ai-organization-options"
+      />
+
+      @if (organizationOptions().length > 0) {
+        <div
+          id="ask-ai-organization-options"
+          class="mt-1 max-h-64 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+          role="listbox"
+        >
+          @for (organization of organizationOptions(); track organization.organizationId) {
+            <button
+              type="button"
+              data-testid="ask-ai-organization-option"
+              role="option"
+              class="flex w-full min-w-0 items-center gap-3 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none"
+              (click)="selectOrganization(organization)"
+            >
+              <span class="min-w-0">
+                <span class="block truncate font-medium">{{ organization.name }}</span>
+                @if (organization.country) {
+                  <span class="block truncate text-xs text-gray-500">{{
+                    organization.country
+                  }}</span>
+                }
+              </span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

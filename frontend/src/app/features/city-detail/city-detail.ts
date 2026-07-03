@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, DestroyRef, OnInit, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -57,6 +58,7 @@ export class CityDetailPageComponent implements OnInit {
     private askCdpAiService: AskCdpAiService,
     private route: ActivatedRoute,
     private router: Router,
+    private browserLocation: Location,
   ) {
     effect(() => {
       const lang = this.languageService.currentLang();
@@ -71,13 +73,13 @@ export class CityDetailPageComponent implements OnInit {
   ngOnInit(): void {
     this.mobileKeyboardViewportService.startTracking(this.destroyRef);
 
-    combineLatest([this.route.paramMap, this.route.data])
+    combineLatest([this.route.paramMap, this.route.queryParamMap, this.route.data])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([params, data]) => {
+      .subscribe(([params, queryParams, data]) => {
         const organizationId = params.get('organizationId');
         this.organizationId = organizationId;
         this.activeTab = this.normalizeTab(params.get('tab'));
-        this.isAiOpen = data['openAiPanel'] === true || this.isAiOpen;
+        this.isAiOpen = data['openAiPanel'] === true || queryParams.has('chatopen');
 
         if (!organizationId) {
           this.isLoading = false;
@@ -104,7 +106,50 @@ export class CityDetailPageComponent implements OnInit {
       return;
     }
 
+    if (this.isAiOpen) {
+      this.navigateToChatOpenUrl(this.buildChatOpenUrl(`/org/${this.organizationId}/${tab}`));
+      return;
+    }
+
     this.router.navigate(['/org', this.organizationId, tab]);
+  }
+
+  openAiPanel(): void {
+    this.isAiOpen = true;
+    this.navigateToChatOpenUrl(this.buildChatOpenUrl());
+  }
+
+  onAiOpenChange(isOpen: boolean): void {
+    this.isAiOpen = isOpen;
+
+    if (!isOpen) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { chatopen: null },
+        queryParamsHandling: 'merge',
+      });
+    }
+  }
+
+  private buildChatOpenUrl(path = this.router.url.split('?')[0].split('#')[0]): string {
+    const [_currentPath, fragment = ''] = this.router.url.split('#');
+    const queryString = this.router.url.split('#')[0].split('?')[1] || '';
+    const queryParams = queryString
+      .split('&')
+      .filter(Boolean)
+      .filter((param) => decodeURIComponent(param.split('=')[0]) !== 'chatopen');
+
+    queryParams.push('chatopen');
+
+    return `${path}?${queryParams.join('&')}${fragment ? `#${fragment}` : ''}`;
+  }
+
+  private navigateToChatOpenUrl(url: string): void {
+    void this.router.navigateByUrl(url).then((navigated) => {
+      if (navigated) {
+        this.browserLocation.replaceState(url);
+      }
+    });
   }
 
   private loadLocationByOrganizationId(organizationId: string): void {

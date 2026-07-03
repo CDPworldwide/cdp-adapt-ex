@@ -125,6 +125,8 @@ describe('AskCdpAiService', () => {
           expect(body.locationData).toEqual(mockLocationData);
           expect(body.contextArea).toBe('hazards');
           expect(body.metadata.contextArea).toBe('hazards');
+          expect(body.referenceOrganizations).toEqual([]);
+          expect(body.metadata.referenceOrganizations).toEqual([]);
           expect(body.messages.at(-1)?.role).toBe('user');
           done();
         });
@@ -263,6 +265,8 @@ describe('AskCdpAiService', () => {
             expect(chatBody.metadata.locationData).toEqual(mockLocationData);
             expect(chatBody.contextArea).toBe('hazards');
             expect(chatBody.metadata.contextArea).toBe('hazards');
+            expect(chatBody.referenceOrganizations).toEqual([]);
+            expect(chatBody.metadata.referenceOrganizations).toEqual([]);
             expect(chatBody.messages.at(-1)?.content).toBe('Hello');
             expect(followUpBody.messages.at(-1)?.content).toBe('Chat response');
             const lastMessage = service.conversationHistory().at(-1);
@@ -347,6 +351,40 @@ describe('AskCdpAiService', () => {
           expect(body.metadata.locationData.governmentActions.goals[0].title).toBe('Heat goal');
           expect(body.metadata.locationData.governmentActions.actions.length).toBe(1);
           expect(body.metadata.locationData.governmentActions.actions[0].title).toBe('Heat action');
+          done();
+        });
+      });
+    });
+
+    it('should send selected reference organizations to the AI server', (done) => {
+      service.setLocationContext(mockLocationData);
+      service.setReferenceOrganizations([
+        {
+          organizationId: 67890,
+          name: 'Los Angeles',
+          country: 'United States of America',
+        },
+      ]);
+      (window.fetch as jasmine.Spy).and.returnValue(
+        Promise.resolve(
+          new Response(JSON.stringify({ follow_up_questions: ['Compare New York and LA'] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        ),
+      );
+
+      service.loadStarterQuestions().subscribe(() => {
+        readRequestBodyAt(0).then((body) => {
+          expect(body.referenceOrganizations).toEqual([
+            {
+              organizationId: 67890,
+              name: 'Los Angeles',
+              country: 'United States of America',
+            },
+          ]);
+          expect(body.metadata.referenceOrganizations).toEqual(body.referenceOrganizations);
+          expect(body.messages.at(-1)?.content).toContain('ID 67890');
           done();
         });
       });

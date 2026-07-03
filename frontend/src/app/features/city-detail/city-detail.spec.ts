@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, NO_ERRORS_SCHEMA, input, output, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
@@ -44,10 +45,12 @@ describe('CityDetailPageComponent', () => {
   let fixture: ComponentFixture<CityDetailPageComponent>;
   let mockLocationService: jasmine.SpyObj<LocationService>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let mockBrowserLocation: jasmine.SpyObj<Location>;
   let mockHazardMapService: jasmine.SpyObj<HazardMapService>;
   let mockGoogleMapsLoaderService: jasmine.SpyObj<GoogleMapsLoaderService>;
   let askCdpAiServiceMock: any;
   let routeParamMap$: BehaviorSubject<any>;
+  let routeQueryParamMap$: BehaviorSubject<any>;
   let routeData$: BehaviorSubject<any>;
 
   const MOCK_LOCATION_DATA = {
@@ -61,20 +64,28 @@ describe('CityDetailPageComponent', () => {
   } as any;
 
   beforeEach(async () => {
-    mockLocationService = jasmine.createSpyObj('LocationService', ['getLocationByOrganizationId']);
+    mockLocationService = jasmine.createSpyObj('LocationService', [
+      'getLocationByOrganizationId',
+      'getAllLocationNames',
+    ]);
     mockRouter = jasmine.createSpyObj('Router', [
       'navigate',
+      'navigateByUrl',
       'createUrlTree',
       'serializeUrl',
       'isActive',
     ]);
     (mockRouter as any).events = of();
+    (mockRouter as any).url = '/org/867355/hazards';
     mockRouter.createUrlTree.and.returnValue({} as any);
     mockRouter.serializeUrl.and.returnValue('');
     mockRouter.isActive.and.returnValue(false);
+    mockRouter.navigateByUrl.and.returnValue(Promise.resolve(true));
+    mockBrowserLocation = jasmine.createSpyObj<Location>('Location', ['replaceState']);
     mockHazardMapService = jasmine.createSpyObj('HazardMapService', ['getHazardLayer']);
     mockGoogleMapsLoaderService = jasmine.createSpyObj('GoogleMapsLoaderService', ['loadApi']);
     routeParamMap$ = new BehaviorSubject(convertToParamMap({ organizationId: '867355' }));
+    routeQueryParamMap$ = new BehaviorSubject(convertToParamMap({}));
     askCdpAiServiceMock = {
       conversationHistory: signal<any[]>([]),
       disclosure: signal<string | null>(null),
@@ -84,12 +95,14 @@ describe('CityDetailPageComponent', () => {
       isFollowUpLoading: signal<boolean>(false),
       followUpError: signal<string | null>(null),
       setLocationContext: jasmine.createSpy('setLocationContext'),
+      setReferenceOrganizations: jasmine.createSpy('setReferenceOrganizations'),
       clearSession: jasmine.createSpy('clearSession'),
       loadStarterQuestions: jasmine.createSpy('loadStarterQuestions').and.returnValue(of(void 0)),
       getFollowUpQuestions: jasmine.createSpy('getFollowUpQuestions').and.returnValue(of(void 0)),
       sendChatQuery: jasmine.createSpy('sendChatQuery').and.returnValue(of(void 0)),
     };
 
+    mockLocationService.getAllLocationNames.and.returnValue(of([]));
     mockHazardMapService.getHazardLayer.and.returnValue(of(null));
     mockGoogleMapsLoaderService.loadApi.and.returnValue(EMPTY);
     routeData$ = new BehaviorSubject({});
@@ -104,11 +117,16 @@ describe('CityDetailPageComponent', () => {
       providers: [
         { provide: LocationService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
+        { provide: Location, useValue: mockBrowserLocation },
         { provide: HazardMapService, useValue: mockHazardMapService },
         { provide: GoogleMapsLoaderService, useValue: mockGoogleMapsLoaderService },
         {
           provide: ActivatedRoute,
-          useValue: { paramMap: routeParamMap$.asObservable(), data: routeData$.asObservable() },
+          useValue: {
+            paramMap: routeParamMap$.asObservable(),
+            queryParamMap: routeQueryParamMap$.asObservable(),
+            data: routeData$.asObservable(),
+          },
         },
         { provide: AskCdpAiService, useValue: askCdpAiServiceMock },
       ],
@@ -237,6 +255,14 @@ describe('CityDetailPageComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '867355', 'actions']);
   });
 
+  it('preserves the chatopen query parameter when tabs change while the AI sidebar is open', () => {
+    component.isAiOpen = true;
+
+    component.onTabChange('actions');
+
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/org/867355/actions?chatopen');
+  });
+
   it('should open the AI sidebar without fetching starter questions again', () => {
     component.isAiOpen = false;
     fixture.detectChanges();
@@ -248,7 +274,38 @@ describe('CityDetailPageComponent', () => {
     fixture.detectChanges();
 
     expect(component.isAiOpen).toBeTrue();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/org/867355/hazards?chatopen');
     expect(askCdpAiServiceMock.loadStarterQuestions.calls.count()).toBe(starterQuestionFetchCount);
+  });
+
+  it('opens and closes the AI sidebar from the chatopen query parameter', () => {
+    component.isAiOpen = false;
+
+    routeQueryParamMap$.next(convertToParamMap({ chatopen: 'true' }));
+    fixture.detectChanges();
+
+    expect(component.isAiOpen).toBeTrue();
+
+    routeQueryParamMap$.next(convertToParamMap({}));
+    fixture.detectChanges();
+
+    expect(component.isAiOpen).toBeFalse();
+  });
+
+  it('removes the chatopen query parameter when the AI sidebar closes', () => {
+    component.isAiOpen = true;
+    mockRouter.navigate.calls.reset();
+
+    component.onAiOpenChange(false);
+
+    expect(component.isAiOpen).toBeFalse();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: { chatopen: null },
+        queryParamsHandling: 'merge',
+      }),
+    );
   });
 
   it('opens the AI sidebar automatically when route data requests it', () => {

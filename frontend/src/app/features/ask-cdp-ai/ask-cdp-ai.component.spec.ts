@@ -5,6 +5,7 @@ import { of } from 'rxjs';
 
 import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { PosthogService } from '../../core/analytics/posthog.service';
+import { LocationService } from '../../shared/services/location.service';
 import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 import { AskCdpAiComponent } from './ask-cdp-ai.component';
 
@@ -13,27 +14,41 @@ describe('AskCdpAiComponent', () => {
   let fixture: ComponentFixture<AskCdpAiComponent>;
   let askCdpAiService: jasmine.SpyObj<AskCdpAiService>;
   let posthog: jasmine.SpyObj<PosthogService>;
+  let locationService: jasmine.SpyObj<LocationService>;
 
   beforeEach(async () => {
     askCdpAiService = jasmine.createSpyObj<AskCdpAiService>(
       'AskCdpAiService',
-      ['clearSession', 'setLocationContext', 'sendChatQuery'],
+      [
+        'clearSession',
+        'loadStarterQuestions',
+        'setLocationContext',
+        'setReferenceOrganizations',
+        'sendChatQuery',
+      ],
       {
         conversationHistory: signal([]),
         isDisclosureLoading: signal(false),
         disclosureError: signal(null),
         followUpQuestions: signal([]),
+        isFollowUpLoading: signal(false),
         followUpError: signal(null),
       },
     );
+    askCdpAiService.loadStarterQuestions.and.returnValue(of(void 0));
     askCdpAiService.sendChatQuery.and.returnValue(of(''));
     posthog = jasmine.createSpyObj<PosthogService>('PosthogService', ['capture']);
+    locationService = jasmine.createSpyObj<LocationService>('LocationService', [
+      'getAllLocationNames',
+    ]);
+    locationService.getAllLocationNames.and.returnValue(of([]));
 
     await TestBed.configureTestingModule({
       imports: [AskCdpAiComponent, TranslateModule.forRoot()],
       providers: [
         { provide: AskCdpAiService, useValue: askCdpAiService },
         { provide: PosthogService, useValue: posthog },
+        { provide: LocationService, useValue: locationService },
         {
           provide: MobileKeyboardViewportService,
           useValue: jasmine.createSpyObj<MobileKeyboardViewportService>(
@@ -75,5 +90,34 @@ describe('AskCdpAiComponent', () => {
     );
     expect(askCdpAiService.sendChatQuery).toHaveBeenCalledWith('How can Athens reduce heat?');
     expect(component.userQuery).toBe('');
+  });
+
+  it('loads starter questions when initialized with its context', () => {
+    component.contextArea = 'hazards';
+
+    fixture.detectChanges();
+
+    expect(askCdpAiService.setLocationContext).toHaveBeenCalledWith(null, 'hazards');
+    expect(askCdpAiService.loadStarterQuestions).toHaveBeenCalled();
+  });
+
+  it('renders starter suggestions without a nested scroll container in the input section', () => {
+    askCdpAiService.followUpQuestions.set([
+      'Which hazards are expected to have the highest financial impact?',
+      'What hazards are on the rise?',
+    ]);
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector(
+        '.chat-input-section .overflow-y-auto [data-testid="ask-ai-suggestion"]',
+      ),
+    ).toBeNull();
+    expect(
+      fixture.nativeElement.querySelectorAll(
+        '.chat-input-section [data-testid="ask-ai-suggestion"]',
+      ).length,
+    ).toBe(2);
   });
 });

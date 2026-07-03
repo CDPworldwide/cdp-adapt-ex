@@ -3,16 +3,40 @@
     href="https://www.cdp.net/en/cdp-adaptation-and-action-explorer"
     target="_blank"
     rel="noopener noreferrer"
-    class="flex items-center gap-4 no-underline text-cdp-dark hover:opacity-80 transition-opacity"
+    class="flex min-w-0 items-center gap-3 no-underline text-cdp-dark hover:opacity-80 transition-opacity md:gap-4"
     [attr.aria-label]="'shared.home' | translate"
   >
     <app-cdp-logo-with-text-icon width="70" height="18" color="black"></app-cdp-logo-with-text-icon>
-    <div class="w-px h-6 bg-cdp-neutral-02"></div>
-    <span class="text-sm font-medium leading-none">{{ 'shared.appTitle' | translate }}</span>
+    <div class="h-6 w-px flex-shrink-0 bg-cdp-neutral-02"></div>
+    <span class="min-w-0 truncate text-sm font-medium leading-none">
+      {{ (chatMode ? 'askCdpAi.buttonText' : 'shared.appTitle') | translate }}
+    </span>
   </a>
 
   <div class="flex items-center gap-2">
-    @if (isOrgPage()) {
+    @if (chatMode) {
+      <button
+        type="button"
+        class="flex h-9 w-9 items-center justify-center rounded-full border border-cdp-neutral-02 text-cdp-dark transition-colors hover:border-cdp-dark hover:bg-cdp-dark hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+        [matMenuTriggerFor]="aiInfoMenu"
+        [attr.aria-label]="'askCdpAi.betaDisclaimer' | translate"
+      >
+        <mat-icon class="!flex !h-4 !w-4 !items-center !justify-center !text-base !leading-4"
+          >info</mat-icon
+        >
+      </button>
+      <button
+        type="button"
+        data-testid="ask-ai-header-close"
+        class="flex h-9 w-9 items-center justify-center rounded-full border border-cdp-neutral-02 text-cdp-dark transition-colors hover:border-cdp-dark hover:bg-cdp-dark hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+        (click)="closeChatMode()"
+        [attr.aria-label]="'shared.close' | translate"
+      >
+        <mat-icon class="!flex !h-5 !w-5 !items-center !justify-center !text-xl !leading-5"
+          >arrow_forward</mat-icon
+        >
+      </button>
+    } @else if (isOrgPage()) {
       <button
         type="button"
         class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
@@ -24,26 +48,41 @@
         >
       </button>
     }
-    <button
-      type="button"
-      class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
-      [matMenuTriggerFor]="helpMenu"
-      [attr.aria-label]="'shared.helpMenu.label' | translate"
-    >
-      <mat-icon class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center"
-        >question_mark</mat-icon
+    @if (!chatMode) {
+      <a
+        routerLink="/chat"
+        class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
+        [attr.aria-label]="'askCdpAi.buttonText' | translate"
       >
-    </button>
-    <button
-      type="button"
-      class="p-2 rounded-full hover:bg-gray-100 active:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
-      [matMenuTriggerFor]="languageMenu"
-      [attr.aria-label]="'shared.selectLanguage' | translate"
-    >
-      <mat-icon class="text-gray-500 !text-xl">language</mat-icon>
-    </button>
+        <app-ask-cdp-ai-logo-icon size="18" color="currentColor"></app-ask-cdp-ai-logo-icon>
+      </a>
+      <button
+        type="button"
+        class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
+        [matMenuTriggerFor]="helpMenu"
+        [attr.aria-label]="'shared.helpMenu.label' | translate"
+      >
+        <mat-icon class="!text-base !w-4 !h-4 !leading-4 !flex !items-center !justify-center"
+          >question_mark</mat-icon
+        >
+      </button>
+      <button
+        type="button"
+        class="p-2 rounded-full hover:bg-gray-100 active:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
+        [matMenuTriggerFor]="languageMenu"
+        [attr.aria-label]="'shared.selectLanguage' | translate"
+      >
+        <mat-icon class="text-gray-500 !text-xl">language</mat-icon>
+      </button>
+    }
   </div>
 </div>
+
+<mat-menu #aiInfoMenu="matMenu" xPosition="before">
+  <div class="max-w-[280px] px-4 py-3 text-sm leading-5 text-cdp-dark">
+    {{ 'askCdpAi.betaDisclaimer' | translate }}
+  </div>
+</mat-menu>
 
 <mat-menu #helpMenu="matMenu" xPosition="before" [class]="'help-menu-panel'">
   <a

@@ -3,6 +3,7 @@ import {
   Input,
   inject,
   DestroyRef,
+  OnInit,
   OnChanges,
   SimpleChanges,
   Output,
@@ -17,48 +18,60 @@ import {
   AskCdpAiService,
   type AskCdpAiContextArea,
 } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 import { PosthogService } from '../../core/analytics/posthog.service';
 import { locationProperties } from '../../core/analytics/analytics-events';
+import { LocationSuggestion } from '../../shared/services/location-suggestion';
+import { AskCdpAiOrganizationSelectorComponent } from './ask-cdp-ai-organization-selector.component';
 
 declare let gtag: Function;
 
 @Component({
   selector: 'app-ask-cdp-ai',
   standalone: true,
-  imports: [FormsModule, TranslateModule],
+  imports: [FormsModule, TranslateModule, AskCdpAiOrganizationSelectorComponent],
   templateUrl: './ask-cdp-ai.html',
   styleUrls: ['./ask-cdp-ai.css'],
 })
-export class AskCdpAiComponent implements OnChanges {
+export class AskCdpAiComponent implements OnInit, OnChanges {
   private askCdpAiService = inject(AskCdpAiService);
   private sanitizer = inject(DomSanitizer);
   private destroyRef = inject(DestroyRef);
   private mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
   private posthog = inject(PosthogService);
+  private translateService = inject(TranslateService);
 
   @Input() locationData: LocationProfile | null = null;
   @Input() contextArea: AskCdpAiContextArea = 'hazards';
   @Input() isOpen = false;
+  @Input() showCloseButton = true;
   @Output() openChange = new EventEmitter<boolean>();
 
   conversationHistory = this.askCdpAiService.conversationHistory;
   isDisclosureLoading = this.askCdpAiService.isDisclosureLoading;
   disclosureError = this.askCdpAiService.disclosureError;
   followUpQuestions = this.askCdpAiService.followUpQuestions;
-  isFollowUpLoading = signal(false);
+  isFollowUpLoading = this.askCdpAiService.isFollowUpLoading;
   followUpError = this.askCdpAiService.followUpError;
 
   userQuery = '';
+  selectedReferenceOrganization = signal<LocationSuggestion | null>(null);
+  showAllStarterQuestions = signal(false);
 
   constructor() {
     this.destroyRef.onDestroy(() => this.askCdpAiService.clearSession());
   }
 
+  ngOnInit(): void {
+    this.setChatContext();
+    this.loadStarterQuestions();
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['locationData'] || changes['contextArea']) {
-      this.askCdpAiService.setLocationContext(this.locationData, this.contextArea);
+      this.setChatContext();
+      this.loadStarterQuestions();
     }
 
     if (changes['isOpen']?.currentValue === true && changes['isOpen'].previousValue !== true) {
@@ -71,6 +84,14 @@ export class AskCdpAiComponent implements OnChanges {
 
   toggleOpen() {
     this.openChange.emit(false);
+  }
+
+  get locationDisplayName(): string {
+    return this.locationData?.name || this.translateService.instant('askCdpAi.locationFallback');
+  }
+
+  get displayedStarterQuestions(): string[] {
+    return this.showAllStarterQuestions() ? this.followUpQuestions() : [];
   }
 
   sendQuery() {
@@ -115,6 +136,15 @@ export class AskCdpAiComponent implements OnChanges {
     this.executeChatQuery(question);
   }
 
+  toggleStarterQuestions(): void {
+    this.showAllStarterQuestions.update((isOpen) => !isOpen);
+  }
+
+  onReferenceOrganizationChange(organization: LocationSuggestion | null): void {
+    this.selectedReferenceOrganization.set(organization);
+    this.syncReferenceOrganizations();
+  }
+
   private executeChatQuery(query: string) {
     this.askCdpAiService
       .sendChatQuery(query)
@@ -130,11 +160,54 @@ export class AskCdpAiComponent implements OnChanges {
       });
   }
 
+  private setChatContext(): void {
+    this.askCdpAiService.setLocationContext(this.locationData, this.contextArea);
+    this.showAllStarterQuestions.set(false);
+    if (
+      this.selectedReferenceOrganization()?.organizationId === this.locationData?.organizationId
+    ) {
+      this.selectedReferenceOrganization.set(null);
+    }
+    this.syncReferenceOrganizations();
+  }
+
+  private loadStarterQuestions(): void {
+    this.askCdpAiService
+      .loadStarterQuestions()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
+  }
+
+  private syncReferenceOrganizations(): void {
+    const selectedReferenceOrganization = this.selectedReferenceOrganization();
+    this.askCdpAiService.setReferenceOrganizations(
+      selectedReferenceOrganization
+        ? [
+            {
+              organizationId: selectedReferenceOrganization.organizationId,
+              name: selectedReferenceOrganization.name,
+              ...(selectedReferenceOrganization.country
+                ? { country: selectedReferenceOrganization.country }
+                : {}),
+            },
+          ]
+        : [],
+    );
+
+    if (!this.conversationHistory().length) {
+      this.loadStarterQuestions();
+    }
+  }
+
   public getSafeHtml(html: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
   private sanitizeAnalyticsQuery(query: string): string {
-    return query.replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 1000);
+    return query
+      .replace(/[\u0000-\u001F\u007F]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 1000);
   }
 }

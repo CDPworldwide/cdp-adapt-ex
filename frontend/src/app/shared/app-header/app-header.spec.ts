@@ -12,7 +12,9 @@ describe('AppHeaderComponent', () => {
   let welcomeModalService: jasmine.SpyObj<WelcomeModalService>;
 
   beforeEach(async () => {
-    welcomeModalService = jasmine.createSpyObj<WelcomeModalService>('WelcomeModalService', ['open']);
+    welcomeModalService = jasmine.createSpyObj<WelcomeModalService>('WelcomeModalService', [
+      'open',
+    ]);
 
     await TestBed.configureTestingModule({
       imports: [AppHeaderComponent, TranslateModule.forRoot()],
@@ -44,5 +46,13 @@ describe('AppHeaderComponent', () => {
     fixture.componentInstance.openWelcomeModal();
 
     expect(welcomeModalService.open).toHaveBeenCalled();
+  });
+
+  it('links the AI header icon to the standalone chat page', () => {
+    const chatLink: HTMLAnchorElement | null =
+      fixture.nativeElement.querySelector('a[routerlink="/chat"]');
+
+    expect(chatLink).not.toBeNull();
+    expect(chatLink?.getAttribute('aria-label')).toBe('askCdpAi.buttonText');
   });
 });

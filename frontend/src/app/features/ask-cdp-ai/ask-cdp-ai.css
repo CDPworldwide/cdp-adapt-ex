@@ -10,6 +10,13 @@
   scroll-margin-bottom: max(5rem, var(--app-keyboard-inset-bottom, 0px));
 }
 
+.ask-ai-suggestion-label {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 @media (max-width: 767px) {
   [data-testid='ask-ai-input'] {
     font-size: 16px;
