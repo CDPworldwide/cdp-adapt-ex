@@ -210,7 +210,7 @@ export class AskCdpAiService {
             'Content-Type': 'application/json',
             ...this.buildAiHeaders(),
           },
-          body: JSON.stringify(this.buildAiRequestBody(true, this.toOpenAiMessages(messages))),
+          body: JSON.stringify(this.buildAiRequestBody(false, this.toOpenAiMessages(messages))),
           signal: abortSignal,
         });
 

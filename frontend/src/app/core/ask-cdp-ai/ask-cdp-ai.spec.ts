@@ -264,6 +264,7 @@ describe('AskCdpAiService', () => {
             );
             expect(chatBody.metadata.locationData).toEqual(mockLocationData);
             expect(chatBody.contextArea).toBe('hazards');
+            expect(chatBody.stream).toBeFalse();
             expect(chatBody.metadata.contextArea).toBe('hazards');
             expect(chatBody.referenceOrganizations).toEqual([]);
             expect(chatBody.metadata.referenceOrganizations).toEqual([]);
