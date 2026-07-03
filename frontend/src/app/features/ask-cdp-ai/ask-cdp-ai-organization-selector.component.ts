@@ -10,6 +10,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -31,9 +32,11 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
 
   readonly searchControl = new FormControl('', { nonNullable: true });
   readonly organizationOptions = signal<LocationSuggestion[]>([]);
+  readonly activeOptionIndex = signal(0);
   isDropdownOpen = false;
 
   private readonly destroyRef = inject(DestroyRef);
+  private readonly document = inject(DOCUMENT);
   private readonly locationService = inject(LocationService);
   private allOrganizations: LocationSuggestion[] = [];
   private defaultOrganizationOptions: LocationSuggestion[] = [];
@@ -95,14 +98,21 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   }
 
   onPickerFocusOut(event: FocusEvent): void {
+    const pickerElement = event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
     const nextTarget = event.relatedTarget;
-    if (nextTarget instanceof Node && event.currentTarget instanceof HTMLElement) {
-      if (event.currentTarget.contains(nextTarget)) {
+    if (nextTarget instanceof Node && pickerElement) {
+      if (pickerElement.contains(nextTarget)) {
         return;
       }
     }
 
-    this.isDropdownOpen = false;
+    setTimeout(() => {
+      if (!pickerElement || pickerElement.contains(this.document.activeElement)) {
+        return;
+      }
+
+      this.isDropdownOpen = false;
+    });
   }
 
   onSearchKeydown(event: KeyboardEvent): void {
@@ -111,11 +121,21 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
       return;
     }
 
+    if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+      event.preventDefault();
+      if (!this.isDropdownOpen) {
+        this.isDropdownOpen = true;
+        this.updateOrganizationOptions(this.searchControl.value);
+      }
+      this.moveActiveOption(event.key);
+      return;
+    }
+
     if (event.key !== 'Enter') {
       return;
     }
 
-    const selectedOrganization = this.organizationOptions()[0];
+    const selectedOrganization = this.organizationOptions()[this.activeOptionIndex()];
     if (!selectedOrganization) {
       return;
     }
@@ -132,6 +152,18 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
     this.selectedOrganizationsChange.emit([...this.selectedOrganizations, organization]);
     this.searchControl.setValue('');
     this.updateOrganizationOptions('');
+  }
+
+  getOptionId(index: number): string {
+    return `ask-ai-organization-option-${index}`;
+  }
+
+  get activeOptionId(): string | null {
+    if (!this.isDropdownOpen || !this.organizationOptions()[this.activeOptionIndex()]) {
+      return null;
+    }
+
+    return this.getOptionId(this.activeOptionIndex());
   }
 
   removeOrganization(organization: LocationSuggestion): void {
@@ -173,6 +205,36 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
     );
 
     this.organizationOptions.set(options);
+    this.activeOptionIndex.set(0);
+  }
+
+  private moveActiveOption(key: string): void {
+    const optionCount = this.organizationOptions().length;
+    if (!optionCount) {
+      this.activeOptionIndex.set(0);
+      return;
+    }
+
+    const currentIndex = Math.max(this.activeOptionIndex(), 0);
+    const nextIndex =
+      key === 'ArrowDown'
+        ? Math.min(currentIndex + 1, optionCount - 1)
+        : key === 'ArrowUp'
+          ? Math.max(currentIndex - 1, 0)
+          : key === 'End'
+            ? optionCount - 1
+            : 0;
+
+    this.activeOptionIndex.set(nextIndex);
+    this.scrollActiveOptionIntoView();
+  }
+
+  private scrollActiveOptionIntoView(): void {
+    requestAnimationFrame(() => {
+      this.document
+        .getElementById(this.getOptionId(this.activeOptionIndex()))
+        ?.scrollIntoView({ block: 'nearest' });
+    });
   }
 
   private isCurrentOrganization(organization: LocationSuggestion): boolean {

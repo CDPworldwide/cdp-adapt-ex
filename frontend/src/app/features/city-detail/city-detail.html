@@ -229,9 +229,21 @@
         </button>
       }
 
+      @if (isAiOpen) {
+        <button
+          type="button"
+          class="fixed inset-0 z-[2090] hidden bg-black/40 backdrop-blur-[1px] max-lg:block"
+          [attr.aria-label]="'shared.close' | translate"
+          (click)="onAiOpenChange(false)"
+        ></button>
+      }
+
       <div
         id="ask-ai-panel"
-        class="ai-panel-drawer fixed inset-x-0 top-16 w-full bg-white z-50 transition-transform duration-300 ease-in-out transform lg:sticky lg:inset-auto lg:top-0 lg:w-1/4 lg:translate-x-0"
+        class="ai-panel-drawer fixed inset-0 z-[2100] w-full bg-white transition-transform duration-300 ease-in-out transform lg:sticky lg:inset-auto lg:top-0 lg:z-auto lg:w-1/4 lg:translate-x-0"
+        role="dialog"
+        [attr.aria-label]="'askCdpAi.buttonText' | translate"
+        aria-modal="true"
         [attr.aria-hidden]="!isAiOpen"
         [class.translate-x-full]="!isAiOpen"
         [class.invisible]="!isAiOpen"

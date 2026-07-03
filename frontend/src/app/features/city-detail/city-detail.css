@@ -3,11 +3,12 @@
 }
 
 .ai-panel-drawer {
-  top: calc(4rem + var(--app-visual-viewport-offset-top, 0px));
-  height: calc(100vh - 4rem);
-  height: calc(100svh - 4rem);
-  height: calc(var(--app-visual-viewport-height, 100svh) - 4rem);
-  max-height: calc(100dvh - 4rem);
+  top: var(--app-visual-viewport-offset-top, 0px);
+  height: 100vh;
+  height: 100svh;
+  height: var(--app-visual-viewport-height, 100svh);
+  max-height: 100dvh;
+  overscroll-behavior: contain;
 }
 
 @media (min-width: 1024px) {

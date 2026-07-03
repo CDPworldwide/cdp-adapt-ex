@@ -98,6 +98,17 @@ describe('ChatPageComponent', () => {
     expect(fixture.nativeElement.querySelector('[data-testid="ask-ai-toggle"]')).toBeNull();
   });
 
+  it('uses the shared AI chat component without loading suggestions', () => {
+    askCdpAiService.followUpQuestions.set(['What hazards are on the rise?']);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('app-ask-cdp-ai')).not.toBeNull();
+    expect(askCdpAiService.loadStarterQuestions).not.toHaveBeenCalled();
+    expect(
+      fixture.nativeElement.querySelector('[data-testid="ask-ai-suggestions-toggle"]'),
+    ).toBeNull();
+  });
+
   it('renders the styled standalone chat layout', () => {
     expect(fixture.nativeElement.querySelector('app-header')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('.chat-tool-shell app-ask-cdp-ai')).not.toBeNull();

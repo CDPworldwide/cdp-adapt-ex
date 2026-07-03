@@ -43,6 +43,9 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   @Input() contextArea: AskCdpAiContextArea = 'hazards';
   @Input() isOpen = false;
   @Input() showCloseButton = true;
+  @Input() showSuggestions = true;
+  @Input() showPanelHeader = true;
+  @Input() showLocalTestControls = false;
   @Output() openChange = new EventEmitter<boolean>();
 
   conversationHistory = this.askCdpAiService.conversationHistory;
@@ -129,14 +132,23 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
     this.showAllStarterQuestions.update((isOpen) => !isOpen);
   }
 
+  loadLocalTestChat(): void {
+    this.showAllStarterQuestions.set(false);
+    this.askCdpAiService.loadLocalTestChat();
+  }
+
   onReferenceOrganizationsChange(organizations: LocationSuggestion[]): void {
     this.selectedReferenceOrganizations.set(organizations);
     this.syncReferenceOrganizations();
   }
 
   private executeChatQuery(query: string) {
-    this.askCdpAiService
-      .sendChatQuery(query)
+    this.showAllStarterQuestions.set(false);
+    const chatQuery$ = this.showSuggestions
+      ? this.askCdpAiService.sendChatQuery(query)
+      : this.askCdpAiService.sendChatQuery(query, false);
+
+    chatQuery$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -163,6 +175,10 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   }
 
   private loadStarterQuestions(): void {
+    if (!this.showSuggestions) {
+      return;
+    }
+
     this.askCdpAiService
       .loadStarterQuestions()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -178,7 +194,7 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
       })),
     );
 
-    if (!this.conversationHistory().length) {
+    if (this.showSuggestions && !this.conversationHistory().length) {
       this.loadStarterQuestions();
     }
   }

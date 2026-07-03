@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Location } from '@angular/common';
+import { DOCUMENT, Location } from '@angular/common';
 import { Component, DestroyRef, OnInit, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -52,6 +52,10 @@ export class CityDetailPageComponent implements OnInit {
   private languageService = inject(LanguageService);
   private feedbackService = inject(FeedbackService);
   private mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
+  private document = inject(DOCUMENT);
+  private mobileChatMediaQuery =
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 1023px)') : null;
+  private readonly onMobileChatViewportChange = () => this.updatePageScrollLock();
 
   constructor(
     private locationService: LocationService,
@@ -72,6 +76,11 @@ export class CityDetailPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.mobileKeyboardViewportService.startTracking(this.destroyRef);
+    this.mobileChatMediaQuery?.addEventListener('change', this.onMobileChatViewportChange);
+    this.destroyRef.onDestroy(() => {
+      this.mobileChatMediaQuery?.removeEventListener('change', this.onMobileChatViewportChange);
+      this.setDocumentScrollLocked(false);
+    });
 
     combineLatest([this.route.paramMap, this.route.queryParamMap, this.route.data])
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -80,6 +89,7 @@ export class CityDetailPageComponent implements OnInit {
         this.organizationId = organizationId;
         this.activeTab = this.normalizeTab(params.get('tab'));
         this.isAiOpen = data['openAiPanel'] === true || queryParams.has('chatopen');
+        this.updatePageScrollLock();
 
         if (!organizationId) {
           this.isLoading = false;
@@ -116,11 +126,13 @@ export class CityDetailPageComponent implements OnInit {
 
   openAiPanel(): void {
     this.isAiOpen = true;
+    this.updatePageScrollLock();
     this.navigateToChatOpenUrl(this.buildChatOpenUrl());
   }
 
   onAiOpenChange(isOpen: boolean): void {
     this.isAiOpen = isOpen;
+    this.updatePageScrollLock();
 
     if (!isOpen) {
       this.router.navigate([], {
@@ -239,5 +251,14 @@ export class CityDetailPageComponent implements OnInit {
       locationName: this.locationData?.name,
       activeTab: this.activeTab,
     });
+  }
+
+  private updatePageScrollLock(): void {
+    this.setDocumentScrollLocked(Boolean(this.isAiOpen && this.mobileChatMediaQuery?.matches));
+  }
+
+  private setDocumentScrollLocked(isLocked: boolean): void {
+    this.document.documentElement.classList.toggle('overflow-hidden', isLocked);
+    this.document.body.classList.toggle('overflow-hidden', isLocked);
   }
 }

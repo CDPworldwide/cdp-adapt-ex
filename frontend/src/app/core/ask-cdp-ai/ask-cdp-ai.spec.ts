@@ -122,11 +122,24 @@ describe('AskCdpAiService', () => {
           expect(String((window.fetch as jasmine.Spy).calls.argsFor(0)[0])).toBe(
             `${environment.aiServerUrl}/v1/suggest-follow-ups`,
           );
-          expect(body.locationData).toEqual(mockLocationData);
+          expect(body.locationData).toEqual(
+            jasmine.objectContaining({
+              ...mockLocationData,
+              pagePath: '/org/12345/hazards',
+              canonicalPageUrl: 'https://cdp-action-explorer.net/org/12345/hazards',
+            }),
+          );
+          expect(body.locationData.pageUrl).toBe(`${window.location.origin}/org/12345/hazards`);
           expect(body.contextArea).toBe('hazards');
           expect(body.metadata.contextArea).toBe('hazards');
+          expect(body.metadata.pagePath).toBe('/org/12345/hazards');
+          expect(body.metadata.pageUrl).toBe(`${window.location.origin}/org/12345/hazards`);
+          expect(body.metadata.canonicalPageUrl).toBe(
+            'https://cdp-action-explorer.net/org/12345/hazards',
+          );
           expect(body.referenceOrganizations).toEqual([]);
           expect(body.metadata.referenceOrganizations).toEqual([]);
+          expect(body.organizationIds).toBeUndefined();
           expect(body.messages.at(-1)?.role).toBe('user');
           done();
         });
@@ -262,7 +275,13 @@ describe('AskCdpAiService', () => {
             expect(String((window.fetch as jasmine.Spy).calls.argsFor(1)[0])).toBe(
               `${environment.aiServerUrl}/v1/suggest-follow-ups`,
             );
-            expect(chatBody.metadata.locationData).toEqual(mockLocationData);
+            expect(chatBody.metadata.locationData).toEqual(
+              jasmine.objectContaining({
+                ...mockLocationData,
+                pagePath: '/org/12345/hazards',
+                canonicalPageUrl: 'https://cdp-action-explorer.net/org/12345/hazards',
+              }),
+            );
             expect(chatBody.contextArea).toBe('hazards');
             expect(chatBody.stream).toBeFalse();
             expect(chatBody.metadata.contextArea).toBe('hazards');
@@ -311,6 +330,92 @@ describe('AskCdpAiService', () => {
         readRequestBodyAt(0).then((body) => {
           expect(body.contextArea).toBe('solutions');
           expect(body.metadata.contextArea).toBe('solutions');
+          expect(body.metadata.locationData.pagePath).toBe('/org/12345/solutions');
+          done();
+        });
+      });
+    });
+
+    it('should skip loading follow-up suggestions when disabled for a chat query', (done) => {
+      service.setLocationContext(mockLocationData);
+      (window.fetch as jasmine.Spy).and.returnValue(
+        Promise.resolve(
+          new Response(
+            [
+              'data: {"choices":[{"delta":{"content":"Chat response"}}]}',
+              '',
+              'data: [DONE]',
+              '',
+            ].join('\n'),
+            {
+              status: 200,
+              headers: { 'Content-Type': 'text/event-stream' },
+            },
+          ),
+        ),
+      );
+      spyOn(service, 'parseToHtml').and.returnValue('<p>Chat response</p>');
+
+      service.sendChatQuery('Hello', false).subscribe(() => {
+        expect(window.fetch).toHaveBeenCalledTimes(1);
+        expect(String((window.fetch as jasmine.Spy).calls.argsFor(0)[0])).toContain(
+          '/v1/chat/completions',
+        );
+        expect(service.followUpQuestions()).toEqual([]);
+        done();
+      });
+    });
+
+    it('should send selected standalone chat organizations as comparison organization IDs', (done) => {
+      service.setLocationContext(null);
+      service.setReferenceOrganizations([
+        {
+          organizationId: 42001,
+          name: 'Auckland Council',
+          country: 'New Zealand',
+        },
+        {
+          organizationId: 42002,
+          name: 'Broward County, FL',
+          country: 'United States of America',
+        },
+      ]);
+      (window.fetch as jasmine.Spy).and.returnValue(
+        Promise.resolve(
+          new Response(
+            [
+              'data: {"choices":[{"delta":{"content":"Comparison response"}}]}',
+              '',
+              'data: [DONE]',
+              '',
+            ].join('\n'),
+            {
+              status: 200,
+              headers: { 'Content-Type': 'text/event-stream' },
+            },
+          ),
+        ),
+      );
+      spyOn(service, 'parseToHtml').and.returnValue('<p>Comparison response</p>');
+
+      service.sendChatQuery('compare these two', false).subscribe(() => {
+        readRequestBodyAt(0).then((body) => {
+          expect(body.locationData).toBeNull();
+          expect(body.metadata.locationData).toBeNull();
+          expect(body.referenceOrganizations).toEqual([
+            jasmine.objectContaining({
+              organizationId: 42001,
+              name: 'Auckland Council',
+              pagePath: '/org/42001/hazards',
+            }),
+            jasmine.objectContaining({
+              organizationId: 42002,
+              name: 'Broward County, FL',
+              pagePath: '/org/42002/hazards',
+            }),
+          ]);
+          expect(body.organizationIds).toEqual([42001, 42002]);
+          expect(body.metadata.organizationIds).toEqual([42001, 42002]);
           done();
         });
       });
@@ -352,6 +457,7 @@ describe('AskCdpAiService', () => {
           expect(body.metadata.locationData.governmentActions.goals[0].title).toBe('Heat goal');
           expect(body.metadata.locationData.governmentActions.actions.length).toBe(1);
           expect(body.metadata.locationData.governmentActions.actions[0].title).toBe('Heat action');
+          expect(body.metadata.locationData.pagePath).toBe('/org/12345/actions');
           done();
         });
       });
@@ -382,9 +488,14 @@ describe('AskCdpAiService', () => {
               organizationId: 67890,
               name: 'Los Angeles',
               country: 'United States of America',
+              pagePath: '/org/67890/hazards',
+              pageUrl: `${window.location.origin}/org/67890/hazards`,
+              canonicalPageUrl: 'https://cdp-action-explorer.net/org/67890/hazards',
             },
           ]);
           expect(body.metadata.referenceOrganizations).toEqual(body.referenceOrganizations);
+          expect(body.organizationIds).toEqual([12345, 67890]);
+          expect(body.metadata.organizationIds).toEqual([12345, 67890]);
           expect(body.messages.at(-1)?.content).toContain('ID 67890');
           done();
         });
@@ -421,6 +532,39 @@ describe('AskCdpAiService', () => {
       expect(doc.querySelectorAll('.ai-sources li').length).toBe(1);
     });
 
+    it('renders bold-leading findings as answer sections', () => {
+      const html = service.parseToHtml(
+        [
+          '**Coastal vs. Inland Hazards:** Auckland reports coastal flooding while Ankara does not.',
+          '',
+          '**Urban Flooding:** Both locations report high and increasing risk.',
+        ].join('\n'),
+      );
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const sections = doc.querySelectorAll('.ai-answer-section');
+
+      expect(sections.length).toBe(2);
+      expect(sections[0].querySelector('h3')?.textContent).toBe('Coastal vs. Inland Hazards');
+      expect(sections[0].querySelector('p')?.textContent).toContain('Auckland reports coastal');
+    });
+
+    it('renders sources as a collapsed details block', () => {
+      const html = service.parseToHtml(
+        [
+          'Urban flooding has caused major losses.[^1]',
+          '',
+          'Sources:',
+          '[^1]: Auckland Council disclosure. https://cdp-action-explorer.net/org/3422/hazards',
+        ].join('\n'),
+      );
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const sources = doc.querySelector('.ai-sources');
+
+      expect(sources?.tagName.toLowerCase()).toBe('details');
+      expect(sources?.hasAttribute('open')).toBeFalse();
+      expect(doc.querySelector('.ai-sources-title')?.tagName.toLowerCase()).toBe('summary');
+    });
+
     it('uses a readable sources label when translations are not ready', () => {
       translate.setTranslation('en', {});
 
@@ -435,6 +579,21 @@ describe('AskCdpAiService', () => {
       const doc = new DOMParser().parseFromString(html, 'text/html');
 
       expect(doc.querySelector('.ai-sources-title')?.textContent).toBe('Sources');
+    });
+  });
+
+  describe('loadLocalTestChat', () => {
+    it('loads a representative local markdown conversation', () => {
+      service.loadLocalTestChat();
+      const history = service.conversationHistory();
+      const doc = new DOMParser().parseFromString(history[1].content, 'text/html');
+
+      expect(history.length).toBe(2);
+      expect(history[0].content).toContain('Compare Auckland Council');
+      expect(doc.querySelectorAll('.ai-answer-section').length).toBeGreaterThan(3);
+      expect(doc.querySelector('.ai-sources')?.tagName.toLowerCase()).toBe('details');
+      expect(service.isDisclosureLoading()).toBeFalse();
+      expect(service.followUpQuestions()).toEqual([]);
     });
   });
 

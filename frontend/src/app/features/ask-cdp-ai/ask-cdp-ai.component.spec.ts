@@ -25,6 +25,7 @@ describe('AskCdpAiComponent', () => {
         'setLocationContext',
         'setReferenceOrganizations',
         'sendChatQuery',
+        'loadLocalTestChat',
       ],
       {
         conversationHistory: signal([]),
@@ -101,6 +102,20 @@ describe('AskCdpAiComponent', () => {
     expect(askCdpAiService.loadStarterQuestions).toHaveBeenCalled();
   });
 
+  it('does not load or render suggestions when suggestions are disabled', () => {
+    component.showSuggestions = false;
+    askCdpAiService.followUpQuestions.set(['What hazards are on the rise?']);
+
+    fixture.detectChanges();
+
+    expect(askCdpAiService.setLocationContext).toHaveBeenCalledWith(null, 'hazards');
+    expect(askCdpAiService.loadStarterQuestions).not.toHaveBeenCalled();
+    expect(
+      fixture.nativeElement.querySelector('[data-testid="ask-ai-suggestions-toggle"]'),
+    ).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-testid="ask-ai-suggestion"]')).toBeNull();
+  });
+
   it('prompts users to select a location when no location context exists', () => {
     fixture.detectChanges();
 
@@ -109,6 +124,20 @@ describe('AskCdpAiComponent', () => {
     );
     expect(selector.textContent).toContain('Select a location');
     expect(selector.textContent).not.toContain('this location');
+  });
+
+  it('keeps the comparison selector visible when the chat has messages', () => {
+    askCdpAiService.conversationHistory.set([
+      { role: 'user', content: 'What hazards are on the rise?' },
+      { role: 'assistant', content: 'Urban flooding is a reported concern.' },
+    ]);
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector('[data-testid="ask-ai-organization-selector"]'),
+    ).not.toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('What hazards are on the rise?');
   });
 
   it('syncs multiple selected reference organizations with the AI service', () => {
@@ -148,7 +177,7 @@ describe('AskCdpAiComponent', () => {
     expect(askCdpAiService.loadStarterQuestions).toHaveBeenCalled();
   });
 
-  it('collapses starter suggestions outside the input section by default', () => {
+  it('collapses starter suggestions above the input by default', () => {
     askCdpAiService.followUpQuestions.set([
       'Which hazards are expected to have the highest financial impact?',
       'What hazards are on the rise?',
@@ -157,18 +186,13 @@ describe('AskCdpAiComponent', () => {
     fixture.detectChanges();
 
     expect(
-      fixture.nativeElement.querySelector(
-        '.chat-input-section .overflow-y-auto [data-testid="ask-ai-suggestion"]',
-      ),
-    ).toBeNull();
-    expect(
       fixture.nativeElement.querySelectorAll(
         '.chat-input-section [data-testid="ask-ai-suggestion"]',
       ).length,
     ).toBe(0);
 
     const toggle: HTMLButtonElement = fixture.nativeElement.querySelector(
-      '[data-testid="ask-ai-suggestions-toggle"]',
+      '.chat-input-section [data-testid="ask-ai-suggestions-toggle"]',
     );
     expect(toggle.textContent).toContain('2 suggestions');
 
@@ -177,8 +201,86 @@ describe('AskCdpAiComponent', () => {
 
     expect(
       fixture.nativeElement.querySelectorAll(
-        '#ask-ai-starter-suggestions [data-testid="ask-ai-suggestion"]',
+        '.chat-input-section #ask-ai-starter-suggestions [data-testid="ask-ai-suggestion"]',
       ).length,
     ).toBe(2);
+  });
+
+  it('collapses follow-up suggestions after an assistant response by default', () => {
+    askCdpAiService.conversationHistory.set([
+      { role: 'user', content: 'What hazards are on the rise?' },
+      { role: 'assistant', content: 'Urban flooding is a reported concern.' },
+    ]);
+    askCdpAiService.followUpQuestions.set([
+      'Which hazards are expected to have the highest financial impact?',
+      'What is the projected risk level and trend for urban flooding?',
+    ]);
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelectorAll(
+        '.chat-input-section #ask-ai-starter-suggestions [data-testid="ask-ai-suggestion"]',
+      ).length,
+    ).toBe(0);
+
+    const toggle: HTMLButtonElement = fixture.nativeElement.querySelector(
+      '[data-testid="ask-ai-suggestions-toggle"]',
+    );
+    expect(toggle.textContent).toContain('2 suggestions');
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+
+    toggle.click();
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelectorAll(
+        '.chat-input-section #ask-ai-starter-suggestions [data-testid="ask-ai-suggestion"]',
+      ).length,
+    ).toBe(2);
+  });
+
+  it('collapses suggestions when a query is submitted', () => {
+    askCdpAiService.followUpQuestions.set(['What hazards are on the rise?']);
+    fixture.detectChanges();
+
+    component.toggleStarterQuestions();
+    component.userQuery = 'Which hazards are highest risk?';
+    component.sendQuery();
+    fixture.detectChanges();
+
+    const toggle: HTMLButtonElement = fixture.nativeElement.querySelector(
+      '[data-testid="ask-ai-suggestions-toggle"]',
+    );
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-suggestion"]').length,
+    ).toBe(0);
+  });
+
+  it('does not ask the service to load follow-ups after a manual query when suggestions are disabled', () => {
+    component.showSuggestions = false;
+    component.userQuery = 'Which hazards are highest risk?';
+
+    component.sendQuery();
+
+    expect(askCdpAiService.sendChatQuery).toHaveBeenCalledWith(
+      'Which hazards are highest risk?',
+      false,
+    );
+  });
+
+  it('renders a local-only test chat button when enabled', () => {
+    component.showLocalTestControls = true;
+    fixture.detectChanges();
+
+    const button: HTMLButtonElement = fixture.nativeElement.querySelector(
+      '[data-testid="ask-ai-load-test-chat"]',
+    );
+    expect(button.textContent).toContain('Load test chat');
+
+    button.click();
+
+    expect(askCdpAiService.loadLocalTestChat).toHaveBeenCalled();
   });
 });

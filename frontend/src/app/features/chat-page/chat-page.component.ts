@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import type { LocationProfile } from '@pac-api/client';
 import { distinctUntilChanged, map, switchMap, of, catchError } from 'rxjs';
+import { environment } from '@env/environment';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { LocationService } from '../../shared/services/location.service';
 import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
@@ -19,6 +20,7 @@ import { AskCdpAiComponent } from '../ask-cdp-ai/ask-cdp-ai.component';
 })
 export class ChatPageComponent implements OnInit {
   locationData: LocationProfile | null = null;
+  readonly showLocalTestControls = !environment.production;
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly locationService = inject(LocationService);

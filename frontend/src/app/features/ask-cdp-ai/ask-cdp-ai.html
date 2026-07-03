@@ -1,37 +1,53 @@
 <div class="bg-white border-l border-gray-200 flex h-full min-h-0 flex-col overflow-hidden">
   <!-- Header Section -->
-  <div
-    class="chat-panel-header hidden flex-shrink-0 border-b border-gray-200 bg-white p-4 lg:block"
-  >
-    <div class="flex justify-between items-center">
-      <h2 class="text-lg font-semibold text-gray-800">{{ 'askCdpAi.buttonText' | translate }}</h2>
-      @if (showCloseButton) {
-        <button
-          data-testid="ask-ai-toggle"
-          (click)="toggleOpen()"
-          class="text-gray-500 hover:text-gray-700"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+  @if (showPanelHeader) {
+    <div class="chat-panel-header flex-shrink-0 border-b border-gray-200 bg-white p-3 sm:p-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-semibold text-gray-800">{{ 'askCdpAi.buttonText' | translate }}</h2>
+        @if (showCloseButton) {
+          <button
+            data-testid="ask-ai-toggle"
+            (click)="toggleOpen()"
+            class="text-gray-500 hover:text-gray-700"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M17 8l4 4m0 0l-4 4m4-4H3"
-            />
-          </svg>
-        </button>
-      }
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </button>
+        }
+      </div>
+      <p class="mt-2 text-sm font-medium text-cdp-red leading-snug">
+        {{ 'askCdpAi.betaDisclaimer' | translate }}
+      </p>
     </div>
-    <p class="mt-2 text-sm font-medium text-cdp-red leading-snug">
-      {{ 'askCdpAi.betaDisclaimer' | translate }}
-    </p>
-  </div>
+  }
+
+  @if (!isDisclosureLoading() || conversationHistory().length > 0) {
+    <div class="chat-context-section flex-shrink-0 border-b border-gray-200 bg-white p-3 sm:p-4">
+      <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
+        <app-ask-cdp-ai-organization-selector
+          [currentOrganizationId]="locationData?.organizationId"
+          [currentDisplayName]="locationDisplayName"
+          [selectedOrganizations]="selectedReferenceOrganizations()"
+          (selectedOrganizationsChange)="onReferenceOrganizationsChange($event)"
+        ></app-ask-cdp-ai-organization-selector>
+        <p class="mt-1 hidden text-sm text-gray-500 sm:block">
+          {{ 'askCdpAi.emptyState.description' | translate }}
+        </p>
+      </div>
+    </div>
+  }
 
   <!-- Main Content -->
   <div class="min-h-0 flex-1 overflow-y-auto p-3 sm:p-4">
@@ -46,62 +62,11 @@
       } @else if (message.role === 'assistant') {
         <div class="mb-4 min-w-0">
           <div
-            class="ai-assistant-message w-full max-w-lg min-w-0 rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm"
+            class="ai-assistant-message w-full max-w-3xl min-w-0 rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm"
           >
             <div class="ai-markdown" [innerHTML]="getSafeHtml(message.content)"></div>
           </div>
         </div>
-        <!-- Follow-up questions for the last assistant message -->
-        @if ($index === conversationHistory().length - 1) {
-          <!-- Follow-up Questions -->
-          @if (isFollowUpLoading() || followUpError() || followUpQuestions().length > 0) {
-            <div class="pt-4 mt-4 border-t border-gray-200">
-              <!-- Loading State for Follow Up Questions -->
-              @if (isFollowUpLoading()) {
-                <div class="flex justify-center items-center py-4">
-                  <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-cdp-red"></div>
-                </div>
-              }
-
-              <!-- Error State for Follow Up Questions -->
-              @if (followUpError()) {
-                <div
-                  class="mb-2 p-2 bg-red-50 text-red-700 rounded-md border border-red-200 text-sm"
-                >
-                  {{ followUpError() }}
-                </div>
-              }
-
-              @if (!isFollowUpLoading() && !followUpError() && followUpQuestions().length > 0) {
-                <div class="space-y-2">
-                  @for (q of followUpQuestions(); track $index) {
-                    <button
-                      data-testid="ask-ai-suggestion"
-                      (click)="onFollowUpClick(q)"
-                      class="w-full min-w-0 text-left text-sm text-white bg-cdp-red hover:bg-red-600 py-2 px-3 rounded-lg transition-colors flex justify-between items-center gap-2"
-                    >
-                      <span class="min-w-0">{{ q }}</span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 flex-shrink-0"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M13 5l7 7-7 7"
-                        />
-                      </svg>
-                    </button>
-                  }
-                </div>
-              }
-            </div>
-          }
-        }
       }
     }
 
@@ -119,19 +84,27 @@
       </div>
     }
 
-    @if (conversationHistory().length === 0 && !isDisclosureLoading()) {
-      <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
-        <app-ask-cdp-ai-organization-selector
-          [currentOrganizationId]="locationData?.organizationId"
-          [currentDisplayName]="locationDisplayName"
-          [selectedOrganizations]="selectedReferenceOrganizations()"
-          (selectedOrganizationsChange)="onReferenceOrganizationsChange($event)"
-        ></app-ask-cdp-ai-organization-selector>
-        <p class="mt-1 hidden text-sm text-gray-500 sm:block">
-          {{ 'askCdpAi.emptyState.description' | translate }}
-        </p>
+  </div>
+
+  <!-- Input Section -->
+  <div
+    class="chat-input-section flex flex-shrink-0 flex-col border-t border-gray-200 bg-white p-3 sm:p-4"
+  >
+    @if (showLocalTestControls) {
+      <div class="mb-3 flex justify-end">
+        <button
+          type="button"
+          data-testid="ask-ai-load-test-chat"
+          class="inline-flex items-center rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition-colors hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red"
+          (click)="loadLocalTestChat()"
+        >
+          Load test chat
+        </button>
       </div>
-      <div class="mt-3">
+    }
+
+    @if (showSuggestions && !isDisclosureLoading()) {
+      <div class="mb-3">
         @if (isFollowUpLoading()) {
           <div class="flex flex-shrink-0 items-center justify-center py-2">
             <div class="h-6 w-6 animate-spin rounded-full border-b-2 border-cdp-red"></div>
@@ -142,6 +115,34 @@
           </div>
         } @else if (followUpQuestions().length > 0) {
           <div class="flex flex-shrink-0 flex-col gap-2">
+            @if (showAllStarterQuestions()) {
+              <div id="ask-ai-starter-suggestions" class="flex max-h-[40dvh] flex-col gap-2 overflow-y-auto">
+                @for (q of displayedStarterQuestions; track $index) {
+                  <button
+                    data-testid="ask-ai-suggestion"
+                    (click)="onFollowUpClick(q)"
+                    class="flex w-full min-w-0 items-center justify-between gap-2 rounded-md bg-cdp-red px-3 py-2 text-left text-sm leading-snug text-white transition-colors hover:bg-red-600 sm:rounded-lg"
+                  >
+                    <span class="ask-ai-suggestion-label min-w-0">{{ q }}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 flex-shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                }
+              </div>
+            }
+
             <button
               type="button"
               data-testid="ask-ai-suggestions-toggle"
@@ -168,44 +169,11 @@
                 />
               </svg>
             </button>
-
-            @if (showAllStarterQuestions()) {
-              <div id="ask-ai-starter-suggestions" class="flex flex-col gap-2">
-                @for (q of displayedStarterQuestions; track $index) {
-                  <button
-                    data-testid="ask-ai-suggestion"
-                    (click)="onFollowUpClick(q)"
-                    class="flex w-full min-w-0 items-center justify-between gap-2 rounded-md bg-cdp-red px-3 py-2 text-left text-sm leading-snug text-white transition-colors hover:bg-red-600 sm:rounded-lg"
-                  >
-                    <span class="ask-ai-suggestion-label min-w-0">{{ q }}</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-4 w-4 flex-shrink-0"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M13 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
-                }
-              </div>
-            }
           </div>
         }
       </div>
     }
-  </div>
 
-  <!-- Input Section -->
-  <div
-    class="chat-input-section flex flex-shrink-0 flex-col border-t border-gray-200 bg-white p-3 sm:p-4"
-  >
     <div class="relative">
       <input
         data-testid="ask-ai-input"

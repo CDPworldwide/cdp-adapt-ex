@@ -52,6 +52,7 @@ describe('CityDetailPageComponent', () => {
   let routeParamMap$: BehaviorSubject<any>;
   let routeQueryParamMap$: BehaviorSubject<any>;
   let routeData$: BehaviorSubject<any>;
+  let matchMediaList: MediaQueryList;
 
   const MOCK_LOCATION_DATA = {
     name: 'Junagadh',
@@ -86,6 +87,17 @@ describe('CityDetailPageComponent', () => {
     mockGoogleMapsLoaderService = jasmine.createSpyObj('GoogleMapsLoaderService', ['loadApi']);
     routeParamMap$ = new BehaviorSubject(convertToParamMap({ organizationId: '867355' }));
     routeQueryParamMap$ = new BehaviorSubject(convertToParamMap({}));
+    matchMediaList = {
+      matches: true,
+      media: '(max-width: 1023px)',
+      onchange: null,
+      addEventListener: jasmine.createSpy('addEventListener'),
+      removeEventListener: jasmine.createSpy('removeEventListener'),
+      addListener: jasmine.createSpy('addListener'),
+      removeListener: jasmine.createSpy('removeListener'),
+      dispatchEvent: jasmine.createSpy('dispatchEvent'),
+    } as unknown as MediaQueryList;
+    spyOn(window, 'matchMedia').and.returnValue(matchMediaList);
     askCdpAiServiceMock = {
       conversationHistory: signal<any[]>([]),
       disclosure: signal<string | null>(null),
@@ -145,6 +157,11 @@ describe('CityDetailPageComponent', () => {
     fixture = TestBed.createComponent(CityDetailPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    document.documentElement.classList.remove('overflow-hidden');
+    document.body.classList.remove('overflow-hidden');
   });
 
   it('loads location details by organization ID', () => {
@@ -292,6 +309,43 @@ describe('CityDetailPageComponent', () => {
     expect(component.isAiOpen).toBeFalse();
   });
 
+  it('locks mobile page scroll and renders a backdrop while the AI sidebar is open', () => {
+    routeQueryParamMap$.next(convertToParamMap({ chatopen: 'true' }));
+    fixture.detectChanges();
+
+    expect(component.isAiOpen).toBeTrue();
+    expect(document.documentElement.classList.contains('overflow-hidden')).toBeTrue();
+    expect(document.body.classList.contains('overflow-hidden')).toBeTrue();
+    expect(fixture.nativeElement.querySelector('.bg-black\\/40')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('#ask-ai-panel')?.getAttribute('role')).toBe(
+      'dialog',
+    );
+  });
+
+  it('closes the mobile AI sidebar when the backdrop is clicked', () => {
+    routeQueryParamMap$.next(convertToParamMap({ chatopen: 'true' }));
+    fixture.detectChanges();
+
+    const backdrop: HTMLButtonElement | null = fixture.nativeElement.querySelector(
+      'button.bg-black\\/40',
+    );
+    expect(backdrop).not.toBeNull();
+
+    backdrop?.click();
+    fixture.detectChanges();
+
+    expect(component.isAiOpen).toBeFalse();
+    expect(document.documentElement.classList.contains('overflow-hidden')).toBeFalse();
+    expect(document.body.classList.contains('overflow-hidden')).toBeFalse();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: { chatopen: null },
+        queryParamsHandling: 'merge',
+      }),
+    );
+  });
+
   it('removes the chatopen query parameter when the AI sidebar closes', () => {
     component.isAiOpen = true;
     mockRouter.navigate.calls.reset();
@@ -327,6 +381,11 @@ describe('CityDetailPageComponent', () => {
       { role: 'assistant', content: 'Previous answer' },
     ]);
     askCdpAiServiceMock.followUpQuestions.set(['Follow Up 1', 'Follow Up 2']);
+    fixture.detectChanges();
+
+    const toggle = fixture.debugElement.query(By.css('[data-testid="ask-ai-suggestions-toggle"]'));
+    expect(toggle).toBeTruthy();
+    toggle.nativeElement.click();
     fixture.detectChanges();
 
     const suggestions = fixture.debugElement.queryAll(By.css('[data-testid="ask-ai-suggestion"]'));
