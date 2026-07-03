@@ -1,38 +1,20 @@
 <div class="chat-page flex min-h-0 flex-1 flex-col bg-cdp-bg text-cdp-dark">
   <nav [attr.aria-label]="'shared.mainNavigation' | translate" class="flex-shrink-0">
-    <app-header></app-header>
+    <app-header [chatMode]="true"></app-header>
   </nav>
 
   <div
     id="page-content"
     tabindex="-1"
-    class="flex min-h-0 flex-1 flex-col px-4 pb-4 focus:outline-none sm:px-6 lg:px-8"
+    class="chat-page-content flex min-h-0 flex-1 flex-col focus:outline-none"
   >
-    <header class="chat-page-hero flex flex-shrink-0 flex-col items-center pb-5 pt-4 text-center">
-      <span class="text-[11px] font-medium uppercase tracking-cdp-eyebrow text-cdp-dark md:text-xs">
-        Explore climate adaptation with
-      </span>
-      <div class="mt-4 flex max-w-full items-center justify-center gap-3">
-        <span
-          class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-cdp-dark text-white sm:h-11 sm:w-11"
-          aria-hidden="true"
-        >
-          <app-ask-cdp-ai-logo-icon size="22" color="currentColor"></app-ask-cdp-ai-logo-icon>
-        </span>
-        <h1
-          class="min-w-0 text-left text-3xl font-light leading-none text-cdp-dark sm:text-5xl lg:text-6xl"
-        >
-          {{ 'askCdpAi.buttonText' | translate }}
-        </h1>
-      </div>
-    </header>
-
     <section
-      class="chat-tool-shell mx-auto flex min-h-0 w-full max-w-[980px] flex-1 flex-col overflow-hidden bg-white"
+      class="chat-tool-shell mx-auto flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-white"
       [attr.aria-label]="'askCdpAi.buttonText' | translate"
     >
       <app-ask-cdp-ai
         class="block min-h-0 flex-1"
+        [locationData]="locationData"
         [contextArea]="'hazards'"
         [isOpen]="true"
         [showCloseButton]="false"

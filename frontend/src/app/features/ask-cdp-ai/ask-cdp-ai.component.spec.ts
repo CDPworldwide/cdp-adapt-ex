@@ -101,6 +101,53 @@ describe('AskCdpAiComponent', () => {
     expect(askCdpAiService.loadStarterQuestions).toHaveBeenCalled();
   });
 
+  it('prompts users to select a location when no location context exists', () => {
+    fixture.detectChanges();
+
+    const selector: HTMLButtonElement = fixture.nativeElement.querySelector(
+      '[data-testid="ask-ai-organization-selector"]',
+    );
+    expect(selector.textContent).toContain('Select a location');
+    expect(selector.textContent).not.toContain('this location');
+  });
+
+  it('syncs multiple selected reference organizations with the AI service', () => {
+    fixture.detectChanges();
+    askCdpAiService.setReferenceOrganizations.calls.reset();
+    askCdpAiService.loadStarterQuestions.calls.reset();
+
+    component.onReferenceOrganizationsChange([
+      {
+        organizationId: 31173,
+        name: 'City of New York, NY',
+        country: 'United States of America',
+        disclosesToCDP: true,
+        isReportingLeader: false,
+      },
+      {
+        organizationId: 10894,
+        name: 'City of Los Angeles, CA',
+        country: 'United States of America',
+        disclosesToCDP: true,
+        isReportingLeader: false,
+      },
+    ]);
+
+    expect(askCdpAiService.setReferenceOrganizations).toHaveBeenCalledWith([
+      {
+        organizationId: 31173,
+        name: 'City of New York, NY',
+        country: 'United States of America',
+      },
+      {
+        organizationId: 10894,
+        name: 'City of Los Angeles, CA',
+        country: 'United States of America',
+      },
+    ]);
+    expect(askCdpAiService.loadStarterQuestions).toHaveBeenCalled();
+  });
+
   it('collapses starter suggestions outside the input section by default', () => {
     askCdpAiService.followUpQuestions.set([
       'Which hazards are expected to have the highest financial impact?',

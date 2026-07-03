@@ -26,8 +26,8 @@ import { filterLocationSuggestions } from '../../shared/services/location-search
 export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges {
   @Input() currentOrganizationId: number | null | undefined = null;
   @Input() currentDisplayName = '';
-  @Input() selectedOrganization: LocationSuggestion | null = null;
-  @Output() selectedOrganizationChange = new EventEmitter<LocationSuggestion | null>();
+  @Input() selectedOrganizations: LocationSuggestion[] = [];
+  @Output() selectedOrganizationsChange = new EventEmitter<LocationSuggestion[]>();
 
   readonly searchControl = new FormControl('', { nonNullable: true });
   readonly organizationOptions = signal<LocationSuggestion[]>([]);
@@ -47,16 +47,29 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['currentOrganizationId'] || changes['selectedOrganization']) {
-      if (this.selectedOrganization?.organizationId === this.currentOrganizationId) {
-        this.selectedOrganizationChange.emit(null);
+    if (changes['currentOrganizationId'] || changes['selectedOrganizations']) {
+      if (
+        this.currentOrganizationId != null &&
+        this.selectedOrganizations.some(
+          (organization) => organization.organizationId === this.currentOrganizationId,
+        )
+      ) {
+        this.selectedOrganizationsChange.emit(
+          this.selectedOrganizations.filter(
+            (organization) => organization.organizationId !== this.currentOrganizationId,
+          ),
+        );
       }
       this.updateOrganizationOptions(this.searchControl.value);
     }
   }
 
   get displayName(): string {
-    return this.selectedOrganization?.name || this.currentDisplayName;
+    return this.currentDisplayName || this.selectedOrganizations[0]?.name || 'Select a location';
+  }
+
+  get hasSelection(): boolean {
+    return Boolean(this.currentDisplayName) || this.selectedOrganizations.length > 0;
   }
 
   togglePicker(): void {
@@ -68,6 +81,15 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   }
 
   onSearchFocus(): void {
+    this.isDropdownOpen = true;
+    this.updateOrganizationOptions(this.searchControl.value);
+  }
+
+  onSelectorSurfaceClick(event: MouseEvent): void {
+    if (event.target instanceof HTMLElement && event.target.closest('button')) {
+      return;
+    }
+
     this.isDropdownOpen = true;
     this.updateOrganizationOptions(this.searchControl.value);
   }
@@ -107,9 +129,18 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
       return;
     }
 
-    this.selectedOrganizationChange.emit(organization);
+    this.selectedOrganizationsChange.emit([...this.selectedOrganizations, organization]);
     this.searchControl.setValue('');
-    this.isDropdownOpen = false;
+    this.updateOrganizationOptions('');
+  }
+
+  removeOrganization(organization: LocationSuggestion): void {
+    this.selectedOrganizationsChange.emit(
+      this.selectedOrganizations.filter(
+        (selectedOrganization) =>
+          selectedOrganization.organizationId !== organization.organizationId,
+      ),
+    );
   }
 
   private loadOrganizationOptions(): void {
@@ -149,6 +180,9 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   }
 
   private isSelectedOrganization(organization: LocationSuggestion): boolean {
-    return organization.organizationId === this.selectedOrganization?.organizationId;
+    return this.selectedOrganizations.some(
+      (selectedOrganization) =>
+        selectedOrganization.organizationId === organization.organizationId,
+    );
   }
 }

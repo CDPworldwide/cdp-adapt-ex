@@ -124,8 +124,8 @@
         <app-ask-cdp-ai-organization-selector
           [currentOrganizationId]="locationData?.organizationId"
           [currentDisplayName]="locationDisplayName"
-          [selectedOrganization]="selectedReferenceOrganization()"
-          (selectedOrganizationChange)="onReferenceOrganizationChange($event)"
+          [selectedOrganizations]="selectedReferenceOrganizations()"
+          (selectedOrganizationsChange)="onReferenceOrganizationsChange($event)"
         ></app-ask-cdp-ai-organization-selector>
         <p class="mt-1 hidden text-sm text-gray-500 sm:block">
           {{ 'askCdpAi.emptyState.description' | translate }}

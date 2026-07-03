@@ -5,26 +5,104 @@
 >
   <p class="flex flex-wrap items-center gap-1.5 text-sm font-medium text-gray-700">
     <span>Ask a question about</span>
-    <button
-      type="button"
+    <span
       data-testid="ask-ai-organization-selector"
-      class="inline-flex max-w-full items-center gap-1.5 rounded-full border border-gray-300 bg-white px-2.5 py-1 text-left text-sm font-semibold text-gray-900 shadow-sm transition-colors hover:border-cdp-red hover:text-cdp-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red sm:px-3 sm:py-1.5"
-      [attr.aria-expanded]="isDropdownOpen"
-      aria-controls="ask-ai-organization-options"
-      (click)="togglePicker()"
+      class="inline-flex max-w-full flex-wrap items-center gap-1 rounded-xl border border-gray-300 bg-white px-1.5 py-1 text-left text-sm font-semibold text-gray-900 shadow-sm transition-colors focus-within:border-cdp-red focus-within:ring-2 focus-within:ring-cdp-red/20 hover:border-cdp-red"
+      (click)="onSelectorSurfaceClick($event)"
     >
-      <span class="min-w-0 truncate">{{ displayName }}</span>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-4 w-4 flex-shrink-0"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        aria-hidden="true"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
-    </button>
+      @if (currentDisplayName) {
+        <span
+          class="inline-flex max-w-full items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-800"
+        >
+          <span class="min-w-0 truncate">{{ currentDisplayName }}</span>
+        </span>
+      }
+
+      @for (organization of selectedOrganizations; track organization.organizationId) {
+        <span
+          class="inline-flex max-w-full items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-800"
+          data-testid="ask-ai-selected-organization"
+        >
+          <span class="min-w-0 truncate">{{ organization.name }}</span>
+          <button
+            type="button"
+            class="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-cdp-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red"
+            [attr.aria-label]="'Remove ' + organization.name"
+            (click)="removeOrganization(organization)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-3 w-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </span>
+      }
+
+      @if (!hasSelection) {
+        <button
+          type="button"
+          data-testid="ask-ai-organization-selector-toggle"
+          class="inline-flex min-w-0 items-center gap-1 rounded-full px-1 py-0.5 text-sm font-semibold text-gray-900 hover:text-cdp-red focus-visible:outline-none"
+          [attr.aria-expanded]="isDropdownOpen"
+          aria-controls="ask-ai-organization-options"
+          (click)="togglePicker()"
+        >
+          <span class="min-w-0 truncate">{{ displayName }}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+      } @else {
+        <button
+          type="button"
+          data-testid="ask-ai-organization-selector-toggle"
+          class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 hover:text-cdp-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red"
+          [attr.aria-expanded]="isDropdownOpen"
+          aria-controls="ask-ai-organization-options"
+          (click)="togglePicker()"
+          aria-label="Add another location"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 5v14m7-7H5"
+            />
+          </svg>
+        </button>
+      }
+    </span>
   </p>
 
   @if (isDropdownOpen) {

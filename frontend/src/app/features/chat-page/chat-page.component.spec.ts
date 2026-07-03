@@ -1,8 +1,9 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import type { LocationProfile } from '@pac-api/client';
+import { BehaviorSubject, of } from 'rxjs';
 
 import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { PosthogService } from '../../core/analytics/posthog.service';
@@ -14,9 +15,17 @@ import { ChatPageComponent } from './chat-page.component';
 describe('ChatPageComponent', () => {
   let fixture: ComponentFixture<ChatPageComponent>;
   let askCdpAiService: jasmine.SpyObj<AskCdpAiService>;
+  let routeQueryParamMap$: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
+  let locationService: jasmine.SpyObj<LocationService>;
   let mobileKeyboardViewportService: jasmine.SpyObj<MobileKeyboardViewportService>;
 
+  const mockLocationData = {
+    organizationId: 10894,
+    name: 'City of Los Angeles, CA',
+  } as LocationProfile;
+
   beforeEach(async () => {
+    routeQueryParamMap$ = new BehaviorSubject(convertToParamMap({}));
     askCdpAiService = jasmine.createSpyObj<AskCdpAiService>(
       'AskCdpAiService',
       [
@@ -42,6 +51,12 @@ describe('ChatPageComponent', () => {
       'MobileKeyboardViewportService',
       ['keepElementVisible', 'startTracking'],
     );
+    locationService = jasmine.createSpyObj<LocationService>('LocationService', [
+      'getAllLocationNames',
+      'getLocationByOrganizationId',
+    ]);
+    locationService.getAllLocationNames.and.returnValue(of([]));
+    locationService.getLocationByOrganizationId.and.returnValue(of(mockLocationData));
 
     await TestBed.configureTestingModule({
       imports: [ChatPageComponent, TranslateModule.forRoot()],
@@ -50,9 +65,13 @@ describe('ChatPageComponent', () => {
         { provide: AskCdpAiService, useValue: askCdpAiService },
         {
           provide: LocationService,
-          useValue: jasmine.createSpyObj<LocationService>('LocationService', {
-            getAllLocationNames: of([]),
-          }),
+          useValue: locationService,
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParamMap: routeQueryParamMap$.asObservable(),
+          },
         },
         {
           provide: MobileKeyboardViewportService,
@@ -82,5 +101,13 @@ describe('ChatPageComponent', () => {
   it('renders the styled standalone chat layout', () => {
     expect(fixture.nativeElement.querySelector('app-header')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('.chat-tool-shell app-ask-cdp-ai')).not.toBeNull();
+  });
+
+  it('loads organization context from the organizationId query parameter', () => {
+    routeQueryParamMap$.next(convertToParamMap({ organizationId: '10894' }));
+    fixture.detectChanges();
+
+    expect(locationService.getLocationByOrganizationId).toHaveBeenCalledWith('10894');
+    expect(fixture.componentInstance.locationData).toEqual(mockLocationData);
   });
 });

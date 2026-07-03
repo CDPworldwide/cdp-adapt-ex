@@ -18,7 +18,7 @@ import {
   AskCdpAiService,
   type AskCdpAiContextArea,
 } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 import { PosthogService } from '../../core/analytics/posthog.service';
 import { locationProperties } from '../../core/analytics/analytics-events';
@@ -40,7 +40,6 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   private destroyRef = inject(DestroyRef);
   private mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
   private posthog = inject(PosthogService);
-  private translateService = inject(TranslateService);
 
   @Input() locationData: LocationProfile | null = null;
   @Input() contextArea: AskCdpAiContextArea = 'hazards';
@@ -56,7 +55,7 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   followUpError = this.askCdpAiService.followUpError;
 
   userQuery = '';
-  selectedReferenceOrganization = signal<LocationSuggestion | null>(null);
+  selectedReferenceOrganizations = signal<LocationSuggestion[]>([]);
   showAllStarterQuestions = signal(false);
 
   constructor() {
@@ -87,7 +86,7 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   }
 
   get locationDisplayName(): string {
-    return this.locationData?.name || this.translateService.instant('askCdpAi.locationFallback');
+    return this.locationData?.name || '';
   }
 
   get displayedStarterQuestions(): string[] {
@@ -140,8 +139,8 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
     this.showAllStarterQuestions.update((isOpen) => !isOpen);
   }
 
-  onReferenceOrganizationChange(organization: LocationSuggestion | null): void {
-    this.selectedReferenceOrganization.set(organization);
+  onReferenceOrganizationsChange(organizations: LocationSuggestion[]): void {
+    this.selectedReferenceOrganizations.set(organizations);
     this.syncReferenceOrganizations();
   }
 
@@ -163,10 +162,12 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   private setChatContext(): void {
     this.askCdpAiService.setLocationContext(this.locationData, this.contextArea);
     this.showAllStarterQuestions.set(false);
-    if (
-      this.selectedReferenceOrganization()?.organizationId === this.locationData?.organizationId
-    ) {
-      this.selectedReferenceOrganization.set(null);
+    if (this.locationData?.organizationId != null) {
+      this.selectedReferenceOrganizations.update((organizations) =>
+        organizations.filter(
+          (organization) => organization.organizationId !== this.locationData?.organizationId,
+        ),
+      );
     }
     this.syncReferenceOrganizations();
   }
@@ -179,19 +180,12 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   }
 
   private syncReferenceOrganizations(): void {
-    const selectedReferenceOrganization = this.selectedReferenceOrganization();
     this.askCdpAiService.setReferenceOrganizations(
-      selectedReferenceOrganization
-        ? [
-            {
-              organizationId: selectedReferenceOrganization.organizationId,
-              name: selectedReferenceOrganization.name,
-              ...(selectedReferenceOrganization.country
-                ? { country: selectedReferenceOrganization.country }
-                : {}),
-            },
-          ]
-        : [],
+      this.selectedReferenceOrganizations().map((organization) => ({
+        organizationId: organization.organizationId,
+        name: organization.name,
+        ...(organization.country ? { country: organization.country } : {}),
+      })),
     );
 
     if (!this.conversationHistory().length) {

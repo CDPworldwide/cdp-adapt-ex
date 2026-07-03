@@ -62,6 +62,11 @@ export class AppHeaderComponent implements OnInit {
     const url = this.router.url ?? '';
     const [pathAndQuery, fragment = ''] = url.split('#');
     const [path, queryString = ''] = pathAndQuery.split('?');
+    if (path === '/chat') {
+      this.router.navigateByUrl('/');
+      return;
+    }
+
     const queryParams = queryString
       .split('&')
       .filter(Boolean)
