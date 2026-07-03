@@ -24,6 +24,11 @@ export const routes: Routes = [
     },
   },
   {
+    path: 'chat',
+    loadComponent: () =>
+      import('./features/chat-page/chat-page.component').then((m) => m.ChatPageComponent),
+  },
+  {
     path: 'org/:organizationId/:tab',
     loadComponent: () =>
       import('./features/city-detail/city-detail').then((m) => m.CityDetailPageComponent),

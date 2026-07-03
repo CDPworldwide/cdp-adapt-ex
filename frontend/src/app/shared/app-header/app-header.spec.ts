@@ -12,7 +12,9 @@ describe('AppHeaderComponent', () => {
   let welcomeModalService: jasmine.SpyObj<WelcomeModalService>;
 
   beforeEach(async () => {
-    welcomeModalService = jasmine.createSpyObj<WelcomeModalService>('WelcomeModalService', ['open']);
+    welcomeModalService = jasmine.createSpyObj<WelcomeModalService>('WelcomeModalService', [
+      'open',
+    ]);
 
     await TestBed.configureTestingModule({
       imports: [AppHeaderComponent, TranslateModule.forRoot()],
@@ -44,5 +46,25 @@ describe('AppHeaderComponent', () => {
     fixture.componentInstance.openWelcomeModal();
 
     expect(welcomeModalService.open).toHaveBeenCalled();
+  });
+
+  it('links the AI header icon to the standalone chat page', () => {
+    const chatLink: HTMLAnchorElement | null =
+      fixture.nativeElement.querySelector('a[routerlink="/chat"]');
+
+    expect(chatLink).not.toBeNull();
+    expect(chatLink?.getAttribute('aria-label')).toBe('askCdpAi.buttonText');
+  });
+
+  it('shows the language chooser in the header when chatMode is true', () => {
+    fixture.componentInstance.chatMode = true;
+    fixture.detectChanges();
+
+    const languageButton: HTMLButtonElement | null = fixture.nativeElement.querySelector(
+      '[data-testid="language-selector"]',
+    );
+
+    expect(languageButton).not.toBeNull();
+    expect(languageButton?.getAttribute('aria-label')).toBe('shared.selectLanguage');
   });
 });

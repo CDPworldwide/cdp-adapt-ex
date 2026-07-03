@@ -10,6 +10,13 @@
   scroll-margin-bottom: max(5rem, var(--app-keyboard-inset-bottom, 0px));
 }
 
+.ask-ai-suggestion-label {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 @media (max-width: 767px) {
   [data-testid='ask-ai-input'] {
     font-size: 16px;
@@ -36,12 +43,19 @@
 }
 
 :host ::ng-deep .ai-markdown {
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   line-height: 1.55;
   max-width: 100%;
   min-width: 0;
   overflow-wrap: anywhere;
   word-break: normal;
+}
+
+:host ::ng-deep .ai-markdown [data-barkdown] {
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  max-width: 52rem;
 }
 
 :host ::ng-deep .ai-markdown * {
@@ -50,8 +64,8 @@
   overflow-wrap: anywhere;
 }
 
-:host ::ng-deep .ai-markdown > * + * {
-  margin-top: 0.75rem;
+:host ::ng-deep .ai-markdown [data-barkdown] > * + * {
+  margin-top: 0.8rem;
 }
 
 :host ::ng-deep .ai-markdown p,
@@ -85,11 +99,36 @@
   font-weight: 700;
 }
 
+:host ::ng-deep .ai-markdown .ai-answer-section {
+  margin: 0;
+  border-left: 3px solid #e40046;
+  border-radius: 0 6px 6px 0;
+  background: #fafafa;
+  padding: 0.75rem 0.85rem 0.8rem;
+}
+
+:host ::ng-deep .ai-markdown .ai-answer-section + .ai-answer-section {
+  margin-top: 0.85rem;
+}
+
+:host ::ng-deep .ai-markdown .ai-answer-section h3 {
+  margin: 0 0 0.35rem;
+  color: #111827;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+:host ::ng-deep .ai-markdown .ai-answer-section p {
+  margin: 0;
+  color: #1f2937;
+}
+
 :host ::ng-deep .ai-markdown ol,
 :host ::ng-deep .ai-markdown ul {
   display: grid;
-  gap: 0.625rem;
-  margin: 0.75rem 0 0;
+  gap: 0.5rem;
+  margin: 0.65rem 0 0;
   padding-left: 1.25rem;
 }
 
@@ -109,25 +148,42 @@
 :host ::ng-deep .ai-markdown .ai-sources {
   margin-top: 1rem;
   border-top: 1px solid #e5e7eb;
-  padding-top: 0.75rem;
+  padding-top: 0.65rem;
   color: #4b5563;
   font-size: 0.75rem;
   line-height: 1.45;
 }
 
 :host ::ng-deep .ai-markdown .ai-sources-title {
-  margin: 0 0 0.5rem;
+  display: inline-flex;
+  cursor: pointer;
+  list-style: none;
+  margin: 0;
   color: #111827;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0;
 }
 
+:host ::ng-deep .ai-markdown .ai-sources-title::-webkit-details-marker {
+  display: none;
+}
+
+:host ::ng-deep .ai-markdown .ai-sources-title::after {
+  content: '+';
+  margin-left: 0.35rem;
+  color: #6b7280;
+}
+
+:host ::ng-deep .ai-markdown .ai-sources[open] .ai-sources-title::after {
+  content: '-';
+}
+
 :host ::ng-deep .ai-markdown .ai-sources ul {
   display: grid;
   gap: 0.5rem;
   list-style: none;
-  margin: 0;
+  margin: 0.5rem 0 0;
   padding-left: 0;
 }
 
@@ -136,4 +192,15 @@
   overflow-wrap: anywhere;
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  :host ::ng-deep .ai-markdown {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  :host ::ng-deep .ai-markdown .ai-answer-section {
+    padding: 0.7rem 0.75rem;
+  }
 }

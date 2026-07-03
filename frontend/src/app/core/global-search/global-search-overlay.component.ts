@@ -13,25 +13,19 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import fuzzysort from 'fuzzysort';
 import { BehaviorSubject, Observable, combineLatest, of, startWith } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { SearchService } from '../../features/main-search/search.service';
 import {
-  COUNTRY_ALIASES,
-  LOCATION_SEARCH_KEYWORDS,
-  SEARCH_ALIASES,
-} from '../../features/main-search/search-aliases';
-import { STATE_ABBREV_TO_NAME } from '../../features/main-search/state-abbrev';
+  filterLocationSuggestions,
+  normalizeLocationSearch,
+  stripDiacritics,
+} from '../../shared/services/location-search.util';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { CdpLogoIconComponent, WarningIconComponent } from '../../shared/icons';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { GlobalSearchService } from './global-search.service';
-
-function stripDiacritics(value: string): string {
-  return value.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-}
 
 @Component({
   selector: 'app-global-search-overlay',
@@ -308,9 +302,9 @@ export class GlobalSearchOverlayComponent implements OnInit {
     }
 
     const trimmedQuery = searchQuery.trim();
-    const normalizedQuery = this.normalizeForSearch(trimmedQuery);
+    const normalizedQuery = normalizeLocationSearch(trimmedQuery);
     const selectedLocation = this.allLocations.find(
-      (location) => this.normalizeForSearch(location.name) === normalizedQuery,
+      (location) => normalizeLocationSearch(location.name) === normalizedQuery,
     );
 
     if (selectedLocation) {
@@ -361,47 +355,13 @@ export class GlobalSearchOverlayComponent implements OnInit {
     this.router.navigate(['/org', organizationId]);
   }
 
-  private normalizeForSearch(value: string): string {
-    const base = stripDiacritics(value)
-      .replace(/\bst\.?\b/gi, 'saint')
-      .replace(/\bste\.?\b/gi, 'sainte')
-      .replace(/\bmt\.?\b/gi, 'mount')
-      .replace(/\bft\.?\b/gi, 'fort')
-      .toLowerCase()
-      .replace(/[.,()'"]/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-    return SEARCH_ALIASES[base] ?? COUNTRY_ALIASES[base] ?? base;
-  }
-
-  private buildSearchHaystack(name: string): string {
-    const normalized = this.normalizeForSearch(name);
-    const m = name.match(/,\s*([A-Z]{2,3})\s*$/);
-    const expansion = m ? STATE_ABBREV_TO_NAME[m[1]] : undefined;
-    const extra = LOCATION_SEARCH_KEYWORDS[normalized];
-    return [normalized, expansion && this.normalizeForSearch(expansion), extra]
-      .filter(Boolean)
-      .join(' ');
-  }
-
   private filterLocations(value: string, locations: LocationSuggestion[]): LocationSuggestion[] {
-    if (!value) {
-      return this.defaultSuggestions.slice(0, GlobalSearchOverlayComponent.MAX_SUGGESTIONS);
-    }
-
-    const prepared = locations.map((loc) => ({
-      ...loc,
-      _normalizedName: this.buildSearchHaystack(loc.name),
-      _normalizedCountry: loc.country ? this.normalizeForSearch(loc.country) : '',
-    }));
-    const results = fuzzysort.go(this.normalizeForSearch(value), prepared, {
-      keys: ['_normalizedName', '_normalizedCountry'],
-      limit: GlobalSearchOverlayComponent.MAX_SUGGESTIONS,
-    });
-    return results.map((result) => {
-      const { _normalizedName, _normalizedCountry, ...rest } = result.obj;
-      return rest;
-    });
+    return filterLocationSuggestions(
+      value,
+      locations,
+      GlobalSearchOverlayComponent.MAX_SUGGESTIONS,
+      this.defaultSuggestions,
+    );
   }
 
   private moveActiveSuggestion(step: 1 | -1): void {

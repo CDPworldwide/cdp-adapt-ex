@@ -523,6 +523,13 @@
     },
     "feedback": {
       "wasThisHelpful": "役に立ちましたか？"
+    },
+    "organizationSelector": {
+      "label": "について質問する",
+      "defaultDisplayName": "場所を選択",
+      "addAnotherLocation": "別の場所を追加",
+      "searchPlaceholder": "組織を検索",
+      "removeOrganization": "{{name}} を削除"
     }
   },
   "cityDetail": {

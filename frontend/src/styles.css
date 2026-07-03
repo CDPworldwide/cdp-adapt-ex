@@ -1,3 +1,5 @@
+@import '@raggle-ai/barkdown/styles.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

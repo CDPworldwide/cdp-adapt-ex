@@ -18,16 +18,40 @@ type ConversationMessage = { role: 'user' | 'assistant' | 'system'; content: str
 type OpenAiMessage = { role: 'user' | 'assistant'; content: string };
 type SuggestFollowUpsResponse = { follow_up_questions?: string[] };
 export type AskCdpAiContextArea = 'hazards' | 'actions' | 'solutions';
+const CDP_ACTION_EXPLORER_BASE_URL = 'https://cdp-action-explorer.net';
+type AiLocationPageContext = {
+  pagePath: string;
+  pageUrl: string;
+  canonicalPageUrl: string;
+};
+type AiLocationProfile = LocationProfile & AiLocationPageContext;
+export type AskCdpAiReferenceOrganization = {
+  organizationId: number;
+  name: string;
+  country?: string;
+  pagePath?: string;
+  pageUrl?: string;
+  canonicalPageUrl?: string;
+};
 type AiRequestBody = {
   model: string;
   stream: boolean;
   messages: OpenAiMessage[];
   metadata: {
-    locationData: LocationProfile | null;
+    locationData: AiLocationProfile | LocationProfile | null;
     contextArea: AskCdpAiContextArea;
+    referenceOrganizations: AskCdpAiReferenceOrganization[];
+    organizationIds?: number[];
+    pageBaseUrl: string;
+    canonicalBaseUrl: string;
+    pagePath?: string;
+    pageUrl?: string;
+    canonicalPageUrl?: string;
   };
-  locationData: LocationProfile | null;
+  locationData: AiLocationProfile | LocationProfile | null;
   contextArea: AskCdpAiContextArea;
+  referenceOrganizations: AskCdpAiReferenceOrganization[];
+  organizationIds?: number[];
 };
 
 @Injectable({
@@ -48,6 +72,8 @@ export class AskCdpAiService {
   private contextArea: AskCdpAiContextArea = 'hazards';
   private selectedActionHazardFilter: string | null = null;
   private locationContextKey: string | null = null;
+  private referenceOrganizations: AskCdpAiReferenceOrganization[] = [];
+  private referenceOrganizationsKey = '[]';
   private readonly aiChat = this.createAiChat();
 
   setLocationContext(
@@ -80,7 +106,31 @@ export class AskCdpAiService {
     this.locationContext = null;
     this.contextArea = 'hazards';
     this.locationContextKey = null;
+    this.referenceOrganizations = [];
+    this.referenceOrganizationsKey = '[]';
     this.resetConversationState();
+  }
+
+  setReferenceOrganizations(organizations: AskCdpAiReferenceOrganization[]): void {
+    const nextReferenceOrganizations = organizations.map(({ organizationId, name, country }) => ({
+      organizationId,
+      name,
+      ...(country ? { country } : {}),
+      ...this.buildLocationPageContext(organizationId, this.contextArea),
+    }));
+    const nextReferenceOrganizationsKey = JSON.stringify(nextReferenceOrganizations);
+
+    if (nextReferenceOrganizationsKey === this.referenceOrganizationsKey) {
+      return;
+    }
+
+    this.referenceOrganizations = nextReferenceOrganizations;
+    this.referenceOrganizationsKey = nextReferenceOrganizationsKey;
+
+    if (!this.conversationHistory().length) {
+      this.followUpQuestions.set([]);
+      this.followUpError.set(null);
+    }
   }
 
   loadStarterQuestions(): Observable<void> {
@@ -118,7 +168,7 @@ export class AskCdpAiService {
     );
   }
 
-  sendChatQuery(query: string): Observable<string> {
+  sendChatQuery(query: string, loadFollowUps = true): Observable<string> {
     this.isDisclosureLoading.set(true);
     this.disclosureError.set(null);
     this.followUpQuestions.set([]);
@@ -133,6 +183,10 @@ export class AskCdpAiService {
         this.isDisclosureLoading.set(false);
       }),
       switchMap((content) => {
+        if (!loadFollowUps) {
+          return of(content);
+        }
+
         return this.getFollowUpQuestions().pipe(map(() => content));
       }),
       catchError((error) => {
@@ -144,6 +198,42 @@ export class AskCdpAiService {
         throw error;
       }),
     );
+  }
+
+  loadLocalTestChat(): void {
+    const query = 'Compare Auckland Council and Ankara Metropolitan Municipality.';
+    const htmlContent = this.parseToHtml(
+      [
+        '**Coastal vs. Inland Hazards:** Auckland Council, being a coastal city, identifies "Coastal flooding (incl. sea level rise)" and "Mass movement" (including coastal erosion) as high and increasing risks. Ankara, an inland municipality, does not report these coastal-specific hazards.[^1]',
+        '',
+        '**Urban Flooding:** Both municipalities face a high and increasing risk of "Urban flooding." Auckland Council reports 21-30% of its population is exposed, while Ankara Metropolitan Municipality reports a similar exposure range of 21-30%.[^1][^2]',
+        '',
+        '**Drought and Water Stress:** Both locations consider water-related stress a high and increasing risk. Auckland Council reports 91-100% of its population exposed to drought, while Ankara reports 51-60% exposed to water stress.[^1][^2]',
+        '',
+        '**Extreme Heat:** Both municipalities report extreme heat as a high and increasing risk. Ankara emphasizes heat-wave impacts on public health and infrastructure, while Auckland links hotter days to pressure on health services, water demand, and vulnerable communities.[^1][^2]',
+        '',
+        '**Current Actions:** Auckland highlights shoreline adaptation planning, blue-green infrastructure, and flood resilience programmes. Ankara highlights drought planning, heat-health response, and urban infrastructure upgrades.',
+        '',
+        '**Key Difference:** Auckland\'s disclosure is more coastal-adaptation oriented, while Ankara\'s is more focused on inland heat, drought, and water security. The overlap is strongest around urban flooding and extreme heat.',
+        '',
+        'Sources:',
+        '[^1]: Auckland Council CDP disclosure. https://cdp-action-explorer.net/org/3422/hazards',
+        '[^2]: Ankara Metropolitan Municipality CDP disclosure. https://cdp-action-explorer.net/org/840024/hazards',
+      ].join('\n'),
+    );
+
+    this.aiChat.stop();
+    this.aiChat.messages = [];
+    this.disclosure.set(htmlContent);
+    this.disclosureError.set(null);
+    this.followUpQuestions.set([]);
+    this.followUpError.set(null);
+    this.isDisclosureLoading.set(false);
+    this.isFollowUpLoading.set(false);
+    this.conversationHistory.set([
+      { role: 'user', content: query },
+      { role: 'assistant', content: htmlContent },
+    ]);
   }
 
   private async sendAiSdkMessage(query: string): Promise<string> {
@@ -178,7 +268,7 @@ export class AskCdpAiService {
             'Content-Type': 'application/json',
             ...this.buildAiHeaders(),
           },
-          body: JSON.stringify(this.buildAiRequestBody(true, this.toOpenAiMessages(messages))),
+          body: JSON.stringify(this.buildAiRequestBody(false, this.toOpenAiMessages(messages))),
           signal: abortSignal,
         });
 
@@ -298,6 +388,15 @@ export class AskCdpAiService {
     messages = this.buildAiServerMessages(),
   ): AiRequestBody {
     const locationData = this.buildAiLocationData();
+    const referenceOrganizations = [...this.referenceOrganizations];
+    const locationPageContext = locationData?.organizationId
+      ? this.buildLocationPageContext(locationData.organizationId, this.contextArea)
+      : null;
+    const organizationIds = this.buildComparisonOrganizationIds(
+      locationData?.organizationId,
+      referenceOrganizations,
+    );
+    const comparisonFields = organizationIds.length > 1 ? { organizationIds } : {};
 
     return {
       model: environment.aiModel || 'cdp-gemini',
@@ -306,13 +405,32 @@ export class AskCdpAiService {
       metadata: {
         locationData,
         contextArea: this.contextArea,
+        referenceOrganizations,
+        ...comparisonFields,
+        pageBaseUrl: this.getCurrentPageBaseUrl(),
+        canonicalBaseUrl: CDP_ACTION_EXPLORER_BASE_URL,
+        ...(locationPageContext ?? {}),
       },
       locationData,
       contextArea: this.contextArea,
+      referenceOrganizations,
+      ...comparisonFields,
     };
   }
 
-  private buildAiLocationData(): LocationProfile | null {
+  private buildAiLocationData(): AiLocationProfile | LocationProfile | null {
+    const locationContext = this.buildScopedLocationContext();
+    if (!locationContext?.organizationId) {
+      return locationContext;
+    }
+
+    return {
+      ...locationContext,
+      ...this.buildLocationPageContext(locationContext.organizationId, this.contextArea),
+    };
+  }
+
+  private buildScopedLocationContext(): LocationProfile | null {
     if (
       !this.locationContext ||
       this.contextArea !== 'actions' ||
@@ -338,6 +456,39 @@ export class AskCdpAiService {
         ),
       },
     };
+  }
+
+  private buildComparisonOrganizationIds(
+    primaryOrganizationId: number | undefined,
+    referenceOrganizations: AskCdpAiReferenceOrganization[],
+  ): number[] {
+    if (!referenceOrganizations.length) {
+      return [];
+    }
+
+    return Array.from(
+      new Set([
+        ...(primaryOrganizationId ? [primaryOrganizationId] : []),
+        ...referenceOrganizations.map((organization) => organization.organizationId),
+      ]),
+    );
+  }
+
+  private buildLocationPageContext(
+    organizationId: number,
+    contextArea: AskCdpAiContextArea,
+  ): AiLocationPageContext {
+    const pagePath = `/org/${organizationId}/${contextArea}`;
+
+    return {
+      pagePath,
+      pageUrl: `${this.getCurrentPageBaseUrl()}${pagePath}`,
+      canonicalPageUrl: `${CDP_ACTION_EXPLORER_BASE_URL}${pagePath}`,
+    };
+  }
+
+  private getCurrentPageBaseUrl(): string {
+    return globalThis.window?.location?.origin || CDP_ACTION_EXPLORER_BASE_URL;
   }
 
   private buildAiServerMessages(): OpenAiMessage[] {
@@ -379,9 +530,19 @@ export class AskCdpAiService {
         'adaptation solutions, peer actions, local projects, and implementation opportunities',
     };
 
-    return `Suggest follow-up questions for exploring ${
+    const referenceText = this.referenceOrganizations.length
+      ? ` Compare against these reference organizations where useful: ${this.referenceOrganizations
+          .map((organization) =>
+            [organization.name, organization.country, `ID ${organization.organizationId}`]
+              .filter(Boolean)
+              .join(', '),
+          )
+          .join('; ')}.`
+      : '';
+
+    return `Suggest concise follow-up questions under 70 characters for exploring ${
       focusByTab[this.contextArea]
-    } in ${locationName}.`;
+    } in ${locationName}.${referenceText}`;
   }
 
   private textToUiMessageStream(content: string): ReadableStream<UIMessageChunk> {
@@ -535,8 +696,69 @@ export class AskCdpAiService {
   }
 
   public parseToHtml(content: string): string {
-    const dirty = marked(this.formatCitationMarkdown(content)) as string;
-    return DOMPurify.sanitize(dirty);
+    const rendered = this.formatAnswerSections(marked(this.formatCitationMarkdown(content)) as string);
+    const dirty = `<div class="barkdown-content ai-markdown-body" data-barkdown="">${rendered}</div>`;
+    return DOMPurify.sanitize(dirty, { ADD_ATTR: ['data-barkdown'] });
+  }
+
+  private formatAnswerSections(renderedHtml: string): string {
+    const template = document.createElement('template');
+    template.innerHTML = renderedHtml;
+
+    Array.from(template.content.children).forEach((element) => {
+      if (element.tagName.toLowerCase() !== 'p') {
+        return;
+      }
+
+      const paragraph = element as HTMLParagraphElement;
+      const firstContentNode = Array.from(paragraph.childNodes).find(
+        (node) => node.nodeType !== Node.TEXT_NODE || Boolean(node.textContent?.trim()),
+      );
+
+      if (!(firstContentNode instanceof HTMLElement) || firstContentNode.tagName !== 'STRONG') {
+        return;
+      }
+
+      const headingText = firstContentNode.textContent?.trim() ?? '';
+      if (!headingText.endsWith(':')) {
+        return;
+      }
+
+      const body = paragraph.cloneNode(true) as HTMLParagraphElement;
+      body.removeChild(body.firstElementChild as Element);
+      this.trimLeadingWhitespace(body);
+
+      if (!body.textContent?.trim()) {
+        return;
+      }
+
+      const section = document.createElement('section');
+      section.className = 'ai-answer-section';
+
+      const heading = document.createElement('h3');
+      heading.textContent = headingText.replace(/:\s*$/, '');
+      section.appendChild(heading);
+
+      const sectionBody = document.createElement('p');
+      sectionBody.innerHTML = body.innerHTML.trim();
+      section.appendChild(sectionBody);
+
+      paragraph.replaceWith(section);
+    });
+
+    return template.innerHTML;
+  }
+
+  private trimLeadingWhitespace(element: HTMLElement): void {
+    while (element.firstChild?.nodeType === Node.TEXT_NODE && !element.firstChild.textContent?.trim()) {
+      element.firstChild.remove();
+    }
+
+    if (element.firstChild?.nodeType !== Node.TEXT_NODE || !element.firstChild.textContent) {
+      return;
+    }
+
+    element.firstChild.textContent = element.firstChild.textContent.replace(/^\s+/, '');
   }
 
   private formatCitationMarkdown(content: string): string {
@@ -572,10 +794,10 @@ export class AskCdpAiService {
           (source) => `<li>${this.linkifySourceText(source.text)}</li>`,
         );
         sourcesHtml = [
-          `<section class="ai-sources" aria-label="${this.escapeHtml(sourcesLabel)}">`,
-          `<p class="ai-sources-title">${this.escapeHtml(sourcesLabel)}</p>`,
+          `<details class="ai-sources" aria-label="${this.escapeHtml(sourcesLabel)}">`,
+          `<summary class="ai-sources-title">${this.escapeHtml(sourcesLabel)}</summary>`,
           `<ul>${sourceItems.join('')}</ul>`,
-          '</section>',
+          '</details>',
         ].join('');
       }
     }

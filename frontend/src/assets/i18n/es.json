@@ -522,6 +522,13 @@
     },
     "feedback": {
       "wasThisHelpful": "¿Fue útil?"
+    },
+    "organizationSelector": {
+      "label": "Haz una pregunta sobre",
+      "defaultDisplayName": "Selecciona una ubicación",
+      "addAnotherLocation": "Agregar otra ubicación",
+      "searchPlaceholder": "Buscar organizaciones",
+      "removeOrganization": "Eliminar {{name}}"
     }
   },
   "cityDetail": {

@@ -1,0 +1,40 @@
+:host {
+  display: flex;
+  min-height: 0;
+}
+
+.chat-page {
+  min-height: 0;
+}
+
+.chat-page-content {
+  border-top: 1px solid #e5e7eb;
+}
+
+.chat-tool-shell {
+  border-radius: 0;
+}
+
+:host ::ng-deep app-ask-cdp-ai > div {
+  border-left: 0;
+}
+
+@media (min-width: 768px) {
+  .chat-page-content {
+    padding: 1rem 1.5rem 1.5rem;
+  }
+
+  .chat-tool-shell {
+    max-width: 980px;
+    border: 1px solid #d4d4d4;
+    box-shadow:
+      0 12px 30px rgba(27, 35, 44, 0.08),
+      0 1px 2px rgba(27, 35, 44, 0.08);
+  }
+}
+
+@media (max-width: 767px) {
+  .chat-tool-shell {
+    min-height: 0;
+  }
+}

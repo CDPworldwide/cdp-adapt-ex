@@ -200,7 +200,7 @@
             [attr.aria-label]="'shared.mainNavigation' | translate"
             class="bg-cdp-bg flex-shrink-0"
           >
-            <app-header></app-header>
+            <app-header [chatMode]="isAiOpen"></app-header>
           </nav>
           <div id="page-content" tabindex="-1" class="relative focus:outline-none">
             <app-location-card
@@ -217,7 +217,9 @@
       @if (!isAiOpen) {
         <button
           data-testid="ask-ai-toggle"
-          (click)="isAiOpen = true"
+          (click)="openAiPanel()"
+          aria-controls="ask-ai-panel"
+          [attr.aria-expanded]="isAiOpen"
           class="fixed bottom-6 right-6 z-40 bg-cdp-red flex items-center justify-center min-w-[133px] h-[36px] rounded-[80px] shadow-lg gap-2 px-4 py-2 hover:bg-red-700 active:bg-red-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors whitespace-nowrap"
         >
           <app-ask-cdp-ai-logo-icon size="20" color="white"></app-ask-cdp-ai-logo-icon>
@@ -227,8 +229,22 @@
         </button>
       }
 
+      @if (isAiOpen) {
+        <button
+          type="button"
+          class="fixed inset-0 z-[2090] hidden bg-black/40 backdrop-blur-[1px] max-lg:block"
+          [attr.aria-label]="'shared.close' | translate"
+          (click)="onAiOpenChange(false)"
+        ></button>
+      }
+
       <div
-        class="ai-panel-drawer fixed inset-x-0 top-16 w-full bg-white z-50 transition-transform duration-300 ease-in-out transform lg:sticky lg:inset-auto lg:top-0 lg:w-1/4 lg:translate-x-0"
+        id="ask-ai-panel"
+        class="ai-panel-drawer fixed inset-0 z-[2100] w-full bg-white transition-transform duration-300 ease-in-out transform lg:sticky lg:inset-auto lg:top-0 lg:z-auto lg:w-1/4 lg:translate-x-0"
+        role="dialog"
+        [attr.aria-label]="'askCdpAi.buttonText' | translate"
+        aria-modal="true"
+        [attr.aria-hidden]="!isAiOpen"
         [class.translate-x-full]="!isAiOpen"
         [class.invisible]="!isAiOpen"
         [class.lg:hidden]="!isAiOpen"
@@ -237,7 +253,7 @@
           class="block h-full"
           [locationData]="locationData"
           [contextArea]="activeTab"
-          (openChange)="isAiOpen = $event"
+          (openChange)="onAiOpenChange($event)"
           [isOpen]="isAiOpen"
         ></app-ask-cdp-ai>
       </div>
