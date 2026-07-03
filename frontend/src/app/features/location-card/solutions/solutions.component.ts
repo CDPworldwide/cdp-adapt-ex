@@ -10,7 +10,7 @@ import { HazardEnum, LocationProfile, SolutionCard, SolutionCategoryEnum } from 
 import { SolutionDetailModalComponent } from './solution-detail-modal.component';
 import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
 import { MethodologyInfoComponent } from '../../../shared/components/methodology-info/methodology-info.component';
-import { PosthogService } from '../../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../../core/analytics/analytics.service';
 import { locationProperties, solutionProperties } from '../../../core/analytics/analytics-events';
 
 @Component({
@@ -34,7 +34,7 @@ export class SolutionsComponent {
 
   private dialog = inject(MatDialog);
   private breakpointObserver = inject(BreakpointObserver);
-  private posthog = inject(PosthogService);
+  private posthog = inject(AnalyticsService);
 
   selectedHazard: HazardEnum | null = null;
 

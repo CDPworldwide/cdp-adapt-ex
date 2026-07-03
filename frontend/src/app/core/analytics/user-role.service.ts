@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { environment } from '@env/environment';
 
-import { PosthogService } from './posthog.service';
+import { AnalyticsService } from './analytics.service';
 import {
   USER_ROLE_OPTIONS,
   USER_ROLE_STORAGE_KEY,
@@ -12,7 +12,7 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class UserRoleService {
-  private readonly posthog = inject(PosthogService);
+  private readonly posthog = inject(AnalyticsService);
   private readonly selectedRole = signal<UserRoleId | null>(readStoredUserRole());
 
   readonly roles = USER_ROLE_OPTIONS;
