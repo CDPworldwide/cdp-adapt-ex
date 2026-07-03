@@ -61,7 +61,7 @@ describe('AppHeaderComponent', () => {
     fixture.detectChanges();
 
     const languageButton: HTMLButtonElement | null = fixture.nativeElement.querySelector(
-      '[data-testid="ask-ai-language-selector"]',
+      '[data-testid="language-selector"]',
     );
 
     expect(languageButton).not.toBeNull();

@@ -25,26 +25,6 @@
           >info</mat-icon
         >
       </button>
-      <button
-        type="button"
-        data-testid="ask-ai-language-selector"
-        class="hidden items-center justify-center md:flex h-9 w-9 rounded-full border border-cdp-neutral-02 text-cdp-dark transition-colors hover:border-cdp-dark hover:bg-cdp-dark hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
-        [matMenuTriggerFor]="languageMenu"
-        [attr.aria-label]="'shared.selectLanguage' | translate"
-      >
-        <mat-icon class="text-gray-500 !text-xl">language</mat-icon>
-      </button>
-      <button
-        type="button"
-        data-testid="ask-ai-header-close"
-        class="flex h-9 w-9 items-center justify-center rounded-full border border-cdp-neutral-02 text-cdp-dark transition-colors hover:border-cdp-dark hover:bg-cdp-dark hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
-        (click)="closeChatMode()"
-        [attr.aria-label]="'shared.close' | translate"
-      >
-        <mat-icon class="!flex !h-5 !w-5 !items-center !justify-center !text-xl !leading-5"
-          >arrow_forward</mat-icon
-        >
-      </button>
     } @else if (isOrgPage()) {
       <button
         type="button"
@@ -75,13 +55,29 @@
           >question_mark</mat-icon
         >
       </button>
+    }
+    <button
+      type="button"
+      data-testid="language-selector"
+      class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
+      [class.hidden]="chatMode"
+      [class.md:flex]="chatMode"
+      [matMenuTriggerFor]="languageMenu"
+      [attr.aria-label]="'shared.selectLanguage' | translate"
+    >
+      <mat-icon class="text-gray-500 !text-xl">language</mat-icon>
+    </button>
+    @if (chatMode) {
       <button
         type="button"
-        class="p-2 rounded-full hover:bg-gray-100 active:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
-        [matMenuTriggerFor]="languageMenu"
-        [attr.aria-label]="'shared.selectLanguage' | translate"
+        data-testid="ask-ai-header-close"
+        class="flex h-9 w-9 items-center justify-center rounded-full border border-cdp-neutral-02 text-cdp-dark transition-colors hover:border-cdp-dark hover:bg-cdp-dark hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2"
+        (click)="closeChatMode()"
+        [attr.aria-label]="'shared.close' | translate"
       >
-        <mat-icon class="text-gray-500 !text-xl">language</mat-icon>
+        <mat-icon class="!flex !h-5 !w-5 !items-center !justify-center !text-xl !leading-5"
+          >arrow_forward</mat-icon
+        >
       </button>
     }
   </div>
