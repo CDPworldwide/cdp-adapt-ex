@@ -130,6 +130,7 @@ class LocationProfileBuilder:
             disclosure_year=metadata.disclosing_year,
             reporting_language=metadata.reporting_language,
             population=metadata.current_pop,
+            ecoregion=metadata.ecoregion,
             requesters=(
                 [r.strip() for r in metadata.requesting_auth.split("|") if r.strip()]
                 if metadata.requesting_auth
