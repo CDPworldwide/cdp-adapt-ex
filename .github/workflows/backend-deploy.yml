@@ -1,11 +1,6 @@
 name: Backend Preview Deploy
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "backend/**"
-      - ".github/workflows/backend-deploy.yml"
   pull_request:
     types: [opened, synchronize, reopened]
     branches: [main, production]

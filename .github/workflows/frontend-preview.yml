@@ -24,7 +24,7 @@ env:
   REGION: us-central1
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
   AI_SERVER_URL: https://cdp-ai-server-pbybuiwoxq-uc.a.run.app
-  BACKEND_SERVICE_NAME: cdp-server-dev
+  FALLBACK_BACKEND_SERVICE_NAME: cdp-server-dev
   SERVICE_NAME: frontend-preview-pr-${{ github.event.pull_request.number }}
   ENVIRONMENT: development
   NODE_VERSION: "20.x"
@@ -65,17 +65,25 @@ jobs:
       - name: Determine backend URL
         id: backend-url
         run: |
-          BACKEND_URL=$(gcloud run services describe ${{ env.BACKEND_SERVICE_NAME }} \
+          BACKEND_SERVICE="cdp-server-preview-pr-${{ github.event.pull_request.number }}"
+          echo "Checking for backend service $BACKEND_SERVICE..."
+          BACKEND_URL=$(gcloud run services describe "$BACKEND_SERVICE" \
             --region=${{ env.REGION }} \
             --format='value(status.url)' 2>/dev/null || echo "")
 
           if [ -z "$BACKEND_URL" ]; then
-            echo "Backend service ${{ env.BACKEND_SERVICE_NAME }} not found"
-            exit 1
+            BACKEND_SERVICE="${{ env.FALLBACK_BACKEND_SERVICE_NAME }}"
+            echo "Backend preview not found; using shared dev backend $BACKEND_SERVICE"
+            BACKEND_URL=$(gcloud run services describe "$BACKEND_SERVICE" \
+              --region=${{ env.REGION }} \
+              --format='value(status.url)')
+          else
+            echo "Backend preview found: $BACKEND_URL"
           fi
 
           echo "url=$BACKEND_URL" >> "$GITHUB_OUTPUT"
-          echo "Backend URL (${{ env.BACKEND_SERVICE_NAME }}): $BACKEND_URL"
+          echo "service=$BACKEND_SERVICE" >> "$GITHUB_OUTPUT"
+          echo "Backend URL ($BACKEND_SERVICE): $BACKEND_URL"
 
       - name: Get Frontend Secrets from Secret Manager
         id: frontend-secrets
@@ -98,6 +106,7 @@ jobs:
           FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
           FRONTEND_POSTHOG_KEY='${{ vars.FRONTEND_POSTHOG_KEY }}' \
           FRONTEND_POSTHOG_HOST='${{ vars.FRONTEND_POSTHOG_HOST }}' \
+          FRONTEND_POSTHOG_UI_HOST='${{ vars.FRONTEND_POSTHOG_UI_HOST }}' \
           FRONTEND_POSTHOG_ENABLED='${{ vars.FRONTEND_POSTHOG_ENABLED }}' \
           FRONTEND_SENTRY_DSN='${{ vars.FRONTEND_SENTRY_DSN }}' \
           FRONTEND_SENTRY_ENABLED='${{ vars.FRONTEND_SENTRY_ENABLED }}' \
@@ -143,6 +152,12 @@ jobs:
         run: npm run build
 
       - name: Build docs into frontend artifact
+        env:
+          FRONTEND_POSTHOG_KEY: ${{ vars.FRONTEND_POSTHOG_KEY }}
+          FRONTEND_POSTHOG_HOST: ${{ vars.FRONTEND_POSTHOG_HOST }}
+          FRONTEND_POSTHOG_UI_HOST: ${{ vars.FRONTEND_POSTHOG_UI_HOST }}
+          FRONTEND_POSTHOG_ENABLED: ${{ vars.FRONTEND_POSTHOG_ENABLED }}
+          FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED: ${{ vars.FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED }}
         run: npm run docs:build:frontend
 
       - name: Configure Docker for Artifact Registry
@@ -208,7 +223,7 @@ jobs:
             **URL:** ${{ steps.deploy.outputs.url }}
             **Commit:** `${{ github.sha }}`
             **Environment:** preview (PR #${{ github.event.pull_request.number }})
-            **Backend:** ${{ steps.backend-url.outputs.url }} (`${{ env.BACKEND_SERVICE_NAME }}`)
+            **Backend:** ${{ steps.backend-url.outputs.url }} (`${{ steps.backend-url.outputs.service }}`)
             **AI Server:** ${{ env.AI_SERVER_URL }}
             **Docs:** ${{ steps.deploy.outputs.url }}/docs/
 

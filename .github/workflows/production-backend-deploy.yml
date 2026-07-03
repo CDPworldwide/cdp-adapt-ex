@@ -1,0 +1,154 @@
+name: Production Backend Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: us-central1
+  ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
+  ENVIRONMENT: production
+  SERVICE_NAME_BACKEND: cdp-server-prod
+
+jobs:
+  deploy-backend:
+    name: Production / deploy backend
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Get Backend Secrets from Secret Manager
+        id: backend-secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: |-
+            API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
+
+      - name: Free disk space before Docker build
+        run: |
+          echo "Disk usage before cleanup:"
+          df -h
+
+          sudo rm -rf /usr/local/lib/android || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+
+          docker system prune -af || true
+          docker builder prune -af || true
+
+          echo "Disk usage after cleanup:"
+          df -h
+
+      - name: Build and push backend Docker image
+        working-directory: backend
+        run: |
+          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_BACKEND }}:${{ github.sha }}"
+          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_BACKEND }}:latest"
+
+          docker build -t $IMAGE_TAG -t $IMAGE_LATEST .
+          docker push $IMAGE_TAG
+          docker push $IMAGE_LATEST
+
+      - name: Deploy backend to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME_BACKEND }}
+          region: ${{ env.REGION }}
+          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_BACKEND }}:${{ github.sha }}
+          flags: |
+            --allow-unauthenticated
+            --add-cloudsql-instances=${{ env.PROJECT_ID }}:${{ env.REGION }}:cdp-prod
+            --min-instances=1
+            --max-instances=10
+            --memory=2Gi
+            --cpu=2
+            --timeout=300
+          labels: |
+            environment=${{ env.ENVIRONMENT }}
+            managed-by=github-actions
+            commit-sha=${{ github.sha }}
+          secrets: |
+            POSTGRES_PASSWORD=${{ env.ENVIRONMENT }}-POSTGRES_PASSWORD:latest
+            API_KEY=${{ env.ENVIRONMENT }}-API_KEY:latest
+            LLM_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
+            GOOGLE_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
+            ALLOWED_ORIGINS=${{ env.ENVIRONMENT }}-ALLOWED_ORIGINS:latest
+            POSTGRES_HOST=${{ env.ENVIRONMENT }}-POSTGRES_HOST:latest
+            POSTGRES_DB=${{ env.ENVIRONMENT }}-POSTGRES_DB:latest
+            POSTGRES_USER=${{ env.ENVIRONMENT }}-POSTGRES_USER:latest
+          env_vars: |
+            PROJECT_ID=${{ env.PROJECT_ID }}
+            LOCATION=${{ env.REGION }}
+            APP_ENV=${{ env.ENVIRONMENT }}
+            DEBUG=false
+            LOG_FORMAT=json
+            POSTGRES_PORT=5432
+            LLM_MODEL=${{ secrets.LLM_MODEL || 'gemini-2.5-flash' }}
+            DEFAULT_LLM_TEMPERATURE=0.2
+            MAX_TOKENS=2000
+            MAX_LLM_CALL_RETRIES=3
+            RATE_LIMIT_CHAT=10 per minute
+            RATE_LIMIT_SUGGEST_FOLLOW_UPS=10 per minute
+          env_vars_update_strategy: overwrite
+
+      - name: Verify backend revision and health
+        env:
+          BACKEND_API_KEY: ${{ steps.backend-secrets.outputs.API_KEY }}
+        run: |
+          EXPECTED_SHA="${{ github.sha }}"
+          BACKEND_URL=""
+
+          echo "Waiting for ${{ env.SERVICE_NAME_BACKEND }} label commit-sha=$EXPECTED_SHA"
+          for i in {1..24}; do
+            SERVICE_JSON=$(gcloud run services describe ${{ env.SERVICE_NAME_BACKEND }} --region=${{ env.REGION }} --format=json)
+            DEPLOYED_SHA=$(printf '%s' "$SERVICE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin)["metadata"]["labels"].get("commit-sha", ""))')
+            BACKEND_URL=$(printf '%s' "$SERVICE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin)["status"].get("url", ""))')
+
+            echo "Attempt $i/24: deployed_sha=$DEPLOYED_SHA url=$BACKEND_URL"
+            if [ "$DEPLOYED_SHA" = "$EXPECTED_SHA" ] && [ -n "$BACKEND_URL" ]; then
+              break
+            fi
+
+            if [ "$i" -eq 24 ]; then
+              echo "Backend deploy did not converge to commit $EXPECTED_SHA"
+              exit 1
+            fi
+
+            sleep 5
+          done
+
+          BACKEND_URL="$BACKEND_URL" \
+          BACKEND_API_KEY="$BACKEND_API_KEY" \
+          SMOKE_TEST_LOCATION_ORG_ID="834406" \
+          SMOKE_TEST_TRANSLATION_ORG_ID="59677" \
+          SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE="es" \
+          SMOKE_TEST_LOCATION_EXPECTED_STATUS="200" \
+          bash backend/scripts/smoke_test_deployment.sh
+
+          echo "Backend ready: $BACKEND_URL"

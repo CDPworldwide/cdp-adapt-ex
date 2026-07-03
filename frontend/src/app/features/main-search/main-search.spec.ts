@@ -9,6 +9,7 @@ import { of, throwError, Observable, Subject, skip, take } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Maps } from '../maps/maps';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 
 class FakeLoader implements TranslateLoader {
   getTranslation(): Observable<any> {
@@ -31,7 +32,7 @@ class FakeLoader implements TranslateLoader {
   template: '',
 })
 class StubMapsComponent {
-  @Input() pinFilter: 'all' | 'city' | 'region' = 'all';
+  @Input() categoryFilter: 'all' | 'cities' | 'states-regions' = 'all';
 }
 
 describe('MainSearchComponent', () => {
@@ -40,6 +41,7 @@ describe('MainSearchComponent', () => {
   let mockSearchService: jasmine.SpyObj<SearchService>;
   let mockLocationService: jasmine.SpyObj<LocationService>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let mockAnalyticsService: jasmine.SpyObj<AnalyticsService>;
   let translate: TranslateService;
   const MOCK_LOCATION_DATA = {
     organizationId: 101,
@@ -115,6 +117,7 @@ describe('MainSearchComponent', () => {
     mockRouter.createUrlTree.and.returnValue({} as any);
     mockRouter.serializeUrl.and.returnValue('');
     mockRouter.isActive.and.returnValue(false);
+    mockAnalyticsService = jasmine.createSpyObj('AnalyticsService', ['capture']);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -130,6 +133,7 @@ describe('MainSearchComponent', () => {
         { provide: LocationService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: {} },
+        { provide: AnalyticsService, useValue: mockAnalyticsService },
       ],
     })
       .overrideComponent(MainSearchComponent, {
@@ -233,6 +237,62 @@ describe('MainSearchComponent', () => {
 
       expect(suggestions).toEqual([]);
     });
+
+    it('should preserve Federal District aliases for Mexico City and Brazil suggestions', fakeAsync(() => {
+      const federalDistrictSuggestions = [
+        {
+          organizationId: 31172,
+          slug: '31172-mexico-city-mexico',
+          name: 'Mexico City',
+          country: 'Mexico',
+          disclosesToCDP: true,
+          isReportingLeader: false,
+        },
+        {
+          organizationId: 50353,
+          slug: '50353-distrito-federal-brasil-brazil',
+          name: 'Distrito Federal, Brasil',
+          country: 'Brazil',
+          disclosesToCDP: true,
+          isReportingLeader: false,
+        },
+        {
+          organizationId: 50354,
+          slug: '50354-distrito-federal-brasilia-brazil',
+          name: 'Distrito Federal, Brasília',
+          country: 'Brazil',
+          disclosesToCDP: true,
+          isReportingLeader: false,
+        },
+      ];
+      mockLocationService.getAllLocationNames.and.returnValue(of(federalDistrictSuggestions));
+
+      recreateComponent();
+
+      let suggestions: string[] = [];
+      component.filteredLocations.subscribe((opts) => {
+        suggestions = opts.map((option) => option.name);
+      });
+
+      component.searchControl.setValue('Federal District');
+      tick();
+
+      expect(suggestions).toContain('Mexico City');
+      expect(suggestions).toContain('Distrito Federal, Brasil');
+      expect(suggestions).toContain('Distrito Federal, Brasília');
+
+      component.searchControl.setValue('Federal District, Mexico');
+      tick();
+
+      expect(suggestions).toContain('Mexico City');
+
+      component.searchControl.setValue('Distrito Federal');
+      tick();
+
+      expect(suggestions).toContain('Mexico City');
+      expect(suggestions).toContain('Distrito Federal, Brasil');
+      expect(suggestions).toContain('Distrito Federal, Brasília');
+    }));
 
     it('should limit the number of suggestions to 5', fakeAsync(() => {
       const manySuggestions = [
@@ -430,6 +490,20 @@ describe('MainSearchComponent', () => {
       component.onEscapeKey();
 
       expect(component.isOverlayOpen).toBeFalse();
+    });
+
+    it('toggles the map category filter from the legend', () => {
+      component.setMapCategoryFilter('cities');
+
+      expect(component.selectedMapCategoryFilter).toBe('cities');
+
+      component.setMapCategoryFilter('cities');
+
+      expect(component.selectedMapCategoryFilter).toBe('all');
+      expect(mockAnalyticsService.capture).toHaveBeenCalledWith('map_category_filter_selected', {
+        category: 'all',
+        source: 'homepage_legend',
+      });
     });
 
     it('splitMatch highlights the matched query within a name', () => {

@@ -9,17 +9,19 @@ import { Maps } from './maps';
 import { LocationPinsService } from './location-pins.service';
 import { MapSelectionService } from '../main-search/map-selection.service';
 import { LocationPin, OrgTypeEnum } from '@pac-api/client';
-import { NgZone } from '@angular/core';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 
 class MockAdvancedMarkerElement {
   static instances: MockAdvancedMarkerElement[] = [];
   public content: any;
   public zIndex: number;
+  public map: any;
   public addEventListener = jasmine.createSpy('addEventListener');
   public addListener = jasmine.createSpy('addListener');
   constructor(options: any) {
     this.content = options.content;
     this.zIndex = options.zIndex;
+    this.map = options.map;
     MockAdvancedMarkerElement.instances.push(this);
   }
 }
@@ -30,6 +32,7 @@ describe('Maps', () => {
   let googleMapsLoaderService: jasmine.SpyObj<GoogleMapsLoaderService>;
   let locationPinsService: jasmine.SpyObj<LocationPinsService>;
   let mapSelectionService: jasmine.SpyObj<MapSelectionService>;
+  let posthogService: jasmine.SpyObj<AnalyticsService>;
   let mockMapInstance: any;
 
   const mockPins: LocationPin[] = [
@@ -55,10 +58,12 @@ describe('Maps', () => {
     ]);
     (mapSelectionService as any).selectedMapLocation$ = selectedMapLocation$.asObservable();
     mapSelectionService.getSelectedLocation.and.returnValue(null);
+    posthogService = jasmine.createSpyObj('AnalyticsService', ['capture']);
 
     mockMapInstance = {
       addListener: jasmine.createSpy('addListener'),
       panTo: jasmine.createSpy('panTo'),
+      setOptions: jasmine.createSpy('setOptions'),
       setZoom: jasmine.createSpy('setZoom'),
       getZoom: jasmine.createSpy('getZoom').and.returnValue(2),
     };
@@ -91,6 +96,7 @@ describe('Maps', () => {
         { provide: GoogleMapsLoaderService, useValue: googleMapsLoaderService },
         { provide: LocationPinsService, useValue: locationPinsService },
         { provide: MapSelectionService, useValue: mapSelectionService },
+        { provide: AnalyticsService, useValue: posthogService },
       ],
     }).compileComponents();
 
@@ -140,6 +146,25 @@ describe('Maps', () => {
       expect(mockMapInstance.panTo).toHaveBeenCalledWith({ lat: 9, lng: 20 });
     });
 
+    it('should ignore delayed pin zoom callbacks after the map is destroyed', () => {
+      (window.google.maps.geometry.spherical.computeOffset as jasmine.Spy).and.returnValue({
+        lat: 9,
+        lng: 20,
+      });
+      const marker = MockAdvancedMarkerElement.instances[0];
+      const clickHandler = marker.addListener.calls.mostRecent().args[1];
+
+      clickHandler();
+      const idleCallback = (
+        window.google.maps.event.addListenerOnce as jasmine.Spy
+      ).calls.mostRecent().args[2];
+
+      component.ngOnDestroy();
+      idleCallback();
+
+      expect(mockMapInstance.setZoom).not.toHaveBeenCalledWith(8);
+    });
+
     it('should update marker appearance when a location is selected', fakeAsync(() => {
       // Initially no selection
       const cityAMarkerData = (component as any).markers.get('City A');
@@ -180,5 +205,40 @@ describe('Maps', () => {
 
       expect(cityAMarkerData.marker.zIndex).toBe(unselectedZIndex);
     }));
+
+    it('should ignore delayed reset zoom callbacks after the map is destroyed', fakeAsync(() => {
+      mockMapInstance.setZoom.calls.reset();
+      selectedMapLocation$.next(null);
+      tick();
+      const idleCallback = (
+        window.google.maps.event.addListenerOnce as jasmine.Spy
+      ).calls.mostRecent().args[2];
+
+      component.ngOnDestroy();
+      idleCallback();
+
+      expect(mockMapInstance.setZoom).not.toHaveBeenCalled();
+    }));
+
+    it('should hide pins outside the selected category filter', () => {
+      fixture.componentRef.setInput('categoryFilter', 'cities');
+      fixture.detectChanges();
+
+      const cityAMarkerData = (component as any).markers.get('City A');
+      const regionBMarkerData = (component as any).markers.get('Region B');
+
+      expect(cityAMarkerData.marker.map).toBe(mockMapInstance);
+      expect(regionBMarkerData.marker.map).toBeNull();
+      expect(mockMapInstance.setOptions).toHaveBeenCalled();
+    });
+
+    it('should clear a selected location when a category filter hides it', () => {
+      mapSelectionService.getSelectedLocation.and.returnValue(mockPins[1]);
+
+      fixture.componentRef.setInput('categoryFilter', 'cities');
+      fixture.detectChanges();
+
+      expect(mapSelectionService.clearSelection).toHaveBeenCalled();
+    });
   });
 });

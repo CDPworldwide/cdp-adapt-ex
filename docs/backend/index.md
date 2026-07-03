@@ -11,14 +11,14 @@ The backend is the FastAPI service. It serves non-AI application APIs and owns t
 
 | Area | Notes |
 |------|-------|
-| Location profiles | Search, map pins, and organization detail payloads assembled from CSTAR Cloud SQL tables. |
-| CSTAR data | Hazards, adaptation goals, actions, funding-gap projects, peer solutions, and solution examples. |
+| Location profiles | Search, map pins, and organization detail payloads assembled from Cities, States and Regions Cloud SQL tables. |
+| Cities, States and Regions data | Hazards, adaptation goals, actions, funding-gap projects, peer solutions, and solution examples. |
 | Hazard layers | Google Earth Engine layer config and tile URLs for climate-hazard map overlays. |
 | Translation | Dynamic Google Cloud Translate endpoint used by frontend `autoTranslate` flows. |
 | Disclosure trends | Dataset-wide disclosure summaries for a selected year. |
 | Onboarding telemetry | App-owned role-selection table created by the backend on startup. |
 
-Ask CDP AI chat and follow-up generation are owned by the separate [AI Server](/ai-server/).
+Ask the AI Explorer chat and follow-up generation are owned by the separate [AI Server](/ai-server/).
 
 ## Backend Docs
 
@@ -29,6 +29,6 @@ Ask CDP AI chat and follow-up generation are owned by the separate [AI Server](/
 
 ## Caveats
 
-- CSTAR analytical tables are managed outside the app. The backend only auto-creates app-owned write tables, currently `UserRoleSelection`.
+- Cities, States and Regions analytical tables are managed outside the app. The backend only auto-creates app-owned write tables, currently `UserRoleSelection`.
 - Location detail reads still need a disclosure-year filtering decision before multiple disclosure years can safely coexist in the same table set.
 - The database schema script lives at `scripts/create_empty_tables.sql`, not under `docs/`.

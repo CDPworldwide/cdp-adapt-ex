@@ -1,0 +1,43 @@
+name: Issue auto responder
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Issue number to reply to
+        required: true
+        type: number
+
+permissions:
+  issues: write
+
+jobs:
+  reply:
+    name: Reply to issue
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event.issue.pull_request == null
+    steps:
+      - name: Post issue response
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue_number =
+              context.eventName === 'workflow_dispatch'
+                ? Number(context.payload.inputs.issue_number)
+                : context.payload.issue.number;
+
+            if (!Number.isInteger(issue_number) || issue_number < 1) {
+              core.setFailed(`Invalid issue number: ${issue_number}`);
+              return;
+            }
+
+            const body = `Thank you for your interest in the CDP Adaptation and Action Explorer. The cities, states, and regions dataset on which the tool is built is available via the Open Data Portal [here](https://data.cdp.net/). For further information or additional details, we invite you to get in touch with our Cities, States and Regions team at cstar@cdp.net. Many thanks.`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number,
+              body,
+            });

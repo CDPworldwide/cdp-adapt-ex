@@ -23,7 +23,7 @@ import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { MapSelectionService } from './map-selection.service';
 import { SEARCH_ALIASES, COUNTRY_ALIASES, LOCATION_SEARCH_KEYWORDS } from './search-aliases';
 import { STATE_ABBREV_TO_NAME } from './state-abbrev';
-import { Maps } from '../maps/maps';
+import { Maps, type MapCategoryFilter } from '../maps/maps';
 import { LocationSummaryComponent } from '../maps/location-summary/location-summary.component';
 import type { Hazard, HazardProfile, LocationPin } from '@pac-api/client';
 import { CdpLogoIconComponent, WarningIconComponent } from '../../shared/icons';
@@ -31,9 +31,8 @@ import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { DisclosureTrendsComponent } from '../location-card/disclosure-trends/disclosure-trends.component';
 import { DisclosureTrendsStatsService } from '../location-card/disclosure-trends/disclosure-trends-stats.service';
 import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends/disclosure-trends.stats';
-import { WelcomeModalComponent } from '../welcome-modal/welcome-modal.component';
 import { Footer } from '../../core/footer/footer';
-import { PosthogService } from '../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { buildOrganizationSlugSegment } from '../../shared/utils/org-slug.util';
 
 type LocationRouteTarget = {
@@ -67,7 +66,6 @@ function stripDiacritics(value: string): string {
     WarningIconComponent,
     AppHeaderComponent,
     DisclosureTrendsComponent,
-    WelcomeModalComponent,
     Footer,
   ],
 })
@@ -86,6 +84,7 @@ export class MainSearchComponent implements OnInit {
   private readonly allLocations$ = new BehaviorSubject<LocationSuggestion[]>([]);
   activeSuggestionIndex = -1;
   private visibleSuggestions: LocationSuggestion[] = [];
+  selectedMapCategoryFilter: MapCategoryFilter = 'all';
 
   selectedLocation: LocationPin | null = null;
   selectedLocationData: LocationData | null = null;
@@ -108,7 +107,7 @@ export class MainSearchComponent implements OnInit {
     private mapSelectionService: MapSelectionService,
     private router: Router,
     private disclosureTrendsStatsService: DisclosureTrendsStatsService,
-    private posthog: PosthogService,
+    private posthog: AnalyticsService,
   ) {}
 
   ngOnInit() {
@@ -245,6 +244,16 @@ export class MainSearchComponent implements OnInit {
 
   dismissInfoCard(): void {
     this.isInfoCardDismissed = true;
+  }
+
+  setMapCategoryFilter(filter: Exclude<MapCategoryFilter, 'all'>): void {
+    const nextFilter: MapCategoryFilter =
+      this.selectedMapCategoryFilter === filter ? 'all' : filter;
+    this.selectedMapCategoryFilter = nextFilter;
+    this.posthog.capture('map_category_filter_selected', {
+      category: nextFilter,
+      source: 'homepage_legend',
+    });
   }
 
   scrollToTrends(): void {

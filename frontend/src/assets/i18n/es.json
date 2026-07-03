@@ -100,6 +100,10 @@
     "mainNavigation": "Navegación principal",
     "siteFooter": "Pie de página del sitio",
     "methodology": "Metodología",
+    "settingsMenu": {
+      "label": "Configuración",
+      "roleHeading": "Tipo de usuario"
+    },
     "legacyNav": {
       "main": "Principal",
       "maps": "Mapas",
@@ -108,6 +112,7 @@
     "helpMenu": {
       "label": "Ayuda",
       "about": "Acerca de esta herramienta",
+      "customizeExperience": "Personalizar experiencia",
       "feedback": "Enviar comentarios",
       "externalIndicator": "(se abre en una nueva pestaña)"
     }
@@ -459,6 +464,10 @@
       "description": "Descripción",
       "sourceLabel": "Fuente:",
       "sourceText": "Agregación y análisis de CDP de las divulgaciones de {{year}} de ciudades similares",
+      "ecoregionLabel": "Condiciones climáticas similares",
+      "ecoregionText": "{{location}} se empareja con jurisdicciones pares en {{ecoregion}} usando peligros compartidos y condiciones climáticas similares.",
+      "ecoregionFallbackText": "Las ideas de acción se emparejan usando peligros compartidos de jurisdicciones pares; el contexto de región climática no está disponible para esta ubicación.",
+      "peerExampleCountText": "Jurisdicciones pares de ejemplo mostradas: {{count}}.",
       "climateHazards": "Riesgos climáticos",
       "statusOfAction": "Estado de la acción",
       "coBenefits": "Beneficios colaterales",

@@ -35,6 +35,7 @@ from app.schemas.location import (
 )
 from app.services.clients.database.location_details_repository import (
     LocationDetailsRepository,
+    STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID,
 )
 from app.services.impls.hazard_mapper import HazardMapper
 from app.services.impls.location_profile_builder import LocationProfileBuilder
@@ -490,6 +491,11 @@ class LocationDetailsService:
         """Returns organization summaries used by location suggestions."""
         if LocationDetailsService._summaries_cache is None:
             summaries = await self.repository.get_all_location_summaries()
+            summaries = [
+                summary
+                for summary in summaries
+                if summary.id != STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID
+            ]
             # Tag A-list reporters. Done once at cache time
             from app.services.impls.location_profile_builder import _A_LIST
 

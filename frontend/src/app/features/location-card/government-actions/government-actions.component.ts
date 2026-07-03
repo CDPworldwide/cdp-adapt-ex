@@ -22,7 +22,7 @@ import { ActionsSummaryComponent } from './actions-summary/actions-summary.compo
 import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
 import { splitTitleAtLastColon } from '../../../shared/utils/title.util';
 import type { HazardSummaryRow, DetailItemType } from './government-actions.types';
-import { PosthogService } from '../../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../../core/analytics/analytics.service';
 import { actionItemProperties } from '../../../core/analytics/analytics-events';
 
 export type { HazardSummaryRow, DetailItemType };
@@ -73,7 +73,7 @@ export class GovernmentActionsComponent implements OnChanges {
   selectedItem: AdaptationGoal | AdaptationAction | ProjectSeekingFunding | null = null;
   private previousFocus: HTMLElement | null = null;
 
-  constructor(private posthog: PosthogService) {}
+  constructor(private posthog: AnalyticsService) {}
 
   get selectedAction(): AdaptationAction {
     return this.selectedItem as AdaptationAction;

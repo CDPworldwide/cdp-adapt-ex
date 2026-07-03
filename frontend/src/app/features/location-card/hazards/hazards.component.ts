@@ -31,7 +31,7 @@ import {
   type HazardProfile,
   type LocationProfile,
 } from '@pac-api/client';
-import { PosthogService } from '../../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../../core/analytics/analytics.service';
 import { hazardProperties, locationProperties } from '../../../core/analytics/analytics-events';
 
 @Component({
@@ -84,7 +84,7 @@ export class HazardsComponent implements AfterViewInit, OnDestroy {
   constructor(
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
-    private posthog: PosthogService,
+    private posthog: AnalyticsService,
   ) {}
 
   get requesters(): string[] {

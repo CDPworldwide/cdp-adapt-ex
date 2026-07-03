@@ -10,7 +10,7 @@ import { HazardEnum, LocationProfile, SolutionCard, SolutionCategoryEnum } from 
 import { SolutionDetailModalComponent } from './solution-detail-modal.component';
 import { ProtectedTranslationHtmlPipe } from '../../../shared/pipes/protected-translation-html.pipe';
 import { MethodologyInfoComponent } from '../../../shared/components/methodology-info/methodology-info.component';
-import { PosthogService } from '../../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../../core/analytics/analytics.service';
 import { locationProperties, solutionProperties } from '../../../core/analytics/analytics-events';
 
 @Component({
@@ -34,7 +34,7 @@ export class SolutionsComponent {
 
   private dialog = inject(MatDialog);
   private breakpointObserver = inject(BreakpointObserver);
-  private posthog = inject(PosthogService);
+  private posthog = inject(AnalyticsService);
 
   selectedHazard: HazardEnum | null = null;
 
@@ -90,6 +90,24 @@ export class SolutionsComponent {
         };
       })
       .filter((cat) => cat.solutions.length > 0);
+  }
+
+  get peerExampleCount(): number {
+    const peers = new Set<string>();
+    const solutionsByCategory = this.data?.solutions?.solutions;
+
+    if (!solutionsByCategory) return 0;
+
+    Object.values(solutionsByCategory).forEach((solutions) => {
+      (solutions || []).forEach((solution) => {
+        (solution.peerActions || []).forEach((peerAction) => {
+          const peerKey = [peerAction.peerName, peerAction.country].filter(Boolean).join('|');
+          if (peerKey) peers.add(peerKey);
+        });
+      });
+    });
+
+    return peers.size;
   }
 
   selectHazard(hazardType: HazardEnum | null): void {

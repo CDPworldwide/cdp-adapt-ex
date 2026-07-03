@@ -16,6 +16,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { GovernmentActionsComponent } from './government-actions/government-actions.component';
@@ -34,8 +35,9 @@ import {
 import { ReplaySubject, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Footer } from '../../core/footer/footer';
-import { PosthogService } from '../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { ReportingLeaderChipComponent } from '../../shared/components/reporting-leader-chip/reporting-leader-chip.component';
+import { GlobalSearchService } from '../../core/global-search/global-search.service';
 import {
   hazardKeyProperties,
   hazardProperties,
@@ -52,14 +54,13 @@ import {
 export type LocationData = LocationProfile;
 export type { LocationCardTabKey } from './location-card-tabs';
 
-declare let gtag: Function;
-
 @Component({
   selector: 'app-location-card',
   standalone: true,
   imports: [
     CommonModule,
     MatTabsModule,
+    MatIconModule,
     TranslateModule,
     GovernmentActionsComponent,
     HazardsComponent,
@@ -119,7 +120,8 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
     private destroyRef: DestroyRef,
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
-    private posthog: PosthogService,
+    private posthog: AnalyticsService,
+    private globalSearchService: GlobalSearchService,
   ) {}
 
   ngOnInit(): void {
@@ -194,9 +196,6 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
         this.lastTrackedLocationName !== currentData.name
       ) {
         this.lastTrackedLocationName = currentData.name;
-        if (typeof gtag === 'function') {
-          gtag('event', 'location_viewed', { location_id: currentData.name });
-        }
         this.posthog.capture('location_viewed', locationProperties(currentData));
       }
 
@@ -245,6 +244,10 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
 
   goBackToMap(): void {
     this.backToMap.emit();
+  }
+
+  openGlobalSearch(): void {
+    this.globalSearchService.open();
   }
 
   exploreHazardActions(hazard: Hazard): void {
