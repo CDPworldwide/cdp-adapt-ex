@@ -101,7 +101,7 @@ describe('AskCdpAiComponent', () => {
     expect(askCdpAiService.loadStarterQuestions).toHaveBeenCalled();
   });
 
-  it('renders starter suggestions without a nested scroll container in the input section', () => {
+  it('collapses starter suggestions outside the input section by default', () => {
     askCdpAiService.followUpQuestions.set([
       'Which hazards are expected to have the highest financial impact?',
       'What hazards are on the rise?',
@@ -117,6 +117,20 @@ describe('AskCdpAiComponent', () => {
     expect(
       fixture.nativeElement.querySelectorAll(
         '.chat-input-section [data-testid="ask-ai-suggestion"]',
+      ).length,
+    ).toBe(0);
+
+    const toggle: HTMLButtonElement = fixture.nativeElement.querySelector(
+      '[data-testid="ask-ai-suggestions-toggle"]',
+    );
+    expect(toggle.textContent).toContain('2 suggestions');
+
+    toggle.click();
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelectorAll(
+        '#ask-ai-starter-suggestions [data-testid="ask-ai-suggestion"]',
       ).length,
     ).toBe(2);
   });
