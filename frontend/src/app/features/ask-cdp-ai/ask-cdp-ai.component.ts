@@ -20,12 +20,10 @@ import {
 } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
-import { PosthogService } from '../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { locationProperties } from '../../core/analytics/analytics-events';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { AskCdpAiOrganizationSelectorComponent } from './ask-cdp-ai-organization-selector.component';
-
-declare let gtag: Function;
 
 @Component({
   selector: 'app-ask-cdp-ai',
@@ -39,7 +37,7 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   private sanitizer = inject(DomSanitizer);
   private destroyRef = inject(DestroyRef);
   private mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
-  private posthog = inject(PosthogService);
+  private posthog = inject(AnalyticsService);
 
   @Input() locationData: LocationProfile | null = null;
   @Input() contextArea: AskCdpAiContextArea = 'hazards';
@@ -95,10 +93,6 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
 
   sendQuery() {
     if (!this.userQuery.trim()) return;
-    const globalGtag = (window as any).gtag;
-    if (typeof globalGtag === 'function') {
-      globalGtag('event', 'chatbot_query_submit');
-    }
     const query = this.userQuery.trim();
     this.posthog.capture('ai_chat_query_submitted', {
       ...locationProperties(this.locationData),
@@ -121,10 +115,6 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   onFollowUpClick(question: string) {
     if (this.isFollowUpLoading()) return;
     this.isFollowUpLoading.set(true);
-    const globalGtag = (window as any).gtag;
-    if (typeof globalGtag === 'function') {
-      globalGtag('event', 'chatbot_suggest_click', { query_text: question });
-    }
     this.posthog.capture('ai_chat_followup_clicked', {
       ...locationProperties(this.locationData),
       context_area: this.contextArea,

@@ -13,6 +13,7 @@ def test_build_profile_uses_null_statistics_without_real_source():
         disclosure_status="Submitted",
         current_pop=20937757,
         ranked_sectors="Agriculture|Manufacturing",
+        ecoregion="Temperate Broadleaf & Mixed Forests",
         requesting_auth="C40|ICLEI",
         has_geometry=True,
         climate_assess_yn="Yes",
@@ -38,6 +39,7 @@ def test_build_profile_uses_null_statistics_without_real_source():
     assert statistics.gdp_at_risk_value is None
     assert statistics.gdp_at_risk_percentage is None
     assert statistics.gdp_at_risk_currency_code is None
+    assert profile.ecoregion == "Temperate Broadleaf & Mixed Forests"
     assert [sector.sector_type for sector in statistics.vulnerable_sectors] == [
         SectorEnum.AGRICULTURE,
         SectorEnum.MANUFACTURING,

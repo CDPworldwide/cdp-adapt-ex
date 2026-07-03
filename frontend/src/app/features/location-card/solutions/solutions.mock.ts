@@ -31,6 +31,7 @@ export const MOCK_LOCATION_DATA_WITH_SOLUTIONS: LocationProfile = {
   organizationId: 12345,
   name: 'San Francisco',
   countryName: 'United States',
+  ecoregion: 'Temperate Conifer Forests',
   lat: 37.7749,
   lng: -122.4194,
   geometry: {

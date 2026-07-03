@@ -1,19 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PosthogService } from './posthog.service';
+import { AnalyticsService } from './analytics.service';
 import { UserRoleService } from './user-role.service';
 
 describe('UserRoleService', () => {
-  let posthog: jasmine.SpyObj<PosthogService>;
+  let posthog: jasmine.SpyObj<AnalyticsService>;
   let fetchSpy: jasmine.Spy;
 
   beforeEach(() => {
     localStorage.clear();
     fetchSpy = spyOn(window, 'fetch').and.resolveTo(new Response(null, { status: 204 }));
-    posthog = jasmine.createSpyObj<PosthogService>('PosthogService', ['capture', 'register']);
+    posthog = jasmine.createSpyObj<AnalyticsService>('AnalyticsService', ['capture', 'register']);
 
     TestBed.configureTestingModule({
-      providers: [{ provide: PosthogService, useValue: posthog }],
+      providers: [{ provide: AnalyticsService, useValue: posthog }],
     });
   });
 

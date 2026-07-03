@@ -51,6 +51,32 @@
       </span>
       <app-methodology-info class="self-center"></app-methodology-info>
     </div>
+    @if (data?.ecoregion) {
+      <div class="mt-2 flex w-full items-center gap-1 text-left">
+        <span class="text-cdp-dark text-sm font-bold font-roboto leading-5 tracking-cdp-wide">
+          {{ 'locationCard.solutions.ecoregionLabel' | translate }}:
+        </span>
+        <app-methodology-info class="shrink-0 self-center"></app-methodology-info>
+      </div>
+      <div class="mt-1 w-full text-left text-cdp-dark text-sm font-normal font-roboto leading-5 tracking-cdp-wide">
+        {{
+          'locationCard.solutions.ecoregionText'
+            | translate: { location: data?.name, ecoregion: data?.ecoregion }
+        }}
+      </div>
+      @if (peerExampleCount > 0) {
+        <div class="mt-2 w-full text-left text-cdp-dark text-sm font-normal font-roboto leading-5 tracking-cdp-wide">
+          {{
+            'locationCard.solutions.peerExampleCountText'
+              | translate: { count: peerExampleCount }
+          }}
+        </div>
+      }
+    } @else {
+      <div class="mt-2 w-full text-left text-cdp-dark text-sm font-normal font-roboto leading-5 tracking-cdp-wide">
+        {{ 'locationCard.solutions.ecoregionFallbackText' | translate }}
+      </div>
+    }
   </section>
 
   <!-- Hazard Filters -->

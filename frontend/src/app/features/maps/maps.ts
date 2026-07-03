@@ -16,7 +16,7 @@ import { OrgTypeEnum } from '@pac-api/client';
 import type { LocationPin } from '@pac-api/client';
 import { Subscription } from 'rxjs';
 import { GoogleMapsLoaderService } from 'src/app/shared/services/google-maps-loader.service';
-import { PosthogService } from '../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { pinProperties } from '../../core/analytics/analytics-events';
 
 // Circle-on-stick pin shape (a filled disc with a vertical bar trailing
@@ -74,7 +74,7 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
     private locationPinsService: LocationPinsService,
     private ngZone: NgZone,
     private googleMapsLoader: GoogleMapsLoaderService,
-    private posthog: PosthogService,
+    private posthog: AnalyticsService,
   ) {}
 
   ngOnInit(): void {

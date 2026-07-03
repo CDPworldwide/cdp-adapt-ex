@@ -9,7 +9,7 @@ import { Maps } from './maps';
 import { LocationPinsService } from './location-pins.service';
 import { MapSelectionService } from '../main-search/map-selection.service';
 import { LocationPin, OrgTypeEnum } from '@pac-api/client';
-import { PosthogService } from '../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 
 class MockAdvancedMarkerElement {
   static instances: MockAdvancedMarkerElement[] = [];
@@ -32,7 +32,7 @@ describe('Maps', () => {
   let googleMapsLoaderService: jasmine.SpyObj<GoogleMapsLoaderService>;
   let locationPinsService: jasmine.SpyObj<LocationPinsService>;
   let mapSelectionService: jasmine.SpyObj<MapSelectionService>;
-  let posthogService: jasmine.SpyObj<PosthogService>;
+  let posthogService: jasmine.SpyObj<AnalyticsService>;
   let mockMapInstance: any;
 
   const mockPins: LocationPin[] = [
@@ -58,7 +58,7 @@ describe('Maps', () => {
     ]);
     (mapSelectionService as any).selectedMapLocation$ = selectedMapLocation$.asObservable();
     mapSelectionService.getSelectedLocation.and.returnValue(null);
-    posthogService = jasmine.createSpyObj('PosthogService', ['capture']);
+    posthogService = jasmine.createSpyObj('AnalyticsService', ['capture']);
 
     mockMapInstance = {
       addListener: jasmine.createSpy('addListener'),
@@ -96,7 +96,7 @@ describe('Maps', () => {
         { provide: GoogleMapsLoaderService, useValue: googleMapsLoaderService },
         { provide: LocationPinsService, useValue: locationPinsService },
         { provide: MapSelectionService, useValue: mapSelectionService },
-        { provide: PosthogService, useValue: posthogService },
+        { provide: AnalyticsService, useValue: posthogService },
       ],
     }).compileComponents();
 

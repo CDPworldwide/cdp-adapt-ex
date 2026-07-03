@@ -4,7 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 
 import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
-import { PosthogService } from '../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { LocationService } from '../../shared/services/location.service';
 import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 import { AskCdpAiComponent } from './ask-cdp-ai.component';
@@ -13,7 +13,7 @@ describe('AskCdpAiComponent', () => {
   let component: AskCdpAiComponent;
   let fixture: ComponentFixture<AskCdpAiComponent>;
   let askCdpAiService: jasmine.SpyObj<AskCdpAiService>;
-  let posthog: jasmine.SpyObj<PosthogService>;
+  let posthog: jasmine.SpyObj<AnalyticsService>;
   let locationService: jasmine.SpyObj<LocationService>;
 
   beforeEach(async () => {
@@ -37,7 +37,7 @@ describe('AskCdpAiComponent', () => {
     );
     askCdpAiService.loadStarterQuestions.and.returnValue(of(void 0));
     askCdpAiService.sendChatQuery.and.returnValue(of(''));
-    posthog = jasmine.createSpyObj<PosthogService>('PosthogService', ['capture']);
+    posthog = jasmine.createSpyObj<AnalyticsService>('AnalyticsService', ['capture']);
     locationService = jasmine.createSpyObj<LocationService>('LocationService', [
       'getAllLocationNames',
     ]);
@@ -47,7 +47,7 @@ describe('AskCdpAiComponent', () => {
       imports: [AskCdpAiComponent, TranslateModule.forRoot()],
       providers: [
         { provide: AskCdpAiService, useValue: askCdpAiService },
-        { provide: PosthogService, useValue: posthog },
+        { provide: AnalyticsService, useValue: posthog },
         { provide: LocationService, useValue: locationService },
         {
           provide: MobileKeyboardViewportService,

@@ -46,6 +46,13 @@ describe('SolutionsComponent', () => {
           hazardFiltersTitle: 'Hazard Filters',
           popularSolutionsTitle: 'Action Ideas from Peer Cities',
           sourceDescription: 'Source',
+          ecoregionLabel: 'Similar climate conditions',
+          ecoregionText:
+            '{{location}} is matched with peer jurisdictions in {{ecoregion}} using shared hazards and similar climate conditions.',
+          ecoregionTooltip: 'Action Ideas are selected from matching peer jurisdictions.',
+          ecoregionFallbackText:
+            'Action ideas are matched using shared hazards from peer jurisdictions.',
+          peerExampleCountText: 'Example peer jurisdictions shown: {{count}}.',
           noSolutionsBanner: {
             title: 'Not all information was disclosed',
           },
@@ -115,6 +122,31 @@ describe('SolutionsComponent', () => {
     component.selectHazard(HazardEnum.EXTREME_HEAT);
     expect(component.isSelected(HazardEnum.EXTREME_HEAT)).toBeTrue();
     expect(component.isSelected(null)).toBeFalse();
+  });
+
+  it('should show the location ecoregion when available', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.textContent).toContain('Similar climate conditions');
+    expect(compiled.textContent).toContain('Temperate Conifer Forests');
+    expect(compiled.textContent).toContain('Example peer jurisdictions shown: 2.');
+    expect(compiled.textContent).not.toContain(
+      'Action ideas are matched using shared hazards from peer jurisdictions.',
+    );
+  });
+
+  it('should show shared-hazard fallback copy when ecoregion is unavailable', () => {
+    fixture.componentRef.setInput('data', {
+      ...MOCK_LOCATION_DATA_WITH_SOLUTIONS,
+      ecoregion: null,
+    });
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.textContent).toContain(
+      'Action ideas are matched using shared hazards from peer jurisdictions.',
+    );
+    expect(compiled.textContent).not.toContain('Similar climate conditions');
   });
 
   // TODO: restore Solutions "No hazard data" empty-state banner dropped during UI redesign port.

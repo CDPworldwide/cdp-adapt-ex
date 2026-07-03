@@ -35,7 +35,7 @@ import {
 import { ReplaySubject, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Footer } from '../../core/footer/footer';
-import { PosthogService } from '../../core/analytics/posthog.service';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { ReportingLeaderChipComponent } from '../../shared/components/reporting-leader-chip/reporting-leader-chip.component';
 import { GlobalSearchService } from '../../core/global-search/global-search.service';
 import {
@@ -53,8 +53,6 @@ import {
 
 export type LocationData = LocationProfile;
 export type { LocationCardTabKey } from './location-card-tabs';
-
-declare let gtag: Function;
 
 @Component({
   selector: 'app-location-card',
@@ -122,7 +120,7 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
     private destroyRef: DestroyRef,
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
-    private posthog: PosthogService,
+    private posthog: AnalyticsService,
     private globalSearchService: GlobalSearchService,
   ) {}
 
@@ -198,9 +196,6 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
         this.lastTrackedLocationName !== currentData.name
       ) {
         this.lastTrackedLocationName = currentData.name;
-        if (typeof gtag === 'function') {
-          gtag('event', 'location_viewed', { location_id: currentData.name });
-        }
         this.posthog.capture('location_viewed', locationProperties(currentData));
       }
 
