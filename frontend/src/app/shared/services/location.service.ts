@@ -15,6 +15,7 @@ import {
   buildOrganizationSlugSegment,
   extractOrganizationIdFromRouteSegment,
 } from '../utils/org-slug.util';
+import { inferLocationCountry } from '../utils/location-country.util';
 
 type LocationNameSummary = LocationNamesResponse['locations'][number] & {
   disclosure_status?: string | null;
@@ -87,12 +88,14 @@ export class LocationService {
             return [];
           }
 
+          const country = inferLocationCountry(location.name, location.country);
+
           return [
             {
               organizationId: location.id,
-              slug: buildOrganizationSlugSegment(location.id, location.name, location.country),
+              slug: buildOrganizationSlugSegment(location.id, location.name, country),
               name: location.name,
-              country: location.country?.trim() || undefined,
+              country,
               // `disclosure_status` is "Submitted" if the jurisdiction returned
               // a questionnaire this cycle, or "Amended" if they updated a
               // prior submission. Both count as disclosers. Anything else
