@@ -31,9 +31,13 @@ SENTRY_ENVIRONMENT="${FRONTEND_SENTRY_ENVIRONMENT:-production}"
 SENTRY_RELEASE="${FRONTEND_SENTRY_RELEASE:-}"
 SENTRY_TRACES_SAMPLE_RATE="${FRONTEND_SENTRY_TRACES_SAMPLE_RATE:-0.05}"
 
-cat > src/environments/environment.ts <<EOF
+write_environment_file() {
+  local output_path="$1"
+  local production_flag="$2"
+
+  cat > "$output_path" <<EOF
 export const environment = {
-  production: true,
+  production: ${production_flag},
   baseUrl: '${BASE_URL}',
   aiServerUrl: '${AI_SERVER_URL}',
   aiModel: 'cdp-gemini',
@@ -66,3 +70,7 @@ export const environment = {
   },
 };
 EOF
+}
+
+write_environment_file src/environments/environment.ts true
+write_environment_file src/environments/environment.development.ts false

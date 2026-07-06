@@ -284,6 +284,14 @@ jobs:
           FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED: ${{ vars.FRONTEND_POSTHOG_SESSION_REPLAY_ENABLED }}
         run: npm run docs:build:frontend
 
+      - name: Generate organization SEO pages and sitemap
+        working-directory: frontend
+        run: npm run seo:generate
+        env:
+          FRONTEND_BASE_URL: ${{ steps.decode-url.outputs.url }}
+          FRONTEND_API_KEY: ${{ steps.frontend-secrets.outputs.API_KEY }}
+          SEO_SITE_URL: https://cdp-action-explorer.net
+
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
 

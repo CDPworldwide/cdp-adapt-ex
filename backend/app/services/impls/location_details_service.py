@@ -27,6 +27,7 @@ from app.schemas.location import (
     HazardProfile,
     LocationPin,
     LocationProfile,
+    LocationSeoSummary,
     OrgTypeEnum,
     PeerAction,
     ProjectSeekingFunding,
@@ -50,6 +51,7 @@ from app.shared.logging import logger
 class LocationDetailsService:
     _summaries_cache = None
     _pins_cache = None
+    _seo_summaries_cache = None
 
     def __init__(
         self,
@@ -296,7 +298,9 @@ class LocationDetailsService:
                 ProjectSeekingFunding(
                     title=clean_disclosed_text(project.project_title_english),
                     status=status,
-                    description=clean_disclosed_text(project.project_descirption_english),
+                    description=clean_disclosed_text(
+                        project.project_descirption_english
+                    ),
                     project_area=clean_disclosed_text(project.project_area_english),
                     finance_status=clean_disclosed_text(project.finance_status_english),
                     finance_model=finance_models,
@@ -499,6 +503,14 @@ class LocationDetailsService:
                 s.is_reporting_leader = s.id in _A_LIST
             LocationDetailsService._summaries_cache = summaries
         return LocationDetailsService._summaries_cache
+
+    async def get_location_seo_summaries(self) -> list[LocationSeoSummary]:
+        """Returns lightweight organization summaries used for SEO artifacts."""
+        if LocationDetailsService._seo_summaries_cache is None:
+            LocationDetailsService._seo_summaries_cache = (
+                await self.repository.get_location_seo_summaries()
+            )
+        return LocationDetailsService._seo_summaries_cache
 
     async def get_all_location_pins(self) -> list[LocationPin]:
         """Returns a list of all unique location pins with coordinates."""

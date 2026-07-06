@@ -19,6 +19,7 @@ from app.models.location_details import (
     PeerSolutions,
     SolutionsExamples,
 )
+from app.schemas.location import LocationSeoSummary
 
 STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID = 906800
 
@@ -112,9 +113,7 @@ class LocationDetailsRepository:
                 return None
             return DimCentral(**result._mapping)
 
-    async def get_peer_locations(
-        self, org_ids: set[int]
-    ) -> List[PeerLocation]:
+    async def get_peer_locations(self, org_ids: set[int]) -> List[PeerLocation]:
         """Return geometry/country for each peer organization id.
 
         Only rows with geometry are returned; peers without geometry are
@@ -235,6 +234,118 @@ class LocationDetailsRepository:
                 for row in results
                 if row.disclosing_organization
             ]
+
+    async def get_location_seo_summaries(self) -> List[LocationSeoSummary]:
+        """Return lightweight organization data for build-time SEO page generation."""
+        async with AsyncSession(self.engine) as session:
+            base_statement = (
+                select(
+                    DimCentral.cdp_disclosing_org_number,
+                    DimCentral.disclosing_organization,
+                    DimCentral.discloser_country_or_area,
+                    DimCentral.disclosing_org_type,
+                    DimCentral.current_pop,
+                    DimCentral.disclosure_status,
+                    DimCentral.public_status,
+                    DimCentral.disclosing_year,
+                )
+                .where(
+                    DimCentral.has_geometry,
+                    DimCentral.disclosing_organization.is_not(None),
+                )
+                .distinct()
+            )
+            base_rows = (await session.exec(base_statement)).all()
+
+            hazard_statement = (
+                select(
+                    FactHazards.cdp_disclosing_org_number,
+                    FactHazards.hazard_rank,
+                    FactHazards.hazard_english,
+                )
+                .where(
+                    FactHazards.hazard_rank <= 3,
+                    or_(
+                        FactHazards.public_status != "Non-Public",
+                        FactHazards.public_status.is_(None),
+                    ),
+                )
+                .order_by(
+                    FactHazards.cdp_disclosing_org_number,
+                    FactHazards.hazard_rank,
+                )
+            )
+            hazard_rows = (await session.exec(hazard_statement)).all()
+
+            goals_by_org = await self._count_public_rows_by_org(
+                session,
+                FactAdaptationGoals.cdp_disclosing_org_number,
+                FactAdaptationGoals.public_status,
+            )
+            actions_by_org = await self._count_public_rows_by_org(
+                session,
+                FactActions.cdp_disclosing_org_number,
+                FactActions.public_status,
+            )
+            projects_by_org = await self._count_public_rows_by_org(
+                session,
+                FactProjects.cdp_disclosing_org_number,
+                FactProjects.public_status,
+            )
+            solutions_by_org = await self._count_solution_rows_by_org(session)
+
+        hazards_by_org: dict[int, list[str]] = {}
+        for row in hazard_rows:
+            if not row.hazard_english:
+                continue
+            hazards_by_org.setdefault(row.cdp_disclosing_org_number, []).append(
+                row.hazard_english
+            )
+
+        return [
+            LocationSeoSummary(
+                id=row.cdp_disclosing_org_number,
+                name=row.disclosing_organization,
+                country=row.discloser_country_or_area,
+                organization_type=row.disclosing_org_type,
+                population=row.current_pop,
+                disclosure_status=row.disclosure_status,
+                public_status=row.public_status,
+                disclosure_year=row.disclosing_year,
+                top_hazards=hazards_by_org.get(row.cdp_disclosing_org_number, []),
+                action_count=actions_by_org.get(row.cdp_disclosing_org_number, 0),
+                goal_count=goals_by_org.get(row.cdp_disclosing_org_number, 0),
+                project_count=projects_by_org.get(row.cdp_disclosing_org_number, 0),
+                solution_count=solutions_by_org.get(row.cdp_disclosing_org_number, 0),
+            )
+            for row in base_rows
+            if row.disclosing_organization
+        ]
+
+    async def _count_public_rows_by_org(
+        self,
+        session: AsyncSession,
+        org_column,
+        public_status_column,
+    ) -> dict[int, int]:
+        statement = (
+            select(org_column, func.count())
+            .where(public_status_column == "Public")
+            .group_by(org_column)
+        )
+        rows = (await session.exec(statement)).all()
+        return {row[0]: row[1] for row in rows}
+
+    async def _count_solution_rows_by_org(
+        self, session: AsyncSession
+    ) -> dict[int, int]:
+        statement = (
+            select(PeerSolutions.target_org_id, func.count())
+            .where(PeerSolutions.hazard_filter == "All")
+            .group_by(PeerSolutions.target_org_id)
+        )
+        rows = (await session.exec(statement)).all()
+        return {row[0]: row[1] for row in rows}
 
     async def get_all_location_geometries(self) -> List[LocationGeometry]:
         """Return a list of all unique location names, their geometries, and organization type.

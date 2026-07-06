@@ -403,6 +403,30 @@ class LocationNamesResponse(APIBaseModel):
     locations: list[OrganizationSummary]
 
 
+class LocationSeoSummary(APIBaseModel):
+    """Lightweight organization summary used to generate crawlable SEO pages."""
+
+    id: int
+    name: str
+    country: str | None = None
+    organization_type: str | None = None
+    population: float | None = None
+    disclosure_status: str | None = None
+    public_status: str | None = None
+    disclosure_year: int | None = None
+    top_hazards: list[str] = Field(default_factory=list)
+    action_count: int = 0
+    goal_count: int = 0
+    project_count: int = 0
+    solution_count: int = 0
+
+
+class LocationSeoResponse(APIBaseModel):
+    """Response wrapper for SEO generation summaries."""
+
+    locations: list[LocationSeoSummary]
+
+
 class LocationPinsResponse(APIBaseModel):
     """Response wrapper for a list of location pins."""
 

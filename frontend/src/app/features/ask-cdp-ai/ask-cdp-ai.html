@@ -39,6 +39,7 @@
         <app-ask-cdp-ai-organization-selector
           [currentOrganizationId]="locationData?.organizationId"
           [currentDisplayName]="locationDisplayName"
+          [currentCountryName]="locationData?.countryName || ''"
           [selectedOrganizations]="selectedReferenceOrganizations()"
           (selectedOrganizationsChange)="onReferenceOrganizationsChange($event)"
         ></app-ask-cdp-ai-organization-selector>
@@ -83,7 +84,6 @@
         {{ disclosureError() }}
       </div>
     }
-
   </div>
 
   <!-- Input Section -->
@@ -116,7 +116,10 @@
         } @else if (followUpQuestions().length > 0) {
           <div class="flex flex-shrink-0 flex-col gap-2">
             @if (showAllStarterQuestions()) {
-              <div id="ask-ai-starter-suggestions" class="flex max-h-[40dvh] flex-col gap-2 overflow-y-auto">
+              <div
+                id="ask-ai-starter-suggestions"
+                class="flex max-h-[40dvh] flex-col gap-2 overflow-y-auto"
+              >
                 @for (q of displayedStarterQuestions; track $index) {
                   <button
                     data-testid="ask-ai-suggestion"

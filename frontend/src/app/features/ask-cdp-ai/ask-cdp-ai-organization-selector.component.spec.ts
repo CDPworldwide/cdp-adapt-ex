@@ -15,6 +15,7 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
   const organizations: LocationSuggestion[] = [
     {
       organizationId: 3417,
+      slug: '3417-new-york-city-ny-united-states-of-america',
       name: 'New York City, NY',
       country: 'United States of America',
       disclosesToCDP: true,
@@ -22,6 +23,7 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
     },
     {
       organizationId: 3420,
+      slug: '3420-city-of-london-city-united-kingdom',
       name: 'City of London (City)',
       country: 'United Kingdom',
       disclosesToCDP: true,
@@ -29,6 +31,7 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
     },
     {
       organizationId: 3422,
+      slug: '3422-greater-london-authority-united-kingdom',
       name: 'Greater London Authority',
       country: 'United Kingdom',
       disclosesToCDP: true,
@@ -86,6 +89,27 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
     fixture.detectChanges();
 
     expect(selectedOrganizations.at(-1)).toEqual([visibleOptions[1]]);
+  });
+
+  it('renders country flags for the current organization, selected organizations, and options', () => {
+    component.currentDisplayName = 'Corporation of Chennai';
+    component.currentCountryName = 'India';
+    component.selectedOrganizations = [organizations[0]];
+    component.togglePicker();
+    fixture.detectChanges();
+
+    const selectorFlags: HTMLImageElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-selector"] img'),
+    );
+    const optionFlag = fixture.nativeElement.querySelector(
+      '[data-testid="ask-ai-organization-option"] img',
+    ) as HTMLImageElement;
+
+    expect(selectorFlags.map((flag) => flag.src)).toEqual([
+      'https://flagcdn.com/in.svg',
+      'https://flagcdn.com/us.svg',
+    ]);
+    expect(optionFlag.src).toBe('https://flagcdn.com/gb.svg');
   });
 
   it('keeps arrow navigation inside the available option range', () => {

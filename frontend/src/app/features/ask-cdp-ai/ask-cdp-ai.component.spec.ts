@@ -174,6 +174,7 @@ describe('AskCdpAiComponent', () => {
     component.onReferenceOrganizationsChange([
       {
         organizationId: 31173,
+        slug: '31173-city-of-new-york-ny-united-states-of-america',
         name: 'City of New York, NY',
         country: 'United States of America',
         disclosesToCDP: true,
@@ -181,6 +182,7 @@ describe('AskCdpAiComponent', () => {
       },
       {
         organizationId: 10894,
+        slug: '10894-city-of-los-angeles-ca-united-states-of-america',
         name: 'City of Los Angeles, CA',
         country: 'United States of America',
         disclosesToCDP: true,

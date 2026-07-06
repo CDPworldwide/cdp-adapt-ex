@@ -18,6 +18,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { filterLocationSuggestions } from '../../shared/services/location-search.util';
+import { countryFlagImageUrl } from '../../shared/utils/country-flag.util';
 
 @Component({
   selector: 'app-ask-cdp-ai-organization-selector',
@@ -28,6 +29,7 @@ import { filterLocationSuggestions } from '../../shared/services/location-search
 export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges {
   @Input() currentOrganizationId: number | null | undefined = null;
   @Input() currentDisplayName = '';
+  @Input() currentCountryName = '';
   @Input() selectedOrganizations: LocationSuggestion[] = [];
   @Output() selectedOrganizationsChange = new EventEmitter<LocationSuggestion[]>();
 
@@ -79,6 +81,14 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
 
   get hasSelection(): boolean {
     return Boolean(this.currentDisplayName) || this.selectedOrganizations.length > 0;
+  }
+
+  get currentFlagImageUrl(): string {
+    return this.countryFlagImageUrl(this.currentCountryName);
+  }
+
+  countryFlagImageUrl(countryName: string | null | undefined): string {
+    return countryFlagImageUrl(countryName);
   }
 
   togglePicker(): void {
@@ -249,8 +259,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
 
   private isSelectedOrganization(organization: LocationSuggestion): boolean {
     return this.selectedOrganizations.some(
-      (selectedOrganization) =>
-        selectedOrganization.organizationId === organization.organizationId,
+      (selectedOrganization) => selectedOrganization.organizationId === organization.organizationId,
     );
   }
 }
