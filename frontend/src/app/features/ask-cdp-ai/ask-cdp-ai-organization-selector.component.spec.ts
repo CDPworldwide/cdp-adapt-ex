@@ -80,10 +80,14 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
     const options: HTMLElement[] = Array.from(
       fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option"]'),
     );
+    const checkboxes: HTMLInputElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option-checkbox"]'),
+    );
     expect(component.activeOptionIndex()).toBe(1);
     expect(input.getAttribute('aria-activedescendant')).toBe('ask-ai-organization-option-1');
     expect(options[1].getAttribute('aria-selected')).toBe('true');
     expect(options[1].classList.contains('bg-gray-100')).toBeTrue();
+    expect(checkboxes[1].checked).toBeFalse();
 
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     fixture.detectChanges();
@@ -101,15 +105,44 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
     const selectorFlags: HTMLImageElement[] = Array.from(
       fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-selector"] img'),
     );
-    const optionFlag = fixture.nativeElement.querySelector(
-      '[data-testid="ask-ai-organization-option"] img',
-    ) as HTMLImageElement;
+    const optionFlags: HTMLImageElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option"] img'),
+    );
 
     expect(selectorFlags.map((flag) => flag.src)).toEqual([
       'https://flagcdn.com/in.svg',
       'https://flagcdn.com/us.svg',
     ]);
-    expect(optionFlag.src).toBe('https://flagcdn.com/gb.svg');
+    expect(optionFlags.map((flag) => flag.src).slice(0, 2)).toEqual([
+      'https://flagcdn.com/us.svg',
+      'https://flagcdn.com/gb.svg',
+    ]);
+  });
+
+  it('pins selected organizations at the top of the checkbox list and toggles them off', () => {
+    const selectedOrganizations: LocationSuggestion[][] = [];
+    component.selectedOrganizations = [organizations[1]];
+    component.selectedOrganizationsChange.subscribe((selection) =>
+      selectedOrganizations.push(selection),
+    );
+
+    component.togglePicker();
+    fixture.detectChanges();
+
+    const optionLabels: HTMLElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option"]'),
+    );
+    const checkboxes: HTMLInputElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option-checkbox"]'),
+    );
+
+    expect(optionLabels[0].textContent).toContain('City of London (City)');
+    expect(checkboxes[0].checked).toBeTrue();
+
+    checkboxes[0].dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(selectedOrganizations.at(-1)).toEqual([]);
   });
 
   it('keeps arrow navigation inside the available option range', () => {

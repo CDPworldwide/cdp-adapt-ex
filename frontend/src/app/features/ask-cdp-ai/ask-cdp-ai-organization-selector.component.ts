@@ -151,23 +151,36 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
       return;
     }
 
-    const selectedOrganization = this.organizationOptions()[this.activeOptionIndex()];
-    if (!selectedOrganization) {
+    const activeOrganization = this.organizationOptions()[this.activeOptionIndex()];
+    if (!activeOrganization) {
       return;
     }
 
     event.preventDefault();
-    this.selectOrganization(selectedOrganization);
+    this.toggleOrganization(activeOrganization);
   }
 
-  selectOrganization(organization: LocationSuggestion): void {
-    if (this.isCurrentOrganization(organization) || this.isSelectedOrganization(organization)) {
+  onOptionKeydown(event: KeyboardEvent, organization: LocationSuggestion): void {
+    if (event.key !== 'Enter' && event.key !== ' ') {
+      return;
+    }
+
+    event.preventDefault();
+    this.toggleOrganization(organization);
+  }
+
+  toggleOrganization(organization: LocationSuggestion): void {
+    if (this.isCurrentOrganization(organization)) {
+      return;
+    }
+
+    if (this.isSelectedOrganization(organization)) {
+      this.removeOrganization(organization);
       return;
     }
 
     this.selectedOrganizationsChange.emit([...this.selectedOrganizations, organization]);
-    this.searchControl.setValue('');
-    this.updateOrganizationOptions('');
+    this.updateOrganizationOptions(this.searchControl.value);
   }
 
   getOptionId(index: number): string {
@@ -209,7 +222,17 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
       });
   }
 
+  isSelectedOrganization(organization: LocationSuggestion): boolean {
+    return this.selectedOrganizations.some(
+      (selectedOrganization) => selectedOrganization.organizationId === organization.organizationId,
+    );
+  }
+
   private updateOrganizationOptions(value: string): void {
+    const selectedOptions = this.selectedOrganizations.filter(
+      (organization) => !this.isCurrentOrganization(organization),
+    );
+
     const options = filterLocationSuggestions(
       value,
       this.allOrganizations,
@@ -220,7 +243,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
         !this.isCurrentOrganization(organization) && !this.isSelectedOrganization(organization),
     );
 
-    this.organizationOptions.set(options);
+    this.organizationOptions.set([...selectedOptions, ...options]);
     this.activeOptionIndex.set(0);
   }
 
@@ -255,11 +278,5 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
 
   private isCurrentOrganization(organization: LocationSuggestion): boolean {
     return organization.organizationId === this.currentOrganizationId;
-  }
-
-  private isSelectedOrganization(organization: LocationSuggestion): boolean {
-    return this.selectedOrganizations.some(
-      (selectedOrganization) => selectedOrganization.organizationId === organization.organizationId,
-    );
   }
 }
