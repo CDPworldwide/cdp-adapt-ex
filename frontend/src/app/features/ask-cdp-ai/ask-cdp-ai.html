@@ -84,6 +84,23 @@
         {{ disclosureError() }}
       </div>
     }
+
+    @if (shouldShowDebugInfo) {
+      <details
+        data-testid="ask-ai-debug-metadata"
+        class="ai-debug-metadata mt-4 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-600"
+      >
+        <summary class="cursor-pointer font-semibold text-gray-800">Debug metadata</summary>
+        <dl class="mt-2 grid gap-1">
+          @for (row of debugRows; track row.label) {
+            <div class="grid grid-cols-[8rem_minmax(0,1fr)] gap-2">
+              <dt class="font-medium text-gray-700">{{ row.label }}</dt>
+              <dd class="min-w-0 break-words font-mono">{{ row.value }}</dd>
+            </div>
+          }
+        </dl>
+      </details>
+    }
   </div>
 
   <!-- Input Section -->

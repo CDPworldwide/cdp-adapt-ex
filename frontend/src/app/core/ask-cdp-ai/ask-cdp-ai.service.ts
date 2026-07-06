@@ -17,8 +17,33 @@ import { environment } from '@env/environment';
 type ConversationMessage = { role: 'user' | 'assistant' | 'system'; content: string };
 type OpenAiMessage = { role: 'user' | 'assistant'; content: string };
 type SuggestFollowUpsResponse = { follow_up_questions?: string[] };
+type AiResponseStep = { type: string; data?: Record<string, unknown> };
+export type AskCdpAiDebugInfo = {
+  traceId?: string;
+  spanId?: string;
+  traceparent?: string;
+  promptName?: string;
+  promptSourceKind?: string;
+  promptSource?: string;
+  contextArea?: string;
+  organizationIds?: number[];
+  comparisonOrgIds?: number[];
+  comparisonLocationCount?: number;
+  latencyMs?: number;
+  inputTokens?: number;
+  outputTokens?: number;
+  totalTokens?: number;
+  stepTypes?: string[];
+  steps?: AiResponseStep[];
+};
+type AiChatCompletionResponse = {
+  choices?: Array<{ message?: { content?: string } }>;
+  metadata?: AskCdpAiDebugInfo;
+  steps?: AiResponseStep[];
+};
 export type AskCdpAiContextArea = 'hazards' | 'actions' | 'solutions';
 const CDP_ACTION_EXPLORER_BASE_URL = 'https://cdp-action-explorer.net';
+const AI_SESSION_STORAGE_KEY = 'cdp-ai-session-id';
 type AiLocationPageContext = {
   pagePath: string;
   pageUrl: string;
@@ -44,6 +69,7 @@ type AiRequestBody = {
     organizationIds?: number[];
     pageBaseUrl: string;
     canonicalBaseUrl: string;
+    sessionId: string;
     pagePath?: string;
     pageUrl?: string;
     canonicalPageUrl?: string;
@@ -67,6 +93,7 @@ export class AskCdpAiService {
   readonly isFollowUpLoading = signal<boolean>(false);
   readonly followUpError = signal<string | null>(null);
   readonly conversationHistory = signal<ConversationMessage[]>([]);
+  readonly debugInfo = signal<AskCdpAiDebugInfo | null>(null);
 
   private locationContext: LocationProfile | null = null;
   private contextArea: AskCdpAiContextArea = 'hazards';
@@ -283,7 +310,8 @@ export class AskCdpAiService {
         const contentType = response.headers.get('Content-Type') || '';
 
         if (contentType.includes('application/json')) {
-          const data = await response.json();
+          const data = (await response.json()) as AiChatCompletionResponse;
+          this.recordResponseDebug(data);
           return this.textToUiMessageStream(data.choices?.[0]?.message?.content || '');
         }
 
@@ -304,8 +332,9 @@ export class AskCdpAiService {
         : 'apiKey' in environment
           ? environment.apiKey
           : '';
+    const traceparent = this.createTraceparent();
     if (!apiKey) {
-      return {};
+      return { traceparent };
     }
 
     const apiKeyHeaderName =
@@ -318,7 +347,21 @@ export class AskCdpAiService {
     return {
       Authorization: `Bearer ${apiKey}`,
       [apiKeyHeaderName]: apiKey,
+      traceparent,
     };
+  }
+
+  private recordResponseDebug(data: AiChatCompletionResponse): void {
+    if (!data.metadata && !data.steps?.length) {
+      this.debugInfo.set(null);
+      return;
+    }
+
+    this.debugInfo.set({
+      ...(data.metadata ?? {}),
+      steps: data.steps ?? data.metadata?.steps,
+      stepTypes: data.metadata?.stepTypes ?? data.steps?.map((step) => step.type),
+    });
   }
 
   private toOpenAiMessages(messages: UIMessage[]): OpenAiMessage[] {
@@ -409,6 +452,7 @@ export class AskCdpAiService {
         ...comparisonFields,
         pageBaseUrl: this.getCurrentPageBaseUrl(),
         canonicalBaseUrl: CDP_ACTION_EXPLORER_BASE_URL,
+        sessionId: this.getAiSessionId(),
         ...(locationPageContext ?? {}),
       },
       locationData,
@@ -489,6 +533,36 @@ export class AskCdpAiService {
 
   private getCurrentPageBaseUrl(): string {
     return globalThis.window?.location?.origin || CDP_ACTION_EXPLORER_BASE_URL;
+  }
+
+  private getAiSessionId(): string {
+    const storage = globalThis.window?.localStorage;
+    const existing = storage?.getItem(AI_SESSION_STORAGE_KEY);
+    if (existing) {
+      return existing;
+    }
+
+    const sessionId = this.randomHex(16);
+    storage?.setItem(AI_SESSION_STORAGE_KEY, sessionId);
+    return sessionId;
+  }
+
+  private createTraceparent(): string {
+    return `00-${this.randomHex(32)}-${this.randomHex(16)}-01`;
+  }
+
+  private randomHex(length: number): string {
+    const bytes = new Uint8Array(Math.ceil(length / 2));
+    if (globalThis.crypto?.getRandomValues) {
+      globalThis.crypto.getRandomValues(bytes);
+    } else {
+      for (let index = 0; index < bytes.length; index += 1) {
+        bytes[index] = Math.floor(Math.random() * 256);
+      }
+    }
+    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0'))
+      .join('')
+      .slice(0, length);
   }
 
   private buildAiServerMessages(): OpenAiMessage[] {
@@ -693,6 +767,7 @@ export class AskCdpAiService {
     this.followUpQuestions.set([]);
     this.followUpError.set(null);
     this.isFollowUpLoading.set(false);
+    this.debugInfo.set(null);
   }
 
   public parseToHtml(content: string): string {
