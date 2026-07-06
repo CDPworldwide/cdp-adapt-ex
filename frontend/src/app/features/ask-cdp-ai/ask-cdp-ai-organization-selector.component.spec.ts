@@ -98,20 +98,18 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
     component.togglePicker();
     fixture.detectChanges();
 
-    const selectorText = (
-      fixture.nativeElement.querySelector(
-        '[data-testid="ask-ai-organization-selector"]',
-      ) as HTMLElement
-    ).textContent;
-    const optionText = (
-      fixture.nativeElement.querySelector(
-        '[data-testid="ask-ai-organization-option"]',
-      ) as HTMLElement
-    ).textContent;
+    const selectorFlags: HTMLImageElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-selector"] img'),
+    );
+    const optionFlag = fixture.nativeElement.querySelector(
+      '[data-testid="ask-ai-organization-option"] img',
+    ) as HTMLImageElement;
 
-    expect(selectorText).toContain('🇮🇳');
-    expect(selectorText).toContain('🇺🇸');
-    expect(optionText).toContain('🇬🇧');
+    expect(selectorFlags.map((flag) => flag.src)).toEqual([
+      'https://flagcdn.com/in.svg',
+      'https://flagcdn.com/us.svg',
+    ]);
+    expect(optionFlag.src).toBe('https://flagcdn.com/gb.svg');
   });
 
   it('keeps arrow navigation inside the available option range', () => {

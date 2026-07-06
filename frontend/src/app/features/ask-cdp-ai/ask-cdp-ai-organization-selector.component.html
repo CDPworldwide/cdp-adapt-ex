@@ -14,8 +14,15 @@
         <span
           class="inline-flex max-w-full items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-800"
         >
-          @if (currentFlagEmoji) {
-            <span aria-hidden="true" class="flex-shrink-0">{{ currentFlagEmoji }}</span>
+          @if (currentFlagImageUrl) {
+            <img
+              [src]="currentFlagImageUrl"
+              alt=""
+              aria-hidden="true"
+              class="h-3 w-4 flex-shrink-0 rounded-[1px] object-cover"
+              loading="lazy"
+              decoding="async"
+            />
           }
           <span class="min-w-0 truncate">{{ currentDisplayName }}</span>
         </span>
@@ -26,10 +33,15 @@
           class="inline-flex max-w-full items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-800"
           data-testid="ask-ai-selected-organization"
         >
-          @if (countryFlagEmoji(organization.country)) {
-            <span aria-hidden="true" class="flex-shrink-0">{{
-              countryFlagEmoji(organization.country)
-            }}</span>
+          @if (countryFlagImageUrl(organization.country)) {
+            <img
+              [src]="countryFlagImageUrl(organization.country)"
+              alt=""
+              aria-hidden="true"
+              class="h-3 w-4 flex-shrink-0 rounded-[1px] object-cover"
+              loading="lazy"
+              decoding="async"
+            />
           }
           <span class="min-w-0 truncate">{{ organization.name }}</span>
           <button
@@ -151,10 +163,15 @@
               [class.bg-gray-100]="activeOptionIndex() === $index"
               (click)="selectOrganization(organization)"
             >
-              @if (countryFlagEmoji(organization.country)) {
-                <span aria-hidden="true" class="w-5 flex-shrink-0 text-base leading-none">{{
-                  countryFlagEmoji(organization.country)
-                }}</span>
+              @if (countryFlagImageUrl(organization.country)) {
+                <img
+                  [src]="countryFlagImageUrl(organization.country)"
+                  alt=""
+                  aria-hidden="true"
+                  class="h-3 w-4 flex-shrink-0 rounded-[1px] object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
               }
               <span class="min-w-0">
                 <span class="block truncate font-medium">{{ organization.name }}</span>

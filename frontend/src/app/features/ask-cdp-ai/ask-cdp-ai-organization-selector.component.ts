@@ -18,7 +18,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { filterLocationSuggestions } from '../../shared/services/location-search.util';
-import { countryFlagEmoji } from '../../shared/utils/country-flag.util';
+import { countryFlagImageUrl } from '../../shared/utils/country-flag.util';
 
 @Component({
   selector: 'app-ask-cdp-ai-organization-selector',
@@ -83,12 +83,12 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
     return Boolean(this.currentDisplayName) || this.selectedOrganizations.length > 0;
   }
 
-  get currentFlagEmoji(): string {
-    return this.countryFlagEmoji(this.currentCountryName);
+  get currentFlagImageUrl(): string {
+    return this.countryFlagImageUrl(this.currentCountryName);
   }
 
-  countryFlagEmoji(countryName: string | null | undefined): string {
-    return countryFlagEmoji(countryName);
+  countryFlagImageUrl(countryName: string | null | undefined): string {
+    return countryFlagImageUrl(countryName);
   }
 
   togglePicker(): void {

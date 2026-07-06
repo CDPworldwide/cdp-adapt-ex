@@ -51,6 +51,11 @@ export function countryFlagEmoji(countryName: string | null | undefined): string
   return countryCode ? flagEmojiForCountryCode(countryCode) : '';
 }
 
+export function countryFlagImageUrl(countryName: string | null | undefined): string {
+  const countryCode = countryCodeForName(countryName);
+  return countryCode ? `https://flagcdn.com/${countryCode.toLowerCase()}.svg` : '';
+}
+
 export function countryCodeForName(countryName: string | null | undefined): string | null {
   const normalizedCountryName = normalizeCountryName(countryName);
   if (!normalizedCountryName) {
