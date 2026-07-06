@@ -42,6 +42,10 @@
   word-break: normal;
 }
 
+.ai-debug-metadata summary {
+  letter-spacing: 0;
+}
+
 :host ::ng-deep .ai-markdown {
   font-size: 0.9375rem;
   line-height: 1.55;

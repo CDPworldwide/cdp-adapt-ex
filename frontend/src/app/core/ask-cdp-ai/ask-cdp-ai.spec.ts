@@ -81,6 +81,7 @@ describe('AskCdpAiService', () => {
 
   afterEach(() => {
     window.fetch = originalFetch;
+    window.localStorage.removeItem('cdp-ai-session-id');
   });
 
   it('should be created', () => {
@@ -363,6 +364,68 @@ describe('AskCdpAiService', () => {
         );
         expect(service.followUpQuestions()).toEqual([]);
         done();
+      });
+    });
+
+    it('stores safe debug metadata from JSON chat responses', (done) => {
+      service.setLocationContext(mockLocationData);
+      (window.fetch as jasmine.Spy).and.returnValue(
+        Promise.resolve(
+          new Response(
+            JSON.stringify({
+              choices: [{ message: { content: 'Chat response' } }],
+              metadata: {
+                traceId: '0123456789abcdef0123456789abcdef',
+                spanId: '0123456789abcdef',
+                promptName: 'system_prompt.md',
+                promptSourceKind: 'remote',
+                contextArea: 'hazards',
+                organizationIds: [12345, 67890],
+                comparisonLocationCount: 2,
+                latencyMs: 1234,
+                inputTokens: 10,
+                outputTokens: 5,
+                totalTokens: 15,
+                stepTypes: ['location_context', 'cloudsql_fetch'],
+              },
+              steps: [{ type: 'cloudsql_fetch', data: { orgIds: [12345, 67890] } }],
+            }),
+            {
+              status: 200,
+              headers: { 'Content-Type': 'application/json' },
+            },
+          ),
+        ),
+      );
+      spyOn(service, 'parseToHtml').and.returnValue('<p>Chat response</p>');
+
+      service.sendChatQuery('Hello', false).subscribe(() => {
+        expect(service.disclosure()).toContain('<p>Chat response</p>');
+        expect(service.debugInfo()).toEqual(
+          jasmine.objectContaining({
+            traceId: '0123456789abcdef0123456789abcdef',
+            spanId: '0123456789abcdef',
+            promptName: 'system_prompt.md',
+            promptSourceKind: 'remote',
+            contextArea: 'hazards',
+            comparisonLocationCount: 2,
+            latencyMs: 1234,
+            totalTokens: 15,
+            stepTypes: ['location_context', 'cloudsql_fetch'],
+          }),
+        );
+        expect(service.debugInfo()?.steps?.[0].type).toBe('cloudsql_fetch');
+        readRequestBodyAt(0).then((body) => {
+          const [, init] = (window.fetch as jasmine.Spy).calls.argsFor(0) as [
+            Request | string,
+            RequestInit | undefined,
+          ];
+          expect(body.metadata.sessionId).toMatch(/^[0-9a-f]{16}$/);
+          expect((init?.headers as Record<string, string>)['traceparent']).toMatch(
+            /^00-[0-9a-f]{32}-[0-9a-f]{16}-01$/,
+          );
+          done();
+        });
       });
     });
 

@@ -35,6 +35,7 @@ describe('AskCdpAiComponent', () => {
         followUpQuestions: signal([]),
         isFollowUpLoading: signal(false),
         followUpError: signal(null),
+        debugInfo: signal(null),
       },
     );
     askCdpAiService.loadStarterQuestions.and.returnValue(of(void 0));
@@ -310,5 +311,34 @@ describe('AskCdpAiComponent', () => {
     button.click();
 
     expect(askCdpAiService.loadLocalTestChat).toHaveBeenCalled();
+  });
+
+  it('renders safe debug metadata when debug mode is enabled', () => {
+    askCdpAiService.debugInfo.set({
+      traceId: '0123456789abcdef0123456789abcdef',
+      spanId: '0123456789abcdef',
+      promptName: 'system_prompt.md',
+      promptSourceKind: 'remote',
+      contextArea: 'hazards',
+      organizationIds: [3417, 919095],
+      comparisonLocationCount: 2,
+      latencyMs: 1234,
+      inputTokens: 10,
+      outputTokens: 5,
+      totalTokens: 15,
+      stepTypes: ['location_context', 'cloudsql_fetch'],
+    });
+
+    fixture.detectChanges();
+
+    const debugPanel: HTMLElement = fixture.nativeElement.querySelector(
+      '[data-testid="ask-ai-debug-metadata"]',
+    );
+    expect(debugPanel).not.toBeNull();
+    expect(debugPanel.textContent).toContain('Debug metadata');
+    expect(debugPanel.textContent).toContain('0123456789abcdef0123456789abcdef');
+    expect(debugPanel.textContent).toContain('system_prompt.md / remote');
+    expect(debugPanel.textContent).toContain('1234 ms');
+    expect(debugPanel.textContent).toContain('15 total (10 in, 5 out)');
   });
 });

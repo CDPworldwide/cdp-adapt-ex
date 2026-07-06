@@ -17,6 +17,7 @@ import { type LocationProfile } from '@pac-api/client';
 import {
   AskCdpAiService,
   type AskCdpAiContextArea,
+  type AskCdpAiDebugInfo,
 } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
@@ -24,6 +25,7 @@ import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { locationProperties } from '../../core/analytics/analytics-events';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { AskCdpAiOrganizationSelectorComponent } from './ask-cdp-ai-organization-selector.component';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'app-ask-cdp-ai',
@@ -54,6 +56,7 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   followUpQuestions = this.askCdpAiService.followUpQuestions;
   isFollowUpLoading = this.askCdpAiService.isFollowUpLoading;
   followUpError = this.askCdpAiService.followUpError;
+  debugInfo = this.askCdpAiService.debugInfo;
 
   userQuery = '';
   selectedReferenceOrganizations = signal<LocationSuggestion[]>([]);
@@ -92,6 +95,32 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
 
   get displayedStarterQuestions(): string[] {
     return this.showAllStarterQuestions() ? this.followUpQuestions() : [];
+  }
+
+  get shouldShowDebugInfo(): boolean {
+    return Boolean(environment.isDebugMode && this.debugInfo());
+  }
+
+  get debugRows(): Array<{ label: string; value: string }> {
+    const debugInfo = this.debugInfo();
+    if (!debugInfo) {
+      return [];
+    }
+
+    return [
+      ['Trace', debugInfo.traceId],
+      ['Span', debugInfo.spanId],
+      ['Prompt', this.promptLabel(debugInfo)],
+      ['Context', debugInfo.contextArea],
+      ['Organizations', this.formatNumberList(debugInfo.organizationIds)],
+      ['Comparison orgs', this.formatNumberList(debugInfo.comparisonOrgIds)],
+      ['Comparison locations', this.formatValue(debugInfo.comparisonLocationCount)],
+      ['Latency', this.formatLatency(debugInfo.latencyMs)],
+      ['Tokens', this.formatTokens(debugInfo)],
+      ['Steps', debugInfo.stepTypes?.join(', ')],
+    ]
+      .filter(([, value]) => Boolean(value))
+      .map(([label, value]) => ({ label: label ?? '', value: value ?? '' }));
   }
 
   sendQuery() {
@@ -209,5 +238,36 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
       .replace(/\s+/g, ' ')
       .trim()
       .slice(0, 1000);
+  }
+
+  private promptLabel(debugInfo: AskCdpAiDebugInfo): string | undefined {
+    if (!debugInfo.promptName) {
+      return undefined;
+    }
+    return [debugInfo.promptName, debugInfo.promptSourceKind].filter(Boolean).join(' / ');
+  }
+
+  private formatNumberList(value: number[] | undefined): string | undefined {
+    return value?.length ? value.join(', ') : undefined;
+  }
+
+  private formatLatency(value: number | undefined): string | undefined {
+    return typeof value === 'number' ? `${value} ms` : undefined;
+  }
+
+  private formatTokens(debugInfo: AskCdpAiDebugInfo): string | undefined {
+    if (debugInfo.totalTokens == null) {
+      return undefined;
+    }
+    return `${debugInfo.totalTokens} total (${debugInfo.inputTokens ?? 0} in, ${
+      debugInfo.outputTokens ?? 0
+    } out)`;
+  }
+
+  private formatValue(value: unknown): string | undefined {
+    if (value == null) {
+      return undefined;
+    }
+    return String(value);
   }
 }
