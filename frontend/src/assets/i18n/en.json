@@ -483,6 +483,13 @@
     },
     "input": {
       "placeholder": "Ask the AI Explorer..."
+    },
+    "organizationSelector": {
+      "label": "Ask a question about",
+      "defaultDisplayName": "Select a location",
+      "addAnotherLocation": "Add another location",
+      "searchPlaceholder": "Search organizations",
+      "removeOrganization": "Remove {{name}}"
     }
   },
   "cityDetail": {

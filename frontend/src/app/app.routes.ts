@@ -29,6 +29,11 @@ export const routes: Routes = [
       import('./features/city-detail/city-detail').then((m) => m.CityDetailPageComponent),
   },
   {
+    path: 'chat',
+    loadComponent: () =>
+      import('./features/chat-page/chat-page.component').then((m) => m.ChatPageComponent),
+  },
+  {
     path: 'methodology',
     loadComponent: () =>
       import('./features/methodology/methodology').then((m) => m.MethodologyComponent),

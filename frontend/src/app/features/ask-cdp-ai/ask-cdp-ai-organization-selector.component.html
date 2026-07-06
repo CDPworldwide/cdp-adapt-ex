@@ -1,0 +1,173 @@
+<div
+  class="relative"
+  data-testid="ask-ai-organization-picker"
+  (focusout)="onPickerFocusOut($event)"
+>
+  <p class="flex flex-wrap items-center gap-1.5 text-sm font-medium text-gray-700">
+    <span>{{ 'askCdpAi.organizationSelector.label' | translate }}</span>
+    <span
+      data-testid="ask-ai-organization-selector"
+      class="inline-flex max-w-full flex-wrap items-center gap-1 rounded-xl border border-gray-300 bg-white px-1.5 py-1 text-left text-sm font-semibold text-gray-900 shadow-sm transition-colors focus-within:border-cdp-red focus-within:ring-2 focus-within:ring-cdp-red/20 hover:border-cdp-red"
+      (click)="onSelectorSurfaceClick($event)"
+    >
+      @if (currentDisplayName) {
+        <span
+          class="inline-flex max-w-full items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-800"
+        >
+          @if (currentFlagEmoji) {
+            <span aria-hidden="true" class="flex-shrink-0">{{ currentFlagEmoji }}</span>
+          }
+          <span class="min-w-0 truncate">{{ currentDisplayName }}</span>
+        </span>
+      }
+
+      @for (organization of selectedOrganizations; track organization.organizationId) {
+        <span
+          class="inline-flex max-w-full items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-800"
+          data-testid="ask-ai-selected-organization"
+        >
+          @if (countryFlagEmoji(organization.country)) {
+            <span aria-hidden="true" class="flex-shrink-0">{{
+              countryFlagEmoji(organization.country)
+            }}</span>
+          }
+          <span class="min-w-0 truncate">{{ organization.name }}</span>
+          <button
+            type="button"
+            class="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-cdp-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red"
+            [attr.aria-label]="
+              'askCdpAi.organizationSelector.removeOrganization'
+                | translate: { name: organization.name }
+            "
+            (click)="removeOrganization(organization)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-3 w-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </span>
+      }
+
+      @if (!hasSelection) {
+        <button
+          type="button"
+          data-testid="ask-ai-organization-selector-toggle"
+          class="inline-flex min-w-0 items-center gap-1 rounded-full px-1 py-0.5 text-sm font-semibold text-gray-900 hover:text-cdp-red focus-visible:outline-none"
+          [attr.aria-expanded]="isDropdownOpen"
+          aria-controls="ask-ai-organization-options"
+          (click)="togglePicker()"
+        >
+          <span class="min-w-0 truncate">{{ displayName }}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+      } @else {
+        <button
+          type="button"
+          data-testid="ask-ai-organization-selector-toggle"
+          class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 hover:text-cdp-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red"
+          [attr.aria-expanded]="isDropdownOpen"
+          aria-controls="ask-ai-organization-options"
+          (click)="togglePicker()"
+          [attr.aria-label]="'askCdpAi.organizationSelector.addAnotherLocation' | translate"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 5v14m7-7H5"
+            />
+          </svg>
+        </button>
+      }
+    </span>
+  </p>
+
+  @if (isDropdownOpen) {
+    <div class="relative mt-3 max-w-sm">
+      <input
+        id="ask-ai-organization-search"
+        data-testid="ask-ai-organization-search"
+        type="text"
+        [formControl]="searchControl"
+        (focus)="onSearchFocus()"
+        (keydown)="onSearchKeydown($event)"
+        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:border-cdp-red focus:ring-2 focus:ring-cdp-red/20"
+        [placeholder]="'askCdpAi.organizationSelector.searchPlaceholder' | translate"
+        role="combobox"
+        aria-autocomplete="list"
+        [attr.aria-expanded]="isDropdownOpen"
+        aria-controls="ask-ai-organization-options"
+        [attr.aria-activedescendant]="activeOptionId"
+      />
+
+      @if (organizationOptions().length > 0) {
+        <div
+          id="ask-ai-organization-options"
+          class="mt-1 max-h-64 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+          role="listbox"
+        >
+          @for (organization of organizationOptions(); track organization.organizationId) {
+            <button
+              [id]="getOptionId($index)"
+              type="button"
+              data-testid="ask-ai-organization-option"
+              role="option"
+              [attr.aria-selected]="activeOptionIndex() === $index"
+              class="flex w-full min-w-0 items-center gap-3 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none"
+              [class.bg-gray-100]="activeOptionIndex() === $index"
+              (click)="selectOrganization(organization)"
+            >
+              @if (countryFlagEmoji(organization.country)) {
+                <span aria-hidden="true" class="w-5 flex-shrink-0 text-base leading-none">{{
+                  countryFlagEmoji(organization.country)
+                }}</span>
+              }
+              <span class="min-w-0">
+                <span class="block truncate font-medium">{{ organization.name }}</span>
+                @if (organization.country) {
+                  <span class="block truncate text-xs text-gray-500">{{
+                    organization.country
+                  }}</span>
+                }
+              </span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

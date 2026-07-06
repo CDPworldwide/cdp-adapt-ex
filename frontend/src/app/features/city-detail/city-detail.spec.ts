@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, NO_ERRORS_SCHEMA, input, output, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
@@ -44,11 +45,14 @@ describe('CityDetailPageComponent', () => {
   let fixture: ComponentFixture<CityDetailPageComponent>;
   let mockLocationService: jasmine.SpyObj<LocationService>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let mockBrowserLocation: jasmine.SpyObj<Location>;
   let mockHazardMapService: jasmine.SpyObj<HazardMapService>;
   let mockGoogleMapsLoaderService: jasmine.SpyObj<GoogleMapsLoaderService>;
   let askCdpAiServiceMock: any;
   let routeParamMap$: BehaviorSubject<any>;
+  let routeQueryParamMap$: BehaviorSubject<any>;
   let routeData$: BehaviorSubject<any>;
+  let matchMediaList: MediaQueryList;
 
   const MOCK_LOCATION_DATA = {
     organizationId: 867355,
@@ -62,22 +66,41 @@ describe('CityDetailPageComponent', () => {
   } as any;
 
   beforeEach(async () => {
-    mockLocationService = jasmine.createSpyObj('LocationService', ['getLocationByOrganizationId']);
+    mockLocationService = jasmine.createSpyObj('LocationService', [
+      'getLocationByOrganizationId',
+      'getAllLocationNames',
+    ]);
     mockRouter = jasmine.createSpyObj('Router', [
       'navigate',
+      'navigateByUrl',
       'createUrlTree',
       'serializeUrl',
       'isActive',
     ]);
     (mockRouter as any).events = of();
+    (mockRouter as any).url = '/org/867355-junagadh-india/hazards';
     mockRouter.createUrlTree.and.returnValue({} as any);
     mockRouter.serializeUrl.and.returnValue('');
     mockRouter.isActive.and.returnValue(false);
+    mockRouter.navigateByUrl.and.returnValue(Promise.resolve(true));
+    mockBrowserLocation = jasmine.createSpyObj<Location>('Location', ['replaceState']);
     mockHazardMapService = jasmine.createSpyObj('HazardMapService', ['getHazardLayer']);
     mockGoogleMapsLoaderService = jasmine.createSpyObj('GoogleMapsLoaderService', ['loadApi']);
     routeParamMap$ = new BehaviorSubject(
       convertToParamMap({ organizationSlug: '867355-junagadh-india' }),
     );
+    routeQueryParamMap$ = new BehaviorSubject(convertToParamMap({}));
+    matchMediaList = {
+      matches: true,
+      media: '(max-width: 1023px)',
+      onchange: null,
+      addEventListener: jasmine.createSpy('addEventListener'),
+      removeEventListener: jasmine.createSpy('removeEventListener'),
+      addListener: jasmine.createSpy('addListener'),
+      removeListener: jasmine.createSpy('removeListener'),
+      dispatchEvent: jasmine.createSpy('dispatchEvent'),
+    } as unknown as MediaQueryList;
+    spyOn(window, 'matchMedia').and.returnValue(matchMediaList);
     askCdpAiServiceMock = {
       conversationHistory: signal<any[]>([]),
       disclosure: signal<string | null>(null),
@@ -87,12 +110,14 @@ describe('CityDetailPageComponent', () => {
       isFollowUpLoading: signal<boolean>(false),
       followUpError: signal<string | null>(null),
       setLocationContext: jasmine.createSpy('setLocationContext'),
+      setReferenceOrganizations: jasmine.createSpy('setReferenceOrganizations'),
       clearSession: jasmine.createSpy('clearSession'),
       loadStarterQuestions: jasmine.createSpy('loadStarterQuestions').and.returnValue(of(void 0)),
       getFollowUpQuestions: jasmine.createSpy('getFollowUpQuestions').and.returnValue(of(void 0)),
       sendChatQuery: jasmine.createSpy('sendChatQuery').and.returnValue(of(void 0)),
     };
 
+    mockLocationService.getAllLocationNames.and.returnValue(of([]));
     mockHazardMapService.getHazardLayer.and.returnValue(of(null));
     mockGoogleMapsLoaderService.loadApi.and.returnValue(EMPTY);
     routeData$ = new BehaviorSubject({});
@@ -107,11 +132,16 @@ describe('CityDetailPageComponent', () => {
       providers: [
         { provide: LocationService, useValue: mockLocationService },
         { provide: Router, useValue: mockRouter },
+        { provide: Location, useValue: mockBrowserLocation },
         { provide: HazardMapService, useValue: mockHazardMapService },
         { provide: GoogleMapsLoaderService, useValue: mockGoogleMapsLoaderService },
         {
           provide: ActivatedRoute,
-          useValue: { paramMap: routeParamMap$.asObservable(), data: routeData$.asObservable() },
+          useValue: {
+            paramMap: routeParamMap$.asObservable(),
+            queryParamMap: routeQueryParamMap$.asObservable(),
+            data: routeData$.asObservable(),
+          },
         },
         { provide: AskCdpAiService, useValue: askCdpAiServiceMock },
       ],
@@ -130,6 +160,11 @@ describe('CityDetailPageComponent', () => {
     fixture = TestBed.createComponent(CityDetailPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    document.documentElement.classList.remove('overflow-hidden');
+    document.body.classList.remove('overflow-hidden');
   });
 
   it('loads location details by organization ID', () => {
@@ -251,9 +286,23 @@ describe('CityDetailPageComponent', () => {
     fixture.detectChanges();
 
     expect(mockLocationService.getLocationByOrganizationId).toHaveBeenCalledWith('867355');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '867355-junagadh-india', 'hazards'], {
-      replaceUrl: true,
-    });
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      ['/org', '867355-junagadh-india', 'hazards'],
+      {
+        replaceUrl: true,
+        queryParamsHandling: 'preserve',
+      },
+    );
+  });
+
+  it('preserves the chatopen query parameter when tabs change while the AI sidebar is open', () => {
+    component.isAiOpen = true;
+
+    component.onTabChange('actions');
+
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(
+      '/org/867355-junagadh-india/actions?chatopen',
+    );
   });
 
   it('should open the AI sidebar without fetching starter questions again', () => {
@@ -267,7 +316,77 @@ describe('CityDetailPageComponent', () => {
     fixture.detectChanges();
 
     expect(component.isAiOpen).toBeTrue();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(
+      '/org/867355-junagadh-india/hazards?chatopen',
+    );
     expect(askCdpAiServiceMock.loadStarterQuestions.calls.count()).toBe(starterQuestionFetchCount);
+  });
+
+  it('opens and closes the AI sidebar from the chatopen query parameter', () => {
+    component.isAiOpen = false;
+
+    routeQueryParamMap$.next(convertToParamMap({ chatopen: 'true' }));
+    fixture.detectChanges();
+
+    expect(component.isAiOpen).toBeTrue();
+
+    routeQueryParamMap$.next(convertToParamMap({}));
+    fixture.detectChanges();
+
+    expect(component.isAiOpen).toBeFalse();
+  });
+
+  it('locks mobile page scroll and renders a backdrop while the AI sidebar is open', () => {
+    routeQueryParamMap$.next(convertToParamMap({ chatopen: 'true' }));
+    fixture.detectChanges();
+
+    expect(component.isAiOpen).toBeTrue();
+    expect(document.documentElement.classList.contains('overflow-hidden')).toBeTrue();
+    expect(document.body.classList.contains('overflow-hidden')).toBeTrue();
+    expect(fixture.nativeElement.querySelector('.bg-black\\/40')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('#ask-ai-panel')?.getAttribute('role')).toBe(
+      'dialog',
+    );
+  });
+
+  it('closes the mobile AI sidebar when the backdrop is clicked', () => {
+    routeQueryParamMap$.next(convertToParamMap({ chatopen: 'true' }));
+    fixture.detectChanges();
+
+    const backdrop: HTMLButtonElement | null = fixture.nativeElement.querySelector(
+      'button.bg-black\\/40',
+    );
+    expect(backdrop).not.toBeNull();
+
+    backdrop?.click();
+    fixture.detectChanges();
+
+    expect(component.isAiOpen).toBeFalse();
+    expect(document.documentElement.classList.contains('overflow-hidden')).toBeFalse();
+    expect(document.body.classList.contains('overflow-hidden')).toBeFalse();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: { chatopen: null },
+        queryParamsHandling: 'merge',
+      }),
+    );
+  });
+
+  it('removes the chatopen query parameter when the AI sidebar closes', () => {
+    component.isAiOpen = true;
+    mockRouter.navigate.calls.reset();
+
+    component.onAiOpenChange(false);
+
+    expect(component.isAiOpen).toBeFalse();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: { chatopen: null },
+        queryParamsHandling: 'merge',
+      }),
+    );
   });
 
   it('opens the AI sidebar automatically when route data requests it', () => {
@@ -289,6 +408,11 @@ describe('CityDetailPageComponent', () => {
       { role: 'assistant', content: 'Previous answer' },
     ]);
     askCdpAiServiceMock.followUpQuestions.set(['Follow Up 1', 'Follow Up 2']);
+    fixture.detectChanges();
+
+    const toggle = fixture.debugElement.query(By.css('[data-testid="ask-ai-suggestions-toggle"]'));
+    expect(toggle).toBeTruthy();
+    toggle.nativeElement.click();
     fixture.detectChanges();
 
     const suggestions = fixture.debugElement.queryAll(By.css('[data-testid="ask-ai-suggestion"]'));
