@@ -42,6 +42,7 @@
           [currentCountryName]="locationData?.countryName || ''"
           [selectedOrganizations]="selectedReferenceOrganizations()"
           (selectedOrganizationsChange)="onReferenceOrganizationsChange($event)"
+          (currentOrganizationCleared)="onCurrentOrganizationCleared()"
         ></app-ask-cdp-ai-organization-selector>
         <p class="mt-1 hidden text-sm text-gray-500 sm:block">
           {{ 'askCdpAi.emptyState.description' | translate }}

@@ -170,7 +170,6 @@
                 data-testid="ask-ai-organization-option-checkbox"
                 class="h-4 w-4 flex-shrink-0 rounded border-gray-300 text-cdp-red focus:ring-cdp-red"
                 [checked]="isSelectedOrganization(organization)"
-                [disabled]="currentOrganizationId === organization.organizationId"
                 (change)="toggleOrganization(organization)"
               />
               @if (countryFlagImageUrl(organization.country)) {

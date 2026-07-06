@@ -47,6 +47,7 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   @Input() showPanelHeader = true;
   @Input() showLocalTestControls = false;
   @Output() openChange = new EventEmitter<boolean>();
+  @Output() locationDataCleared = new EventEmitter<void>();
 
   conversationHistory = this.askCdpAiService.conversationHistory;
   isDisclosureLoading = this.askCdpAiService.isDisclosureLoading;
@@ -140,6 +141,10 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   onReferenceOrganizationsChange(organizations: LocationSuggestion[]): void {
     this.selectedReferenceOrganizations.set(organizations);
     this.syncReferenceOrganizations();
+  }
+
+  onCurrentOrganizationCleared(): void {
+    this.locationDataCleared.emit();
   }
 
   private executeChatQuery(query: string) {

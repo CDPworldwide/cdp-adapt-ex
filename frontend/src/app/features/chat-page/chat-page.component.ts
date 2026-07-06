@@ -1,6 +1,6 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import type { LocationProfile } from '@pac-api/client';
 import { distinctUntilChanged, map, switchMap, of, catchError } from 'rxjs';
@@ -26,6 +26,7 @@ export class ChatPageComponent implements OnInit {
   private readonly locationService = inject(LocationService);
   private readonly mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     this.mobileKeyboardViewportService.startTracking(this.destroyRef);
@@ -50,5 +51,15 @@ export class ChatPageComponent implements OnInit {
       .subscribe((locationData) => {
         this.locationData = locationData;
       });
+  }
+
+  clearLocationContext(): void {
+    this.locationData = null;
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { organizationId: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 }

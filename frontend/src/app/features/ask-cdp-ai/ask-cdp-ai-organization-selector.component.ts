@@ -32,6 +32,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   @Input() currentCountryName = '';
   @Input() selectedOrganizations: LocationSuggestion[] = [];
   @Output() selectedOrganizationsChange = new EventEmitter<LocationSuggestion[]>();
+  @Output() currentOrganizationCleared = new EventEmitter<void>();
 
   readonly searchControl = new FormControl('', { nonNullable: true });
   readonly organizationOptions = signal<LocationSuggestion[]>([]);
@@ -186,6 +187,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
 
   toggleOrganization(organization: LocationSuggestion): void {
     if (this.isCurrentOrganization(organization)) {
+      this.currentOrganizationCleared.emit();
       return;
     }
 

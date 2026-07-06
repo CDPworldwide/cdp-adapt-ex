@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import type { LocationProfile } from '@pac-api/client';
 import { BehaviorSubject, of } from 'rxjs';
@@ -18,6 +18,7 @@ describe('ChatPageComponent', () => {
   let routeQueryParamMap$: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
   let locationService: jasmine.SpyObj<LocationService>;
   let mobileKeyboardViewportService: jasmine.SpyObj<MobileKeyboardViewportService>;
+  let router: Router;
 
   const mockLocationData = {
     organizationId: 10894,
@@ -89,6 +90,7 @@ describe('ChatPageComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChatPageComponent);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -120,5 +122,20 @@ describe('ChatPageComponent', () => {
 
     expect(locationService.getLocationByOrganizationId).toHaveBeenCalledWith('10894');
     expect(fixture.componentInstance.locationData).toEqual(mockLocationData);
+  });
+
+  it('clears selected organization context from the URL', () => {
+    const navigateSpy = spyOn(router, 'navigate').and.resolveTo(true);
+    fixture.componentInstance.locationData = mockLocationData;
+
+    fixture.componentInstance.clearLocationContext();
+
+    expect(fixture.componentInstance.locationData).toBeNull();
+    expect(navigateSpy).toHaveBeenCalledWith([], {
+      relativeTo: jasmine.any(Object),
+      queryParams: { organizationId: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   });
 });
