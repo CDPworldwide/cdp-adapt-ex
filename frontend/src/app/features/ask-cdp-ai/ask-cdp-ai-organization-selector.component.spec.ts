@@ -145,6 +145,27 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
     expect(selectedOrganizations.at(-1)).toEqual([]);
   });
 
+  it('pins the current organization above search results as checked', () => {
+    component.currentOrganizationId = 35905;
+    component.currentDisplayName = 'Corporation of Chennai';
+    component.currentCountryName = 'India';
+
+    component.togglePicker();
+    fixture.detectChanges();
+
+    const optionLabels: HTMLElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option"]'),
+    );
+    const checkboxes: HTMLInputElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option-checkbox"]'),
+    );
+
+    expect(optionLabels[0].textContent).toContain('Corporation of Chennai');
+    expect(checkboxes[0].checked).toBeTrue();
+    expect(checkboxes[0].disabled).toBeTrue();
+    expect(optionLabels[1].textContent).not.toContain('Corporation of Chennai');
+  });
+
   it('keeps arrow navigation inside the available option range', () => {
     component.togglePicker();
     fixture.detectChanges();

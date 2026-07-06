@@ -87,6 +87,21 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
     return this.countryFlagImageUrl(this.currentCountryName);
   }
 
+  get currentOrganizationOption(): LocationSuggestion | null {
+    if (this.currentOrganizationId == null || !this.currentDisplayName) {
+      return null;
+    }
+
+    return {
+      organizationId: this.currentOrganizationId,
+      slug: String(this.currentOrganizationId),
+      name: this.currentDisplayName,
+      country: this.currentCountryName || undefined,
+      disclosesToCDP: true,
+      isReportingLeader: true,
+    };
+  }
+
   countryFlagImageUrl(countryName: string | null | undefined): string {
     return countryFlagImageUrl(countryName);
   }
@@ -223,12 +238,17 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   }
 
   isSelectedOrganization(organization: LocationSuggestion): boolean {
+    if (this.isCurrentOrganization(organization)) {
+      return true;
+    }
+
     return this.selectedOrganizations.some(
       (selectedOrganization) => selectedOrganization.organizationId === organization.organizationId,
     );
   }
 
   private updateOrganizationOptions(value: string): void {
+    const currentOrganizationOption = this.currentOrganizationOption;
     const selectedOptions = this.selectedOrganizations.filter(
       (organization) => !this.isCurrentOrganization(organization),
     );
@@ -243,7 +263,11 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
         !this.isCurrentOrganization(organization) && !this.isSelectedOrganization(organization),
     );
 
-    this.organizationOptions.set([...selectedOptions, ...options]);
+    this.organizationOptions.set([
+      ...(currentOrganizationOption ? [currentOrganizationOption] : []),
+      ...selectedOptions,
+      ...options,
+    ]);
     this.activeOptionIndex.set(0);
   }
 
