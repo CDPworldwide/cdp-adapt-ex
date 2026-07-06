@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { LocationService } from '../../shared/services/location.service';
+import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { AskCdpAiOrganizationSelectorComponent } from './ask-cdp-ai-organization-selector.component';
 
@@ -11,6 +12,7 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
   let fixture: ComponentFixture<AskCdpAiOrganizationSelectorComponent>;
   let component: AskCdpAiOrganizationSelectorComponent;
   let locationService: jasmine.SpyObj<LocationService>;
+  let mobileKeyboardViewportService: jasmine.SpyObj<MobileKeyboardViewportService>;
 
   const organizations: LocationSuggestion[] = [
     {
@@ -44,10 +46,17 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
       'getAllLocationNames',
     ]);
     locationService.getAllLocationNames.and.returnValue(of(organizations));
+    mobileKeyboardViewportService = jasmine.createSpyObj<MobileKeyboardViewportService>(
+      'MobileKeyboardViewportService',
+      ['keepElementVisible'],
+    );
 
     await TestBed.configureTestingModule({
       imports: [AskCdpAiOrganizationSelectorComponent, TranslateModule.forRoot()],
-      providers: [{ provide: LocationService, useValue: locationService }],
+      providers: [
+        { provide: LocationService, useValue: locationService },
+        { provide: MobileKeyboardViewportService, useValue: mobileKeyboardViewportService },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AskCdpAiOrganizationSelectorComponent);
@@ -93,6 +102,25 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
     fixture.detectChanges();
 
     expect(selectedOrganizations.at(-1)).toEqual([visibleOptions[1]]);
+  });
+
+  it('uses mobile-friendly search input behavior', () => {
+    component.togglePicker();
+    fixture.detectChanges();
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector(
+      '[data-testid="ask-ai-organization-search"]',
+    );
+
+    expect(input.classList.contains('text-base')).toBeTrue();
+    expect(input.getAttribute('autocomplete')).toBe('off');
+    expect(input.getAttribute('autocorrect')).toBe('off');
+    expect(input.getAttribute('inputmode')).toBe('search');
+    expect(input.getAttribute('enterkeyhint')).toBe('search');
+
+    input.dispatchEvent(new FocusEvent('focus'));
+
+    expect(mobileKeyboardViewportService.keepElementVisible).toHaveBeenCalledWith(input);
   });
 
   it('renders country flags for the current organization, selected organizations, and options', () => {

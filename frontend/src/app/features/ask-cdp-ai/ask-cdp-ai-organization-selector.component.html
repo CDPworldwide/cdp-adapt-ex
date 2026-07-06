@@ -135,10 +135,16 @@
         data-testid="ask-ai-organization-search"
         type="text"
         [formControl]="searchControl"
-        (focus)="onSearchFocus()"
+        (focus)="onSearchFocus($event)"
         (keydown)="onSearchKeydown($event)"
-        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:border-cdp-red focus:ring-2 focus:ring-cdp-red/20"
+        class="ask-ai-organization-search-field w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-base font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:border-cdp-red focus:ring-2 focus:ring-cdp-red/20 md:text-sm"
         [placeholder]="'askCdpAi.organizationSelector.searchPlaceholder' | translate"
+        autocomplete="off"
+        autocapitalize="none"
+        autocorrect="off"
+        spellcheck="false"
+        inputmode="search"
+        enterkeyhint="search"
         role="combobox"
         aria-autocomplete="list"
         [attr.aria-expanded]="isDropdownOpen"
@@ -149,7 +155,7 @@
       @if (organizationOptions().length > 0) {
         <div
           id="ask-ai-organization-options"
-          class="mt-1 max-h-64 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+          class="ask-ai-organization-options mt-1 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
           role="listbox"
         >
           @for (organization of organizationOptions(); track organization.organizationId) {

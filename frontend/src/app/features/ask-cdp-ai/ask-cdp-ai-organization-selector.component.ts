@@ -16,6 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { LocationService } from '../../shared/services/location.service';
+import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { filterLocationSuggestions } from '../../shared/services/location-search.util';
 import { countryFlagImageUrl } from '../../shared/utils/country-flag.util';
@@ -25,6 +26,7 @@ import { countryFlagImageUrl } from '../../shared/utils/country-flag.util';
   standalone: true,
   imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './ask-cdp-ai-organization-selector.component.html',
+  styleUrl: './ask-cdp-ai-organization-selector.component.css',
 })
 export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges {
   @Input() currentOrganizationId: number | null | undefined = null;
@@ -42,6 +44,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   private readonly destroyRef = inject(DestroyRef);
   private readonly document = inject(DOCUMENT);
   private readonly locationService = inject(LocationService);
+  private readonly mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
   private readonly translateService = inject(TranslateService);
   private allOrganizations: LocationSuggestion[] = [];
   private defaultOrganizationOptions: LocationSuggestion[] = [];
@@ -115,9 +118,13 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
     }
   }
 
-  onSearchFocus(): void {
+  onSearchFocus(event: FocusEvent): void {
     this.isDropdownOpen = true;
     this.updateOrganizationOptions(this.searchControl.value);
+    const input = event.target;
+    if (input instanceof HTMLElement) {
+      this.mobileKeyboardViewportService.keepElementVisible(input);
+    }
   }
 
   onSelectorSurfaceClick(event: MouseEvent): void {
