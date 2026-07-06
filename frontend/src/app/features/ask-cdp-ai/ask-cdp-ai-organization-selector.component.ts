@@ -16,6 +16,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { LocationService } from '../../shared/services/location.service';
+import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { filterLocationSuggestions } from '../../shared/services/location-search.util';
 import { countryFlagImageUrl } from '../../shared/utils/country-flag.util';
@@ -25,6 +26,7 @@ import { countryFlagImageUrl } from '../../shared/utils/country-flag.util';
   standalone: true,
   imports: [ReactiveFormsModule, TranslateModule],
   templateUrl: './ask-cdp-ai-organization-selector.component.html',
+  styleUrl: './ask-cdp-ai-organization-selector.component.css',
 })
 export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges {
   @Input() currentOrganizationId: number | null | undefined = null;
@@ -32,6 +34,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   @Input() currentCountryName = '';
   @Input() selectedOrganizations: LocationSuggestion[] = [];
   @Output() selectedOrganizationsChange = new EventEmitter<LocationSuggestion[]>();
+  @Output() currentOrganizationCleared = new EventEmitter<void>();
 
   readonly searchControl = new FormControl('', { nonNullable: true });
   readonly organizationOptions = signal<LocationSuggestion[]>([]);
@@ -41,6 +44,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   private readonly destroyRef = inject(DestroyRef);
   private readonly document = inject(DOCUMENT);
   private readonly locationService = inject(LocationService);
+  private readonly mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
   private readonly translateService = inject(TranslateService);
   private allOrganizations: LocationSuggestion[] = [];
   private defaultOrganizationOptions: LocationSuggestion[] = [];
@@ -87,6 +91,21 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
     return this.countryFlagImageUrl(this.currentCountryName);
   }
 
+  get currentOrganizationOption(): LocationSuggestion | null {
+    if (this.currentOrganizationId == null || !this.currentDisplayName) {
+      return null;
+    }
+
+    return {
+      organizationId: this.currentOrganizationId,
+      slug: String(this.currentOrganizationId),
+      name: this.currentDisplayName,
+      country: this.currentCountryName || undefined,
+      disclosesToCDP: true,
+      isReportingLeader: true,
+    };
+  }
+
   countryFlagImageUrl(countryName: string | null | undefined): string {
     return countryFlagImageUrl(countryName);
   }
@@ -99,9 +118,13 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
     }
   }
 
-  onSearchFocus(): void {
+  onSearchFocus(event: FocusEvent): void {
     this.isDropdownOpen = true;
     this.updateOrganizationOptions(this.searchControl.value);
+    const input = event.target;
+    if (input instanceof HTMLElement) {
+      this.mobileKeyboardViewportService.keepElementVisible(input);
+    }
   }
 
   onSelectorSurfaceClick(event: MouseEvent): void {
@@ -151,23 +174,37 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
       return;
     }
 
-    const selectedOrganization = this.organizationOptions()[this.activeOptionIndex()];
-    if (!selectedOrganization) {
+    const activeOrganization = this.organizationOptions()[this.activeOptionIndex()];
+    if (!activeOrganization) {
       return;
     }
 
     event.preventDefault();
-    this.selectOrganization(selectedOrganization);
+    this.toggleOrganization(activeOrganization);
   }
 
-  selectOrganization(organization: LocationSuggestion): void {
-    if (this.isCurrentOrganization(organization) || this.isSelectedOrganization(organization)) {
+  onOptionKeydown(event: KeyboardEvent, organization: LocationSuggestion): void {
+    if (event.key !== 'Enter' && event.key !== ' ') {
+      return;
+    }
+
+    event.preventDefault();
+    this.toggleOrganization(organization);
+  }
+
+  toggleOrganization(organization: LocationSuggestion): void {
+    if (this.isCurrentOrganization(organization)) {
+      this.currentOrganizationCleared.emit();
+      return;
+    }
+
+    if (this.isSelectedOrganization(organization)) {
+      this.removeOrganization(organization);
       return;
     }
 
     this.selectedOrganizationsChange.emit([...this.selectedOrganizations, organization]);
-    this.searchControl.setValue('');
-    this.updateOrganizationOptions('');
+    this.updateOrganizationOptions(this.searchControl.value);
   }
 
   getOptionId(index: number): string {
@@ -209,7 +246,22 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
       });
   }
 
+  isSelectedOrganization(organization: LocationSuggestion): boolean {
+    if (this.isCurrentOrganization(organization)) {
+      return true;
+    }
+
+    return this.selectedOrganizations.some(
+      (selectedOrganization) => selectedOrganization.organizationId === organization.organizationId,
+    );
+  }
+
   private updateOrganizationOptions(value: string): void {
+    const currentOrganizationOption = this.currentOrganizationOption;
+    const selectedOptions = this.selectedOrganizations.filter(
+      (organization) => !this.isCurrentOrganization(organization),
+    );
+
     const options = filterLocationSuggestions(
       value,
       this.allOrganizations,
@@ -220,7 +272,11 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
         !this.isCurrentOrganization(organization) && !this.isSelectedOrganization(organization),
     );
 
-    this.organizationOptions.set(options);
+    this.organizationOptions.set([
+      ...(currentOrganizationOption ? [currentOrganizationOption] : []),
+      ...selectedOptions,
+      ...options,
+    ]);
     this.activeOptionIndex.set(0);
   }
 
@@ -255,11 +311,5 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
 
   private isCurrentOrganization(organization: LocationSuggestion): boolean {
     return organization.organizationId === this.currentOrganizationId;
-  }
-
-  private isSelectedOrganization(organization: LocationSuggestion): boolean {
-    return this.selectedOrganizations.some(
-      (selectedOrganization) => selectedOrganization.organizationId === organization.organizationId,
-    );
   }
 }

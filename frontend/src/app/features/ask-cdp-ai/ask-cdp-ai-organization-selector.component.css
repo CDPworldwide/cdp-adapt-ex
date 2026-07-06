@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+.ask-ai-organization-search-field {
+  scroll-margin-bottom: max(8rem, var(--app-keyboard-inset-bottom, 0px));
+}
+
+.ask-ai-organization-options {
+  max-height: clamp(8rem, calc(var(--app-visual-viewport-height, 100dvh) - 16rem), 16rem);
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 767px) {
+  .ask-ai-organization-options {
+    max-height: clamp(7.5rem, calc(var(--app-visual-viewport-height, 100dvh) - 17.5rem), 13rem);
+  }
+}
+
+@media (max-height: 480px) {
+  .ask-ai-organization-options {
+    max-height: clamp(6.5rem, calc(var(--app-visual-viewport-height, 100dvh) - 12.5rem), 10rem);
+  }
+}

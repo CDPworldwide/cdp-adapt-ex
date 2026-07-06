@@ -135,10 +135,16 @@
         data-testid="ask-ai-organization-search"
         type="text"
         [formControl]="searchControl"
-        (focus)="onSearchFocus()"
+        (focus)="onSearchFocus($event)"
         (keydown)="onSearchKeydown($event)"
-        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:border-cdp-red focus:ring-2 focus:ring-cdp-red/20"
+        class="ask-ai-organization-search-field w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-base font-medium text-gray-800 outline-none placeholder:text-gray-400 focus:border-cdp-red focus:ring-2 focus:ring-cdp-red/20 md:text-sm"
         [placeholder]="'askCdpAi.organizationSelector.searchPlaceholder' | translate"
+        autocomplete="off"
+        autocapitalize="none"
+        autocorrect="off"
+        spellcheck="false"
+        inputmode="search"
+        enterkeyhint="search"
         role="combobox"
         aria-autocomplete="list"
         [attr.aria-expanded]="isDropdownOpen"
@@ -149,20 +155,29 @@
       @if (organizationOptions().length > 0) {
         <div
           id="ask-ai-organization-options"
-          class="mt-1 max-h-64 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+          class="ask-ai-organization-options mt-1 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
           role="listbox"
         >
           @for (organization of organizationOptions(); track organization.organizationId) {
-            <button
+            <label
               [id]="getOptionId($index)"
-              type="button"
               data-testid="ask-ai-organization-option"
               role="option"
               [attr.aria-selected]="activeOptionIndex() === $index"
-              class="flex w-full min-w-0 items-center gap-3 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none"
+              class="flex w-full min-w-0 cursor-pointer items-center gap-3 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-none"
               [class.bg-gray-100]="activeOptionIndex() === $index"
-              (click)="selectOrganization(organization)"
+              [class.border-l-2]="isSelectedOrganization(organization)"
+              [class.border-cdp-red]="isSelectedOrganization(organization)"
+              tabindex="0"
+              (keydown)="onOptionKeydown($event, organization)"
             >
+              <input
+                type="checkbox"
+                data-testid="ask-ai-organization-option-checkbox"
+                class="h-4 w-4 flex-shrink-0 rounded border-gray-300 text-cdp-red focus:ring-cdp-red"
+                [checked]="isSelectedOrganization(organization)"
+                (change)="toggleOrganization(organization)"
+              />
               @if (countryFlagImageUrl(organization.country)) {
                 <img
                   [src]="countryFlagImageUrl(organization.country)"
@@ -181,7 +196,7 @@
                   }}</span>
                 }
               </span>
-            </button>
+            </label>
           }
         </div>
       }

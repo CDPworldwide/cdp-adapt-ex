@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { LocationService } from '../../shared/services/location.service';
+import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { AskCdpAiOrganizationSelectorComponent } from './ask-cdp-ai-organization-selector.component';
 
@@ -11,6 +12,7 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
   let fixture: ComponentFixture<AskCdpAiOrganizationSelectorComponent>;
   let component: AskCdpAiOrganizationSelectorComponent;
   let locationService: jasmine.SpyObj<LocationService>;
+  let mobileKeyboardViewportService: jasmine.SpyObj<MobileKeyboardViewportService>;
 
   const organizations: LocationSuggestion[] = [
     {
@@ -44,10 +46,17 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
       'getAllLocationNames',
     ]);
     locationService.getAllLocationNames.and.returnValue(of(organizations));
+    mobileKeyboardViewportService = jasmine.createSpyObj<MobileKeyboardViewportService>(
+      'MobileKeyboardViewportService',
+      ['keepElementVisible'],
+    );
 
     await TestBed.configureTestingModule({
       imports: [AskCdpAiOrganizationSelectorComponent, TranslateModule.forRoot()],
-      providers: [{ provide: LocationService, useValue: locationService }],
+      providers: [
+        { provide: LocationService, useValue: locationService },
+        { provide: MobileKeyboardViewportService, useValue: mobileKeyboardViewportService },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AskCdpAiOrganizationSelectorComponent);
@@ -80,15 +89,38 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
     const options: HTMLElement[] = Array.from(
       fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option"]'),
     );
+    const checkboxes: HTMLInputElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option-checkbox"]'),
+    );
     expect(component.activeOptionIndex()).toBe(1);
     expect(input.getAttribute('aria-activedescendant')).toBe('ask-ai-organization-option-1');
     expect(options[1].getAttribute('aria-selected')).toBe('true');
     expect(options[1].classList.contains('bg-gray-100')).toBeTrue();
+    expect(checkboxes[1].checked).toBeFalse();
 
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     fixture.detectChanges();
 
     expect(selectedOrganizations.at(-1)).toEqual([visibleOptions[1]]);
+  });
+
+  it('uses mobile-friendly search input behavior', () => {
+    component.togglePicker();
+    fixture.detectChanges();
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector(
+      '[data-testid="ask-ai-organization-search"]',
+    );
+
+    expect(input.classList.contains('text-base')).toBeTrue();
+    expect(input.getAttribute('autocomplete')).toBe('off');
+    expect(input.getAttribute('autocorrect')).toBe('off');
+    expect(input.getAttribute('inputmode')).toBe('search');
+    expect(input.getAttribute('enterkeyhint')).toBe('search');
+
+    input.dispatchEvent(new FocusEvent('focus'));
+
+    expect(mobileKeyboardViewportService.keepElementVisible).toHaveBeenCalledWith(input);
   });
 
   it('renders country flags for the current organization, selected organizations, and options', () => {
@@ -101,15 +133,74 @@ describe('AskCdpAiOrganizationSelectorComponent', () => {
     const selectorFlags: HTMLImageElement[] = Array.from(
       fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-selector"] img'),
     );
-    const optionFlag = fixture.nativeElement.querySelector(
-      '[data-testid="ask-ai-organization-option"] img',
-    ) as HTMLImageElement;
+    const optionFlags: HTMLImageElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option"] img'),
+    );
 
     expect(selectorFlags.map((flag) => flag.src)).toEqual([
       'https://flagcdn.com/in.svg',
       'https://flagcdn.com/us.svg',
     ]);
-    expect(optionFlag.src).toBe('https://flagcdn.com/gb.svg');
+    expect(optionFlags.map((flag) => flag.src).slice(0, 2)).toEqual([
+      'https://flagcdn.com/us.svg',
+      'https://flagcdn.com/gb.svg',
+    ]);
+  });
+
+  it('pins selected organizations at the top of the checkbox list and toggles them off', () => {
+    const selectedOrganizations: LocationSuggestion[][] = [];
+    component.selectedOrganizations = [organizations[1]];
+    component.selectedOrganizationsChange.subscribe((selection) =>
+      selectedOrganizations.push(selection),
+    );
+
+    component.togglePicker();
+    fixture.detectChanges();
+
+    const optionLabels: HTMLElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option"]'),
+    );
+    const checkboxes: HTMLInputElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option-checkbox"]'),
+    );
+
+    expect(optionLabels[0].textContent).toContain('City of London (City)');
+    expect(checkboxes[0].checked).toBeTrue();
+
+    checkboxes[0].dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(selectedOrganizations.at(-1)).toEqual([]);
+  });
+
+  it('pins the current organization above search results as checked and removable', () => {
+    let currentOrganizationCleared = false;
+    component.currentOrganizationId = 35905;
+    component.currentDisplayName = 'Corporation of Chennai';
+    component.currentCountryName = 'India';
+    component.currentOrganizationCleared.subscribe(() => {
+      currentOrganizationCleared = true;
+    });
+
+    component.togglePicker();
+    fixture.detectChanges();
+
+    const optionLabels: HTMLElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option"]'),
+    );
+    const checkboxes: HTMLInputElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-organization-option-checkbox"]'),
+    );
+
+    expect(optionLabels[0].textContent).toContain('Corporation of Chennai');
+    expect(checkboxes[0].checked).toBeTrue();
+    expect(checkboxes[0].disabled).toBeFalse();
+    expect(optionLabels[1].textContent).not.toContain('Corporation of Chennai');
+
+    checkboxes[0].dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(currentOrganizationCleared).toBeTrue();
   });
 
   it('keeps arrow navigation inside the available option range', () => {
