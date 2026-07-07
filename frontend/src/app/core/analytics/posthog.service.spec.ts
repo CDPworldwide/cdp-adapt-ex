@@ -46,6 +46,7 @@ describe('PosthogService', () => {
         ui_host: 'https://eu.posthog.com',
         capture_pageview: false,
         capture_pageleave: true,
+        capture_exceptions: false,
       }),
     );
   });

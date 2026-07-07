@@ -37,7 +37,7 @@ export class PosthogService {
         defaults: '2026-01-30',
         capture_pageview: false,
         capture_pageleave: true,
-        capture_exceptions: true,
+        capture_exceptions: false,
         autocapture: {
           url_allowlist: [
             /^https:\/\/cdp-action-explorer\.net(?:\/.*)?$/,
