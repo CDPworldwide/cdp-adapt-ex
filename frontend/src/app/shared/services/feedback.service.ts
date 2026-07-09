@@ -10,7 +10,7 @@ export interface FeedbackLocationContext {
   activeTab?: string | null;
 }
 
-const TYPEFORM_URL = 'https://cdp-worldwide.typeform.com/to/CFhsXgBm';
+const TYPEFORM_URL = 'https://cdp-worldwide.typeform.com/to/h0Og6Gme';
 
 @Injectable({ providedIn: 'root' })
 export class FeedbackService {
