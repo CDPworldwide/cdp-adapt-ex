@@ -33,7 +33,7 @@
     </div>
   }
 
-  @if (!isDisclosureLoading() || conversationHistory().length > 0) {
+  @if (!isLandingState && (!isDisclosureLoading() || conversationHistory().length > 0)) {
     <div class="chat-context-section flex-shrink-0 border-b border-gray-200 bg-white p-3 sm:p-4">
       <div class="rounded-lg border border-gray-200 bg-gray-50 p-3 sm:p-4">
         <app-ask-cdp-ai-organization-selector
@@ -47,162 +47,402 @@
         <p class="mt-1 hidden text-sm text-gray-500 sm:block">
           {{ 'askCdpAi.emptyState.description' | translate }}
         </p>
+        @if (contextAttachmentCount > 0) {
+          <div class="chat-attachment-group mt-3" aria-label="Active chat context">
+            @if (locationData) {
+              <div class="chat-attachment" data-state="done">
+                <div class="chat-attachment-media" aria-hidden="true">
+                  <span>{{ locationDisplayName.slice(0, 1) || 'L' }}</span>
+                </div>
+                <div class="chat-attachment-content">
+                  <div class="chat-attachment-title">{{ locationDisplayName }}</div>
+                  <div class="chat-attachment-description">
+                    {{ locationData.countryName || 'Current location' }}
+                  </div>
+                </div>
+              </div>
+            }
+            @for (
+              organization of selectedReferenceOrganizations();
+              track organization.organizationId
+            ) {
+              <div class="chat-attachment" data-state="done">
+                <div class="chat-attachment-media" aria-hidden="true">
+                  <span>{{ organization.name.slice(0, 1) }}</span>
+                </div>
+                <div class="chat-attachment-content">
+                  <div class="chat-attachment-title">{{ organization.name }}</div>
+                  <div class="chat-attachment-description">
+                    {{ organization.country || 'Reference location' }}
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
       </div>
     </div>
   }
 
-  <!-- Main Content -->
-  <div class="min-h-0 flex-1 overflow-y-auto p-3 sm:p-4">
-    <!-- Conversation History -->
-    @for (message of conversationHistory(); track $index) {
-      @if (message.role === 'user') {
-        <div class="mb-4 flex min-w-0 justify-end">
-          <div class="max-w-lg min-w-0 rounded-lg bg-cdp-red p-3 text-white">
-            <p>{{ message.content }}</p>
-          </div>
+  @if (isLandingState) {
+    <div class="chat-landing flex min-h-0 flex-1 flex-col items-center justify-center px-4 py-8">
+      <div class="chat-landing-inner w-full">
+        <h1 class="chat-landing-title">Where should we begin?</h1>
+
+        <div class="chat-landing-context">
+          <app-ask-cdp-ai-organization-selector
+            [currentOrganizationId]="locationData?.organizationId"
+            [currentDisplayName]="locationDisplayName"
+            [currentCountryName]="locationData?.countryName || ''"
+            [selectedOrganizations]="selectedReferenceOrganizations()"
+            [showSuggestedOrganizations]="true"
+            (selectedOrganizationsChange)="onReferenceOrganizationsChange($event)"
+            (currentOrganizationCleared)="onCurrentOrganizationCleared()"
+          ></app-ask-cdp-ai-organization-selector>
         </div>
-      } @else if (message.role === 'assistant') {
-        <div class="mb-4 min-w-0">
+
+        @if (contextAttachmentCount > 0) {
           <div
-            class="ai-assistant-message w-full max-w-3xl min-w-0 rounded-lg border border-gray-200 bg-white px-4 py-3 shadow-sm"
+            class="chat-attachment-group chat-landing-attachments"
+            aria-label="Active chat context"
           >
-            <div class="ai-markdown" [innerHTML]="getSafeHtml(message.content)"></div>
-          </div>
-        </div>
-      }
-    }
-
-    <!-- Loading State for Disclosure -->
-    @if (isDisclosureLoading()) {
-      <div class="flex justify-center items-center py-8">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-cdp-red"></div>
-      </div>
-    }
-
-    <!-- Error State for Disclosure -->
-    @if (disclosureError()) {
-      <div class="mb-4 p-3 bg-red-50 text-red-700 rounded-md border border-red-200">
-        {{ disclosureError() }}
-      </div>
-    }
-  </div>
-
-  <!-- Input Section -->
-  <div
-    class="chat-input-section flex flex-shrink-0 flex-col border-t border-gray-200 bg-white p-3 sm:p-4"
-  >
-    @if (showLocalTestControls) {
-      <div class="mb-3 flex justify-end">
-        <button
-          type="button"
-          data-testid="ask-ai-load-test-chat"
-          class="inline-flex items-center rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition-colors hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red"
-          (click)="loadLocalTestChat()"
-        >
-          Load test chat
-        </button>
-      </div>
-    }
-
-    @if (showSuggestions && !isDisclosureLoading()) {
-      <div class="mb-3">
-        @if (isFollowUpLoading()) {
-          <div class="flex flex-shrink-0 items-center justify-center py-2">
-            <div class="h-6 w-6 animate-spin rounded-full border-b-2 border-cdp-red"></div>
-          </div>
-        } @else if (followUpError()) {
-          <div class="rounded-md border border-red-200 bg-red-50 p-2 text-sm text-red-700">
-            {{ followUpError() }}
-          </div>
-        } @else if (followUpQuestions().length > 0) {
-          <div class="flex flex-shrink-0 flex-col gap-2">
-            @if (showAllStarterQuestions()) {
-              <div
-                id="ask-ai-starter-suggestions"
-                class="flex max-h-[40dvh] flex-col gap-2 overflow-y-auto"
-              >
-                @for (q of displayedStarterQuestions; track $index) {
-                  <button
-                    data-testid="ask-ai-suggestion"
-                    (click)="onFollowUpClick(q)"
-                    class="flex w-full min-w-0 items-center justify-between gap-2 rounded-md bg-cdp-red px-3 py-2 text-left text-sm leading-snug text-white transition-colors hover:bg-red-600 sm:rounded-lg"
-                  >
-                    <span class="ask-ai-suggestion-label min-w-0">{{ q }}</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-4 w-4 flex-shrink-0"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M13 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
-                }
+            @if (locationData) {
+              <div class="chat-attachment" data-state="done">
+                <div class="chat-attachment-media" aria-hidden="true">
+                  <span>{{ locationDisplayName.slice(0, 1) || 'L' }}</span>
+                </div>
+                <div class="chat-attachment-content">
+                  <div class="chat-attachment-title">{{ locationDisplayName }}</div>
+                  <div class="chat-attachment-description">
+                    {{ locationData.countryName || 'Current location' }}
+                  </div>
+                </div>
               </div>
             }
-
-            <button
-              type="button"
-              data-testid="ask-ai-suggestions-toggle"
-              class="inline-flex w-fit items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition-colors hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red"
-              [attr.aria-expanded]="showAllStarterQuestions()"
-              aria-controls="ask-ai-starter-suggestions"
-              (click)="toggleStarterQuestions()"
-            >
-              <span>{{ followUpQuestions().length }} suggestions</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-3.5 w-3.5 flex-shrink-0 transition-transform"
-                [class.rotate-180]="showAllStarterQuestions()"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
+            @for (
+              organization of selectedReferenceOrganizations();
+              track organization.organizationId
+            ) {
+              <div class="chat-attachment" data-state="done">
+                <div class="chat-attachment-media" aria-hidden="true">
+                  <span>{{ organization.name.slice(0, 1) }}</span>
+                </div>
+                <div class="chat-attachment-content">
+                  <div class="chat-attachment-title">{{ organization.name }}</div>
+                  <div class="chat-attachment-description">
+                    {{ organization.country || 'Reference location' }}
+                  </div>
+                </div>
+              </div>
+            }
           </div>
         }
-      </div>
-    }
 
-    <div class="relative">
-      <input
-        data-testid="ask-ai-input"
-        type="text"
-        [(ngModel)]="userQuery"
-        (keyup.enter)="sendQuery()"
-        (focus)="onInputFocus($event)"
-        [placeholder]="'askCdpAi.input.placeholder' | translate"
-        class="w-full rounded-full border border-gray-200 bg-gray-100 py-2 pl-4 pr-12 text-sm outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500"
-      />
-      <button
-        data-testid="ask-ai-send-button"
-        (click)="sendQuery()"
-        [disabled]="!userQuery.trim()"
-        class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-red-600 disabled:opacity-50 disabled:hover:text-gray-400 transition-colors"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          class="w-5 h-5"
-        >
-          <path d="M2 3L18 10L2 17V13L7 10L2 7V3Z" />
-        </svg>
-      </button>
+        <div class="chat-landing-composer chat-input-group">
+          <input
+            data-testid="ask-ai-input"
+            type="text"
+            [(ngModel)]="userQuery"
+            (keyup.enter)="sendQuery()"
+            (focus)="onInputFocus($event)"
+            [placeholder]="'askCdpAi.input.placeholder' | translate"
+            class="chat-input-control"
+          />
+          <button
+            data-testid="ask-ai-send-button"
+            (click)="sendQuery()"
+            [disabled]="!userQuery.trim()"
+            class="chat-input-button"
+            aria-label="Send message"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="w-5 h-5"
+            >
+              <path d="M2 3L18 10L2 17V13L7 10L2 7V3Z" />
+            </svg>
+          </button>
+        </div>
+
+        @if (landingPromptSuggestions.length > 0) {
+          <div class="chat-landing-suggestions" aria-label="Suggested prompts">
+            @for (prompt of landingPromptSuggestions; track prompt) {
+              <button
+                type="button"
+                data-testid="ask-ai-landing-suggestion"
+                class="chat-landing-suggestion"
+                (click)="onLandingPromptClick(prompt)"
+              >
+                <span class="chat-landing-suggestion-icon" aria-hidden="true">
+                  @switch (landingPromptIcon(prompt)) {
+                    @case ('compare') {
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path d="M5 6h10M5 14h10M12 3l3 3-3 3M8 11l-3 3 3 3" />
+                      </svg>
+                    }
+                    @case ('hazard') {
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path d="M10 3 18 17H2L10 3Z" />
+                        <path d="M10 8v4M10 15h.01" />
+                      </svg>
+                    }
+                    @case ('actions') {
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path d="M5 10.5 8.5 14 15 6" />
+                        <path d="M4 4h12v12H4V4Z" />
+                      </svg>
+                    }
+                    @case ('funding') {
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path d="M10 3v14M6.5 6.5h5a2.5 2.5 0 0 1 0 5h-3a2.5 2.5 0 0 0 0 5H14" />
+                      </svg>
+                    }
+                    @default {
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path d="M4 10h12M10 4v12" />
+                      </svg>
+                    }
+                  }
+                </span>
+                {{ prompt }}
+              </button>
+            }
+          </div>
+        }
+
+        @if (showLocalTestControls) {
+          <button
+            type="button"
+            data-testid="ask-ai-load-test-chat"
+            class="chat-landing-test-button"
+            (click)="loadLocalTestChat()"
+          >
+            Load test chat
+          </button>
+        }
+      </div>
     </div>
-  </div>
+  } @else {
+    <!-- Main Content -->
+    <div class="message-scroller min-h-0 flex-1">
+      <!-- Conversation History -->
+      <div
+        #messageScrollerViewport
+        class="message-scroller-viewport"
+        data-testid="ask-ai-message-scroller"
+        (scroll)="onMessageScrollerScroll()"
+      >
+        <div class="message-scroller-content" aria-live="polite" aria-relevant="additions text">
+          @for (message of conversationHistory(); track $index) {
+            <article
+              class="message-scroller-item chat-message"
+              [id]="messageId($index)"
+              [attr.data-role]="message.role"
+              [attr.data-scroll-anchor]="message.role === 'user' ? 'true' : null"
+            >
+              <div class="chat-message-avatar" aria-hidden="true">
+                <span>{{ message.role === 'user' ? 'ME' : 'AI' }}</span>
+              </div>
+              <div class="chat-message-content">
+                <div class="chat-message-header">
+                  <span>{{ messageSenderLabel(message.role) }}</span>
+                </div>
+
+                @if (message.role === 'user') {
+                  <div class="chat-bubble chat-bubble-user">
+                    <div class="chat-bubble-content">
+                      <p>{{ message.content }}</p>
+                    </div>
+                  </div>
+                } @else if (message.role === 'assistant') {
+                  <div class="chat-bubble chat-bubble-assistant">
+                    <div
+                      class="chat-bubble-content ai-markdown"
+                      [innerHTML]="getSafeHtml(message.content)"
+                    ></div>
+                  </div>
+                }
+              </div>
+            </article>
+          }
+
+          <!-- Loading State for Disclosure -->
+          @if (isDisclosureLoading()) {
+            <div
+              class="message-scroller-item chat-message"
+              data-role="assistant"
+              aria-live="polite"
+            >
+              <div class="chat-message-avatar" aria-hidden="true">
+                <span>AI</span>
+              </div>
+              <div class="chat-message-content">
+                <div class="chat-message-header">
+                  <span>AI Explorer</span>
+                </div>
+                <div class="chat-bubble chat-bubble-assistant chat-bubble-muted">
+                  <div class="chat-typing">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                  <span class="sr-only">AI Explorer is preparing a response.</span>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Error State for Disclosure -->
+          @if (disclosureError()) {
+            <div class="message-scroller-item chat-message" data-role="assistant">
+              <div class="chat-message-avatar" aria-hidden="true">
+                <span>AI</span>
+              </div>
+              <div class="chat-message-content">
+                <div class="chat-message-header">
+                  <span>AI Explorer</span>
+                </div>
+                <div class="chat-bubble chat-bubble-error">
+                  {{ disclosureError() }}
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (showJumpToLatest()) {
+        <button
+          type="button"
+          class="message-scroller-button"
+          data-testid="ask-ai-jump-to-latest"
+          (click)="jumpToLatest()"
+        >
+          Scroll to end
+        </button>
+      }
+    </div>
+
+    <!-- Input Section -->
+    <div
+      class="chat-input-section flex flex-shrink-0 flex-col border-t border-gray-200 bg-white p-3 sm:p-4"
+    >
+      @if (showLocalTestControls) {
+        <div class="mb-3 flex justify-end">
+          <button
+            type="button"
+            data-testid="ask-ai-load-test-chat"
+            class="inline-flex items-center rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition-colors hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red"
+            (click)="loadLocalTestChat()"
+          >
+            Load test chat
+          </button>
+        </div>
+      }
+
+      @if (showSuggestions && !isDisclosureLoading()) {
+        <div class="mb-3">
+          @if (isFollowUpLoading()) {
+            <div class="flex flex-shrink-0 items-center justify-center py-2">
+              <div class="h-6 w-6 animate-spin rounded-full border-b-2 border-cdp-red"></div>
+            </div>
+          } @else if (followUpError()) {
+            <div class="rounded-md border border-red-200 bg-red-50 p-2 text-sm text-red-700">
+              {{ followUpError() }}
+            </div>
+          } @else if (followUpQuestions().length > 0) {
+            <div class="flex flex-shrink-0 flex-col gap-2">
+              @if (showAllStarterQuestions()) {
+                <div
+                  id="ask-ai-starter-suggestions"
+                  class="flex max-h-[40dvh] flex-col gap-2 overflow-y-auto"
+                >
+                  @for (q of displayedStarterQuestions; track $index) {
+                    <button
+                      data-testid="ask-ai-suggestion"
+                      (click)="onFollowUpClick(q)"
+                      class="flex w-full min-w-0 items-center justify-between gap-2 rounded-md bg-cdp-red px-3 py-2 text-left text-sm leading-snug text-white transition-colors hover:bg-red-600 sm:rounded-lg"
+                    >
+                      <span class="ask-ai-suggestion-label min-w-0">{{ q }}</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 flex-shrink-0"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 5l7 7-7 7"
+                        />
+                      </svg>
+                    </button>
+                  }
+                </div>
+              }
+
+              <button
+                type="button"
+                data-testid="ask-ai-suggestions-toggle"
+                class="inline-flex w-fit items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm transition-colors hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red"
+                [attr.aria-expanded]="showAllStarterQuestions()"
+                aria-controls="ask-ai-starter-suggestions"
+                (click)="toggleStarterQuestions()"
+              >
+                <span>{{ followUpQuestions().length }} suggestions</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-3.5 w-3.5 flex-shrink-0 transition-transform"
+                  [class.rotate-180]="showAllStarterQuestions()"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+            </div>
+          }
+        </div>
+      }
+
+      <div class="chat-input-group">
+        <input
+          data-testid="ask-ai-input"
+          type="text"
+          [(ngModel)]="userQuery"
+          (keyup.enter)="sendQuery()"
+          (focus)="onInputFocus($event)"
+          [placeholder]="'askCdpAi.input.placeholder' | translate"
+          class="chat-input-control"
+        />
+        <button
+          data-testid="ask-ai-send-button"
+          (click)="sendQuery()"
+          [disabled]="!userQuery.trim()"
+          class="chat-input-button"
+          aria-label="Send message"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="w-5 h-5"
+          >
+            <path d="M2 3L18 10L2 17V13L7 10L2 7V3Z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  }
 </div>

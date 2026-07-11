@@ -5,10 +5,13 @@ import {
   DestroyRef,
   OnInit,
   OnChanges,
+  AfterViewChecked,
   SimpleChanges,
   Output,
   EventEmitter,
   signal,
+  ElementRef,
+  ViewChild,
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -32,7 +35,7 @@ import { AskCdpAiOrganizationSelectorComponent } from './ask-cdp-ai-organization
   templateUrl: './ask-cdp-ai.html',
   styleUrls: ['./ask-cdp-ai.css'],
 })
-export class AskCdpAiComponent implements OnInit, OnChanges {
+export class AskCdpAiComponent implements OnInit, OnChanges, AfterViewChecked {
   private askCdpAiService = inject(AskCdpAiService);
   private sanitizer = inject(DomSanitizer);
   private destroyRef = inject(DestroyRef);
@@ -48,6 +51,8 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   @Input() showLocalTestControls = false;
   @Output() openChange = new EventEmitter<boolean>();
   @Output() locationDataCleared = new EventEmitter<void>();
+  @ViewChild('messageScrollerViewport')
+  private messageScrollerViewport?: ElementRef<HTMLElement>;
 
   conversationHistory = this.askCdpAiService.conversationHistory;
   isDisclosureLoading = this.askCdpAiService.isDisclosureLoading;
@@ -59,6 +64,17 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
   userQuery = '';
   selectedReferenceOrganizations = signal<LocationSuggestion[]>([]);
   showAllStarterQuestions = signal(false);
+  showJumpToLatest = signal(false);
+
+  private readonly fallbackLandingPrompts = [
+    'Compare two locations',
+    'Find rising hazards',
+    'Summarize adaptation actions',
+    'Show funding-ready projects',
+  ];
+
+  private lastRenderedMessageCount = 0;
+  private shouldFollowLatest = true;
 
   constructor() {
     this.destroyRef.onDestroy(() => this.askCdpAiService.clearSession());
@@ -83,6 +99,10 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
     }
   }
 
+  ngAfterViewChecked(): void {
+    this.syncMessageScrollerPosition();
+  }
+
   toggleOpen() {
     this.openChange.emit(false);
   }
@@ -93,6 +113,42 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
 
   get displayedStarterQuestions(): string[] {
     return this.showAllStarterQuestions() ? this.followUpQuestions() : [];
+  }
+
+  get isLandingState(): boolean {
+    return (
+      this.conversationHistory().length === 0 &&
+      !this.isDisclosureLoading() &&
+      !this.disclosureError()
+    );
+  }
+
+  get landingPromptSuggestions(): string[] {
+    return (
+      this.followUpQuestions().length ? this.followUpQuestions() : this.fallbackLandingPrompts
+    ).slice(0, 4);
+  }
+
+  landingPromptIcon(prompt: string): 'compare' | 'hazard' | 'actions' | 'funding' | 'default' {
+    const normalizedPrompt = prompt.toLowerCase();
+
+    if (normalizedPrompt.includes('compare')) {
+      return 'compare';
+    }
+
+    if (normalizedPrompt.includes('hazard') || normalizedPrompt.includes('risk')) {
+      return 'hazard';
+    }
+
+    if (normalizedPrompt.includes('fund')) {
+      return 'funding';
+    }
+
+    if (normalizedPrompt.includes('action') || normalizedPrompt.includes('adaptation')) {
+      return 'actions';
+    }
+
+    return 'default';
   }
 
   sendQuery() {
@@ -107,6 +163,43 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
     });
     this.executeChatQuery(query);
     this.userQuery = '';
+  }
+
+  onMessageScrollerScroll(): void {
+    const viewport = this.messageScrollerViewport?.nativeElement;
+    if (!viewport) {
+      return;
+    }
+
+    const distanceFromEnd = viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight;
+    const isAtLiveEdge = distanceFromEnd < 96;
+    this.shouldFollowLatest = isAtLiveEdge;
+    this.showJumpToLatest.set(!isAtLiveEdge && this.conversationHistory().length > 0);
+  }
+
+  jumpToLatest(): void {
+    this.shouldFollowLatest = true;
+    this.scrollToEnd('smooth');
+  }
+
+  messageId(index: number): string {
+    return `ask-ai-message-${index}`;
+  }
+
+  messageSenderLabel(role: 'user' | 'assistant' | 'system'): string {
+    if (role === 'user') {
+      return 'You';
+    }
+
+    if (role === 'assistant') {
+      return 'AI Explorer';
+    }
+
+    return 'System';
+  }
+
+  get contextAttachmentCount(): number {
+    return (this.locationData ? 1 : 0) + this.selectedReferenceOrganizations().length;
   }
 
   onInputFocus(event: FocusEvent): void {
@@ -127,6 +220,17 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
       source: 'followup',
     });
     this.executeChatQuery(question);
+  }
+
+  onLandingPromptClick(prompt: string): void {
+    this.posthog.capture('ai_chat_followup_clicked', {
+      ...locationProperties(this.locationData),
+      context_area: this.contextArea,
+      query: this.sanitizeAnalyticsQuery(prompt),
+      query_length: prompt.length,
+      source: 'landing_prompt',
+    });
+    this.executeChatQuery(prompt);
   }
 
   toggleStarterQuestions(): void {
@@ -153,17 +257,15 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
       ? this.askCdpAiService.sendChatQuery(query)
       : this.askCdpAiService.sendChatQuery(query, false);
 
-    chatQuery$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.isFollowUpLoading.set(false);
-        },
-        error: (error) => {
-          this.isFollowUpLoading.set(false);
-          // The service already handles setting the error signal
-        },
-      });
+    chatQuery$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.isFollowUpLoading.set(false);
+      },
+      error: (error) => {
+        this.isFollowUpLoading.set(false);
+        // The service already handles setting the error signal
+      },
+    });
   }
 
   private setChatContext(): void {
@@ -206,6 +308,77 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
 
   public getSafeHtml(html: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  private syncMessageScrollerPosition(): void {
+    const messages = this.conversationHistory();
+    const nextMessageCount = messages.length;
+    if (nextMessageCount === this.lastRenderedMessageCount) {
+      return;
+    }
+
+    const previousMessageCount = this.lastRenderedMessageCount;
+    this.lastRenderedMessageCount = nextMessageCount;
+
+    if (!nextMessageCount) {
+      this.showJumpToLatest.set(false);
+      this.shouldFollowLatest = true;
+      return;
+    }
+
+    const lastMessage = messages.at(-1);
+    queueMicrotask(() => {
+      if (previousMessageCount === 0) {
+        this.scrollToLastAnchor('auto');
+        return;
+      }
+
+      if (lastMessage?.role === 'user') {
+        this.scrollToMessage(nextMessageCount - 1, 'smooth');
+        return;
+      }
+
+      if (this.shouldFollowLatest) {
+        this.scrollToEnd('smooth');
+      } else {
+        this.showJumpToLatest.set(true);
+      }
+    });
+  }
+
+  private scrollToLastAnchor(behavior: ScrollBehavior): void {
+    const messages = this.conversationHistory();
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+      if (messages[index].role === 'user') {
+        this.scrollToMessage(index, behavior);
+        return;
+      }
+    }
+
+    this.scrollToEnd(behavior);
+  }
+
+  private scrollToMessage(index: number, behavior: ScrollBehavior): void {
+    const viewport = this.messageScrollerViewport?.nativeElement;
+    const message = viewport?.querySelector<HTMLElement>(`#${this.messageId(index)}`);
+    if (!viewport || !message) {
+      return;
+    }
+
+    const previousPeek = 64;
+    const offset = message.offsetTop - viewport.offsetTop - previousPeek;
+    viewport.scrollTo({ top: Math.max(offset, 0), behavior });
+    this.showJumpToLatest.set(false);
+  }
+
+  private scrollToEnd(behavior: ScrollBehavior): void {
+    const viewport = this.messageScrollerViewport?.nativeElement;
+    if (!viewport) {
+      return;
+    }
+
+    viewport.scrollTo({ top: viewport.scrollHeight, behavior });
+    this.showJumpToLatest.set(false);
   }
 
   private sanitizeAnalyticsQuery(query: string): string {
