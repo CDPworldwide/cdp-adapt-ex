@@ -46,13 +46,10 @@ describe('SolutionsComponent', () => {
           hazardFiltersTitle: 'Hazard Filters',
           popularSolutionsTitle: 'Action Ideas from Peer Cities',
           sourceDescription: 'Source',
-          ecoregionLabel: 'Similar climate conditions',
-          ecoregionText:
-            '{{location}} is matched with peer jurisdictions in {{ecoregion}} using shared hazards and similar climate conditions.',
+          ecoregionText: 'Similar climate conditions: {{ecoregion}}',
           ecoregionTooltip: 'Action Ideas are selected from matching peer jurisdictions.',
           ecoregionFallbackText:
             'Action ideas are matched using shared hazards from peer jurisdictions.',
-          peerExampleCountText: 'Example peer jurisdictions shown: {{count}}.',
           noSolutionsBanner: {
             title: 'Not all information was disclosed',
           },
@@ -127,9 +124,9 @@ describe('SolutionsComponent', () => {
   it('should show the location ecoregion when available', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain('Similar climate conditions');
-    expect(compiled.textContent).toContain('Temperate Conifer Forests');
-    expect(compiled.textContent).toContain('Example peer jurisdictions shown: 2.');
+    expect(compiled.textContent).toContain('Similar climate conditions: Temperate Conifer Forests');
+    expect(compiled.textContent).not.toContain('Test Location is matched with peer jurisdictions');
+    expect(compiled.textContent).not.toContain('Example peer jurisdictions shown');
     expect(compiled.textContent).not.toContain(
       'Action ideas are matched using shared hazards from peer jurisdictions.',
     );
