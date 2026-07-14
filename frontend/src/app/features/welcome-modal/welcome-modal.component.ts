@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { Component, HostListener, OnInit, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -21,6 +21,7 @@ export class WelcomeModalComponent implements OnInit {
   selectedRole: UserRoleId | null = null;
 
   private readonly router = inject(Router);
+  private readonly document = inject(DOCUMENT);
   private readonly welcomeModalService = inject(WelcomeModalService);
 
   constructor() {
@@ -64,10 +65,22 @@ export class WelcomeModalComponent implements OnInit {
 
   private shouldAutoOpen(): boolean {
     return (
-      this.router.url.split('?')[0] === '/' &&
+      this.isHomepageRoute() &&
+      !this.isMobileViewport() &&
       !this.userRoleService.role() &&
       !this.hasSkippedWelcomeModal()
     );
+  }
+
+  private isHomepageRoute(): boolean {
+    const routerPath = this.router.url.split('?')[0].split('#')[0];
+    const locationPath = this.document.location?.pathname || routerPath;
+
+    return routerPath === '/' && locationPath === '/';
+  }
+
+  private isMobileViewport(): boolean {
+    return this.document.defaultView?.matchMedia('(max-width: 767px)').matches === true;
   }
 
   private hasSkippedWelcomeModal(): boolean {
@@ -80,7 +93,7 @@ export class WelcomeModalComponent implements OnInit {
     }
 
     try {
-      return document.cookie
+      return this.document.cookie
         .split(';')
         .some((cookie) => cookie.trim() === WELCOME_MODAL_SKIPPED_COOKIE);
     } catch {
@@ -96,7 +109,7 @@ export class WelcomeModalComponent implements OnInit {
     }
 
     try {
-      document.cookie = `${WELCOME_MODAL_SKIPPED_COOKIE}; path=/; max-age=31536000; SameSite=Lax`;
+      this.document.cookie = `${WELCOME_MODAL_SKIPPED_COOKIE}; path=/; max-age=31536000; SameSite=Lax`;
     } catch {
       // Storage is non-critical; keep the modal closed for this page load.
     }

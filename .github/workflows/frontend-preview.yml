@@ -2,7 +2,7 @@ name: Frontend Preview Deploy
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, edited]
     branches: [main, production]
     paths:
       - "frontend/**"
@@ -13,6 +13,7 @@ on:
       - "package-lock.json"
       - ".nvmrc"
       - ".github/actions/setup-frontend-build/**"
+      - ".github/scripts/preview-service-name.sh"
       - ".github/workflows/frontend-preview.yml"
 
 concurrency:
@@ -25,7 +26,6 @@ env:
   ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
   AI_SERVER_URL: https://cdp-ai-server-pbybuiwoxq-uc.a.run.app
   FALLBACK_BACKEND_SERVICE_NAME: cdp-server-dev
-  SERVICE_NAME: frontend-preview-pr-${{ github.event.pull_request.number }}
   ENVIRONMENT: development
   NODE_VERSION: "20.x"
 
@@ -33,7 +33,7 @@ jobs:
   deploy-preview:
     name: Frontend preview / deploy
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false && (github.event.action != 'edited' || github.event.changes.title != null)
     permissions:
       contents: read
       id-token: write
@@ -42,6 +42,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Determine preview service names
+        id: preview-names
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "frontend=$(bash .github/scripts/preview-service-name.sh frontend "$PR_TITLE" "$PR_NUMBER")" >> "$GITHUB_OUTPUT"
+          echo "backend=$(bash .github/scripts/preview-service-name.sh backend "$PR_TITLE" "$PR_NUMBER")" >> "$GITHUB_OUTPUT"
 
       - name: Setup frontend build
         uses: ./.github/actions/setup-frontend-build
@@ -65,7 +74,7 @@ jobs:
       - name: Determine backend URL
         id: backend-url
         run: |
-          BACKEND_SERVICE="cdp-server-preview-pr-${{ github.event.pull_request.number }}"
+          BACKEND_SERVICE="${{ steps.preview-names.outputs.backend }}"
           echo "Checking for backend service $BACKEND_SERVICE..."
           BACKEND_URL=$(gcloud run services describe "$BACKEND_SERVICE" \
             --region=${{ env.REGION }} \
@@ -166,8 +175,8 @@ jobs:
       - name: Build and push Docker image
         working-directory: frontend
         run: |
-          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}"
-          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:latest"
+          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ steps.preview-names.outputs.frontend }}:${{ github.sha }}"
+          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ steps.preview-names.outputs.frontend }}:latest"
 
           docker build -t $IMAGE_TAG -t $IMAGE_LATEST .
           docker push $IMAGE_TAG
@@ -177,9 +186,9 @@ jobs:
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: ${{ env.SERVICE_NAME }}
+          service: ${{ steps.preview-names.outputs.frontend }}
           region: ${{ env.REGION }}
-          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ steps.preview-names.outputs.frontend }}:${{ github.sha }}
           flags: |
             --allow-unauthenticated
             --min-instances=0
@@ -190,6 +199,7 @@ jobs:
             --port=8080
           labels: |
             environment=preview
+            component=frontend
             managed-by=github-actions
             commit-sha=${{ github.sha }}
             pr-number=${{ github.event.pull_request.number }}

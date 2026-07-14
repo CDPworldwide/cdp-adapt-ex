@@ -35,11 +35,29 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
 
       - name: Delete preview service
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          SERVICE_NAME="cdp-server-preview-pr-${{ github.event.pull_request.number }}"
-          gcloud run services delete "$SERVICE_NAME" \
-            --region=${{ env.REGION }} \
-            --quiet || echo "Service already deleted or not found"
+          LEGACY_SERVICE="cdp-server-preview-pr-${PR_NUMBER}"
+
+          while IFS= read -r service; do
+            if [ -z "$service" ]; then
+              continue
+            fi
+
+            echo "Deleting backend preview service $service"
+            gcloud run services delete "$service" \
+              --region=${{ env.REGION }} \
+              --quiet || echo "Service already deleted or not found"
+          done < <(
+            {
+              gcloud run services list \
+                --region=${{ env.REGION }} \
+                --filter="metadata.labels.pr-number=${PR_NUMBER} AND metadata.labels.component=backend" \
+                --format='value(metadata.name)'
+              printf '%s\n' "$LEGACY_SERVICE"
+            } | sort -u
+          )
 
       - name: Comment PR about cleanup
         if: github.event_name == 'pull_request'
@@ -49,4 +67,4 @@ jobs:
           body: |
             ## Backend Preview Environment Cleaned Up
 
-            The preview deployment `cdp-server-preview-pr-${{ github.event.pull_request.number }}` has been deleted.
+            All backend preview deployments for PR #${{ github.event.pull_request.number }} have been deleted.
