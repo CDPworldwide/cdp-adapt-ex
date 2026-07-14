@@ -2,10 +2,11 @@ name: Backend Preview Deploy
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, edited]
     branches: [main, production]
     paths:
       - "backend/**"
+      - ".github/scripts/preview-service-name.sh"
       - ".github/workflows/backend-deploy.yml"
   workflow_dispatch:
 
@@ -28,7 +29,7 @@ jobs:
   deploy:
     name: Backend preview / deploy
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    if: github.event_name != 'pull_request' || (github.event.pull_request.draft == false && (github.event.action != 'edited' || github.event.changes.title != null))
     permissions:
       contents: read
       id-token: write
@@ -45,6 +46,21 @@ jobs:
           haskell: true
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Determine backend service name
+        id: service-name
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          DEFAULT_SERVICE: ${{ env.SERVICE_NAME }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            SERVICE=$(bash .github/scripts/preview-service-name.sh backend "$PR_TITLE" "$PR_NUMBER")
+          else
+            SERVICE="$DEFAULT_SERVICE"
+          fi
+
+          echo "service=$SERVICE" >> "$GITHUB_OUTPUT"
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -70,8 +86,8 @@ jobs:
       - name: Build and push Docker image
         working-directory: backend
         run: |
-          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}"
-          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:latest"
+          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ steps.service-name.outputs.service }}:${{ github.sha }}"
+          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ steps.service-name.outputs.service }}:latest"
 
           docker build --pull --no-cache -t $IMAGE_TAG -t $IMAGE_LATEST .
           docker push $IMAGE_TAG
@@ -81,9 +97,9 @@ jobs:
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: ${{ env.SERVICE_NAME }}
+          service: ${{ steps.service-name.outputs.service }}
           region: ${{ env.REGION }}
-          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ steps.service-name.outputs.service }}:${{ github.sha }}
           flags: |
             --allow-unauthenticated
             --add-cloudsql-instances=${{ env.PROJECT_ID }}:${{ env.REGION }}:${{ env.ENVIRONMENT == 'production' && 'cdp-prod' || 'cdp-test' }}
@@ -94,6 +110,9 @@ jobs:
             --timeout=300
           labels: |
             environment=${{ env.ENVIRONMENT }}
+            component=backend
+            preview=${{ env.IS_PREVIEW }}
+            pr-number=${{ github.event.pull_request.number || 'none' }}
             managed-by=github-actions
             commit-sha=${{ github.sha }}
           secrets: |
