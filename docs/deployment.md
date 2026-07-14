@@ -51,8 +51,8 @@ We maintain separate environments for development, staging (previews), and produ
 | `production-backend-deploy.yml` on `main` | `production` | `cdp-server-prod` | n/a | shared `cdp-ai-server` | `cdp-prod` | `production-` |
 | `production-frontend-deploy.yml` on `main` | `production` | existing `cdp-server-prod` | `frontend-prod` | shared `cdp-ai-server` | `cdp-prod` | `production-` |
 | `deploy.yml` manual dispatch | `production` | `cdp-server-prod` | `frontend-prod` | shared `cdp-ai-server` | `cdp-prod` | `production-` |
-| Frontend PR previews | `development` / preview | shared `cdp-server-dev` | `frontend-preview-pr-X` | shared `cdp-ai-server` | `cdp-test` | `development-` |
-| Backend PR previews | `development` / preview | `cdp-server-preview-pr-X` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
+| Frontend PR previews | `development` / preview | matching `cdp-server-preview-{TITLE}-pr-X`, or shared `cdp-server-dev` | `frontend-preview-{TITLE}-pr-X` | shared `cdp-ai-server` | `cdp-test` | `development-` |
+| Backend PR previews | `development` / preview | `cdp-server-preview-{TITLE}-pr-X` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
 | Manual backend preview workflow | `development` | `cdp-server-dev` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
 
 ### Documentation Site
@@ -216,10 +216,11 @@ Production Cloud Run deploys are driven from `main` or by manual dispatch.
 
 ### 2. PR Previews (`backend-deploy.yml` & `frontend-preview.yml`)
 Triggered on **pull request** updates.
-- **Frontend previews**: Each frontend PR gets a unique frontend service name (`frontend-preview-pr-{NUMBER}`) and builds against the shared `cdp-server-dev` backend deployed from `main`.
-- **Backend previews**: Backend PRs get a unique backend service name (`cdp-server-preview-pr-{NUMBER}`) when backend code or backend deployment workflow files change.
+- **Frontend previews**: Each frontend PR gets a readable, unique frontend service name (`frontend-preview-{SANITISED_TITLE}-pr-{NUMBER}`). It uses the matching backend preview when one exists, otherwise it builds against the shared `cdp-server-dev` backend deployed from `main`.
+- **Backend previews**: Backend PRs get a readable, unique backend service name (`cdp-server-preview-{SANITISED_TITLE}-pr-{NUMBER}`) when backend code or backend deployment workflow files change. Preview names are limited to 49 characters to meet Cloud Run's service-name limit.
 - **Database**: Uses the `development` database and secrets.
-- **Cleanup**: Previews are automatically deleted when PRs are closed.
+- **Title changes**: Editing a PR title deploys a newly named preview. Earlier URLs remain available so existing frontend builds and circulated links do not break.
+- **Cleanup**: Previews are labelled by PR number and component, then all services for that PR (including earlier title variants) are automatically deleted when the PR is closed.
 
 ### 3. AI Server (`ai-server-deploy.yml`)
 Triggered on pushes to `main` or `production` that touch `ai-server/**`, excluding prompt-only edits to `app/prompts/system_prompt.md`.
