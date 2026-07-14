@@ -46,12 +46,11 @@ describe('AppHeaderComponent', () => {
     expect(welcomeModalService.open).toHaveBeenCalled();
   });
 
-  it('links the AI header icon to the standalone chat page', () => {
+  it('does not show a link to the standalone chat page', () => {
     const chatLink: HTMLAnchorElement | null =
       fixture.nativeElement.querySelector('a[routerlink="/chat"]');
 
-    expect(chatLink).not.toBeNull();
-    expect(chatLink?.getAttribute('aria-label')).toBe('askCdpAi.buttonText');
+    expect(chatLink).toBeNull();
   });
 
   it('shows the language chooser in the header when chatMode is true', () => {

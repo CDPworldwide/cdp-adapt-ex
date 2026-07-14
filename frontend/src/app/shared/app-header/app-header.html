@@ -36,13 +36,6 @@
       </button>
     }
     @if (!chatMode) {
-      <a
-        routerLink="/chat"
-        class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
-        [attr.aria-label]="'askCdpAi.buttonText' | translate"
-      >
-        <app-ask-cdp-ai-logo-icon size="18" color="currentColor"></app-ask-cdp-ai-logo-icon>
-      </a>
       <button
         type="button"
         class="flex items-center justify-center w-9 h-9 rounded-full border border-cdp-neutral-02 text-cdp-dark hover:bg-cdp-dark hover:text-white hover:border-cdp-dark active:bg-black active:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-2 transition-colors"
