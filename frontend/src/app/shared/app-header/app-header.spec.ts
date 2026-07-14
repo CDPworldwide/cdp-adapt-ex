@@ -30,16 +30,14 @@ describe('AppHeaderComponent', () => {
     fixture.detectChanges();
   });
 
-  it('links the CDP logo to the public CDP landing page', () => {
-    const logoLink: HTMLAnchorElement | null = fixture.nativeElement.querySelector(
-      'a[href="https://www.cdp.net/en/cdp-adaptation-and-action-explorer"]',
-    );
+  it('links the CDP logo to the app home page', () => {
+    const logoLink: HTMLAnchorElement | null =
+      fixture.nativeElement.querySelector('a[aria-label="shared.home"]');
 
     expect(logoLink).not.toBeNull();
-    expect(logoLink?.target).toBe('_blank');
-    expect(logoLink?.rel).toContain('noopener');
-    expect(logoLink?.rel).toContain('noreferrer');
-    expect(logoLink?.getAttribute('ng-reflect-router-link')).toBeNull();
+    expect(logoLink?.getAttribute('href')).toBe('/');
+    expect(logoLink?.target).toBe('');
+    expect(logoLink?.rel).toBe('');
   });
 
   it('opens the welcome modal from the help menu action', () => {

@@ -53,27 +53,15 @@
     </div>
     @if (data?.ecoregion) {
       <div class="mt-2 flex w-full items-center gap-1 text-left">
-        <span class="text-cdp-dark text-sm font-bold font-roboto leading-5 tracking-cdp-wide">
-          {{ 'locationCard.solutions.ecoregionLabel' | translate }}:
+        <span class="text-cdp-dark text-sm font-normal font-roboto leading-5 tracking-cdp-wide">
+          {{ 'locationCard.solutions.ecoregionText' | translate: { ecoregion: data?.ecoregion } }}
         </span>
         <app-methodology-info class="shrink-0 self-center"></app-methodology-info>
       </div>
-      <div class="mt-1 w-full text-left text-cdp-dark text-sm font-normal font-roboto leading-5 tracking-cdp-wide">
-        {{
-          'locationCard.solutions.ecoregionText'
-            | translate: { location: data?.name, ecoregion: data?.ecoregion }
-        }}
-      </div>
-      @if (peerExampleCount > 0) {
-        <div class="mt-2 w-full text-left text-cdp-dark text-sm font-normal font-roboto leading-5 tracking-cdp-wide">
-          {{
-            'locationCard.solutions.peerExampleCountText'
-              | translate: { count: peerExampleCount }
-          }}
-        </div>
-      }
     } @else {
-      <div class="mt-2 w-full text-left text-cdp-dark text-sm font-normal font-roboto leading-5 tracking-cdp-wide">
+      <div
+        class="mt-2 w-full text-left text-cdp-dark text-sm font-normal font-roboto leading-5 tracking-cdp-wide"
+      >
         {{ 'locationCard.solutions.ecoregionFallbackText' | translate }}
       </div>
     }
@@ -87,7 +75,9 @@
       </h2>
       <app-methodology-info></app-methodology-info>
     </div>
-    <div class="flex gap-2 overflow-x-auto touch-pan-x px-4 lg:px-0 lg:flex-wrap lg:gap-2 lg:overflow-x-visible lg:touch-auto">
+    <div
+      class="flex gap-2 overflow-x-auto touch-pan-x px-4 lg:px-0 lg:flex-wrap lg:gap-2 lg:overflow-x-visible lg:touch-auto"
+    >
       @for (filter of hazardFilters; track filter.type) {
         <button
           (click)="selectHazard(filter.type)"
@@ -135,7 +125,9 @@
         <h3 class="text-sm font-bold font-inter leading-normal text-cdp-border m-0">
           {{ 'locationCard.solutionCategoryNames.' + category.category | translate }}
         </h3>
-        <div class="flex items-center text-cdp-border text-sm font-normal font-inter leading-normal">
+        <div
+          class="flex items-center text-cdp-border text-sm font-normal font-inter leading-normal"
+        >
           <span>(</span>
           <span>{{ category.solutions.length }}</span>
           <span>)</span>
@@ -162,9 +154,7 @@
                 <h4
                   class="text-white text-2xl font-light font-roboto leading-normal tracking-[1.2px] line-clamp-2 break-words"
                 >
-                  <span
-                    [innerHTML]="solution.solution | protectedTranslationHtml"
-                  ></span>
+                  <span [innerHTML]="solution.solution | protectedTranslationHtml"></span>
                 </h4>
                 @if (solution.hasLocalAction) {
                   <div
@@ -237,7 +227,6 @@
                       }
                     </div>
                   }
-
                 </div>
 
                 <!-- Footer: Example Actions -->
