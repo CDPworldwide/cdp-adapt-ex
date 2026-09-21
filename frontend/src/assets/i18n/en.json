@@ -68,7 +68,30 @@
       "scenarioTooltip": "Scenarios show how a hazard may change under different climate futures. \"Historical\" reflects past conditions. Other options represent possible future pathways, such as from lower emissions to higher emissions. Choose a scenario to see how risk levels could shift over time. See methodology for more information.",
       "timeframe": "Time frame",
       "expandLegend": "Show legend details",
-      "collapseLegend": "Hide legend details"
+      "collapseLegend": "Hide legend details",
+      "scoreDetails": {
+        "toggle": "How is this scored?",
+        "heading": "How {{hazard}} is scored",
+        "score0": "<strong>0</strong> represents no or very low risk based on this hazard definition and model",
+        "scoreLine": "<strong>{{score}} of 5</strong> indicates greater {{measure}} than {{range}} of areas worldwide",
+        "caveat": "Scores compare only places that experience this hazard, so a low score can still mean some risk.",
+        "learnMore": "Learn more",
+        "ranges": {
+          "1": "0–20%",
+          "2": "20–40%",
+          "3": "40–60%",
+          "4": "60–80%",
+          "5": "80%"
+        },
+        "measures": {
+          "default": "hazard level",
+          "HEAT_STRESS": "number of days above 35°C",
+          "EXTREME_HEAT": "number of days above 35°C",
+          "EXTREME_COLD": "number of days below 0°C",
+          "HEAVY_PRECIPITATION": "maximum 5-day precipitation total in a given year",
+          "FIRE_WEATHER": "number of days in which the Fire Weather Index exceeds 45"
+        }
+      }
     },
     "scenarios": {
       "historical": "Historical"
@@ -521,6 +544,10 @@
     "hazards": {
       "title": "Hazards",
       "intro": "For jurisdictions that have disclosed information through the questionnaire, hazard data is primarily drawn from this disclosure. Additional hazard information and data for visualization is sourced from remote sensing and model-derived data accessed through Google Earth Engine.",
+      "scoring": {
+        "title": "How hazards are scored",
+        "body": "Each location is scored 0–5 for each hazard, based on how it compares to what areas worldwide have historically experienced. A score of 0 means no or very low hazard level. Scores 1 through 5 correspond to quintiles (fifths) of the global distribution. For example, a 3 means greater hazard than roughly 40–60% of areas with this hazard around the world, while a 5 means it is in the top 20%. Scores come from global models, so local variation may not appear at this resolution: a location may still experience a hazard even when its score is low. The percentiles compare only places that actually experience the hazard, so areas not exposed to it are scored 0. What qualifies as flooding or extreme heat hazard also reflects the specific definition used here, which may differ from on-the-ground conditions."
+      },
       "questionnaireData": {
         "title": "Cities, States, and Regions Questionnaire Data",
         "p1": "Cities, states, and regions are asked to share details on the most significant climate hazards facing their jurisdiction (Question 2.2 in the 2025 <a href=\"https://assets.ctfassets.net/v7uy4j80khf8/2kUa95W53hHnZVPwG3JnO9/27905d3f7ed730f59c80968b95bbe311/2025_CDP-ICLEI_Track_Questionnaire_and_Guidance_with_ToC.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">questionnaire</a>). The self-disclosed hazard data may contain information about vulnerable population and sectoral exposure, hazard probability, magnitude of impact, expected hazard changes in intensity or frequency, and the timeframe of expected change. Probability and magnitude responses are given along a five category scale: low, medium-low, medium, medium-high, and high.",

@@ -74,6 +74,64 @@
       </button>
     </div>
     <app-hazard-color-palette [palette]="palette"></app-hazard-color-palette>
+    <!-- Score explainer: per-hazard breakdown of what each 0–5 score means. -->
+    <div class="mt-3">
+      <button
+        type="button"
+        (click)="toggleScoreDetails()"
+        [attr.aria-expanded]="scoreDetailsOpen"
+        class="flex w-full items-center justify-between text-sm font-medium text-cdp-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-1"
+      >
+        <span>{{ 'maps.hazardLegend.scoreDetails.toggle' | translate }}</span>
+        <mat-icon class="transition-transform" [class.rotate-180]="scoreDetailsOpen"
+          >keyboard_arrow_down</mat-icon
+        >
+      </button>
+      <div
+        class="grid transition-[grid-template-rows] duration-300 ease-out"
+        [ngClass]="scoreDetailsOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+      >
+        <div class="overflow-hidden">
+          <p class="mt-2 text-sm font-medium text-gray-700">
+            {{
+              'maps.hazardLegend.scoreDetails.heading'
+                | translate
+                  : {
+                      hazard: 'locationCard.hazardNames.' + hazardType | translate | lowercase,
+                    }
+            }}
+          </p>
+          <ul class="mt-1 list-disc list-outside space-y-1 pl-5 text-xs text-gray-600">
+            <li [innerHTML]="'maps.hazardLegend.scoreDetails.score0' | translate"></li>
+            @for (score of scoreValues; track score) {
+              <li
+                [innerHTML]="
+                  'maps.hazardLegend.scoreDetails.scoreLine'
+                    | translate
+                      : {
+                          score: score,
+                          measure:
+                            'maps.hazardLegend.scoreDetails.measures.' + scoreMeasureKey
+                              | translate,
+                          range: 'maps.hazardLegend.scoreDetails.ranges.' + score | translate,
+                        }
+                "
+              ></li>
+            }
+          </ul>
+          <p class="mt-2 text-xs text-gray-600">
+            {{ 'maps.hazardLegend.scoreDetails.caveat' | translate }}
+          </p>
+          <a
+            routerLink="/methodology"
+            fragment="how-hazards-are-scored"
+            class="mt-2 inline-block text-xs font-medium text-cdp-blue underline underline-offset-2 hover:text-cdp-dark transition-colors"
+          >
+            {{ 'maps.hazardLegend.scoreDetails.learnMore' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
     <!-- Collapsible details: grid-rows 0fr/1fr animates height without a fixed
          size. Always open on desktop (md:grid-rows-[1fr]). -->
     <div

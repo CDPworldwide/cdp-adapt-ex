@@ -2,9 +2,11 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { of } from 'rxjs';
 import { HazardMapComponent } from './hazard-map';
 import { SimpleChange } from '@angular/core';
+import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GoogleMapsLoaderService } from '../../shared/services/google-maps-loader.service';
 import { HazardEnum, ScenarioEnum } from '@pac-api/client';
 
@@ -34,7 +36,7 @@ describe('HazardMapComponent', () => {
 
     mapConstructorSpy = jasmine.createSpy('Map').and.callFake(function (this: any) {
       Object.assign(this, mockMapInstance);
-      return this;
+      return this
     });
 
     eventTriggerSpy = jasmine.createSpy('trigger');
@@ -64,6 +66,7 @@ describe('HazardMapComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideRouter([]),
         {
           provide: GoogleMapsLoaderService,
           useValue: googleMapsLoaderService,
@@ -271,4 +274,106 @@ describe('HazardMapComponent', () => {
 
     expect(mockMapInstance.fitBounds).toHaveBeenCalledWith(mockBounds);
   }));
+
+  describe('score details explainer', () => {
+    it('should start collapsed', () => {
+      expect(component.scoreDetailsOpen).toBe(false);
+    });
+
+    it('should toggle open and closed', () => {
+      component.toggleScoreDetails();
+      expect(component.scoreDetailsOpen).toBe(true);
+
+      component.toggleScoreDetails();
+      expect(component.scoreDetailsOpen).toBe(false);
+    });
+
+    it('should list scores 1 through 5', () => {
+      expect(component.scoreValues).toEqual([1, 2, 3, 4, 5]);
+    });
+
+    it('should use the hazard-specific measure key for hazards with bespoke wording', () => {
+      for (const hazard of [
+        HazardEnum.HEAT_STRESS,
+        HazardEnum.EXTREME_HEAT,
+        HazardEnum.EXTREME_COLD,
+        HazardEnum.HEAVY_PRECIPITATION,
+        HazardEnum.FIRE_WEATHER,
+      ]) {
+        component.hazardType = hazard;
+        expect(component.scoreMeasureKey).toBe(hazard);
+      }
+    });
+
+    it('should fall back to the default measure key for other hazards', () => {
+      component.hazardType = HazardEnum.WATER_STRESS;
+      expect(component.scoreMeasureKey).toBe('default');
+
+      component.hazardType = HazardEnum.RIVER_FLOODING;
+      expect(component.scoreMeasureKey).toBe('default');
+    });
+
+    it('should use the default measure key when no hazard is set', () => {
+      component.hazardType = undefined;
+      expect(component.scoreMeasureKey).toBe('default');
+    });
+  });
+
+  describe('score details rendering', () => {
+    beforeEach(() => {
+      const translate = TestBed.inject(TranslateService);
+      translate.setTranslation('en', {
+        locationCard: { hazardNames: { HEAT_STRESS: 'Heat stress' } },
+        maps: {
+          hazardLegend: {
+            scoreDetails: {
+              toggle: 'How is this scored?',
+              heading: 'How {{hazard}} is scored',
+              score0: '<strong>0</strong> represents no or very low risk',
+              scoreLine:
+                '<strong>{{score}} of 5</strong> indicates greater {{measure}} than {{range}} of areas worldwide',
+              caveat: 'Scores compare only places that experience this hazard.',
+              learnMore: 'Learn more',
+              ranges: { '1': '0–20%', '2': '20–40%', '3': '40–60%', '4': '60–80%', '5': '80%' },
+              measures: { default: 'hazard level', HEAT_STRESS: 'number of days above 35°C' },
+            },
+          },
+        },
+      });
+      translate.use('en');
+
+      component.isExpanded = true;
+      component.hazardType = HazardEnum.HEAT_STRESS;
+      fixture.detectChanges();
+    });
+
+    it('should render one bullet per score (0 plus 1–5)', () => {
+      const items = fixture.debugElement.queryAll(By.css('ul.list-disc li'));
+      expect(items.length).toBe(6);
+    });
+
+    it('should render the hazard-specific heading', () => {
+      const heading = fixture.nativeElement.textContent as string;
+      expect(heading).toContain('How heat stress is scored');
+    });
+
+    it('should bold the score prefix and use the hazard-specific measure', () => {
+      const items = fixture.debugElement.queryAll(By.css('ul.list-disc li'));
+      // items[0] is the score-0 line; items[1] is "1 of 5".
+      const firstScore = items[1].nativeElement as HTMLElement;
+      const strong = firstScore.querySelector('strong');
+      expect(strong?.textContent).toBe('1 of 5');
+      expect(firstScore.textContent).toContain('number of days above 35°C');
+      expect(firstScore.textContent).toContain('0–20%');
+    });
+
+    it('should link to the methodology scoring section', () => {
+      const link = fixture.debugElement.query(By.css('a[fragment="how-hazards-are-scored"]'));
+      expect(link).toBeTruthy();
+      const anchor = link.nativeElement as HTMLAnchorElement;
+      expect(anchor.textContent?.trim()).toBe('Learn more');
+      expect(anchor.getAttribute('href')).toContain('/methodology');
+      expect(anchor.getAttribute('href')).toContain('how-hazards-are-scored');
+    });
+  });
 });
