@@ -330,12 +330,8 @@ describe('HazardMapComponent', () => {
         maps: {
           hazardLegend: {
             scoreDetails: {
-              toggle: 'How is this scored?',
               heading: 'How {{hazard}} is scored',
               score0: '<strong>0</strong> represents no or very low risk',
-              scoreLine:
-                '<strong>{{score}} of 5</strong> indicates greater {{measure}} than {{range}} of areas worldwide',
-              caveat: 'Scores compare only places that experience this hazard.',
               learnMore: 'Learn more',
               lines: {
                 default: {

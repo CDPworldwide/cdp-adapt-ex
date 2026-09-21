@@ -82,7 +82,10 @@
         [attr.aria-expanded]="scoreDetailsOpen"
         class="flex w-full items-center justify-between text-sm font-medium text-cdp-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red focus-visible:ring-offset-1"
       >
-        <span>{{ 'maps.hazardLegend.scoreDetails.toggle' | translate }}</span>
+        <span>{{
+          'maps.hazardLegend.scoreDetails.heading'
+            | translate: { hazard: 'locationCard.hazardNames.' + hazardType | translate | lowercase }
+        }}</span>
         <mat-icon class="transition-transform" [class.rotate-180]="scoreDetailsOpen"
           >keyboard_arrow_down</mat-icon
         >
@@ -92,16 +95,7 @@
         [ngClass]="scoreDetailsOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
       >
         <div class="overflow-hidden">
-          <p class="mt-2 text-sm font-medium text-gray-700">
-            {{
-              'maps.hazardLegend.scoreDetails.heading'
-                | translate
-                  : {
-                      hazard: 'locationCard.hazardNames.' + hazardType | translate | lowercase,
-                    }
-            }}
-          </p>
-          <ul class="mt-1 list-disc list-outside space-y-1 pl-5 text-xs text-gray-600">
+          <ul class="mt-2 list-disc list-outside space-y-1 pl-5 text-xs text-gray-600">
             <li [innerHTML]="'maps.hazardLegend.scoreDetails.score0' | translate"></li>
             @for (score of scoreValues; track score) {
               <li
@@ -112,9 +106,6 @@
               ></li>
             }
           </ul>
-          <p class="mt-2 text-xs text-gray-600">
-            {{ 'maps.hazardLegend.scoreDetails.caveat' | translate }}
-          </p>
           <a
             routerLink="/methodology"
             fragment="how-hazards-are-scored"

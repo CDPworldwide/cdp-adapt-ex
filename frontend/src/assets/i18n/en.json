@@ -70,9 +70,7 @@
       "expandLegend": "Show legend details",
       "collapseLegend": "Hide legend details",
       "scoreDetails": {
-        "toggle": "How is this scored?",
         "heading": "How {{hazard}} is scored",
-        "caveat": "Scores compare only places that experience this hazard, so a low score can still mean some risk.",
         "learnMore": "Learn more",
         "score0": "<strong>0</strong> represents no or very low risk based on this hazard definition and model",
         "lines": {
