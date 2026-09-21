@@ -294,7 +294,6 @@ describe('HazardMapComponent', () => {
 
     it('should use the hazard-specific measure key for hazards with bespoke wording', () => {
       for (const hazard of [
-        HazardEnum.HEAT_STRESS,
         HazardEnum.EXTREME_HEAT,
         HazardEnum.EXTREME_COLD,
         HazardEnum.HEAVY_PRECIPITATION,
@@ -306,6 +305,10 @@ describe('HazardMapComponent', () => {
     });
 
     it('should fall back to the default measure key for other hazards', () => {
+      // Heat stress is a composite hazard without dedicated tooltip copy.
+      component.hazardType = HazardEnum.HEAT_STRESS;
+      expect(component.scoreMeasureKey).toBe('default');
+
       component.hazardType = HazardEnum.WATER_STRESS;
       expect(component.scoreMeasureKey).toBe('default');
 
@@ -323,7 +326,7 @@ describe('HazardMapComponent', () => {
     beforeEach(() => {
       const translate = TestBed.inject(TranslateService);
       translate.setTranslation('en', {
-        locationCard: { hazardNames: { HEAT_STRESS: 'Heat stress' } },
+        locationCard: { hazardNames: { EXTREME_HEAT: 'Extreme heat' } },
         maps: {
           hazardLegend: {
             scoreDetails: {
@@ -334,8 +337,18 @@ describe('HazardMapComponent', () => {
                 '<strong>{{score}} of 5</strong> indicates greater {{measure}} than {{range}} of areas worldwide',
               caveat: 'Scores compare only places that experience this hazard.',
               learnMore: 'Learn more',
-              ranges: { '1': '0–20%', '2': '20–40%', '3': '40–60%', '4': '60–80%', '5': '80%' },
-              measures: { default: 'hazard level', HEAT_STRESS: 'number of days above 35°C' },
+              lines: {
+                default: {
+                  '1': '<strong>1 of 5</strong> indicates greater hazard level than 0–20% of areas worldwide',
+                },
+                EXTREME_HEAT: {
+                  '1': '<strong>1 of 5</strong> indicates greater number of days above 35°C than 0–20% of areas worldwide',
+                  '2': '<strong>2 of 5</strong> indicates greater number of days above 35°C than 20–40% of areas worldwide',
+                  '3': '<strong>3 of 5</strong> indicates greater number of days above 35°C than 40–60% of areas worldwide',
+                  '4': '<strong>4 of 5</strong> indicates greater number of days above 35°C than 60–80% of areas worldwide',
+                  '5': '<strong>5 of 5</strong> indicates greater number of days above 35°C than 80% of areas worldwide',
+                },
+              },
             },
           },
         },
@@ -343,7 +356,7 @@ describe('HazardMapComponent', () => {
       translate.use('en');
 
       component.isExpanded = true;
-      component.hazardType = HazardEnum.HEAT_STRESS;
+      component.hazardType = HazardEnum.EXTREME_HEAT;
       fixture.detectChanges();
     });
 
@@ -354,7 +367,7 @@ describe('HazardMapComponent', () => {
 
     it('should render the hazard-specific heading', () => {
       const heading = fixture.nativeElement.textContent as string;
-      expect(heading).toContain('How heat stress is scored');
+      expect(heading).toContain('How extreme heat is scored');
     });
 
     it('should bold the score prefix and use the hazard-specific measure', () => {
@@ -365,6 +378,22 @@ describe('HazardMapComponent', () => {
       expect(strong?.textContent).toBe('1 of 5');
       expect(firstScore.textContent).toContain('number of days above 35°C');
       expect(firstScore.textContent).toContain('0–20%');
+    });
+
+    it('should use generic wording for hazards without a dedicated tooltip', () => {
+      const translate = TestBed.inject(TranslateService);
+      translate.setTranslation(
+        'en',
+        { locationCard: { hazardNames: { HEAT_STRESS: 'Heat stress' } } },
+        true,
+      );
+      component.hazardType = HazardEnum.HEAT_STRESS;
+      fixture.detectChanges();
+
+      const items = fixture.debugElement.queryAll(By.css('ul.list-disc li'));
+      const firstScore = items[1].nativeElement as HTMLElement;
+      expect(firstScore.textContent).toContain('greater hazard level than');
+      expect(firstScore.textContent).not.toContain('days above 35°C');
     });
 
     it('should link to the methodology scoring section', () => {

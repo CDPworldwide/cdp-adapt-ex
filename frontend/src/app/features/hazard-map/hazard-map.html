@@ -106,15 +106,8 @@
             @for (score of scoreValues; track score) {
               <li
                 [innerHTML]="
-                  'maps.hazardLegend.scoreDetails.scoreLine'
+                  'maps.hazardLegend.scoreDetails.lines.' + scoreMeasureKey + '.' + score
                     | translate
-                      : {
-                          score: score,
-                          measure:
-                            'maps.hazardLegend.scoreDetails.measures.' + scoreMeasureKey
-                              | translate,
-                          range: 'maps.hazardLegend.scoreDetails.ranges.' + score | translate,
-                        }
                 "
               ></li>
             }

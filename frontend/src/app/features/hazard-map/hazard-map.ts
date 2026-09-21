@@ -106,9 +106,8 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
   scoreDetailsOpen = false;
   readonly scoreValues = [1, 2, 3, 4, 5];
   // Hazards with bespoke score wording (e.g. "days above 35°C"); everything
-  // else falls back to the generic "hazard level" phrasing.
+  // else (including heat stress) falls back to the generic "hazard level" phrasing.
   private static readonly HAZARDS_WITH_SPECIFIC_MEASURE = new Set<HazardEnum>([
-    HazardEnum.HEAT_STRESS,
     HazardEnum.EXTREME_HEAT,
     HazardEnum.EXTREME_COLD,
     HazardEnum.HEAVY_PRECIPITATION,

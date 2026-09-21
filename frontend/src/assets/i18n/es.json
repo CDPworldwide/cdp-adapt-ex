@@ -71,7 +71,49 @@
       "scenarioTooltip": "Los escenarios muestran cómo puede cambiar un peligro bajo distintos futuros climáticos. \"Histórico\" refleja condiciones pasadas. Las demás opciones representan posibles trayectorias futuras, por ejemplo de menores a mayores emisiones. Elija un escenario para ver cómo podrían cambiar los niveles de riesgo con el tiempo. Consulte la metodología para obtener más información.",
       "timeframe": "Plazos disponibles",
       "expandLegend": "Mostrar detalles de la leyenda",
-      "collapseLegend": "Ocultar detalles de la leyenda"
+      "collapseLegend": "Ocultar detalles de la leyenda",
+      "scoreDetails": {
+        "heading": "Cómo se califican los riesgos",
+        "learnMore": "Más información",
+        "score0": "<strong>0</strong> representa un riesgo nulo o muy bajo según esta definición del riesgo y el modelo.",
+        "lines": {
+          "default": {
+            "1": "<strong>1 de 5</strong> indica un nivel de riesgo superior al del 0–20% de las zonas de todo el mundo.",
+            "2": "<strong>2 de 5</strong> indica un nivel de riesgo superior al del 20–40% de las zonas de todo el mundo.",
+            "3": "<strong>3 de 5</strong> indica un nivel de riesgo superior al del 40–60% de las zonas de todo el mundo.",
+            "4": "<strong>4 de 5</strong> indica un nivel de riesgo superior al del 60–80% de las zonas de todo el mundo.",
+            "5": "<strong>5 de 5</strong> indica un nivel de riesgo superior al del 80% de las zonas de todo el mundo."
+          },
+          "EXTREME_HEAT": {
+            "1": "<strong>1 de 5</strong> indica más días con temperaturas superiores a 35 °C que en el 0–20% de las zonas de todo el mundo.",
+            "2": "<strong>2 de 5</strong> indica más días con temperaturas superiores a 35 °C que en el 20–40% de las zonas de todo el mundo.",
+            "3": "<strong>3 de 5</strong> indica más días con temperaturas superiores a 35 °C que en el 40–60% de las zonas de todo el mundo.",
+            "4": "<strong>4 de 5</strong> indica más días con temperaturas superiores a 35 °C que en el 60–80% de las zonas de todo el mundo.",
+            "5": "<strong>5 de 5</strong> indica más días con temperaturas superiores a 35 °C que en el 80% de las zonas de todo el mundo."
+          },
+          "EXTREME_COLD": {
+            "1": "<strong>1 de 5</strong> indica más días con temperaturas inferiores a 0 °C que en el 0–20% de las zonas de todo el mundo.",
+            "2": "<strong>2 de 5</strong> indica más días con temperaturas inferiores a 0 °C que en el 20–40% de las zonas de todo el mundo.",
+            "3": "<strong>3 de 5</strong> indica más días con temperaturas inferiores a 0 °C que en el 40–60% de las zonas de todo el mundo.",
+            "4": "<strong>4 de 5</strong> indica más días con temperaturas inferiores a 0 °C que en el 60–80% de las zonas de todo el mundo.",
+            "5": "<strong>5 de 5</strong> indica más días con temperaturas inferiores a 0 °C que en el 80% de las zonas de todo el mundo."
+          },
+          "HEAVY_PRECIPITATION": {
+            "1": "<strong>1 de 5</strong> indica un total máximo de precipitación en 5 días durante un año determinado superior al del 0–20% de las zonas de todo el mundo.",
+            "2": "<strong>2 de 5</strong> indica un total máximo de precipitación en 5 días durante un año determinado superior al del 20–40% de las zonas de todo el mundo.",
+            "3": "<strong>3 de 5</strong> indica un total máximo de precipitación en 5 días durante un año determinado superior al del 40–60% de las zonas de todo el mundo.",
+            "4": "<strong>4 de 5</strong> indica un total máximo de precipitación en 5 días durante un año determinado superior al del 60–80% de las zonas de todo el mundo.",
+            "5": "<strong>5 de 5</strong> indica un total máximo de precipitación en 5 días durante un año determinado superior al del 80% de las zonas de todo el mundo."
+          },
+          "FIRE_WEATHER": {
+            "1": "<strong>1 de 5</strong> indica más días en los que el Índice Meteorológico de Incendios supera 45 que en el 0–20% de las zonas de todo el mundo.",
+            "2": "<strong>2 de 5</strong> indica más días en los que el Índice Meteorológico de Incendios supera 45 que en el 20–40% de las zonas de todo el mundo.",
+            "3": "<strong>3 de 5</strong> indica más días en los que el Índice Meteorológico de Incendios supera 45 que en el 40–60% de las zonas de todo el mundo.",
+            "4": "<strong>4 de 5</strong> indica más días en los que el Índice Meteorológico de Incendios supera 45 que en el 60–80% de las zonas de todo el mundo.",
+            "5": "<strong>5 de 5</strong> indica más días en los que el Índice Meteorológico de Incendios supera 45 que en el 80% de las zonas de todo el mundo."
+          }
+        }
+      }
     },
     "scenarios": {
       "historical": "Histórico"
@@ -576,7 +618,11 @@
         "title": "Obtenga más información sobre los datos utilizados para cada capa de riesgo:",
         "footnote": "Con el tiempo, se podrán añadir capas de riesgo adicionales."
       },
-      "outro": "Para visualizar mapas de peligros y asignar valores de peligro a cada jurisdicción, se filtraron las capas globales de peligros de Google Earth Engine según los límites administrativos de cada jurisdicción y se promediaron espacialmente dentro de ellos. Los límites administrativos se obtuvieron principalmente a través de datos de <a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation</a> . Cuando no estaban disponibles, se obtuvieron de <a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a> o de conjuntos de datos disponibles en el <a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Intercambio de Datos Humanitarios de la OCHA de las Naciones Unidas</a> . Cuando no se encontró un límite jurisdiccional apropiado, se crearon pseudolímites utilizando el centro geográfico de la jurisdicción (obtenido de lo anterior o manualmente en <a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google Maps</a> ) y su superficie terrestre declarada."
+      "outro": "Para visualizar mapas de peligros y asignar valores de peligro a cada jurisdicción, se filtraron las capas globales de peligros de Google Earth Engine según los límites administrativos de cada jurisdicción y se promediaron espacialmente dentro de ellos. Los límites administrativos se obtuvieron principalmente a través de datos de <a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation</a> . Cuando no estaban disponibles, se obtuvieron de <a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a> o de conjuntos de datos disponibles en el <a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Intercambio de Datos Humanitarios de la OCHA de las Naciones Unidas</a> . Cuando no se encontró un límite jurisdiccional apropiado, se crearon pseudolímites utilizando el centro geográfico de la jurisdicción (obtenido de lo anterior o manualmente en <a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google Maps</a> ) y su superficie terrestre declarada.",
+      "scoring": {
+        "title": "Cómo se califican los riesgos",
+        "body": "Cada ubicación recibe una calificación de 0 a 5 para cada riesgo, en función de cómo se compara con lo que han experimentado históricamente otras zonas del mundo. Una calificación de 0 indica un nivel de riesgo nulo o muy bajo. Las calificaciones del 1 al 5 corresponden a quintiles (quintas partes) de la distribución mundial. Por ejemplo, un 3 indica un nivel de riesgo superior al de aproximadamente el 40–60% de las zonas del mundo expuestas a ese riesgo, mientras que un 5 sitúa la ubicación en el 20% superior. Las calificaciones proceden de modelos globales, por lo que es posible que las variaciones locales no se reflejen con esta resolución: una ubicación puede estar expuesta a un riesgo aunque su calificación sea baja. Lo que se considera un riesgo de inundación o calor extremo también depende de la definición específica utilizada aquí, que puede diferir de las condiciones sobre el terreno."
+      }
     },
     "hazardLayers": {
       "waterStress": {

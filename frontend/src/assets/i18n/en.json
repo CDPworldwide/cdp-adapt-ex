@@ -72,24 +72,45 @@
       "scoreDetails": {
         "toggle": "How is this scored?",
         "heading": "How {{hazard}} is scored",
-        "score0": "<strong>0</strong> represents no or very low risk based on this hazard definition and model",
-        "scoreLine": "<strong>{{score}} of 5</strong> indicates greater {{measure}} than {{range}} of areas worldwide",
         "caveat": "Scores compare only places that experience this hazard, so a low score can still mean some risk.",
         "learnMore": "Learn more",
-        "ranges": {
-          "1": "0–20%",
-          "2": "20–40%",
-          "3": "40–60%",
-          "4": "60–80%",
-          "5": "80%"
-        },
-        "measures": {
-          "default": "hazard level",
-          "HEAT_STRESS": "number of days above 35°C",
-          "EXTREME_HEAT": "number of days above 35°C",
-          "EXTREME_COLD": "number of days below 0°C",
-          "HEAVY_PRECIPITATION": "maximum 5-day precipitation total in a given year",
-          "FIRE_WEATHER": "number of days in which the Fire Weather Index exceeds 45"
+        "score0": "<strong>0</strong> represents no or very low risk based on this hazard definition and model",
+        "lines": {
+          "default": {
+            "1": "<strong>1 of 5</strong> indicates greater hazard level than 0–20% of areas worldwide",
+            "2": "<strong>2 of 5</strong> indicates greater hazard level than 20–40% of areas worldwide",
+            "3": "<strong>3 of 5</strong> indicates greater hazard level than 40–60% of areas worldwide",
+            "4": "<strong>4 of 5</strong> indicates greater hazard level than 60–80% of areas worldwide",
+            "5": "<strong>5 of 5</strong> indicates greater hazard level than 80% of areas worldwide"
+          },
+          "EXTREME_HEAT": {
+            "1": "<strong>1 of 5</strong> indicates greater number of days above 35°C than 0–20% of areas worldwide",
+            "2": "<strong>2 of 5</strong> indicates greater number of days above 35°C than 20–40% of areas worldwide",
+            "3": "<strong>3 of 5</strong> indicates greater number of days above 35°C than 40–60% of areas worldwide",
+            "4": "<strong>4 of 5</strong> indicates greater number of days above 35°C than 60–80% of areas worldwide",
+            "5": "<strong>5 of 5</strong> indicates greater number of days above 35°C than 80% of areas worldwide"
+          },
+          "EXTREME_COLD": {
+            "1": "<strong>1 of 5</strong> indicates greater number of days below 0°C than 0–20% of areas worldwide",
+            "2": "<strong>2 of 5</strong> indicates greater number of days below 0°C than 20–40% of areas worldwide",
+            "3": "<strong>3 of 5</strong> indicates greater number of days below 0°C than 40–60% of areas worldwide",
+            "4": "<strong>4 of 5</strong> indicates greater number of days below 0°C than 60–80% of areas worldwide",
+            "5": "<strong>5 of 5</strong> indicates greater number of days below 0°C than 80% of areas worldwide"
+          },
+          "HEAVY_PRECIPITATION": {
+            "1": "<strong>1 of 5</strong> indicates greater maximum 5-day precipitation total in a given year than 0–20% of areas worldwide",
+            "2": "<strong>2 of 5</strong> indicates greater maximum 5-day precipitation total in a given year than 20–40% of areas worldwide",
+            "3": "<strong>3 of 5</strong> indicates greater maximum 5-day precipitation total in a given year than 40–60% of areas worldwide",
+            "4": "<strong>4 of 5</strong> indicates greater maximum 5-day precipitation total in a given year than 60–80% of areas worldwide",
+            "5": "<strong>5 of 5</strong> indicates greater maximum 5-day precipitation total in a given year than 80% of areas worldwide"
+          },
+          "FIRE_WEATHER": {
+            "1": "<strong>1 of 5</strong> indicates greater number of days in which the Fire Weather Index exceeds 45 than 0–20% of areas worldwide",
+            "2": "<strong>2 of 5</strong> indicates greater number of days in which the Fire Weather Index exceeds 45 than 20–40% of areas worldwide",
+            "3": "<strong>3 of 5</strong> indicates greater number of days in which the Fire Weather Index exceeds 45 than 40–60% of areas worldwide",
+            "4": "<strong>4 of 5</strong> indicates greater number of days in which the Fire Weather Index exceeds 45 than 60–80% of areas worldwide",
+            "5": "<strong>5 of 5</strong> indicates greater number of days in which the Fire Weather Index exceeds 45 than 80% of areas worldwide"
+          }
         }
       }
     },
