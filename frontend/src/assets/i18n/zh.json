@@ -71,49 +71,7 @@
       "scenarioTooltip": "场景展示在不同气候未来下，灾害可能如何变化。“历史”反映过去的状况。其他选项代表可能的未来路径，例如从较低排放到较高排放。选择一个场景，查看风险水平可能如何随时间变化。更多信息请参阅方法论。",
       "timeframe": "可用时间范围",
       "expandLegend": "显示图例详情",
-      "collapseLegend": "隐藏图例详情",
-      "scoreDetails": {
-        "heading": "如何对灾害评分",
-        "learnMore": "了解更多",
-        "score0": "<strong>0分</strong>代表基于我们的灾害定义和模型，无风险或风险极低",
-        "lines": {
-          "default": {
-            "1": "<strong>1/5分</strong>代表灾害等级高于全球0%~20%的地区",
-            "2": "<strong>2/5分</strong>代表灾害等级高于全球20%~40%的地区",
-            "3": "<strong>3/5分</strong>代表灾害等级高于全球40%~60%的地区",
-            "4": "<strong>4/5分</strong>代表灾害等级高于全球60%~80%的地区",
-            "5": "<strong>5/5分</strong>代表灾害等级高于全球80%的地区"
-          },
-          "EXTREME_HEAT": {
-            "1": "<strong>1/5分</strong>代表气温超过35°C的天数多于全球0%~20%的地区",
-            "2": "<strong>2/5分</strong>代表气温超过35°C的天数多于全球20%~40%的地区",
-            "3": "<strong>3/5分</strong>代表气温超过35°C的天数多于全球40%~60%的地区",
-            "4": "<strong>4/5分</strong>代表气温超过35°C的天数多于全球60%~80%的地区",
-            "5": "<strong>5/5分</strong>代表气温超过35°C的天数多于全球80%的地区"
-          },
-          "EXTREME_COLD": {
-            "1": "<strong>1/5分</strong>代表气温低于0°C的天数多于全球0%~20%的地区",
-            "2": "<strong>2/5分</strong>代表气温低于0°C的天数多于全球20%~40%的地区",
-            "3": "<strong>3/5分</strong>代表气温低于0°C的天数多于全球40%~60%的地区",
-            "4": "<strong>4/5分</strong>代表气温低于0°C的天数多于全球60%~80%的地区",
-            "5": "<strong>5/5分</strong>代表气温低于0°C的天数多于全球80%的地区"
-          },
-          "HEAVY_PRECIPITATION": {
-            "1": "<strong>1/5分</strong>表示在指定年份最大连续五日降水量高于全球0%~20%的地区",
-            "2": "<strong>2/5分</strong>表示在指定年份最大连续五日降水量高于全球20%~40%的地区",
-            "3": "<strong>3/5分</strong>表示在指定年份最大连续五日降水量高于全球40%~60%的地区",
-            "4": "<strong>4/5分</strong>表示在指定年份最大连续五日降水量高于全球60%~80%的地区",
-            "5": "<strong>5/5分</strong>表示在指定年份最大连续五日降水量高于全球80%的地区"
-          },
-          "FIRE_WEATHER": {
-            "1": "<strong>1/5分</strong>代表火险天气指数（Fire Weather Index）超过45的天数多于全球0%~20%的地区",
-            "2": "<strong>2/5分</strong>代表火险天气指数（Fire Weather Index）超过45的天数多于全球20%~40%的地区",
-            "3": "<strong>3/5分</strong>代表火险天气指数（Fire Weather Index）超过45的天数多于全球40%~60%的地区",
-            "4": "<strong>4/5分</strong>代表火险天气指数（Fire Weather Index）超过45的天数多于全球60%~80%的地区",
-            "5": "<strong>5/5分</strong>代表火险天气指数（Fire Weather Index）超过45的天数多于全球80%的地区"
-          }
-        }
-      }
+      "collapseLegend": "隐藏图例详情"
     },
     "scenarios": {
       "historical": "历史"
@@ -618,11 +576,7 @@
         "title": "了解每个灾害层所使用的数据详情：",
         "footnote": "随着时间的推移，可能会增加额外的危险层。"
       },
-      "outro": "为了显示灾害地图并为每个辖区分配灾害值，我们使用 Google Earth Engine 中的全球灾害图层，根据辖区的行政边界进行筛选，并在辖区内进行空间平均。行政边界主要来自<a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation 的数据。如果 Overture Maps Foundation 的</a>数据不可用，则从<a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a>或<a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">联合国人道主义事务协调厅 (OCHA) 人道主义数据交换平台</a>提供的数据集中获取边界。如果找不到合适的辖区边界，则使用该辖区的地理中心（来自上述数据或在<a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google 地图</a>中手动定位）及其报告的土地面积创建伪边界。",
-      "scoring": {
-        "title": "如何对灾害评分",
-        "body": "按0~5分对每个地点的每种灾害进行评分，分数代表该地点与全球各地历史情况的相对水平。0分代表没有灾害风险或灾害风险极低。1至5分对应全球分布的五个五分位区间。例如，3分代表灾害程度高于全球约40%至60%的地区，5分则表示处于前20%。由于评分来自于全球模型，其颗粒度可能无法完全体现局部差异——即使有地点评分较低，仍可能经历灾害。此处对洪水和极端高温灾害的具体定义为特定标准，可能与实地情况有所不同。"
-      }
+      "outro": "为了显示灾害地图并为每个辖区分配灾害值，我们使用 Google Earth Engine 中的全球灾害图层，根据辖区的行政边界进行筛选，并在辖区内进行空间平均。行政边界主要来自<a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation 的数据。如果 Overture Maps Foundation 的</a>数据不可用，则从<a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a>或<a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">联合国人道主义事务协调厅 (OCHA) 人道主义数据交换平台</a>提供的数据集中获取边界。如果找不到合适的辖区边界，则使用该辖区的地理中心（来自上述数据或在<a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google 地图</a>中手动定位）及其报告的土地面积创建伪边界。"
     },
     "hazardLayers": {
       "waterStress": {
