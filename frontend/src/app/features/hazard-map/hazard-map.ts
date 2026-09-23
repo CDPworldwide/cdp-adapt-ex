@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HazardEnum, ScenarioEnum, YearRange } from '@pac-api/client';
 import { Subject } from 'rxjs';
@@ -71,6 +72,7 @@ const FLOOD_SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
     HazardColorPaletteComponent,
     InfoIconComponent,
     TranslateModule,
+    RouterLink,
   ],
   templateUrl: './hazard-map.html',
   styles: [':host { display: block; width: 100%; height: 100%; }'],
@@ -99,6 +101,18 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
   // Desktop always shows the full legend (see `md:block` in the template).
   legendExpanded = false;
   private legendTouchStartY: number | null = null;
+
+  // Collapsible "How is this scored?" explainer under the colour scale.
+  scoreDetailsOpen = false;
+  readonly scoreValues = [1, 2, 3, 4, 5];
+  // Hazards with bespoke score wording (e.g. "days above 35°C"); everything
+  // else (including heat stress) falls back to the generic "hazard level" phrasing.
+  private static readonly HAZARDS_WITH_SPECIFIC_MEASURE = new Set<HazardEnum>([
+    HazardEnum.EXTREME_HEAT,
+    HazardEnum.EXTREME_COLD,
+    HazardEnum.HEAVY_PRECIPITATION,
+    HazardEnum.FIRE_WEATHER,
+  ]);
 
   // Scenario picker
   scenarios: ScenarioEnum[] = [];
@@ -241,6 +255,17 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
   toggleLegend(): void {
     this.legendExpanded = !this.legendExpanded;
+  }
+
+  toggleScoreDetails(): void {
+    this.scoreDetailsOpen = !this.scoreDetailsOpen;
+  }
+
+  get scoreMeasureKey(): string {
+    return this.hazardType &&
+      HazardMapComponent.HAZARDS_WITH_SPECIFIC_MEASURE.has(this.hazardType)
+      ? this.hazardType
+      : 'default';
   }
 
   onLegendTouchStart(event: TouchEvent): void {
