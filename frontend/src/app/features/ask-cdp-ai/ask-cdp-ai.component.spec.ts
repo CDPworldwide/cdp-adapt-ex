@@ -73,7 +73,8 @@ describe('AskCdpAiComponent', () => {
           'Beta: Trained on CDP disclosure data from cities, states, and regions. Results may be inaccurate and are not guaranteed.',
         emptyState: {
           title: 'Ask a question about {{location}}.',
-          description: 'Use the input below to ask about risks, actions, or climate context for this location.',
+          description:
+            'Use the input below to ask about risks, actions, or climate context for this location.',
         },
         locationFallback: 'this location',
         input: {
@@ -128,7 +129,7 @@ describe('AskCdpAiComponent', () => {
     expect(askCdpAiService.loadStarterQuestions).toHaveBeenCalled();
   });
 
-  it('does not load or render suggestions when suggestions are disabled', () => {
+  it('does not load or render generated follow-up suggestions when suggestions are disabled', () => {
     component.showSuggestions = false;
     askCdpAiService.followUpQuestions.set(['What hazards are on the rise?']);
 
@@ -164,6 +165,48 @@ describe('AskCdpAiComponent', () => {
       fixture.nativeElement.querySelector('[data-testid="ask-ai-organization-selector"]'),
     ).not.toBeNull();
     expect(fixture.nativeElement.textContent).toContain('What hazards are on the rise?');
+  });
+
+  it('renders conversation turns with the chat scroller and bubble structure', () => {
+    askCdpAiService.conversationHistory.set([
+      { role: 'user', content: 'What hazards are on the rise?' },
+      { role: 'assistant', content: '<p>Urban flooding is a reported concern.</p>' },
+    ]);
+
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector('[data-testid="ask-ai-message-scroller"]'),
+    ).not.toBeNull();
+    expect(
+      fixture.nativeElement.querySelectorAll('.message-scroller-item.chat-message').length,
+    ).toBe(2);
+    expect(fixture.nativeElement.querySelector('.chat-bubble-user')?.textContent).toContain(
+      'What hazards are on the rise?',
+    );
+    expect(fixture.nativeElement.querySelector('.chat-bubble-assistant')?.textContent).toContain(
+      'Urban flooding is a reported concern.',
+    );
+  });
+
+  it('renders selected location context as attachment chips', () => {
+    component.locationData = {
+      organizationId: 12345,
+      name: 'Athens',
+      countryName: 'Greece',
+      hazards: { hazards: [] } as any,
+      governmentActions: { actions: [], goals: [], projects: [] },
+    } as any;
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.chat-attachment-group')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.chat-attachment-title')?.textContent).toContain(
+      'Athens',
+    );
+    expect(
+      fixture.nativeElement.querySelector('.chat-attachment-description')?.textContent,
+    ).toContain('Greece');
   });
 
   it('syncs multiple selected reference organizations with the AI service', () => {
@@ -205,7 +248,7 @@ describe('AskCdpAiComponent', () => {
     expect(askCdpAiService.loadStarterQuestions).toHaveBeenCalled();
   });
 
-  it('collapses starter suggestions above the input by default', () => {
+  it('renders starter suggestions as landing prompt chips before the first message', () => {
     askCdpAiService.followUpQuestions.set([
       'Which hazards are expected to have the highest financial impact?',
       'What hazards are on the rise?',
@@ -213,25 +256,24 @@ describe('AskCdpAiComponent', () => {
 
     fixture.detectChanges();
 
-    expect(
-      fixture.nativeElement.querySelectorAll(
-        '.chat-input-section [data-testid="ask-ai-suggestion"]',
-      ).length,
-    ).toBe(0);
-
-    const toggle: HTMLButtonElement = fixture.nativeElement.querySelector(
-      '.chat-input-section [data-testid="ask-ai-suggestions-toggle"]',
+    expect(fixture.nativeElement.querySelector('.chat-landing-title')?.textContent).toContain(
+      'Where should we begin?',
     );
-    expect(toggle.textContent).toContain('2 suggestions');
+    expect(fixture.nativeElement.querySelector('.chat-input-section')).toBeNull();
 
-    toggle.click();
-    fixture.detectChanges();
+    const suggestions = fixture.nativeElement.querySelectorAll(
+      '[data-testid="ask-ai-landing-suggestion"]',
+    );
+    expect(suggestions.length).toBe(2);
+    expect(suggestions[0].textContent).toContain(
+      'Which hazards are expected to have the highest financial impact?',
+    );
 
-    expect(
-      fixture.nativeElement.querySelectorAll(
-        '.chat-input-section #ask-ai-starter-suggestions [data-testid="ask-ai-suggestion"]',
-      ).length,
-    ).toBe(2);
+    suggestions[0].click();
+
+    expect(askCdpAiService.sendChatQuery).toHaveBeenCalledWith(
+      'Which hazards are expected to have the highest financial impact?',
+    );
   });
 
   it('collapses follow-up suggestions after an assistant response by default', () => {
@@ -269,6 +311,10 @@ describe('AskCdpAiComponent', () => {
   });
 
   it('collapses suggestions when a query is submitted', () => {
+    askCdpAiService.conversationHistory.set([
+      { role: 'user', content: 'What hazards are on the rise?' },
+      { role: 'assistant', content: 'Urban flooding is a reported concern.' },
+    ]);
     askCdpAiService.followUpQuestions.set(['What hazards are on the rise?']);
     fixture.detectChanges();
 
@@ -281,9 +327,9 @@ describe('AskCdpAiComponent', () => {
       '[data-testid="ask-ai-suggestions-toggle"]',
     );
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
-    expect(
-      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-suggestion"]').length,
-    ).toBe(0);
+    expect(fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-suggestion"]').length).toBe(
+      0,
+    );
   });
 
   it('does not ask the service to load follow-ups after a manual query when suggestions are disabled', () => {

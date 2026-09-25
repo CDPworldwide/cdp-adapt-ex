@@ -8,12 +8,14 @@
     tabindex="-1"
     class="chat-page-content flex min-h-0 flex-1 flex-col focus:outline-none"
   >
+    <div class="chat-page-ambient" aria-hidden="true"></div>
+
     <section
       class="chat-tool-shell mx-auto flex min-h-0 w-full flex-1 flex-col overflow-hidden bg-white"
       [attr.aria-label]="'askCdpAi.buttonText' | translate"
     >
       <app-ask-cdp-ai
-        class="block min-h-0 flex-1"
+        class="standalone-chat block min-h-0 flex-1"
         [locationData]="locationData"
         [contextArea]="'hazards'"
         [isOpen]="true"

@@ -5,36 +5,204 @@
 
 .chat-page {
   min-height: 0;
+  background:
+    radial-gradient(circle at 16% 16%, rgba(232, 22, 71, 0.16), transparent 28rem),
+    radial-gradient(circle at 86% 78%, rgba(0, 166, 255, 0.14), transparent 26rem),
+    linear-gradient(135deg, #fff 0%, #f6f8f7 48%, #eef6f2 100%);
 }
 
 .chat-page-content {
-  border-top: 1px solid #e5e7eb;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-top: 1px solid rgba(27, 35, 44, 0.08);
+}
+
+.chat-page-ambient,
+.chat-page-ambient::before,
+.chat-page-ambient::after {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.chat-page-ambient {
+  inset: 0;
+  z-index: 0;
+}
+
+.chat-page-ambient::before,
+.chat-page-ambient::after {
+  content: '';
+  width: 20rem;
+  height: 20rem;
+  border: 1px solid rgba(27, 35, 44, 0.08);
+  background:
+    radial-gradient(circle at 18% 30%, #e81647 0 0.35rem, transparent 0.36rem),
+    radial-gradient(circle at 78% 62%, #00a6ff 0 0.35rem, transparent 0.36rem);
+  animation: chat-orbit 18s linear infinite;
+}
+
+.chat-page-ambient::before {
+  top: 12%;
+  left: 5%;
+}
+
+.chat-page-ambient::after {
+  right: 4%;
+  bottom: 8%;
+  width: 24rem;
+  height: 24rem;
+  animation-duration: 24s;
+  animation-direction: reverse;
 }
 
 .chat-tool-shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
   border-radius: 0;
+  background: transparent;
 }
 
-:host ::ng-deep app-ask-cdp-ai > div {
+:host ::ng-deep app-ask-cdp-ai > div,
+:host ::ng-deep app-ask-cdp-ai.standalone-chat .chat-landing {
   border-left: 0;
+  background: transparent;
 }
 
-@media (min-width: 768px) {
-  .chat-page-content {
-    padding: 1rem 1.5rem 1.5rem;
-  }
+:host ::ng-deep .standalone-chat .chat-landing-inner {
+  max-width: 58rem;
+  transform: translateY(-1.25rem);
+}
 
-  .chat-tool-shell {
-    max-width: 980px;
-    border: 1px solid #d4d4d4;
-    box-shadow:
-      0 12px 30px rgba(27, 35, 44, 0.08),
-      0 1px 2px rgba(27, 35, 44, 0.08);
-  }
+:host ::ng-deep .standalone-chat .chat-landing-inner::before {
+  content: '';
+  width: 4.75rem;
+  height: 4.75rem;
+  margin-bottom: 1.25rem;
+  border-radius: 999px;
+  background: conic-gradient(from 90deg, #e81647, #00a6ff, #5fe992, #e81647);
+  box-shadow: 0 18px 50px rgba(27, 35, 44, 0.14);
+  animation: chat-pulse 2.6s ease-in-out infinite;
+}
+
+:host ::ng-deep .standalone-chat .chat-landing-title {
+  margin-bottom: 2rem;
+  color: #1b232c;
+  font-size: clamp(2.4rem, 5vw, 4.75rem);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+:host ::ng-deep .standalone-chat .chat-landing-composer {
+  width: min(100%, 54rem);
+  min-height: 5.5rem;
+  border-color: rgba(27, 35, 44, 0.14);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 30px 90px rgba(27, 35, 44, 0.16);
+  transition: 180ms ease;
+}
+
+:host ::ng-deep .standalone-chat .chat-landing-composer:hover,
+:host ::ng-deep .standalone-chat .chat-landing-composer:focus-within {
+  box-shadow:
+    0 34px 105px rgba(27, 35, 44, 0.2),
+    0 0 0 5px rgba(232, 22, 71, 0.1);
+  transform: translateY(-2px);
+}
+
+:host ::ng-deep .standalone-chat .chat-landing-composer .chat-input-control {
+  height: 5.35rem;
+  padding-left: 2rem;
+  font-size: clamp(1.15rem, 2.5vw, 1.65rem);
+}
+
+:host ::ng-deep .standalone-chat .chat-landing-composer .chat-input-button {
+  background: #1b232c;
+}
+
+:host ::ng-deep .standalone-chat .chat-landing-suggestions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(100%, 36rem);
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+:host ::ng-deep .standalone-chat .chat-landing-suggestion {
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  border-color: rgba(27, 35, 44, 0.12);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.78);
+  color: #303030;
+  font-size: 0.86rem;
+  text-align: center;
+  box-shadow: 0 12px 36px rgba(27, 35, 44, 0.08);
+  transition: 180ms ease;
+}
+
+:host ::ng-deep .standalone-chat .chat-landing-suggestion:hover {
+  color: #b00035;
+  box-shadow: 0 18px 44px rgba(27, 35, 44, 0.13);
+  transform: translateY(-3px);
 }
 
 @media (max-width: 767px) {
-  .chat-tool-shell {
-    min-height: 0;
+  :host ::ng-deep .standalone-chat .chat-landing {
+    padding-inline: 1rem;
+    padding-top: 2.5rem;
+  }
+
+  :host ::ng-deep .standalone-chat .chat-landing-inner {
+    transform: none;
+  }
+
+  :host ::ng-deep .standalone-chat .chat-landing-inner::before {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: 1rem;
+  }
+
+  :host ::ng-deep .standalone-chat .chat-landing-title {
+    margin-bottom: 1.4rem;
+    font-size: 2.35rem;
+  }
+
+  :host ::ng-deep .standalone-chat .chat-landing-composer {
+    min-height: 4.25rem;
+  }
+
+  :host ::ng-deep .standalone-chat .chat-landing-composer .chat-input-control {
+    height: 4.1rem;
+    padding-left: 1.4rem;
+    font-size: 1rem;
+  }
+
+  :host ::ng-deep .standalone-chat .chat-landing-suggestions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-page-ambient::before,
+  .chat-page-ambient::after,
+  :host ::ng-deep .standalone-chat .chat-landing-inner::before {
+    animation: none;
+  }
+}
+
+@keyframes chat-pulse {
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 24px 62px rgba(27, 35, 44, 0.18);
+  }
+}
+
+@keyframes chat-orbit {
+  to {
+    transform: rotate(360deg);
   }
 }

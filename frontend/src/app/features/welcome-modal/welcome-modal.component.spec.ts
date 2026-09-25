@@ -20,6 +20,9 @@ describe('WelcomeModalComponent', () => {
   beforeEach(async () => {
     localStorage.clear();
     clearSkippedCookie();
+    setPathname('/');
+    ensureMatchMedia();
+    spyOn(window, 'matchMedia').and.returnValue(createMediaQueryList(false));
     fetchSpy = spyOn(window, 'fetch').and.resolveTo(new Response(null, { status: 204 }));
     posthog = jasmine.createSpyObj<AnalyticsService>('AnalyticsService', ['capture', 'register']);
 
@@ -38,6 +41,7 @@ describe('WelcomeModalComponent', () => {
   afterEach(() => {
     localStorage.clear();
     clearSkippedCookie();
+    setPathname('/');
   });
 
   it('opens when an older dismissed flag exists but no role has been stored', () => {
@@ -47,6 +51,24 @@ describe('WelcomeModalComponent', () => {
     component.ngOnInit();
 
     expect(component.isOpen).toBeTrue();
+  });
+
+  it('stays closed on mobile even when no role has been stored', () => {
+    (window.matchMedia as jasmine.Spy).and.returnValue(createMediaQueryList(true));
+    createComponent();
+
+    component.ngOnInit();
+
+    expect(component.isOpen).toBeFalse();
+  });
+
+  it('stays closed when the first route load is not the homepage', () => {
+    setPathname('/chat');
+    createComponent();
+
+    component.ngOnInit();
+
+    expect(component.isOpen).toBeFalse();
   });
 
   it('stays closed when a role has already been stored', () => {
@@ -135,5 +157,33 @@ describe('WelcomeModalComponent', () => {
 
   function clearSkippedCookie(): void {
     document.cookie = `${WELCOME_MODAL_SKIPPED_STORAGE_KEY}=; path=/; max-age=0; SameSite=Lax`;
+  }
+
+  function ensureMatchMedia(): void {
+    if ('matchMedia' in window) {
+      return;
+    }
+
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: () => createMediaQueryList(false),
+    });
+  }
+
+  function createMediaQueryList(matches: boolean): MediaQueryList {
+    return {
+      matches,
+      media: '(max-width: 767px)',
+      onchange: null,
+      addListener: jasmine.createSpy('addListener'),
+      removeListener: jasmine.createSpy('removeListener'),
+      addEventListener: jasmine.createSpy('addEventListener'),
+      removeEventListener: jasmine.createSpy('removeEventListener'),
+      dispatchEvent: jasmine.createSpy('dispatchEvent').and.returnValue(true),
+    };
+  }
+
+  function setPathname(pathname: string): void {
+    history.pushState({}, '', pathname);
   }
 });

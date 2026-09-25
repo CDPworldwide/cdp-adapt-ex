@@ -33,6 +33,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   @Input() currentDisplayName = '';
   @Input() currentCountryName = '';
   @Input() selectedOrganizations: LocationSuggestion[] = [];
+  @Input() showSuggestedOrganizations = false;
   @Output() selectedOrganizationsChange = new EventEmitter<LocationSuggestion[]>();
   @Output() currentOrganizationCleared = new EventEmitter<void>();
 
@@ -49,6 +50,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   private allOrganizations: LocationSuggestion[] = [];
   private defaultOrganizationOptions: LocationSuggestion[] = [];
   private static readonly OPTION_LIMIT = 6;
+  private readonly fallbackSuggestedOrganizationNames = ['London', 'Athens', 'New York'];
 
   ngOnInit(): void {
     this.loadOrganizationOptions();
@@ -85,6 +87,25 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
 
   get hasSelection(): boolean {
     return Boolean(this.currentDisplayName) || this.selectedOrganizations.length > 0;
+  }
+
+  get suggestedOrganizations(): LocationSuggestion[] {
+    return this.defaultOrganizationOptions
+      .filter(
+        (organization) =>
+          !this.isCurrentOrganization(organization) && !this.isSelectedOrganization(organization),
+      )
+      .slice(0, 3);
+  }
+
+  get suggestedOrganizationNames(): string[] {
+    const suggestedOrganizations = this.suggestedOrganizations;
+
+    if (suggestedOrganizations.length) {
+      return suggestedOrganizations.map((organization) => organization.name);
+    }
+
+    return this.fallbackSuggestedOrganizationNames;
   }
 
   get currentFlagImageUrl(): string {
@@ -205,6 +226,21 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
 
     this.selectedOrganizationsChange.emit([...this.selectedOrganizations, organization]);
     this.updateOrganizationOptions(this.searchControl.value);
+  }
+
+  selectSuggestedOrganization(name: string): void {
+    const matchingOrganization = this.allOrganizations.find(
+      (organization) => organization.name.toLowerCase() === name.toLowerCase(),
+    );
+
+    if (matchingOrganization) {
+      this.toggleOrganization(matchingOrganization);
+      return;
+    }
+
+    this.isDropdownOpen = true;
+    this.searchControl.setValue(name);
+    this.updateOrganizationOptions(name);
   }
 
   getOptionId(index: number): string {
