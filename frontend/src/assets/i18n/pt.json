@@ -71,49 +71,7 @@
       "scenarioTooltip": "Os cenários mostram como um risco pode mudar sob diferentes futuros climáticos. \"Histórico\" reflete condições passadas. Outras opções representam possíveis trajetórias futuras, como de emissões mais baixas a emissões mais altas. Escolha um cenário para ver como os níveis de risco podem mudar ao longo do tempo. Consulte a metodologia para obter mais informações.",
       "timeframe": "Prazos disponíveis",
       "expandLegend": "Mostrar detalhes da legenda",
-      "collapseLegend": "Ocultar detalhes da legenda",
-      "scoreDetails": {
-        "heading": "Como os riscos são pontuados",
-        "learnMore": "Saiba mais",
-        "score0": "<strong>0</strong> representa risco nulo ou muito baixo, com base nessa definição de risco e nesse modelo",
-        "lines": {
-          "default": {
-            "1": "<strong>1 de 5</strong> indica um nível de risco maior do que o observado em 0–20% das áreas afetadas em todo o mundo",
-            "2": "<strong>2 de 5</strong> indica um nível de risco maior do que o observado em 20–40% das áreas afetadas em todo o mundo",
-            "3": "<strong>3 de 5</strong> indica um nível de risco maior do que o observado em 40–60% das áreas afetadas em todo o mundo",
-            "4": "<strong>4 de 5</strong> indica um nível de risco maior do que o observado em 60–80% das áreas afetadas em todo o mundo",
-            "5": "<strong>5 de 5</strong> indica um nível de risco maior do que 80% das áreas afetadas em todo o mundo"
-          },
-          "EXTREME_HEAT": {
-            "1": "<strong>1 de 5</strong> indica um número maior de dias com temperatura acima de 35°C do que 0–20% das áreas afetadas em todo o mundo",
-            "2": "<strong>2 de 5</strong> indica um número maior de dias com temperatura acima de 35°C do que 20–40% das áreas afetadas em todo o mundo",
-            "3": "<strong>3 de 5</strong> indica um número maior de dias com temperatura acima de 35°C do que 40–60% das áreas afetadas em todo o mundo",
-            "4": "<strong>4 de 5</strong> indica um número maior de dias com temperatura acima de 35°C do que 60–80% das áreas afetadas em todo o mundo",
-            "5": "<strong>5 de 5</strong> indica um número maior de dias com temperatura acima de 35°C do que 80% das áreas afetadas em todo o mundo"
-          },
-          "EXTREME_COLD": {
-            "1": "<strong>1 de 5</strong> indica um número maior de dias com temperatura abaixo de 0°C do que 0–20% das áreas afetadas em todo o mundo",
-            "2": "<strong>2 de 5</strong> indica um número maior de dias com temperatura abaixo de 0°C do que 20–40% das áreas afetadas em todo o mundo",
-            "3": "<strong>3 de 5</strong> indica um número maior de dias com temperatura abaixo de 0°C do que 40–60% das áreas afetadas em todo o mundo",
-            "4": "<strong>4 de 5</strong> indica um número maior de dias com temperatura abaixo de 0°C do que 60–80% das áreas afetadas em todo o mundo",
-            "5": "<strong>5 de 5</strong> indica um número maior de dias com temperatura abaixo de 0°C do que 80% das áreas afetadas em todo o mundo"
-          },
-          "HEAVY_PRECIPITATION": {
-            "1": "<strong>1 de 5</strong> indica que o total máximo de 5 dias de precipitação em um determinado ano é maior do que o observado em 0–20% das áreas afetadas em todo o mundo",
-            "2": "<strong>2 de 5</strong> indica que o total máximo de 5 dias de precipitação em um determinado ano é maior do que o observado em 20–40% das áreas afetadas em todo o mundo",
-            "3": "<strong>3 de 5</strong> indica que o total máximo de 5 dias de precipitação em um determinado ano é maior do que o observado em 40–60% das áreas afetadas em todo o mundo",
-            "4": "<strong>4 de 5</strong> indica que o total máximo de 5 dias de precipitação em um determinado ano é maior do que o observado em 60–80% das áreas afetadas em todo o mundo",
-            "5": "<strong>5 de 5</strong> indica que o total máximo de 5 dias de precipitação em um determinado ano é maior do que o observado em 80% das áreas afetadas em todo o mundo"
-          },
-          "FIRE_WEATHER": {
-            "1": "<strong>1 de 5</strong> indica um número maior de dias em que o Índice Meteorológico de Incêndios (FWI) excede 45 do que em 0–20% das áreas afetadas em todo o mundo",
-            "2": "<strong>2 de 5</strong> indica um número maior de dias em que o Índice Meteorológico de Incêndios (FWI) excede 45 do que em 20–40% das áreas afetadas em todo o mundo",
-            "3": "<strong>3 de 5</strong> indica um número maior de dias em que o Índice Meteorológico de Incêndios (FWI) excede 45 do que em 40–60% das áreas afetadas em todo o mundo",
-            "4": "<strong>4 de 5</strong> indica um número maior de dias em que o Índice Meteorológico de Incêndios (FWI) excede 45 do que em 60–80% das áreas afetadas em todo o mundo",
-            "5": "<strong>5 de 5</strong> indica um número maior de dias em que o Índice Meteorológico de Incêndios (FWI) excede 45 do que em 80% das áreas afetadas em todo o mundo"
-          }
-        }
-      }
+      "collapseLegend": "Ocultar detalhes da legenda"
     },
     "scenarios": {
       "historical": "Histórico"
@@ -618,11 +576,7 @@
         "title": "Saiba mais sobre os dados utilizados para cada camada de risco:",
         "footnote": "Camadas adicionais de risco podem ser adicionadas ao longo do tempo."
       },
-      "outro": "Para exibir mapas de risco e atribuir valores de risco para cada jurisdição, as camadas de risco global do Google Earth Engine foram filtradas pelos limites administrativos de cada jurisdição e calculadas as médias espaciais dentro desses limites. Os limites administrativos foram obtidos principalmente por meio de dados da <a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation</a> . Quando indisponíveis, os limites foram obtidos do <a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a> ou de conjuntos de dados disponíveis no <a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Sistema de Intercâmbio de Dados Humanitários do OCHA (Escritório das Nações Unidas</a> para a Coordenação de Assuntos Humanitários). Quando nenhum limite de jurisdição apropriado foi encontrado, pseudo-limites foram criados usando o centro geográfico da jurisdição (obtido da fonte acima ou manualmente no <a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google Maps</a> ) e sua área territorial declarada.",
-      "scoring": {
-        "title": "Como os riscos são pontuados",
-        "body": "Cada local recebe uma pontuação de 0 a 5 para cada risco, com base na comparação com o que determinadas áreas em todo o mundo já enfrentaram historicamente. Uma pontuação 0 significa que o nível de risco é nulo ou muito baixo. As pontuações de 1 a 5 correspondem aos quintis (quintas partes) da distribuição global. Por exemplo, um 3 indica um risco maior do que o observado em cerca de 40% a 60% das áreas com esse risco em todo o mundo, enquanto um 5 significa que está entre os 20% com maior risco. As pontuações são derivadas de modelos globais; portanto, variações locais podem não aparecer nesta resolução: um local ainda pode estar sujeito a um risco, mesmo que sua pontuação seja baixa. O que se considera um risco de enchente ou de calor extremo também reflete a definição específica utilizada aqui, que pode diferir das condições reais no local."
-      }
+      "outro": "Para exibir mapas de risco e atribuir valores de risco para cada jurisdição, as camadas de risco global do Google Earth Engine foram filtradas pelos limites administrativos de cada jurisdição e calculadas as médias espaciais dentro desses limites. Os limites administrativos foram obtidos principalmente por meio de dados da <a href=\"https://overturemaps.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Overture Maps Foundation</a> . Quando indisponíveis, os limites foram obtidos do <a href=\"https://wiki.openstreetmap.org/wiki/Overpass_API\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">OpenStreetMap</a> ou de conjuntos de dados disponíveis no <a href=\"https://data.humdata.org/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Sistema de Intercâmbio de Dados Humanitários do OCHA (Escritório das Nações Unidas</a> para a Coordenação de Assuntos Humanitários). Quando nenhum limite de jurisdição apropriado foi encontrado, pseudo-limites foram criados usando o centro geográfico da jurisdição (obtido da fonte acima ou manualmente no <a href=\"https://www.google.com/maps\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-cdp-blue underline underline-offset-2 hover:text-cdp-dark active:text-cdp-red transition-colors\">Google Maps</a> ) e sua área territorial declarada."
     },
     "hazardLayers": {
       "waterStress": {
