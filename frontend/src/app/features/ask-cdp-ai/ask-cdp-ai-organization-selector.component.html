@@ -126,6 +126,19 @@
         </button>
       }
     </span>
+
+    @if (showSuggestedOrganizations) {
+      @for (organizationName of suggestedOrganizationNames; track organizationName) {
+        <button
+          type="button"
+          data-testid="ask-ai-suggested-location"
+          class="ask-ai-suggested-location inline-flex max-w-[9rem] items-center gap-1 rounded-full border border-gray-200 bg-white/80 px-2 py-1 text-xs font-semibold text-gray-700 shadow-sm transition-colors hover:border-cdp-red hover:text-cdp-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cdp-red/20"
+          (click)="selectSuggestedOrganization(organizationName)"
+        >
+          <span class="min-w-0 truncate">{{ organizationName }}</span>
+        </button>
+      }
+    }
   </p>
 
   @if (isDropdownOpen) {

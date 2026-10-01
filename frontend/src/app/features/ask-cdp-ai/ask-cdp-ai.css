@@ -36,12 +36,6 @@
   }
 }
 
-.ai-assistant-message {
-  color: #111827;
-  overflow-wrap: anywhere;
-  word-break: normal;
-}
-
 :host ::ng-deep .ai-markdown {
   font-size: 0.9375rem;
   line-height: 1.55;
