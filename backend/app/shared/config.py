@@ -176,7 +176,7 @@ class Settings:
         # Which set of CSTAR tables the app reads (blue/green switch):
         #   "CSTAR_2025_" -> CSTAR_2025_Dim_Central etc. (current)
         #   "CSTAR_"      -> CSTAR_Dim_Central etc. (multi-year)
-        self.CSTAR_TABLE_PREFIX = os.getenv("CSTAR_TABLE_PREFIX") or "CSTAR_2025_"
+        self.CSTAR_TABLE_PREFIX = os.getenv("CSTAR_TABLE_PREFIX") or ""
         self.CHECKPOINT_TABLES = [
             "checkpoint_blobs",
             "checkpoint_writes",

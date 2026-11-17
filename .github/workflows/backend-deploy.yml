@@ -93,6 +93,35 @@ jobs:
           docker push $IMAGE_TAG
           docker push $IMAGE_LATEST
 
+      # --- Database migrations (Alembic) --------------------------------------
+      # Runs `alembic upgrade head` as a Cloud Run Job using the image just
+      # built, so it connects through the same /cloudsql socket as the app.
+      # Previews and dev all share cdp-test, so this migrates cdp-test for
+      # everyone. Runs before the new code goes live; a failed migration stops
+      # the deploy. Never runs against prod from this workflow.
+      - name: Run database migrations (Cloud Run Job)
+        if: env.ENVIRONMENT != 'production'
+        env:
+          JOB_NAME: cdp-migrate-${{ env.ENVIRONMENT }}
+          IMAGE: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ steps.service-name.outputs.service }}:${{ github.sha }}
+        run: |
+          gcloud run jobs deploy "$JOB_NAME" \
+            --image "$IMAGE" \
+            --region "$REGION" \
+            --set-cloudsql-instances "$PROJECT_ID:$REGION:cdp-test" \
+            --set-secrets "POSTGRES_HOST=${ENVIRONMENT}-POSTGRES_HOST:latest,POSTGRES_DB=${ENVIRONMENT}-POSTGRES_DB:latest,POSTGRES_USER=${ENVIRONMENT}-POSTGRES_USER:latest,POSTGRES_PASSWORD=${ENVIRONMENT}-POSTGRES_PASSWORD:latest" \
+            --set-env-vars "APP_ENV=${ENVIRONMENT},POSTGRES_PORT=5432" \
+            --command alembic \
+            --args upgrade,head \
+            --max-retries 0 \
+            --task-timeout 20m \
+            --memory 1Gi \
+            --labels "component=backend-migrations,managed-by=github-actions,commit-sha=${{ github.sha }}" \
+            --quiet
+
+          # --wait blocks until the run finishes and exits non-zero if it fails.
+          gcloud run jobs execute "$JOB_NAME" --region "$REGION" --wait
+
       - name: Deploy to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@v2

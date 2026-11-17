@@ -101,6 +101,16 @@ class DatabaseService:
                 pool_size=pool_size,
                 max_overflow=max_overflow,
             )
+
+            if settings.DEBUG:
+                # Which database are we actually talking to? (never the password)
+                logger.info(
+                    "database_target",
+                    host=settings.POSTGRES_HOST,
+                    port=settings.POSTGRES_PORT,
+                    database=settings.POSTGRES_DB,
+                    user=settings.POSTGRES_USER,
+                )
         except SQLAlchemyError as e:
             logger.error(
                 "database_initialization_error",
