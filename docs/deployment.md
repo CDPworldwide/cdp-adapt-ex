@@ -44,13 +44,14 @@ flowchart TB
 
 ### 🌍 Environments & Branching
 
-We maintain separate environments for development, staging (previews), and production.
+We maintain separate environments for development (including PR previews), staging, and production.
 
 | Workflow / Trigger | Environment | Backend Service | Frontend Service | AI Service | Cloud SQL Instance | Secret Prefix |
 |--------|-------------|-----------------|------------------|------------|-------------------|---------------|
 | `production-backend-deploy.yml` on `main` | `production` | `cdp-server-prod` | n/a | shared `cdp-ai-server` | `cdp-prod` | `production-` |
 | `production-frontend-deploy.yml` on `main` | `production` | existing `cdp-server-prod` | `frontend-prod` | shared `cdp-ai-server` | `cdp-prod` | `production-` |
 | `deploy.yml` manual dispatch | `production` | `cdp-server-prod` | `frontend-prod` | shared `cdp-ai-server` | `cdp-prod` | `production-` |
+| `staging-deploy.yml` on push to `staging` (or manual dispatch) | `staging` | `cdp-server-staging` | `frontend-staging` | shared `cdp-ai-server` | `cdp-staging` | `staging-` |
 | Frontend PR previews | `development` / preview | matching `cdp-server-preview-{TITLE}-pr-X`, or shared `cdp-server-dev` | `frontend-preview-{TITLE}-pr-X` | shared `cdp-ai-server` | `cdp-test` | `development-` |
 | Backend PR previews | `development` / preview | `cdp-server-preview-{TITLE}-pr-X` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
 | Manual backend preview workflow | `development` | `cdp-server-dev` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
