@@ -739,7 +739,7 @@ class TestGetAllLocationSummaries:
             ),
         ]
 
-        result = await location_details_service.get_all_location_summaries()
+        result = await location_details_service.get_all_location_summaries(2025)
 
         assert [summary.id for summary in result] == [31172, 50353]
         assert [summary.name for summary in result] == [

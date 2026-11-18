@@ -196,7 +196,9 @@ class LocationDetailsRepository:
                 for row in results
             ]
 
-    async def get_all_location_summaries(self) -> List[OrganizationSummary]:
+    async def get_all_location_summaries(
+        self, disclosing_year: int
+    ) -> List[OrganizationSummary]:
         """Return all organizations with their IDs and names.
 
         Includes Public disclosers, Non-Public disclosers, and non-disclosers
@@ -219,6 +221,7 @@ class LocationDetailsRepository:
                     DimCentral.has_geometry,
                     DimCentral.cdp_disclosing_org_number
                     != STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID,
+                    DimCentral.disclosing_year == disclosing_year,
                 )
                 .distinct()
             )

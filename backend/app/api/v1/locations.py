@@ -4,8 +4,8 @@ from app.api.v1.deps import (
 )
 from app.schemas.location import (
     LocationNamesResponse,
-    LocationProfile,
     LocationPinsResponse,
+    LocationProfile,
     LocationResponse,
     LocationSeoResponse,
 )
@@ -14,12 +14,13 @@ from app.services.impls.location_profile_translation_service import (
     LocationProfileTranslationService,
     normalize_translation_language,
 )
+from app.shared.config import settings
+from app.shared.constants import DEFAULT_DISCLOSING_YEAR
 from app.shared.exceptions import (
     CityGeometryMissingException,
     CityNotFoundException,
     MultipleCitiesFoundException,
 )
-from app.shared.config import settings
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
@@ -28,18 +29,20 @@ router = APIRouter()
 
 @router.get("/names", response_model=LocationNamesResponse)
 async def get_all_location_names(
+    disclosing_year: int = DEFAULT_DISCLOSING_YEAR,
     location_service: LocationDetailsService = Depends(get_location_details_service),
 ) -> LocationNamesResponse:
     # TODO: Also get country names
     """Get all location names.
 
     Args:
+        disclosing_year: The year for which to fetch location names.
         location_service: Service dependency used to fetch location details.
 
     Returns:
         A list of location names with organization IDs.
     """
-    locations = await location_service.get_all_location_summaries()
+    locations = await location_service.get_all_location_summaries(disclosing_year)
     return LocationNamesResponse(locations=locations)
 
 

@@ -34,8 +34,8 @@ from app.schemas.location import (
     SolutionCard,
 )
 from app.services.clients.database.location_details_repository import (
-    LocationDetailsRepository,
     STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID,
+    LocationDetailsRepository,
 )
 from app.services.impls.hazard_mapper import HazardMapper
 from app.services.impls.location_profile_builder import LocationProfileBuilder
@@ -487,10 +487,14 @@ class LocationDetailsService:
             fallback_name=str(organization_id),
         )
 
-    async def get_all_location_summaries(self) -> list[OrganizationSummary]:
+    async def get_all_location_summaries(
+        self, disclosing_year: int
+    ) -> list[OrganizationSummary]:
         """Returns organization summaries used by location suggestions."""
         if LocationDetailsService._summaries_cache is None:
-            summaries = await self.repository.get_all_location_summaries()
+            summaries = await self.repository.get_all_location_summaries(
+                disclosing_year
+            )
             summaries = [
                 summary
                 for summary in summaries

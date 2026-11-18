@@ -10,14 +10,15 @@ from app.models.location_details import DimCentral, OrganizationSummary, PeerSol
 from app.schemas.location import (
     ActionsTab,
     HazardsTab,
-    LocationSeoSummary,
     LocationProfile,
+    LocationSeoSummary,
     RegionalStatistics,
     SolutionsTab,
 )
 from app.services.impls.location_details_service import (
     LocationDetailsService,
 )
+from app.shared.constants import DEFAULT_DISCLOSING_YEAR
 from app.shared.exceptions import CityNotFoundException
 
 
@@ -265,9 +266,16 @@ async def test_get_location_by_org_id_not_found(client, mock_location_details_se
     app.dependency_overrides.clear()
 
 
+@pytest.mark.parametrize(
+    ("query", "expected_year"),
+    [
+        ("", DEFAULT_DISCLOSING_YEAR),
+        ("?disclosing_year=2024", 2024),
+    ],
+)
 @pytest.mark.asyncio
 async def test_get_all_location_names_returns_organization_summaries(
-    client, mock_location_details_service
+    client, mock_location_details_service, query, expected_year
 ):
     expected_locations = [
         OrganizationSummary(
@@ -291,13 +299,15 @@ async def test_get_all_location_names_returns_organization_summaries(
         lambda: mock_location_details_service
     )
 
-    response = await client.get("/api/v1/locations/names")
+    response = await client.get(f"/api/v1/locations/names{query}")
 
     assert response.status_code == 200
     assert response.json()["locations"] == [
         location.model_dump(by_alias=True) for location in expected_locations
     ]
-    mock_location_details_service.get_all_location_summaries.assert_called_once_with()
+    mock_location_details_service.get_all_location_summaries.assert_called_once_with(
+        expected_year
+    )
     app.dependency_overrides.clear()
 
 
