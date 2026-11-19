@@ -30,11 +30,12 @@ class LocationDetailsRepository:
     def __init__(self, engine: AsyncEngine):
         self.engine = engine
 
-    async def get_hazards(self, org_id: int) -> List[FactHazards]:
+    async def get_hazards(self, disclosing_year: int, org_id: int) -> List[FactHazards]:
         async with AsyncSession(self.engine) as session:
             statement = (
                 select(FactHazards)
                 .where(
+                    FactHazards.disclosing_year == disclosing_year,
                     FactHazards.cdp_disclosing_org_number == org_id,
                     # Suppress disclosed Non-Public hazards while keeping Public
                     # and GEE-derived (NULL public_status) rows. (`!=` alone
@@ -48,49 +49,65 @@ class LocationDetailsRepository:
             )
             return list((await session.exec(statement)).all())
 
-    async def get_goals(self, org_id: int) -> List[FactAdaptationGoals]:
+    async def get_goals(
+        self, disclosing_year: int, org_id: int
+    ) -> List[FactAdaptationGoals]:
         async with AsyncSession(self.engine) as session:
             statement = select(FactAdaptationGoals).where(
+                FactAdaptationGoals.disclosing_year == disclosing_year,
                 FactAdaptationGoals.cdp_disclosing_org_number == org_id,
                 FactAdaptationGoals.public_status == "Public",
             )
             return list((await session.exec(statement)).all())
 
-    async def get_projects(self, org_id: int) -> List[FactProjects]:
+    async def get_projects(
+        self, disclosing_year: int, org_id: int
+    ) -> List[FactProjects]:
         async with AsyncSession(self.engine) as session:
             statement = select(FactProjects).where(
+                FactProjects.disclosing_year == disclosing_year,
                 FactProjects.cdp_disclosing_org_number == org_id,
                 FactProjects.public_status == "Public",
             )
             return (await session.exec(statement)).all()
 
-    async def get_actions(self, org_id: int) -> List[FactActions]:
+    async def get_actions(self, disclosing_year: int, org_id: int) -> List[FactActions]:
         async with AsyncSession(self.engine) as session:
             statement = select(FactActions).where(
+                FactActions.disclosing_year == disclosing_year,
                 FactActions.cdp_disclosing_org_number == org_id,
                 FactActions.public_status == "Public",
             )
             return list((await session.exec(statement)).all())
 
-    async def get_solutions(self, org_id: int) -> List[PeerSolutions]:
+    async def get_solutions(
+        self, disclosing_year: int, org_id: int
+    ) -> List[PeerSolutions]:
         async with AsyncSession(self.engine) as session:
             statement = select(PeerSolutions).where(
+                PeerSolutions.disclosing_year == disclosing_year,
                 PeerSolutions.target_org_id == org_id,
                 PeerSolutions.hazard_filter == "All",
             )
             return list((await session.exec(statement)).all())
 
-    async def get_solution_examples(self, org_id: int) -> List[SolutionsExamples]:
+    async def get_solution_examples(
+        self, disclosing_year: int, org_id: int
+    ) -> List[SolutionsExamples]:
         async with AsyncSession(self.engine) as session:
             statement = select(SolutionsExamples).where(
+                SolutionsExamples.disclosing_year == disclosing_year,
                 SolutionsExamples.target_org_id == org_id,
             )
             return list((await session.exec(statement)).all())
 
-    async def get_metadata(self, org_id: int) -> Optional[DimCentral]:
-        """Return metadata for a given organization ID from DimCentral.
+    async def get_metadata(
+        self, disclosing_year: int, org_id: int
+    ) -> Optional[DimCentral]:
+        """Return metadata for a given disclosing year and organization ID from DimCentral.
 
         Args:
+            disclosing_year: The year the information was disclosed.
             org_id: The CDP disclosing organization number.
 
         Returns:
@@ -105,6 +122,7 @@ class LocationDetailsRepository:
                 for c in DimCentral.__table__.columns
             ]
             statement = select(*columns).where(
+                DimCentral.disclosing_year == disclosing_year,
                 DimCentral.cdp_disclosing_org_number == org_id,
                 DimCentral.has_geometry,
             )
@@ -113,7 +131,9 @@ class LocationDetailsRepository:
                 return None
             return DimCentral(**result._mapping)
 
-    async def get_peer_locations(self, org_ids: set[int]) -> List[PeerLocation]:
+    async def get_peer_locations(
+        self, disclosing_year: int, org_ids: set[int]
+    ) -> List[PeerLocation]:
         """Return geometry/country for each peer organization id.
 
         Only rows with geometry are returned; peers without geometry are
@@ -121,6 +141,7 @@ class LocationDetailsRepository:
         (no map thumbnail for that peer).
 
         Args:
+            disclosing_year: The year the information was disclosed.
             org_ids: The set of peer organization ids to resolve.
 
         Returns:
@@ -143,23 +164,25 @@ class LocationDetailsRepository:
                 func.ST_X(DimCentral.centroid).label("centroid_lng"),
                 func.ST_Y(DimCentral.centroid).label("centroid_lat"),
             ).where(
+                DimCentral.disclosing_year == disclosing_year,
                 DimCentral.cdp_disclosing_org_number.in_(org_ids),
                 DimCentral.has_geometry,
             )
             results = (await session.exec(statement)).all()
             return [PeerLocation(**row._mapping) for row in results]
 
-    async def has_organization(self, org_id: int) -> bool:
+    async def has_organization(self, disclosing_year: int, org_id: int) -> bool:
         """Return whether an organization with geometry exists for the provided ID."""
         async with AsyncSession(self.engine) as session:
             statement = select(DimCentral.cdp_disclosing_org_number).where(
+                DimCentral.disclosing_year == disclosing_year,
                 DimCentral.cdp_disclosing_org_number == org_id,
                 DimCentral.has_geometry,
             )
             return (await session.exec(statement)).first() is not None
 
     async def get_orgs_by_name(
-        self, organization_name: str
+        self, disclosing_year: int, organization_name: str
     ) -> List[OrganizationSummary]:
         """Return all organization summaries matching a given organization name.
 
@@ -167,6 +190,7 @@ class LocationDetailsRepository:
         (e.g. "New York" and "new york" will both match the same records).
 
         Args:
+            disclosing_year: The year the information was disclosed.
             organization_name: The name of the disclosing organization (case-insensitive).
 
         Returns:
@@ -179,6 +203,7 @@ class LocationDetailsRepository:
                 DimCentral.discloser_country_or_area,
                 DimCentral.current_pop,
             ).where(
+                DimCentral.disclosing_year == disclosing_year,
                 func.lower(DimCentral.disclosing_organization)
                 == organization_name.lower(),
                 DimCentral.has_geometry,
@@ -218,10 +243,10 @@ class LocationDetailsRepository:
                     DimCentral.disclosure_status,
                 )
                 .where(
+                    DimCentral.disclosing_year == disclosing_year,
                     DimCentral.has_geometry,
                     DimCentral.cdp_disclosing_org_number
                     != STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID,
-                    DimCentral.disclosing_year == disclosing_year,
                 )
                 .distinct()
             )

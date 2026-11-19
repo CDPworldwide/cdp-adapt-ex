@@ -68,7 +68,10 @@ class LocationDetailsService:
         self.profile_builder = LocationProfileBuilder(self.sector_mapper)
 
     async def _build_location_profile(
-        self, org_id: int, fallback_name: str
+        self,
+        disclosing_year: int,
+        org_id: int,
+        fallback_name: str,
     ) -> LocationProfile:
         start_time = time.time()
         (
@@ -80,13 +83,13 @@ class LocationDetailsService:
             solutions,
             peers_actions,
         ) = await asyncio.gather(
-            self.repository.get_metadata(org_id),
-            self.repository.get_hazards(org_id),
-            self.repository.get_goals(org_id),
-            self.repository.get_actions(org_id),
-            self.repository.get_projects(org_id),
-            self.repository.get_solutions(org_id),
-            self.repository.get_solution_examples(org_id),
+            self.repository.get_metadata(disclosing_year, org_id),
+            self.repository.get_hazards(disclosing_year, org_id),
+            self.repository.get_goals(disclosing_year, org_id),
+            self.repository.get_actions(disclosing_year, org_id),
+            self.repository.get_projects(disclosing_year, org_id),
+            self.repository.get_solutions(disclosing_year, org_id),
+            self.repository.get_solution_examples(disclosing_year, org_id),
         )
 
         # Suppress this org's own disclosed adaptation content for Non-Public
@@ -99,7 +102,9 @@ class LocationDetailsService:
         # Resolve each peer jurisdiction's geometry/country (keyed by
         # peer_org_id) so the solution detail header can show a map thumbnail.
         peer_org_ids = {e.peer_org_id for e in peers_actions if e.peer_org_id}
-        peer_locations = await self.repository.get_peer_locations(peer_org_ids)
+        peer_locations = await self.repository.get_peer_locations(
+            disclosing_year, peer_org_ids
+        )
         peer_locations_by_id = {loc.org_id: loc for loc in peer_locations}
 
         mapped_hazards = self._map_to_hazard_profiles(hazards, org_id)
@@ -464,25 +469,28 @@ class LocationDetailsService:
         return "All"
 
     async def get_eligible_location_details_by_name(
-        self, city_name: str
+        self, disclosing_year: int, city_name: str
     ) -> LocationProfile:
-        """Returns the first matching location details for a given city name."""
-        org_id = await self.city_resolution_service.resolve_org_id(city_name)
+        """Returns the first matching location details for a given disclosing year and city name."""
+        org_id = await self.city_resolution_service.resolve_org_id(
+            disclosing_year, city_name
+        )
 
         if org_id is None:
             raise CityNotFoundException(city_name)
 
         return await self._build_location_profile(
-            org_id=org_id, fallback_name=city_name
+            disclosing_year=disclosing_year, org_id=org_id, fallback_name=city_name
         )
 
     async def get_location_details_by_org_id(
-        self, organization_id: int
+        self, disclosing_year: int, organization_id: int
     ) -> LocationProfile:
-        if not await self.repository.has_organization(organization_id):
+        if not await self.repository.has_organization(disclosing_year, organization_id):
             raise CityNotFoundException(str(organization_id))
 
         return await self._build_location_profile(
+            disclosing_year=disclosing_year,
             org_id=organization_id,
             fallback_name=str(organization_id),
         )

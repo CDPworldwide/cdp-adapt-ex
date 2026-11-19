@@ -29,7 +29,16 @@ def mock_location_details_service():
 
 
 @pytest.mark.asyncio
-async def test_get_location_success(client, mock_location_details_service):
+@pytest.mark.parametrize(
+    ("query", "expected_year"),
+    [
+        ("", DEFAULT_DISCLOSING_YEAR),
+        ("?disclosing_year=2024", 2024),
+    ],
+)
+async def test_get_location_success(
+    client, mock_location_details_service, query, expected_year
+):
     # Arrange
     expected_location = LocationProfile(
         organization_id=101,
@@ -54,12 +63,15 @@ async def test_get_location_success(client, mock_location_details_service):
     )
 
     # Act
-    response = await client.get("/api/v1/locations/London")
+    response = await client.get(f"/api/v1/locations/London{query}")
 
     # Assert
     assert response.status_code == 200
     assert response.json()["location"] == expected_location.model_dump(by_alias=True)
-    mock_location_details_service.get_eligible_location_details_by_name.assert_called_once()
+    mock_location_details_service.get_eligible_location_details_by_name.assert_called_once_with(
+        disclosing_year=expected_year,
+        city_name="London",
+    )
     app.dependency_overrides.clear()
 
 
@@ -80,16 +92,29 @@ async def test_get_location_not_found(client, mock_location_details_service):
     # Assert
     assert response.status_code == 404
     assert response.json() == {"detail": "City not found: NonExistentLocation"}
-    mock_location_details_service.get_eligible_location_details_by_name.assert_called_once()
+    mock_location_details_service.get_eligible_location_details_by_name.assert_called_once_with(
+        disclosing_year=DEFAULT_DISCLOSING_YEAR,
+        city_name="NonExistentLocation",
+    )
     app.dependency_overrides.clear()
 
 
+@pytest.mark.parametrize(
+    ("query", "expected_year"),
+    [
+        ("", DEFAULT_DISCLOSING_YEAR),
+        ("?disclosing_year=2024", 2024),
+    ],
+)
 @pytest.mark.asyncio
-async def test_get_location_by_org_id_success(client, mock_location_details_service):
+async def test_get_location_by_org_id_success(
+    client, mock_location_details_service, query, expected_year
+):
     expected_location = LocationProfile(
         organization_id=123,
         name="Junagadh",
         country_name="India",
+        disclosure_year=expected_year,
         lat=21.5222,
         lng=70.4579,
         geometry={"type": "Point", "coordinates": [70.4579, 21.5222]},
@@ -113,12 +138,12 @@ async def test_get_location_by_org_id_success(client, mock_location_details_serv
         lambda: mock_location_details_service
     )
 
-    response = await client.get("/api/v1/locations/id/867355")
+    response = await client.get(f"/api/v1/locations/id/867355{query}")
 
     assert response.status_code == 200
     assert response.json()["location"] == expected_location.model_dump(by_alias=True)
     mock_location_details_service.get_location_details_by_org_id.assert_called_once_with(
-        867355
+        expected_year, 867355
     )
     app.dependency_overrides.clear()
 
@@ -242,7 +267,9 @@ async def test_get_location_by_org_id_preserves_null_has_local_action(client):
         "ENGINEERED_BUILT_ENVIRONMENT"
     ]
     assert solution_cards[0]["hasLocalAction"] is None
-    repository.has_organization.assert_awaited_once_with(834406)
+    repository.has_organization.assert_awaited_once_with(
+        DEFAULT_DISCLOSING_YEAR, 834406
+    )
     app.dependency_overrides.clear()
 
 
@@ -261,7 +288,7 @@ async def test_get_location_by_org_id_not_found(client, mock_location_details_se
     assert response.status_code == 404
     assert response.json() == {"detail": "City not found: 999999"}
     mock_location_details_service.get_location_details_by_org_id.assert_called_once_with(
-        999999
+        DEFAULT_DISCLOSING_YEAR, 999999
     )
     app.dependency_overrides.clear()
 

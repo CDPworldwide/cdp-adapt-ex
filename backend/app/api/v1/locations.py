@@ -77,6 +77,7 @@ async def get_location_seo_summaries(
 )
 async def get_location_by_org_id(
     organization_id: int,
+    disclosing_year: int = DEFAULT_DISCLOSING_YEAR,
     location_service: LocationDetailsService = Depends(get_location_details_service),
     profile_translation_service: LocationProfileTranslationService = Depends(
         get_location_profile_translation_service
@@ -86,7 +87,7 @@ async def get_location_by_org_id(
     """Get location details by organization ID."""
     try:
         location = await location_service.get_location_details_by_org_id(
-            organization_id
+            disclosing_year, organization_id
         )
         location = await translate_location_response(
             location,
@@ -156,6 +157,7 @@ async def get_all_location_pins(
 )
 async def get_location(
     location_name: str,
+    disclosing_year: int = DEFAULT_DISCLOSING_YEAR,
     location_service: LocationDetailsService = Depends(get_location_details_service),
     profile_translation_service: LocationProfileTranslationService = Depends(
         get_location_profile_translation_service
@@ -166,6 +168,7 @@ async def get_location(
 
     Args:
         location_name: The unique name of the location to retrieve.
+        disclosing_year: The year the information was disclosed.
         location_service: Service dependency used to fetch location details.
 
     Returns:
@@ -177,7 +180,8 @@ async def get_location(
 
     try:
         location = await location_service.get_eligible_location_details_by_name(
-            location_name
+            disclosing_year=disclosing_year,
+            city_name=location_name,
         )
     except CityNotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e)) from e
