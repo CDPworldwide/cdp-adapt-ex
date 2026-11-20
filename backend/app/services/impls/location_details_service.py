@@ -9,7 +9,7 @@ import asyncio
 import json
 import re
 import time
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 
 from app.models.location_details import (
     FactActions,
@@ -44,6 +44,7 @@ from app.services.impls.solution_category_mapper import SolutionCategoryMapper
 from app.services.impls.status_mapper import StatusMapper
 from app.services.impls.text_cleanup import clean_disclosed_text
 from app.services.interfaces.city_resolution_service import CityResolutionService
+from app.shared.config import settings
 from app.shared.exceptions import CityNotFoundException
 from app.shared.logging import logger
 
@@ -52,6 +53,8 @@ class LocationDetailsService:
     _summaries_cache = None
     _pins_cache = None
     _seo_summaries_cache = None
+    _summaries_cache_lock = asyncio.Lock()
+    _pins_cache_lock = asyncio.Lock()
 
     def __init__(
         self,
@@ -499,7 +502,20 @@ class LocationDetailsService:
         self, disclosing_year: int
     ) -> list[OrganizationSummary]:
         """Returns organization summaries used by location suggestions."""
-        if LocationDetailsService._summaries_cache is None:
+        cache = LocationDetailsService._summaries_cache
+        if cache is None:
+            cache = OrderedDict()
+            LocationDetailsService._summaries_cache = cache
+
+        if disclosing_year in cache:
+            cache.move_to_end(disclosing_year)
+            return cache[disclosing_year]
+
+        async with LocationDetailsService._summaries_cache_lock:
+            if disclosing_year in cache:
+                cache.move_to_end(disclosing_year)
+                return cache[disclosing_year]
+
             summaries = await self.repository.get_all_location_summaries(
                 disclosing_year
             )
@@ -508,13 +524,17 @@ class LocationDetailsService:
                 for summary in summaries
                 if summary.id != STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID
             ]
-            # Tag A-list reporters. Done once at cache time
             from app.services.impls.location_profile_builder import _A_LIST
 
-            for s in summaries:
-                s.is_reporting_leader = s.id in _A_LIST
-            LocationDetailsService._summaries_cache = summaries
-        return LocationDetailsService._summaries_cache
+            for summary in summaries:
+                summary.is_reporting_leader = summary.id in _A_LIST
+
+            cache[disclosing_year] = summaries
+            cache.move_to_end(disclosing_year)
+            while len(cache) > settings.MAX_YEAR_CACHE_ENTRIES:
+                cache.popitem(last=False)
+
+        return cache[disclosing_year]
 
     async def get_location_seo_summaries(self) -> list[LocationSeoSummary]:
         """Returns lightweight organization summaries used for SEO artifacts."""
@@ -524,20 +544,38 @@ class LocationDetailsService:
             )
         return LocationDetailsService._seo_summaries_cache
 
-    async def get_all_location_pins(self) -> list[LocationPin]:
-        """Returns a list of all unique location pins with coordinates."""
-        if LocationDetailsService._pins_cache is None:
-            LocationDetailsService._pins_cache = await self._fetch_all_location_pins()
-        return LocationDetailsService._pins_cache
+    async def get_all_location_pins(self, disclosing_year: int) -> list[LocationPin]:
+        """Returns a list of all unique location pins for a disclosing year."""
+        cache = LocationDetailsService._pins_cache
+        if cache is None:
+            cache = OrderedDict()
+            LocationDetailsService._pins_cache = cache
 
-    async def _fetch_all_location_pins(self) -> list[LocationPin]:
+        if disclosing_year in cache:
+            cache.move_to_end(disclosing_year)
+            return cache[disclosing_year]
+
+        async with LocationDetailsService._pins_cache_lock:
+            if disclosing_year in cache:
+                cache.move_to_end(disclosing_year)
+                return cache[disclosing_year]
+
+            pins = await self._fetch_all_location_pins(disclosing_year)
+            cache[disclosing_year] = pins
+            cache.move_to_end(disclosing_year)
+            while len(cache) > settings.MAX_YEAR_CACHE_ENTRIES:
+                cache.popitem(last=False)
+
+        return cache[disclosing_year]
+
+    async def _fetch_all_location_pins(self, disclosing_year: int) -> list[LocationPin]:
         """Fetches and transforms all unique location pins from the repository.
 
         Prefers the pre-computed `centroid` POINT column when present. Falls back
         to the legacy "first vertex of polygon" extraction when centroid is NULL,
         which keeps pins working for rows the upstream backfill hasn't reached.
         """
-        geometries = await self.repository.get_all_location_geometries()
+        geometries = await self.repository.get_all_location_geometries(disclosing_year)
         pins = []
         for location_geom in geometries:
             org_type = location_geom.org_type

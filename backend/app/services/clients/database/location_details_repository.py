@@ -230,6 +230,9 @@ class LocationDetailsRepository:
         (who have an empty `public_status` as of May 7, schema to be updated later). The search bar surfaces all three
         buckets.
 
+        Args:
+            disclosing_year: The year the information was disclosed.
+
         Returns:
             A list of `OrganizationSummary` objects used for search suggestions.
         """
@@ -375,8 +378,13 @@ class LocationDetailsRepository:
         rows = (await session.exec(statement)).all()
         return {row[0]: row[1] for row in rows}
 
-    async def get_all_location_geometries(self) -> List[LocationGeometry]:
+    async def get_all_location_geometries(
+        self, disclosing_year: int
+    ) -> List[LocationGeometry]:
         """Return a list of all unique location names, their geometries, and organization type.
+
+        Args:
+            disclosing_year: The year the information was disclosed.
 
         Returns:
             A list of LocationGeometry objects, each containing a location name, its
@@ -394,6 +402,7 @@ class LocationDetailsRepository:
                     func.ST_Y(DimCentral.centroid).label("centroid_lat"),
                 )
                 .where(
+                    DimCentral.disclosing_year == disclosing_year,
                     DimCentral.has_geometry,
                     DimCentral.cdp_disclosing_org_number
                     != STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID,

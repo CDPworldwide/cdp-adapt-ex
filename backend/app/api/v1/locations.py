@@ -103,17 +103,19 @@ async def get_location_by_org_id(
 
 @router.get("/pins", response_model=LocationPinsResponse)
 async def get_all_location_pins(
+    disclosing_year: int = DEFAULT_DISCLOSING_YEAR,
     location_service: LocationDetailsService = Depends(get_location_details_service),
 ) -> LocationPinsResponse:
     """Get all location pins with their coordinates.
 
     Args:
+        disclosing_year: The year for which to fetch location pins.
         location_service: Service dependency used to fetch location details.
 
     Returns:
         A list of all eligible location pins.
     """
-    pins = await location_service.get_all_location_pins()
+    pins = await location_service.get_all_location_pins(disclosing_year)
     return LocationPinsResponse(pins=pins)
 
 

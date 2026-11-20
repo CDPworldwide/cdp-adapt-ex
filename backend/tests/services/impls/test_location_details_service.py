@@ -788,6 +788,39 @@ class TestGetAllLocationSummaries:
             "Distrito Federal, Brasil",
         ]
 
+    async def test_get_all_location_summaries_is_cached_per_disclosing_year(
+        self,
+        location_details_service: LocationDetailsService,
+        mock_repository: AsyncMock,
+    ):
+        mock_repository.get_all_location_summaries.side_effect = [
+            [OrganizationSummary(id=1, name="2025", country="Country")],
+            [OrganizationSummary(id=2, name="2024", country="Country")],
+        ]
+
+        result_2025 = await location_details_service.get_all_location_summaries(2025)
+        result_2024 = await location_details_service.get_all_location_summaries(2024)
+        repeated_2025 = await location_details_service.get_all_location_summaries(2025)
+
+        assert [summary.name for summary in result_2025] == ["2025"]
+        assert [summary.name for summary in result_2024] == ["2024"]
+        assert repeated_2025 is result_2025
+        assert mock_repository.get_all_location_summaries.await_count == 2
+
+    async def test_get_all_location_summaries_evicts_least_recent_year(
+        self,
+        location_details_service: LocationDetailsService,
+        mock_repository: AsyncMock,
+    ):
+        mock_repository.get_all_location_summaries.side_effect = lambda year: [
+            OrganizationSummary(id=year, name=str(year), country="Country")
+        ]
+
+        for year in (2025, 2024, 2023, 2022):
+            await location_details_service.get_all_location_summaries(year)
+
+        assert set(LocationDetailsService._summaries_cache) == {2024, 2023, 2022}
+
 
 class TestGetAllLocationPins:
     """Tests for the get_all_location_pins method."""
@@ -837,7 +870,7 @@ class TestGetAllLocationPins:
             mock_geom_invalid,
         ]
 
-        result = await location_details_service.get_all_location_pins()
+        result = await location_details_service.get_all_location_pins(2025)
 
         assert len(result) == 2
 
@@ -872,7 +905,7 @@ class TestGetAllLocationPins:
 
         mock_repository.get_all_location_geometries.return_value = [mock_geom]
 
-        result = await location_details_service.get_all_location_pins()
+        result = await location_details_service.get_all_location_pins(2025)
 
         assert len(result) == 1
         assert result[0].name == "Bacolod City"
