@@ -134,6 +134,7 @@ class Settings:
             "DESCRIPTION",
             "CDP climate data platform webapp",
         )
+        self.MAX_YEAR_CACHE_ENTRIES = int(os.getenv("MAX_YEAR_CACHE_ENTRIES", "3"))
         self.API_V1_STR = os.getenv("API_V1_STR", "/api/v1")
         self.DEBUG = os.getenv("DEBUG", "false").lower() in ("true", "1", "t", "yes")
         self.SKIP_DATABASE_INIT = os.getenv("SKIP_DATABASE_INIT", "false").lower() in (

@@ -9,7 +9,7 @@ import asyncio
 import json
 import re
 import time
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 
 from app.models.location_details import (
     FactActions,
@@ -34,8 +34,8 @@ from app.schemas.location import (
     SolutionCard,
 )
 from app.services.clients.database.location_details_repository import (
-    LocationDetailsRepository,
     STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID,
+    LocationDetailsRepository,
 )
 from app.services.impls.hazard_mapper import HazardMapper
 from app.services.impls.location_profile_builder import LocationProfileBuilder
@@ -44,6 +44,7 @@ from app.services.impls.solution_category_mapper import SolutionCategoryMapper
 from app.services.impls.status_mapper import StatusMapper
 from app.services.impls.text_cleanup import clean_disclosed_text
 from app.services.interfaces.city_resolution_service import CityResolutionService
+from app.shared.config import settings
 from app.shared.exceptions import CityNotFoundException
 from app.shared.logging import logger
 
@@ -52,6 +53,8 @@ class LocationDetailsService:
     _summaries_cache = None
     _pins_cache = None
     _seo_summaries_cache = None
+    _summaries_cache_lock = asyncio.Lock()
+    _pins_cache_lock = asyncio.Lock()
 
     def __init__(
         self,
@@ -68,7 +71,10 @@ class LocationDetailsService:
         self.profile_builder = LocationProfileBuilder(self.sector_mapper)
 
     async def _build_location_profile(
-        self, org_id: int, fallback_name: str
+        self,
+        disclosing_year: int,
+        org_id: int,
+        fallback_name: str,
     ) -> LocationProfile:
         start_time = time.time()
         (
@@ -80,13 +86,13 @@ class LocationDetailsService:
             solutions,
             peers_actions,
         ) = await asyncio.gather(
-            self.repository.get_metadata(org_id),
-            self.repository.get_hazards(org_id),
-            self.repository.get_goals(org_id),
-            self.repository.get_actions(org_id),
-            self.repository.get_projects(org_id),
-            self.repository.get_solutions(org_id),
-            self.repository.get_solution_examples(org_id),
+            self.repository.get_metadata(disclosing_year, org_id),
+            self.repository.get_hazards(disclosing_year, org_id),
+            self.repository.get_goals(disclosing_year, org_id),
+            self.repository.get_actions(disclosing_year, org_id),
+            self.repository.get_projects(disclosing_year, org_id),
+            self.repository.get_solutions(disclosing_year, org_id),
+            self.repository.get_solution_examples(disclosing_year, org_id),
         )
 
         # Suppress this org's own disclosed adaptation content for Non-Public
@@ -99,7 +105,9 @@ class LocationDetailsService:
         # Resolve each peer jurisdiction's geometry/country (keyed by
         # peer_org_id) so the solution detail header can show a map thumbnail.
         peer_org_ids = {e.peer_org_id for e in peers_actions if e.peer_org_id}
-        peer_locations = await self.repository.get_peer_locations(peer_org_ids)
+        peer_locations = await self.repository.get_peer_locations(
+            disclosing_year, peer_org_ids
+        )
         peer_locations_by_id = {loc.org_id: loc for loc in peer_locations}
 
         mapped_hazards = self._map_to_hazard_profiles(hazards, org_id)
@@ -464,45 +472,69 @@ class LocationDetailsService:
         return "All"
 
     async def get_eligible_location_details_by_name(
-        self, city_name: str
+        self, disclosing_year: int, city_name: str
     ) -> LocationProfile:
-        """Returns the first matching location details for a given city name."""
-        org_id = await self.city_resolution_service.resolve_org_id(city_name)
+        """Returns the first matching location details for a given disclosing year and city name."""
+        org_id = await self.city_resolution_service.resolve_org_id(
+            disclosing_year, city_name
+        )
 
         if org_id is None:
             raise CityNotFoundException(city_name)
 
         return await self._build_location_profile(
-            org_id=org_id, fallback_name=city_name
+            disclosing_year=disclosing_year, org_id=org_id, fallback_name=city_name
         )
 
     async def get_location_details_by_org_id(
-        self, organization_id: int
+        self, disclosing_year: int, organization_id: int
     ) -> LocationProfile:
-        if not await self.repository.has_organization(organization_id):
+        if not await self.repository.has_organization(disclosing_year, organization_id):
             raise CityNotFoundException(str(organization_id))
 
         return await self._build_location_profile(
+            disclosing_year=disclosing_year,
             org_id=organization_id,
             fallback_name=str(organization_id),
         )
 
-    async def get_all_location_summaries(self) -> list[OrganizationSummary]:
+    async def get_all_location_summaries(
+        self, disclosing_year: int
+    ) -> list[OrganizationSummary]:
         """Returns organization summaries used by location suggestions."""
-        if LocationDetailsService._summaries_cache is None:
-            summaries = await self.repository.get_all_location_summaries()
+        cache = LocationDetailsService._summaries_cache
+        if cache is None:
+            cache = OrderedDict()
+            LocationDetailsService._summaries_cache = cache
+
+        if disclosing_year in cache:
+            cache.move_to_end(disclosing_year)
+            return cache[disclosing_year]
+
+        async with LocationDetailsService._summaries_cache_lock:
+            if disclosing_year in cache:
+                cache.move_to_end(disclosing_year)
+                return cache[disclosing_year]
+
+            summaries = await self.repository.get_all_location_summaries(
+                disclosing_year
+            )
             summaries = [
                 summary
                 for summary in summaries
                 if summary.id != STALE_MEXICO_FEDERAL_DISTRICT_ORG_ID
             ]
-            # Tag A-list reporters. Done once at cache time
             from app.services.impls.location_profile_builder import _A_LIST
 
-            for s in summaries:
-                s.is_reporting_leader = s.id in _A_LIST
-            LocationDetailsService._summaries_cache = summaries
-        return LocationDetailsService._summaries_cache
+            for summary in summaries:
+                summary.is_reporting_leader = summary.id in _A_LIST
+
+            cache[disclosing_year] = summaries
+            cache.move_to_end(disclosing_year)
+            while len(cache) > settings.MAX_YEAR_CACHE_ENTRIES:
+                cache.popitem(last=False)
+
+        return cache[disclosing_year]
 
     async def get_location_seo_summaries(self) -> list[LocationSeoSummary]:
         """Returns lightweight organization summaries used for SEO artifacts."""
@@ -512,20 +544,38 @@ class LocationDetailsService:
             )
         return LocationDetailsService._seo_summaries_cache
 
-    async def get_all_location_pins(self) -> list[LocationPin]:
-        """Returns a list of all unique location pins with coordinates."""
-        if LocationDetailsService._pins_cache is None:
-            LocationDetailsService._pins_cache = await self._fetch_all_location_pins()
-        return LocationDetailsService._pins_cache
+    async def get_all_location_pins(self, disclosing_year: int) -> list[LocationPin]:
+        """Returns a list of all unique location pins for a disclosing year."""
+        cache = LocationDetailsService._pins_cache
+        if cache is None:
+            cache = OrderedDict()
+            LocationDetailsService._pins_cache = cache
 
-    async def _fetch_all_location_pins(self) -> list[LocationPin]:
+        if disclosing_year in cache:
+            cache.move_to_end(disclosing_year)
+            return cache[disclosing_year]
+
+        async with LocationDetailsService._pins_cache_lock:
+            if disclosing_year in cache:
+                cache.move_to_end(disclosing_year)
+                return cache[disclosing_year]
+
+            pins = await self._fetch_all_location_pins(disclosing_year)
+            cache[disclosing_year] = pins
+            cache.move_to_end(disclosing_year)
+            while len(cache) > settings.MAX_YEAR_CACHE_ENTRIES:
+                cache.popitem(last=False)
+
+        return cache[disclosing_year]
+
+    async def _fetch_all_location_pins(self, disclosing_year: int) -> list[LocationPin]:
         """Fetches and transforms all unique location pins from the repository.
 
         Prefers the pre-computed `centroid` POINT column when present. Falls back
         to the legacy "first vertex of polygon" extraction when centroid is NULL,
         which keeps pins working for rows the upstream backfill hasn't reached.
         """
-        geometries = await self.repository.get_all_location_geometries()
+        geometries = await self.repository.get_all_location_geometries(disclosing_year)
         pins = []
         for location_geom in geometries:
             org_type = location_geom.org_type

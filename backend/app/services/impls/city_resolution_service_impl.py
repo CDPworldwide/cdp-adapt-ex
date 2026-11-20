@@ -17,7 +17,6 @@ from app.services.clients.database.location_details_repository import (
 from app.services.interfaces.city_resolution_service import CityResolutionService
 from app.shared.exceptions import MultipleCitiesFoundException
 
-
 MEXICO_CITY_ORG_ID = 31172
 MEXICO_CITY_LEGACY_NAMES = {
     "cdmx",
@@ -31,10 +30,13 @@ class CityResolutionServiceImpl(CityResolutionService):
     def __init__(self, repository: LocationDetailsRepository):
         self.repository = repository
 
-    async def resolve_org_id(self, city_name: str) -> Optional[int]:
+    async def resolve_org_id(
+        self, disclosing_year: int, city_name: str
+    ) -> Optional[int]:
         """Resolves a city name to its CDP organization ID.
 
         Args:
+            disclosing_year: The year the information was disclosed.
             city_name: The name of the city/organization.
 
         Returns:
@@ -47,7 +49,7 @@ class CityResolutionServiceImpl(CityResolutionService):
         if city_name.strip().lower() in MEXICO_CITY_LEGACY_NAMES:
             return MEXICO_CITY_ORG_ID
 
-        results = await self.repository.get_orgs_by_name(city_name)
+        results = await self.repository.get_orgs_by_name(disclosing_year, city_name)
 
         if not results:
             return None
