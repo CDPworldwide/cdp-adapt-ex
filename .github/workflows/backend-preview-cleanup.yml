@@ -3,7 +3,6 @@ name: Backend Preview Cleanup
 on:
   pull_request:
     types: [closed]
-    branches: [main, production, feat/prep-for-2026]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
@@ -67,7 +66,7 @@ jobs:
             --region=${{ env.REGION }} \
             --quiet || echo "Job already deleted or not found"
 
-          gcloud sql databases delete "cdp_pr_${PR_NUMBER}" \
+          gcloud sql databases delete "aae_preview_pr_${PR_NUMBER}" \
             --instance=cdp-test \
             --quiet || echo "Database already deleted or not found"
 
@@ -79,4 +78,4 @@ jobs:
           body: |
             ## Backend Preview Environment Cleaned Up
 
-            All backend preview deployments for PR #${{ github.event.pull_request.number }} have been deleted, along with the `cdp_pr_${{ github.event.pull_request.number }}` database.
+            All backend preview deployments for PR #${{ github.event.pull_request.number }} have been deleted, along with the `aae_preview_pr_${{ github.event.pull_request.number }}` database.

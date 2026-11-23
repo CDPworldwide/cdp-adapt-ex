@@ -11,7 +11,6 @@ on:
       - ".github/workflows/frontend.yml"
   pull_request:
     types: [opened, synchronize, reopened]
-    branches: [main, production, feat/prep-for-2026]
     paths:
       - "frontend/**"
       - "test/**"

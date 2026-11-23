@@ -3,7 +3,6 @@ name: Backend Preview Deploy
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
-    branches: [main, production, feat/prep-for-2026]
     paths:
       - "backend/**"
       - ".github/scripts/preview-service-name.sh"
@@ -26,7 +25,7 @@ env:
   ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
   # Per-PR database, dropped by backend-preview-cleanup.yml.
   PREVIEW_DB_INSTANCE: cdp-test
-  PREVIEW_DB: cdp_pr_${{ github.event.pull_request.number }}
+  PREVIEW_DB: aae_preview_pr_${{ github.event.pull_request.number }}
 
 jobs:
   deploy:
@@ -39,14 +38,6 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          # This removes Android, .NET, and Haskell to free up ~20GB
-          tool-cache: true
-          android: true
-          dotnet: true
-          haskell: true
       - name: Checkout repository
         uses: actions/checkout@v4
 

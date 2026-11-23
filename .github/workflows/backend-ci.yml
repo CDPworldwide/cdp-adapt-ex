@@ -1,6 +1,6 @@
 name: Backend CI
 
-# Runs on pushes and pull requests to long-lived integration branches
+# Runs on pushes to long-lived branches and on every pull request
 on:
   push:
     branches: [main, production]
@@ -8,7 +8,6 @@ on:
       - "backend/**"
       - ".github/workflows/backend-ci.yml"
   pull_request:
-    branches: [main, production, feat/prep-for-2026]
     paths:
       - "backend/**"
       - ".github/workflows/backend-ci.yml"
