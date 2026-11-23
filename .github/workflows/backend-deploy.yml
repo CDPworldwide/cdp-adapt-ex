@@ -3,7 +3,7 @@ name: Backend Preview Deploy
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
-    branches: [main, production]
+    branches: [main, production, feat/prep-for-2026]
     paths:
       - "backend/**"
       - ".github/scripts/preview-service-name.sh"

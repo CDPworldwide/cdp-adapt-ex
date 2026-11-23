@@ -3,7 +3,7 @@ name: Backend Preview Cleanup
 on:
   pull_request:
     types: [closed]
-    branches: [main, production]
+    branches: [main, production, feat/prep-for-2026]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
