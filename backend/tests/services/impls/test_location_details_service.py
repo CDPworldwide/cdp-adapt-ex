@@ -33,13 +33,18 @@ from app.shared.exceptions import (
     MultipleCitiesFoundException,
 )
 
+TEST_ORG_ID = 3203
+TEST_PEER_ORG_ID = 3333
+TEST_CITY = "TestCity"
+DEFAULT_DISCLOSING_YEAR = 2025
+
 
 def build_mock_metadata(**kwargs):
     defaults = {
-        "cdp_disclosing_org_number": 3203,
-        "disclosing_organization": "TestCity",
+        "cdp_disclosing_org_number": TEST_ORG_ID,
+        "disclosing_organization": TEST_CITY,
         "discloser_country_or_area": "USA",
-        "cdp_requesting_org_number": 3203,
+        "cdp_requesting_org_number": TEST_ORG_ID,
         "has_geometry": True,
         "geometry": json.dumps({"type": "Point", "coordinates": [10.0, 20.0]}),
     }
@@ -49,7 +54,7 @@ def build_mock_metadata(**kwargs):
 
 def build_mock_hazard(**kwargs):
     defaults = {
-        "cdp_disclosing_org_number": 3203,
+        "cdp_disclosing_org_number": TEST_ORG_ID,
         "hazard_english": "Extreme heat",
         "summary_text": "Default summary",
         "public_status": "Public",
@@ -61,9 +66,9 @@ def build_mock_hazard(**kwargs):
 
 def build_mock_goal(**kwargs):
     defaults = {
-        "cdp_disclosing_org_number": 3203,
+        "cdp_disclosing_org_number": TEST_ORG_ID,
         "disclosure_cycle": "2025",
-        "disclosing_organization": "TestCity",
+        "disclosing_organization": TEST_CITY,
         "public_status": "Public",
         "goal_english": "Default goal",
         "hazard_addressed_english": "Extreme heat",
@@ -78,7 +83,7 @@ def build_mock_goal(**kwargs):
 
 def build_mock_action(**kwargs):
     defaults = {
-        "cdp_disclosing_org_number": 3203,
+        "cdp_disclosing_org_number": TEST_ORG_ID,
         "action_english": "Default action",
         "hazard_addressed_english": "Extreme heat",
         "action_status_english": "Scoping",
@@ -95,9 +100,9 @@ def build_mock_action(**kwargs):
 
 def build_mock_solution(**kwargs):
     defaults = {
-        "cdp_disclosing_org_number": 3203,
-        "disclosing_year": 2025,
-        "target_org_id": 3203,
+        "cdp_disclosing_org_number": TEST_ORG_ID,
+        "disclosing_year": DEFAULT_DISCLOSING_YEAR,
+        "target_org_id": TEST_ORG_ID,
         "solution_category": "Engineered and built environment actions",
         "solution": None,
         "action_rank": 1,
@@ -116,11 +121,11 @@ def build_mock_solution(**kwargs):
 
 def build_mock_solution_example(**kwargs):
     defaults = {
-        "disclosing_year": 2025,
-        "target_org_id": 3203,
+        "disclosing_year": DEFAULT_DISCLOSING_YEAR,
+        "target_org_id": TEST_ORG_ID,
         "hazard_filter": "All",
         "action_english": "Install green roofs",
-        "peer_org_id": 3333,
+        "peer_org_id": TEST_PEER_ORG_ID,
         "peer_org_name": "Peer Org Name",
         "action_index": 1,
         "hazard_addressed_english": "Urban flooding",
@@ -155,7 +160,7 @@ def mock_repository():
 def mock_city_resolution_service():
     """Create a mock CityResolutionService with safe defaults."""
     service = AsyncMock(spec=CityResolutionService)
-    service.resolve_org_id.return_value = 3203
+    service.resolve_org_id.return_value = TEST_ORG_ID
     return service
 
 
@@ -177,7 +182,7 @@ class TestGetEligibleLocationDetailsByName:
         mock_city_resolution_service.resolve_org_id.return_value = None
         with pytest.raises(CityNotFoundException) as exc_info:
             await location_details_service.get_eligible_location_details_by_name(
-                2025, "UnknownCity"
+                DEFAULT_DISCLOSING_YEAR, "UnknownCity"
             )
         assert exc_info.value.city_name == "UnknownCity"
 
@@ -192,7 +197,7 @@ class TestGetEligibleLocationDetailsByName:
         )
         with pytest.raises(MultipleCitiesFoundException):
             await location_details_service.get_eligible_location_details_by_name(
-                2025, "City"
+                DEFAULT_DISCLOSING_YEAR, "City"
             )
 
     async def test_get_location_details_happy_path(
@@ -206,10 +211,10 @@ class TestGetEligibleLocationDetailsByName:
         mock_repository.get_actions.return_value = [build_mock_action()]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
 
-        assert result.name == "TestCity"
+        assert result.name == TEST_CITY
         assert result.country_name == "USA"
         assert result.lat == 20.0
         assert result.lng == 10.0
@@ -230,7 +235,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
 
         assert len(result.solutions.solutions) == 1
@@ -265,7 +270,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
 
         solution_cards = result.solutions.solutions[
@@ -286,7 +291,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
 
         solution_cards = result.solutions.solutions[
@@ -311,7 +316,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
 
         solution_cards = result.solutions.solutions[
@@ -340,7 +345,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
 
         peer_actions = result.solutions.solutions[
@@ -361,15 +366,18 @@ class TestGetEligibleLocationDetailsByName:
         mock_city_resolution_service: AsyncMock,
     ):
         """A resolved location without metadata for the selected year is not found."""
+        disclosing_year = 2024
         mock_repository.get_metadata.return_value = None
         with pytest.raises(CityNotFoundException):
             await location_details_service.get_eligible_location_details_by_name(
-                2024, "TestCity"
+                disclosing_year, TEST_CITY
             )
         mock_city_resolution_service.resolve_org_id.assert_awaited_once_with(
-            2024, "TestCity"
+            disclosing_year, TEST_CITY
         )
-        mock_repository.get_metadata.assert_awaited_once_with(2024, 3203)
+        mock_repository.get_metadata.assert_awaited_once_with(
+            disclosing_year, TEST_ORG_ID
+        )
 
     async def test_get_location_with_missing_disclosing_organization_raises_exception(
         self,
@@ -383,10 +391,10 @@ class TestGetEligibleLocationDetailsByName:
 
         with pytest.raises(CityNotFoundException) as exc_info:
             await location_details_service.get_eligible_location_details_by_name(
-                2025, "TestCity"
+                DEFAULT_DISCLOSING_YEAR, TEST_CITY
             )
 
-        assert exc_info.value.city_name == "TestCity"
+        assert exc_info.value.city_name == TEST_CITY
 
     async def test_get_location_with_invalid_geometry_coordinates(
         self,
@@ -400,7 +408,7 @@ class TestGetEligibleLocationDetailsByName:
         )
         with pytest.raises(CityGeometryMissingException) as exc_info:
             await location_details_service.get_eligible_location_details_by_name(
-                2025, "TestCity"
+                DEFAULT_DISCLOSING_YEAR, TEST_CITY
             )
         assert "has invalid or missing geometry data" in str(exc_info.value)
 
@@ -410,18 +418,20 @@ class TestGetEligibleLocationDetailsByName:
         mock_repository,
         mock_city_resolution_service,
     ):
+        disclosing_year = 2024
+
         mock_repository.get_projects.return_value = []
         mock_repository.get_solution_examples.return_value = [
-            build_mock_solution_example(peer_org_id=3333)
+            build_mock_solution_example(peer_org_id=TEST_PEER_ORG_ID)
         ]
         mock_repository.get_peer_locations.return_value = []
 
         await location_details_service.get_eligible_location_details_by_name(
-            2024, "TestCity"
+            disclosing_year, TEST_CITY
         )
 
         mock_city_resolution_service.resolve_org_id.assert_awaited_once_with(
-            2024, "TestCity"
+            disclosing_year, TEST_CITY
         )
         for fetch in (
             mock_repository.get_metadata,
@@ -432,9 +442,11 @@ class TestGetEligibleLocationDetailsByName:
             mock_repository.get_solutions,
             mock_repository.get_solution_examples,
         ):
-            fetch.assert_awaited_once_with(2024, 3203)
+            fetch.assert_awaited_once_with(disclosing_year, TEST_ORG_ID)
 
-        mock_repository.get_peer_locations.assert_awaited_once_with(2024, {3333})
+        mock_repository.get_peer_locations.assert_awaited_once_with(
+            disclosing_year, {TEST_PEER_ORG_ID}
+        )
 
     # ---------------------------------------------------------------------
     # Hazard Mapping Tests
@@ -451,7 +463,7 @@ class TestGetEligibleLocationDetailsByName:
             build_mock_hazard(hazard_english="Unknown hazard type", hazard_rank=2),
         ]
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
         assert len(result.hazards.hazards) == 1
         assert result.hazards.hazards[0].hazard.hazard_type == HazardEnum.EXTREME_HEAT
@@ -472,7 +484,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
         hazard_profile = result.hazards.hazards[0]
 
@@ -508,7 +520,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
         hazard_profile = result.hazards.hazards[0]
 
@@ -550,7 +562,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
         hazards_addressed = result.government_actions.goals[0].hazards_addressed
 
@@ -582,7 +594,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
         action = result.government_actions.actions[0]
 
@@ -623,7 +635,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
         action = result.government_actions.actions[0]
 
@@ -661,7 +673,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
         assert result.government_actions.actions[0].co_benefits == expected_benefits
 
@@ -686,7 +698,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
         assert (
             result.government_actions.actions[0].resilience_enhanced
@@ -709,7 +721,7 @@ class TestGetEligibleLocationDetailsByName:
         ]
 
         result = await location_details_service.get_eligible_location_details_by_name(
-            2025, "TestCity"
+            DEFAULT_DISCLOSING_YEAR, TEST_CITY
         )
         assert len(result.government_actions.actions) == 1
         assert result.government_actions.actions[0].title == "Valid action"
@@ -734,13 +746,15 @@ class TestGetLocationDetailsByOrgId:
         )
 
         result = await location_details_service.get_location_details_by_org_id(
-            2025, 72990
+            DEFAULT_DISCLOSING_YEAR, 72990
         )
 
         assert result.organization_id == 72990
         assert result.name == "Vestland County"
         assert result.geometry == {"type": "Point", "coordinates": [10.0, 20.0]}
-        mock_repository.has_organization.assert_awaited_once_with(2025, 72990)
+        mock_repository.has_organization.assert_awaited_once_with(
+            DEFAULT_DISCLOSING_YEAR, 72990
+        )
 
     async def test_get_location_by_org_id_raises_when_org_missing(
         self,
@@ -750,7 +764,9 @@ class TestGetLocationDetailsByOrgId:
         mock_repository.has_organization.return_value = False
 
         with pytest.raises(CityNotFoundException) as exc_info:
-            await location_details_service.get_location_details_by_org_id(2025, 999999)
+            await location_details_service.get_location_details_by_org_id(
+                DEFAULT_DISCLOSING_YEAR, 999999
+            )
 
         assert exc_info.value.city_name == "999999"
         mock_repository.get_metadata.assert_not_awaited()
@@ -780,7 +796,9 @@ class TestGetAllLocationSummaries:
             ),
         ]
 
-        result = await location_details_service.get_all_location_summaries(2025)
+        result = await location_details_service.get_all_location_summaries(
+            DEFAULT_DISCLOSING_YEAR
+        )
 
         assert [summary.id for summary in result] == [31172, 50353]
         assert [summary.name for summary in result] == [
@@ -798,9 +816,13 @@ class TestGetAllLocationSummaries:
             [OrganizationSummary(id=2, name="2024", country="Country")],
         ]
 
-        result_2025 = await location_details_service.get_all_location_summaries(2025)
+        result_2025 = await location_details_service.get_all_location_summaries(
+            DEFAULT_DISCLOSING_YEAR
+        )
         result_2024 = await location_details_service.get_all_location_summaries(2024)
-        repeated_2025 = await location_details_service.get_all_location_summaries(2025)
+        repeated_2025 = await location_details_service.get_all_location_summaries(
+            DEFAULT_DISCLOSING_YEAR
+        )
 
         assert [summary.name for summary in result_2025] == ["2025"]
         assert [summary.name for summary in result_2024] == ["2024"]
@@ -816,7 +838,7 @@ class TestGetAllLocationSummaries:
             OrganizationSummary(id=year, name=str(year), country="Country")
         ]
 
-        for year in (2025, 2024, 2023, 2022):
+        for year in (DEFAULT_DISCLOSING_YEAR, 2024, 2023, 2022):
             await location_details_service.get_all_location_summaries(year)
 
         assert set(LocationDetailsService._summaries_cache) == {2024, 2023, 2022}
@@ -870,7 +892,9 @@ class TestGetAllLocationPins:
             mock_geom_invalid,
         ]
 
-        result = await location_details_service.get_all_location_pins(2025)
+        result = await location_details_service.get_all_location_pins(
+            DEFAULT_DISCLOSING_YEAR
+        )
 
         assert len(result) == 2
 
@@ -905,7 +929,9 @@ class TestGetAllLocationPins:
 
         mock_repository.get_all_location_geometries.return_value = [mock_geom]
 
-        result = await location_details_service.get_all_location_pins(2025)
+        result = await location_details_service.get_all_location_pins(
+            DEFAULT_DISCLOSING_YEAR
+        )
 
         assert len(result) == 1
         assert result[0].name == "Bacolod City"
