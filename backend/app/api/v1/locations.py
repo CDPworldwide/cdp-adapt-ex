@@ -15,7 +15,6 @@ from app.services.impls.location_profile_translation_service import (
     normalize_translation_language,
 )
 from app.shared.config import settings
-from app.shared.constants import DEFAULT_DISCLOSING_YEAR
 from app.shared.exceptions import (
     CityGeometryMissingException,
     CityNotFoundException,
@@ -29,7 +28,7 @@ router = APIRouter()
 
 @router.get("/names", response_model=LocationNamesResponse)
 async def get_all_location_names(
-    disclosing_year: int = DEFAULT_DISCLOSING_YEAR,
+    disclosing_year: int = settings.DEFAULT_DISCLOSING_YEAR,
     location_service: LocationDetailsService = Depends(get_location_details_service),
 ) -> LocationNamesResponse:
     # TODO: Also get country names
@@ -77,7 +76,7 @@ async def get_location_seo_summaries(
 )
 async def get_location_by_org_id(
     organization_id: int,
-    disclosing_year: int = DEFAULT_DISCLOSING_YEAR,
+    disclosing_year: int = settings.DEFAULT_DISCLOSING_YEAR,
     location_service: LocationDetailsService = Depends(get_location_details_service),
     profile_translation_service: LocationProfileTranslationService = Depends(
         get_location_profile_translation_service
@@ -103,7 +102,7 @@ async def get_location_by_org_id(
 
 @router.get("/pins", response_model=LocationPinsResponse)
 async def get_all_location_pins(
-    disclosing_year: int = DEFAULT_DISCLOSING_YEAR,
+    disclosing_year: int = settings.DEFAULT_DISCLOSING_YEAR,
     location_service: LocationDetailsService = Depends(get_location_details_service),
 ) -> LocationPinsResponse:
     """Get all location pins with their coordinates.
@@ -159,7 +158,7 @@ async def get_all_location_pins(
 )
 async def get_location(
     location_name: str,
-    disclosing_year: int = DEFAULT_DISCLOSING_YEAR,
+    disclosing_year: int = settings.DEFAULT_DISCLOSING_YEAR,
     location_service: LocationDetailsService = Depends(get_location_details_service),
     profile_translation_service: LocationProfileTranslationService = Depends(
         get_location_profile_translation_service
