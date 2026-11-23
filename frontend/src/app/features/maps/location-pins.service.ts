@@ -15,6 +15,7 @@ export class LocationPinsService {
 
   constructor() {}
 
+  // TODO - Add disclosing_year as a parameter to this function and pass it in the API call.
   getAllLocationPins(): Observable<LocationPin[]> {
     return from(
       getAllLocationPinsApiV1LocationsPinsGet({

@@ -28,6 +28,7 @@ export class LocationService {
   private client = createApiClient();
   private languageService = inject(LanguageService);
 
+  // TODO - Add disclosing_year as a parameter to this function and pass it in the API call.
   getLocation(locationName: string): Observable<LocationProfile> {
     return from(
       getLocationApiV1LocationsLocationNameGet({
@@ -46,6 +47,7 @@ export class LocationService {
     );
   }
 
+  // TODO - Add disclosing_year as a parameter to this function and pass it in the API call.
   getLocationByOrganizationId(organizationId: string): Observable<LocationProfile> {
     const normalizedOrganizationId = extractOrganizationIdFromRouteSegment(organizationId);
     if (!normalizedOrganizationId) {
@@ -69,6 +71,7 @@ export class LocationService {
     );
   }
 
+  // TODO - Add disclosing_year as a parameter to this function and pass it in the API call.
   getAllLocationNames(): Observable<LocationSuggestion[]> {
     return from(
       getAllLocationNamesApiV1LocationsNamesGet({
