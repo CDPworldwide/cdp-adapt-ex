@@ -23,7 +23,11 @@ cleanup() {
 trap cleanup EXIT
 
 fetch_openapi() {
-    curl -sf "$OPENAPI_URL" -o openapi.json
+    curl -sf "$OPENAPI_URL" -o openapi.json || return 1
+
+    if [ -s openapi.json ] && [ "$(tail -c 1 openapi.json | wc -l)" -eq 0 ]; then
+        printf '\n' >> openapi.json
+    fi
 }
 
 start_backend() {
@@ -39,7 +43,7 @@ start_backend() {
 
     echo "Waiting for backend to become ready..."
     for _ in $(seq 1 30); do
-        if curl -sf "$OPENAPI_URL" -o openapi.json; then
+        if fetch_openapi; then
             echo "Successfully fetched OpenAPI spec"
             return 0
         fi
