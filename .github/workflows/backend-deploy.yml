@@ -3,7 +3,6 @@ name: Backend Preview Deploy
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
-    branches: [main, production]
     paths:
       - "backend/**"
       - ".github/scripts/preview-service-name.sh"
@@ -24,6 +23,9 @@ env:
         (github.ref == 'refs/heads/production' && 'cdp-server-prod' || 'cdp-server-dev') }}
   IS_PREVIEW: ${{ github.event_name == 'pull_request' }}
   ENVIRONMENT: ${{ github.ref == 'refs/heads/production' && 'production' || 'development' }}
+  # Per-PR database, dropped by backend-preview-cleanup.yml.
+  PREVIEW_DB_INSTANCE: cdp-test
+  PREVIEW_DB: aae_preview_pr_${{ github.event.pull_request.number }}
 
 jobs:
   deploy:
@@ -36,14 +38,6 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          # This removes Android, .NET, and Haskell to free up ~20GB
-          tool-cache: true
-          android: true
-          dotnet: true
-          haskell: true
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -93,14 +87,41 @@ jobs:
           docker push $IMAGE_TAG
           docker push $IMAGE_LATEST
 
-      # --- Database migrations (Alembic) --------------------------------------
-      # Runs `alembic upgrade head` as a Cloud Run Job using the image just
-      # built, so it connects through the same /cloudsql socket as the app.
-      # Previews and dev all share cdp-test, so this migrates cdp-test for
-      # everyone. Runs before the new code goes live; a failed migration stops
-      # the deploy. Never runs against prod from this workflow.
+      # Reset rather than recreated: the running preview holds connections.
+      - name: Create preview database
+        if: env.IS_PREVIEW == 'true'
+        run: |
+          if gcloud sql databases describe "$PREVIEW_DB" --instance "$PREVIEW_DB_INSTANCE" >/dev/null 2>&1; then
+            echo "Database $PREVIEW_DB already exists"
+          else
+            gcloud sql databases create "$PREVIEW_DB" --instance "$PREVIEW_DB_INSTANCE"
+          fi
+
+      - name: Reset, migrate and seed preview database (Cloud Run Job)
+        if: env.IS_PREVIEW == 'true'
+        env:
+          JOB_NAME: cdp-migrate-pr-${{ github.event.pull_request.number }}
+          IMAGE: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ steps.service-name.outputs.service }}:${{ github.sha }}
+        run: |
+          gcloud run jobs deploy "$JOB_NAME" \
+            --image "$IMAGE" \
+            --region "$REGION" \
+            --set-cloudsql-instances "$PROJECT_ID:$REGION:$PREVIEW_DB_INSTANCE" \
+            --set-secrets "POSTGRES_HOST=${ENVIRONMENT}-POSTGRES_HOST:latest,POSTGRES_USER=${ENVIRONMENT}-POSTGRES_USER:latest,POSTGRES_PASSWORD=${ENVIRONMENT}-POSTGRES_PASSWORD:latest" \
+            --set-env-vars "APP_ENV=${ENVIRONMENT},POSTGRES_PORT=5432,POSTGRES_DB=${PREVIEW_DB}" \
+            --command sh \
+            --args "-c,alembic downgrade base && alembic upgrade head && python -m seeds.seed" \
+            --max-retries 0 \
+            --task-timeout 20m \
+            --memory 1Gi \
+            --labels "component=backend-migrations,managed-by=github-actions,pr-number=${{ github.event.pull_request.number }},commit-sha=${{ github.sha }}" \
+            --quiet
+
+          gcloud run jobs execute "$JOB_NAME" --region "$REGION" --wait
+
+      # Dev only; previews migrate their own database above.
       - name: Run database migrations (Cloud Run Job)
-        if: env.ENVIRONMENT != 'production'
+        if: env.IS_PREVIEW != 'true' && env.ENVIRONMENT != 'production'
         env:
           JOB_NAME: cdp-migrate-${{ env.ENVIRONMENT }}
           IMAGE: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ steps.service-name.outputs.service }}:${{ github.sha }}
@@ -151,9 +172,12 @@ jobs:
             GOOGLE_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
             ALLOWED_ORIGINS=${{ env.ENVIRONMENT }}-ALLOWED_ORIGINS:latest
             POSTGRES_HOST=${{ env.ENVIRONMENT }}-POSTGRES_HOST:latest
-            POSTGRES_DB=${{ env.ENVIRONMENT }}-POSTGRES_DB:latest
             POSTGRES_USER=${{ env.ENVIRONMENT }}-POSTGRES_USER:latest
+            ${{ env.IS_PREVIEW != 'true' && format('POSTGRES_DB={0}-POSTGRES_DB:latest', env.ENVIRONMENT) || '' }}
+          # Removes the old POSTGRES_DB secret from existing previews.
+          secrets_update_strategy: overwrite
           env_vars: |
+            ${{ env.IS_PREVIEW == 'true' && format('POSTGRES_DB={0}', env.PREVIEW_DB) || '' }}
             PROJECT_ID=${{ env.PROJECT_ID }}
             LOCATION=${{ env.REGION }}
             APP_ENV=${{ env.ENVIRONMENT == 'preview' && 'staging' || env.ENVIRONMENT }}
@@ -188,7 +212,7 @@ jobs:
             **URL:** ${{ steps.deploy.outputs.url }}
             **Commit:** `${{ github.sha }}`
             **Environment:** staging
-            **Database:** dev
+            **Database:** `${{ env.PREVIEW_DB }}` on cdp-test (seed data only)
 
             ### Quick Tests
             ```bash

@@ -173,6 +173,7 @@ class FactProjects(SQLModel, table=True):
     __tablename__ = f"{settings.CSTAR_TABLE_PREFIX}Fact_Funding_Gap"
 
     project_index: int = Field(primary_key=True)
+    project_area_index: int = Field(primary_key=True)
     cdp_disclosing_org_number: int = Field(primary_key=True)
     project_title_english: str | None = None
     disclosing_organization: str | None = None

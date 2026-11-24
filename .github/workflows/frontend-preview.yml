@@ -3,9 +3,9 @@ name: Frontend Preview Deploy
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
-    branches: [main, production]
     paths:
       - "frontend/**"
+      - "backend/**"
       - "test/**"
       - "client/**"
       - "docs/**"
