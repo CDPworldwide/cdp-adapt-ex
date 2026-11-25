@@ -46,6 +46,12 @@ runs:
         sudo apt-get update
         sudo apt-get install -y libgraphviz-dev
 
+    # Installed up front so generate.sh's 30s startup wait isn't spent installing packages.
+    - name: Install backend dependencies
+      working-directory: backend
+      shell: bash
+      run: uv sync
+
     - name: Generate API client from OpenAPI spec
       working-directory: client
       shell: bash
