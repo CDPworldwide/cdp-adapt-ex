@@ -235,10 +235,7 @@
       class="relative flex-1 mx-4 md:mx-8 lg:mx-12 mb-4 md:mb-6 rounded-2xl overflow-hidden border border-cdp-neutral-02 bg-cdp-neutral-01 shadow-sm"
       [class.invisible]="isOverlayOpen"
     >
-      <app-maps
-        class="block h-full w-full"
-        [categoryFilter]="selectedMapCategoryFilter"
-      ></app-maps>
+      <app-maps class="block h-full w-full" [categoryFilter]="selectedMapCategoryFilter"></app-maps>
 
       <!-- On mobile the cards sit above the scroll-down arrow (bottom-20) so it
            stays visible/tappable; desktop keeps them at bottom-6 (left card,

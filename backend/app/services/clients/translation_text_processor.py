@@ -1,7 +1,6 @@
 import re
 from dataclasses import dataclass
 
-
 ACRONYM_PATTERN = re.compile(
     r"\b(?:[A-Za-z]{1,2}\.)+[A-Za-z]\.?(?=\W|$)|\b(?=[A-Z0-9/-]{2,}\b)(?=[A-Z0-9/-]*[A-Z])[A-Z0-9]+(?:[/-][A-Z0-9]+)*\b"
 )
@@ -38,14 +37,21 @@ def protect_acronyms(text: str) -> PreparedText:
         if is_dotted and token == token.lower():
             return token
 
-        if not is_dotted and not has_symbol and not has_lowercase and uppercase_word_count > 2:
+        if (
+            not is_dotted
+            and not has_symbol
+            and not has_lowercase
+            and uppercase_word_count > 2
+        ):
             return token
 
         placeholder = PLACEHOLDER_TEMPLATE.format(index=len(placeholders))
         placeholders[placeholder] = token
         return placeholder
 
-    return PreparedText(text=ACRONYM_PATTERN.sub(replace, text), placeholders=placeholders)
+    return PreparedText(
+        text=ACRONYM_PATTERN.sub(replace, text), placeholders=placeholders
+    )
 
 
 def restore_acronyms(text: str, placeholders: dict[str, str]) -> str:
@@ -78,7 +84,8 @@ def validate_restored_acronyms(
     mutated = [
         token
         for token in translated_acronyms
-        if token not in expected_unique and _looks_like_mutated_acronym(token, expected_unique)
+        if token not in expected_unique
+        and _looks_like_mutated_acronym(token, expected_unique)
     ]
 
     return AcronymValidationResult(

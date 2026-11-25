@@ -18,7 +18,7 @@
 
   body {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
-    background-color: #F2F2F2;
+    background-color: #f2f2f2;
   }
 }
 
@@ -107,7 +107,7 @@
 
 .mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item {
   background: white !important;
-  color: #1B232C;
+  color: #1b232c;
 }
 
 /* Suppress Material's default auto-focus highlight on the first item when
@@ -118,7 +118,7 @@
 .mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item.cdk-keyboard-focused,
 .mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item.cdk-focused {
   background: white !important;
-  color: #1B232C !important;
+  color: #1b232c !important;
 }
 
 .mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item:focus .mat-icon,
@@ -130,9 +130,9 @@
 
 .mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item:hover {
   background: white !important;
-  color: #E81647 !important;
+  color: #e81647 !important;
 }
 
 .mat-mdc-menu-panel.help-menu-panel .mat-mdc-menu-item:hover .mat-icon {
-  color: #E81647;
+  color: #e81647;
 }

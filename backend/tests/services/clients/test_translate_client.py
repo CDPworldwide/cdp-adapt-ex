@@ -33,9 +33,7 @@ def test_translate_texts_preserves_acronyms_and_source_language(monkeypatch):
 
     assert result == ["Plan de calor para CDP con mejoras de HVAC y M.O.S.E."]
     mock_client.translate_text.assert_called_once_with(
-        contents=[
-            "Plan de calor para X_PAC_0_X con mejoras de X_PAC_1_X y X_PAC_2_X"
-        ],
+        contents=["Plan de calor para X_PAC_0_X con mejoras de X_PAC_1_X y X_PAC_2_X"],
         target_language_code="en",
         source_language_code="es",
         parent="projects/test-project/locations/global",
@@ -98,7 +96,9 @@ def test_translate_texts_falls_back_when_acronym_repair_fails(monkeypatch):
 
     mock_client = MagicMock()
     mock_client.translate_text.side_effect = [
-        SimpleNamespace(translations=[SimpleNamespace(translated_text="Plan for MOSE")]),
+        SimpleNamespace(
+            translations=[SimpleNamespace(translated_text="Plan for MOSE")]
+        ),
         SimpleNamespace(
             translations=[SimpleNamespace(translated_text="Plan para MOSE")]
         ),

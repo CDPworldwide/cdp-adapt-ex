@@ -6,11 +6,10 @@ from decimal import Decimal
 from typing import Any
 
 import sqlalchemy.types as types
+from app.shared.config import settings
 from geoalchemy2 import Geometry
 from pydantic import ConfigDict
 from sqlmodel import TEXT, Column, Field, SQLModel
-
-from app.shared.config import settings
 
 
 class SafeGeometry(types.TypeDecorator):

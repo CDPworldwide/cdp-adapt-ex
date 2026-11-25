@@ -56,9 +56,7 @@ async def test_record_role_selection_falls_back_to_client_host(
 
 
 @pytest.mark.asyncio
-async def test_record_role_selection_rejects_unknown_role(
-    client, mock_onboarding_repo
-):
+async def test_record_role_selection_rejects_unknown_role(client, mock_onboarding_repo):
     _override(mock_onboarding_repo)
 
     response = await client.post(

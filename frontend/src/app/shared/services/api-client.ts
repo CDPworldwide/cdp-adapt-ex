@@ -8,9 +8,7 @@ function buildApiHeaders(): Record<string, string> | undefined {
   }
 
   const apiKeyHeaderName =
-    'apiKeyHeaderName' in environment
-      ? (environment.apiKeyHeaderName as string)
-      : 'X-API-Key';
+    'apiKeyHeaderName' in environment ? (environment.apiKeyHeaderName as string) : 'X-API-Key';
 
   return {
     [apiKeyHeaderName]: apiKey,

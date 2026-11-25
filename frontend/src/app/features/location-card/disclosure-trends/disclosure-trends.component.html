@@ -131,9 +131,10 @@
                   </span>
                   @if (summary.topHazards[0].range) {
                     <div class="mt-[5cqw] flex items-baseline">
-                      <span class="text-white font-roboto text-[15cqw] font-normal leading-none tabular-nums">{{
-                        hazardNumberDisplays[0]() | number: '1.0-0'
-                      }}</span>
+                      <span
+                        class="text-white font-roboto text-[15cqw] font-normal leading-none tabular-nums"
+                        >{{ hazardNumberDisplays[0]() | number: '1.0-0' }}</span
+                      >
                       <span class="text-white font-roboto text-[10cqw] font-normal leading-none"
                         >%</span
                       >
@@ -162,10 +163,12 @@
                   </span>
                   @if (summary.topHazards[1].range) {
                     <div class="mt-[5cqw] flex items-baseline">
-                      <span class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none tabular-nums"
+                      <span
+                        class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none tabular-nums"
                         >{{ hazardNumberDisplays[1]() | number: '1.0-0' }}</span
                       >
-                      <span class="text-cdp-border font-roboto text-[10cqw] font-normal leading-none"
+                      <span
+                        class="text-cdp-border font-roboto text-[10cqw] font-normal leading-none"
                         >%</span
                       >
                     </div>
@@ -193,10 +196,12 @@
                   </span>
                   @if (summary.topHazards[2].range) {
                     <div class="mt-[5cqw] flex items-baseline">
-                      <span class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none tabular-nums"
+                      <span
+                        class="text-cdp-border font-roboto text-[15cqw] font-normal leading-none tabular-nums"
                         >{{ hazardNumberDisplays[2]() | number: '1.0-0' }}</span
                       >
-                      <span class="text-cdp-border font-roboto text-[10cqw] font-normal leading-none"
+                      <span
+                        class="text-cdp-border font-roboto text-[10cqw] font-normal leading-none"
                         >%</span
                       >
                     </div>
@@ -204,7 +209,9 @@
                 </div>
               }
             </div>
-            <span class="mt-2 text-center text-white font-inter text-xs md:text-sm font-medium leading-none">
+            <span
+              class="mt-2 text-center text-white font-inter text-xs md:text-sm font-medium leading-none"
+            >
               {{ 'disclosureTrends.ofJurisdictions' | translate }}
             </span>
           </div>

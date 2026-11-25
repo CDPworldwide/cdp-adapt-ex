@@ -28,9 +28,7 @@ def test_protect_acronyms_handles_dotted_and_plain_tokens():
 def test_protect_acronyms_handles_dotted_token_without_final_period():
     prepared = protect_acronyms("M.O.S.E flood protection and CO2 monitoring")
 
-    assert prepared.text == (
-        "X_PAC_0_X flood protection and X_PAC_1_X monitoring"
-    )
+    assert prepared.text == ("X_PAC_0_X flood protection and X_PAC_1_X monitoring")
     assert prepared.placeholders == {
         "X_PAC_0_X": "M.O.S.E",
         "X_PAC_1_X": "CO2",
@@ -38,7 +36,9 @@ def test_protect_acronyms_handles_dotted_token_without_final_period():
 
 
 def test_protect_acronyms_skips_lowercase_dotted_abbreviations():
-    prepared = protect_acronyms("Use cooling strategies (e.g., pools) and i.e. examples.")
+    prepared = protect_acronyms(
+        "Use cooling strategies (e.g., pools) and i.e. examples."
+    )
 
     assert prepared.text == "Use cooling strategies (e.g., pools) and i.e. examples."
     assert prepared.placeholders == {}

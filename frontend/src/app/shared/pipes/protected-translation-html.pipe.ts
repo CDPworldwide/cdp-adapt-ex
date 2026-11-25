@@ -44,7 +44,11 @@ export function protectTranslationHtml(value: string): string {
   return result;
 }
 
-function shouldProtectToken(token: string, hasLowercase: boolean, uppercaseWordCount: number): boolean {
+function shouldProtectToken(
+  token: string,
+  hasLowercase: boolean,
+  uppercaseWordCount: number,
+): boolean {
   const isDotted = token.includes('.');
   const hasSymbol = /[0-9/+.-]/.test(token);
 

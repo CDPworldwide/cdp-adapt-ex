@@ -37,7 +37,10 @@ export class AnalyticsService {
   capture(eventName: string, properties?: AnalyticsProperties): void {
     this.posthog.capture(eventName, properties);
     if (this.isGoogleAnalyticsEvent(eventName)) {
-      this.googleAnalytics.capture(eventName, this.googleAnalyticsProperties(eventName, properties));
+      this.googleAnalytics.capture(
+        eventName,
+        this.googleAnalyticsProperties(eventName, properties),
+      );
     }
   }
 

@@ -2,10 +2,9 @@
 
 from datetime import UTC, datetime
 
+from app.models.base import BaseSQLModel
 from sqlalchemy import Column, Text
 from sqlmodel import Field
-
-from app.models.base import BaseSQLModel
 
 
 class TranslationCache(BaseSQLModel, table=True):

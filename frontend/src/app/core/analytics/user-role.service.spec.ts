@@ -35,11 +35,14 @@ describe('UserRoleService', () => {
       previous_role: null,
       source: 'header_settings',
     });
-    expect(fetchSpy).toHaveBeenCalledOnceWith(jasmine.stringMatching(/\/api\/v1\/onboarding\/role$/), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role: 'business' }),
-    });
+    expect(fetchSpy).toHaveBeenCalledOnceWith(
+      jasmine.stringMatching(/\/api\/v1\/onboarding\/role$/),
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: 'business' }),
+      },
+    );
   });
 
   it('includes the previous role when the user changes roles', () => {

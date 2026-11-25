@@ -286,13 +286,10 @@ describe('CityDetailPageComponent', () => {
     fixture.detectChanges();
 
     expect(mockLocationService.getLocationByOrganizationId).toHaveBeenCalledWith('867355');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(
-      ['/org', '867355-junagadh-india', 'hazards'],
-      {
-        replaceUrl: true,
-        queryParamsHandling: 'preserve',
-      },
-    );
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '867355-junagadh-india', 'hazards'], {
+      replaceUrl: true,
+      queryParamsHandling: 'preserve',
+    });
   });
 
   it('preserves the chatopen query parameter when tabs change while the AI sidebar is open', () => {
@@ -353,9 +350,8 @@ describe('CityDetailPageComponent', () => {
     routeQueryParamMap$.next(convertToParamMap({ chatopen: 'true' }));
     fixture.detectChanges();
 
-    const backdrop: HTMLButtonElement | null = fixture.nativeElement.querySelector(
-      'button.bg-black\\/40',
-    );
+    const backdrop: HTMLButtonElement | null =
+      fixture.nativeElement.querySelector('button.bg-black\\/40');
     expect(backdrop).not.toBeNull();
 
     backdrop?.click();

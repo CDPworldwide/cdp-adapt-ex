@@ -31,8 +31,9 @@ describe('AppHeaderComponent', () => {
   });
 
   it('links the CDP logo to the app home page', () => {
-    const logoLink: HTMLAnchorElement | null =
-      fixture.nativeElement.querySelector('a[aria-label="shared.home"]');
+    const logoLink: HTMLAnchorElement | null = fixture.nativeElement.querySelector(
+      'a[aria-label="shared.home"]',
+    );
 
     expect(logoLink).not.toBeNull();
     expect(logoLink?.getAttribute('href')).toBe('/');

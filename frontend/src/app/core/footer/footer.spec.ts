@@ -24,8 +24,9 @@ describe('Footer', () => {
   });
 
   it('links terms of use to the current CDP terms and conditions page', () => {
-    const termsLink: HTMLAnchorElement | null =
-      fixture.nativeElement.querySelector('a[href="https://www.cdp.net/en/terms-and-conditions"]');
+    const termsLink: HTMLAnchorElement | null = fixture.nativeElement.querySelector(
+      'a[href="https://www.cdp.net/en/terms-and-conditions"]',
+    );
 
     expect(termsLink).not.toBeNull();
     expect(termsLink?.textContent?.trim()).toBe('locationCard.footer.termsOfUse');

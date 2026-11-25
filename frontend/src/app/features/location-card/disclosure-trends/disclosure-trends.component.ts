@@ -146,7 +146,11 @@ export class DisclosureTrendsComponent implements AfterViewInit, OnChanges, OnDe
       this.summary.adaptationActionsCount,
       COUNTER_DURATION_MS,
     );
-    this.tween(this.waterSecurityPctDisplay, this.summary.waterSecurityRisksPct, COUNTER_DURATION_MS);
+    this.tween(
+      this.waterSecurityPctDisplay,
+      this.summary.waterSecurityRisksPct,
+      COUNTER_DURATION_MS,
+    );
     this.tween(this.climateProjectsDisplay, this.summary.climateProjectsCount, COUNTER_DURATION_MS);
     this.tween(this.floodingRisksPctDisplay, this.summary.floodingRisksPct, COUNTER_DURATION_MS);
     this.tween(

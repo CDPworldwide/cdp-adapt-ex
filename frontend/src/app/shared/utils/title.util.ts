@@ -1,6 +1,7 @@
-export function splitTitleAtLastColon(
-  title: string | null | undefined,
-): { prefix: string; main: string } {
+export function splitTitleAtLastColon(title: string | null | undefined): {
+  prefix: string;
+  main: string;
+} {
   if (!title) return { prefix: '', main: '' };
 
   const segments = title

@@ -32,7 +32,7 @@ export class GeometryService {
         // setCenter + zoom.
         const innerType =
           geometry['type'] === 'Feature'
-            ? ((geometry['geometry'] as { type?: string } | undefined)?.type ?? null)
+            ? (geometry['geometry'] as { type?: string } | undefined)?.type ?? null
             : (geometry['type'] as string | undefined);
         if (innerType === 'Point') {
           return undefined;

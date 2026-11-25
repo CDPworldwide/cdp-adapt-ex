@@ -8,6 +8,8 @@ import { LinkedInfoTooltipComponent } from '../linked-info-tooltip/linked-info-t
   standalone: true,
   imports: [TranslateModule, InfoIconComponent, LinkedInfoTooltipComponent],
   templateUrl: './reporting-leader-chip.component.html',
-  styles: [':host { display: inline-flex; align-items: center; position: relative; vertical-align: middle; }'],
+  styles: [
+    ':host { display: inline-flex; align-items: center; position: relative; vertical-align: middle; }',
+  ],
 })
 export class ReportingLeaderChipComponent {}

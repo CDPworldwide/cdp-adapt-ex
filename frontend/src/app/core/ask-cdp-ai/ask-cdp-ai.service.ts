@@ -214,7 +214,7 @@ export class AskCdpAiService {
         '',
         '**Current Actions:** Auckland highlights shoreline adaptation planning, blue-green infrastructure, and flood resilience programmes. Ankara highlights drought planning, heat-health response, and urban infrastructure upgrades.',
         '',
-        '**Key Difference:** Auckland\'s disclosure is more coastal-adaptation oriented, while Ankara\'s is more focused on inland heat, drought, and water security. The overlap is strongest around urban flooding and extreme heat.',
+        "**Key Difference:** Auckland's disclosure is more coastal-adaptation oriented, while Ankara's is more focused on inland heat, drought, and water security. The overlap is strongest around urban flooding and extreme heat.",
         '',
         'Sources:',
         '[^1]: Auckland Council CDP disclosure. https://cdp-action-explorer.net/org/3422/hazards',
@@ -696,7 +696,9 @@ export class AskCdpAiService {
   }
 
   public parseToHtml(content: string): string {
-    const rendered = this.formatAnswerSections(marked(this.formatCitationMarkdown(content)) as string);
+    const rendered = this.formatAnswerSections(
+      marked(this.formatCitationMarkdown(content)) as string,
+    );
     const dirty = `<div class="barkdown-content ai-markdown-body" data-barkdown="">${rendered}</div>`;
     return DOMPurify.sanitize(dirty, { ADD_ATTR: ['data-barkdown'] });
   }
@@ -750,7 +752,10 @@ export class AskCdpAiService {
   }
 
   private trimLeadingWhitespace(element: HTMLElement): void {
-    while (element.firstChild?.nodeType === Node.TEXT_NODE && !element.firstChild.textContent?.trim()) {
+    while (
+      element.firstChild?.nodeType === Node.TEXT_NODE &&
+      !element.firstChild.textContent?.trim()
+    ) {
       element.firstChild.remove();
     }
 

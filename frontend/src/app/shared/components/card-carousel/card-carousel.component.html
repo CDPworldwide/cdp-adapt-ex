@@ -11,7 +11,11 @@
     </button>
   }
 
-  <div #scroller class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2" (scroll)="onScroll()">
+  <div
+    #scroller
+    class="cards-scroll flex flex-row gap-4 overflow-x-auto pb-2"
+    (scroll)="onScroll()"
+  >
     <ng-content></ng-content>
   </div>
 

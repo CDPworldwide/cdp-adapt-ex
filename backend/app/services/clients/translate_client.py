@@ -119,7 +119,11 @@ class TranslateClient:
                     mime_type="text/plain",
                 )
 
-                for response_offset, (translation, prepared, original_text) in enumerate(
+                for response_offset, (
+                    translation,
+                    prepared,
+                    original_text,
+                ) in enumerate(
                     zip(
                         response.translations,
                         batch_prepared_texts,
@@ -250,7 +254,9 @@ class TranslateClient:
         for index, segment in enumerate(segments):
             if isinstance(segment, _TranslatableSegment):
                 translated = translated_by_index.get(index, segment.text)
-                restored_parts.append(f"{segment.leading}{translated}{segment.trailing}")
+                restored_parts.append(
+                    f"{segment.leading}{translated}{segment.trailing}"
+                )
             else:
                 restored_parts.append(segment)
 
@@ -311,7 +317,9 @@ class TranslateClient:
         target_language: str,
     ) -> list[str]:
         translations: list[str] = []
-        prepared_segments = [_PlainPreparedSegment(text=segment) for segment in segments]
+        prepared_segments = [
+            _PlainPreparedSegment(text=segment) for segment in segments
+        ]
 
         for batch_start, batch_end in self._request_ranges(prepared_segments):
             batch_segments = prepared_segments[batch_start:batch_end]

@@ -2,9 +2,8 @@
 
 from typing import Optional
 
-from sqlmodel import Field
-
 from app.models.base import BaseSQLModel
+from sqlmodel import Field
 
 
 class UserRoleSelection(BaseSQLModel, table=True):
