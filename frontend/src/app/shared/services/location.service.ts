@@ -71,11 +71,11 @@ export class LocationService {
     );
   }
 
-  // TODO - Add disclosing_year as a parameter to this function and pass it in the API call.
-  getAllLocationNames(): Observable<LocationSuggestion[]> {
+  getAllLocationNames(disclosingYear: number): Observable<LocationSuggestion[]> {
     return from(
       getAllLocationNamesApiV1LocationsNamesGet({
         client: this.client,
+        query: { disclosing_year: disclosingYear },
       }),
     ).pipe(
       map((response) => {
