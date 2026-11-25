@@ -14,10 +14,11 @@ import { MapSelectionService } from '../main-search/map-selection.service';
 import { LocationPinsService } from './location-pins.service';
 import { OrgTypeEnum } from '@pac-api/client';
 import type { LocationPin } from '@pac-api/client';
-import { Subscription } from 'rxjs';
+import { distinctUntilChanged, Subscription, switchMap } from 'rxjs';
 import { GoogleMapsLoaderService } from 'src/app/shared/services/google-maps-loader.service';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { pinProperties } from '../../core/analytics/analytics-events';
+import { DisclosingYearService } from 'src/app/shared/services/disclosing-year.service';
 
 // Circle-on-stick pin shape (a filled disc with a vertical bar trailing
 // downward). Single fill — the selected variant uses a darker shade.
@@ -72,32 +73,63 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   constructor(
     private mapSelectionService: MapSelectionService,
     private locationPinsService: LocationPinsService,
+    private disclosingYearService: DisclosingYearService,
     private ngZone: NgZone,
     private googleMapsLoader: GoogleMapsLoaderService,
     private posthog: AnalyticsService,
   ) {}
 
   ngOnInit(): void {
-    this.googleMapsLoader.loadApi().subscribe((loaded) => {
-      if (!loaded) return;
-      // Load pins first so the map can boot at the fitted zoom level instead
-      // of animating in from a wider initial view.
-      this.subscriptions.push(
-        this.locationPinsService.getAllLocationPins().subscribe({
-          next: (pins) => {
-            this.allPins = pins;
-            this.initMap(pins);
-            pins.forEach((location) => this.addPin(location));
-            this.applyCategoryFilter();
-          },
-          error: (err) => {
-            console.error('Failed to load location pins:', err);
-            this.allPins = [];
-            this.initMap([]);
-          },
-        }),
-      );
-    });
+    this.subscriptions.push(
+      this.googleMapsLoader.loadApi().subscribe((loaded) => {
+        if (!loaded) return;
+
+        // Load pins first so the map can boot at the fitted zoom level instead
+        // of animating in from a wider initial view.
+        this.subscriptions.push(
+          this.disclosingYearService.disclosingYear$
+            .pipe(
+              distinctUntilChanged(),
+              switchMap((year) => this.locationPinsService.getAllLocationPins(year)),
+            )
+            .subscribe({
+              next: (pins) => {
+                this.clearMarkers();
+
+                this.allPins = pins;
+
+                const selectedLocation = this.mapSelectionService.getSelectedLocation();
+                if (selectedLocation && !pins.some((pin) => pin.name === selectedLocation.name)) {
+                  this.mapSelectionService.clearSelection();
+                }
+
+                if (!this.googleMap) {
+                  this.initMap(pins);
+                } else {
+                  const { center, zoom } = this.computeFit(pins, this.isDesktop());
+                  this.defaultCenter = center;
+                  this.defaultZoom = zoom;
+                  this.googleMap.setOptions({ minZoom: zoom });
+                  this.googleMap.setCenter(center);
+                  this.googleMap.setZoom(zoom);
+                }
+
+                pins.forEach((location) => this.addPin(location));
+                this.applyCategoryFilter();
+              },
+              error: (err) => {
+                console.error('Failed to load location pins:', err);
+                this.clearMarkers();
+                this.allPins = [];
+
+                if (!this.googleMap) {
+                  this.initMap([]);
+                }
+              },
+            }),
+        );
+      }),
+    );
 
     this.subscriptions.push(
       this.mapSelectionService.selectedMapLocation$.subscribe((location) => {
@@ -107,6 +139,14 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
         this.updateMarkerIcons(location);
       }),
     );
+  }
+
+  private clearMarkers(): void {
+    this.markers.forEach(({ marker }) => {
+      marker.map = null;
+    });
+
+    this.markers.clear();
   }
 
   ngAfterViewInit(): void {}
@@ -122,6 +162,8 @@ export class Maps implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
+    this.clearMarkers();
+
     if (this.googleMap) {
       this.googleMap = null!;
     }

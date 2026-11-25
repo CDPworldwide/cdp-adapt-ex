@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, from } from 'rxjs';
 import {
   getAllLocationPinsApiV1LocationsPinsGet,
@@ -6,20 +6,22 @@ import {
   LocationPinsResponse,
 } from '@pac-api/client';
 import { createApiClient } from '../../shared/services/api-client';
+import { DisclosingYearService } from 'src/app/shared/services/disclosing-year.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LocationPinsService {
   private client = createApiClient();
+  private readonly disclosingYearService = inject(DisclosingYearService);
 
   constructor() {}
 
-  // TODO - Add disclosing_year as a parameter to this function and pass it in the API call.
-  getAllLocationPins(): Observable<LocationPin[]> {
+  getAllLocationPins(disclosingYear: number): Observable<LocationPin[]> {
     return from(
       getAllLocationPinsApiV1LocationsPinsGet({
         client: this.client,
+        query: { disclosing_year: disclosingYear },
       }).then((res) => {
         if (res.error) {
           throw res.error;
