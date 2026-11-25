@@ -50,7 +50,7 @@ We maintain separate environments for development (including PR previews), pre a
 |--------|-------------|-----------------|------------------|------------|-------------------|---------------|
 | `production-backend-deploy.yml` on `main` | `production` | `cdp-server-prod` | n/a | shared `cdp-ai-server` | `cdp-prod` | `production-` |
 | `production-frontend-deploy.yml` on `main` | `production` | existing `cdp-server-prod` | `frontend-prod` | shared `cdp-ai-server` | `cdp-prod` | `production-` |
-| `pre-deploy.yml` on `develop` | `pre` | `cdp-server-pre` | `frontend-pre` | shared `cdp-ai-server` | `cdp-pre` | `pre-` |
+| `pre-deploy.yml` on `develop` | `pre` | `cdp-server-pre` | `frontend-pre` | shared `cdp-ai-server` | `aae-pre` | `pre-` |
 | `deploy.yml` manual dispatch | `production` | `cdp-server-prod` | `frontend-prod` | shared `cdp-ai-server` | `cdp-prod` | `production-` |
 | Frontend PR previews | `development` / preview | matching `cdp-server-preview-{TITLE}-pr-X`, or shared `cdp-server-dev` | `frontend-preview-{TITLE}-pr-X` | shared `cdp-ai-server` | `cdp-test` | `development-` |
 | Backend PR previews | `development` / preview | `cdp-server-preview-{TITLE}-pr-X` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |

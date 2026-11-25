@@ -1,6 +1,6 @@
 name: Pre Deploy
 
-# Deploys develop to the pre environment: migrates cdp-pre, then deploys backend and frontend.
+# Deploys develop to the pre environment: migrates aae-pre, then deploys backend and frontend.
 on:
   push:
     # TODO: remove feat/pre-pipeline once develop exists and this has been tested.
@@ -19,7 +19,7 @@ env:
   # Secret prefix (pre-*, mirroring production-*) and Sentry environment.
   ENVIRONMENT: pre
   NODE_VERSION: "20.x"
-  CLOUD_SQL_INSTANCE: cdp-pre
+  CLOUD_SQL_INSTANCE: aae-pre
   CLOUD_SQL_REGION: us-east1
   SERVICE_NAME_BACKEND: cdp-server-pre
   SERVICE_NAME_FRONTEND: frontend-pre
@@ -98,7 +98,7 @@ jobs:
           image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_BACKEND }}:${{ github.sha }}
           flags: |
             --allow-unauthenticated
-            --add-cloudsql-instances=${{ env.PROJECT_ID }}:${{ env.CLOUD_SQL_REGION }}:${{ env.CLOUD_SQL_INSTANCE }}
+            --set-cloudsql-instances=${{ env.PROJECT_ID }}:${{ env.CLOUD_SQL_REGION }}:${{ env.CLOUD_SQL_INSTANCE }}
             --min-instances=0
             --max-instances=2
             --memory=2Gi
