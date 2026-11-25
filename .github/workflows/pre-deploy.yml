@@ -1,0 +1,324 @@
+name: Pre Deploy
+
+# Deploys develop to the pre environment: migrates cdp-pre, then deploys backend and frontend.
+on:
+  push:
+    # TODO: remove feat/pre-pipeline once develop exists and this has been tested.
+    branches: [develop, feat/pre-pipeline]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: us-central1
+  ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
+  AI_SERVER_URL: https://cdp-ai-server-pbybuiwoxq-uc.a.run.app
+  # Secret prefix (pre-*, mirroring production-*) and Sentry environment.
+  ENVIRONMENT: pre
+  NODE_VERSION: "20.x"
+  CLOUD_SQL_INSTANCE: cdp-pre
+  CLOUD_SQL_REGION: us-east1
+  SERVICE_NAME_BACKEND: cdp-server-pre
+  SERVICE_NAME_FRONTEND: frontend-pre
+  MIGRATE_JOB: cdp-migrate-pre
+
+jobs:
+  deploy-backend:
+    name: Pre / deploy backend
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      url: ${{ steps.verify-backend.outputs.url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Get Backend Secrets from Secret Manager
+        id: backend-secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: |-
+            API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
+
+      - name: Build and push backend Docker image
+        working-directory: backend
+        run: |
+          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_BACKEND }}:${{ github.sha }}"
+          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_BACKEND }}:latest"
+
+          docker build -t $IMAGE_TAG -t $IMAGE_LATEST .
+          docker push $IMAGE_TAG
+          docker push $IMAGE_LATEST
+
+      # Migrations run before the deploy so the new code never sees an old schema.
+      - name: Run database migrations (Cloud Run Job)
+        env:
+          IMAGE: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_BACKEND }}:${{ github.sha }}
+        run: |
+          gcloud run jobs deploy "$MIGRATE_JOB" \
+            --image "$IMAGE" \
+            --region "$REGION" \
+            --set-cloudsql-instances "$PROJECT_ID:$CLOUD_SQL_REGION:$CLOUD_SQL_INSTANCE" \
+            --set-secrets "POSTGRES_HOST=${ENVIRONMENT}-POSTGRES_HOST:latest,POSTGRES_DB=${ENVIRONMENT}-POSTGRES_DB:latest,POSTGRES_USER=${ENVIRONMENT}-POSTGRES_USER:latest,POSTGRES_PASSWORD=${ENVIRONMENT}-POSTGRES_PASSWORD:latest" \
+            --set-env-vars "APP_ENV=production,POSTGRES_PORT=5432" \
+            --command alembic \
+            --args upgrade,head \
+            --max-retries 0 \
+            --task-timeout 20m \
+            --memory 1Gi \
+            --labels "environment=${ENVIRONMENT},component=backend-migrations,managed-by=github-actions,commit-sha=${{ github.sha }}" \
+            --quiet
+
+          gcloud run jobs execute "$MIGRATE_JOB" --region "$REGION" --wait
+
+      - name: Deploy backend to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME_BACKEND }}
+          region: ${{ env.REGION }}
+          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_BACKEND }}:${{ github.sha }}
+          flags: |
+            --allow-unauthenticated
+            --add-cloudsql-instances=${{ env.PROJECT_ID }}:${{ env.CLOUD_SQL_REGION }}:${{ env.CLOUD_SQL_INSTANCE }}
+            --min-instances=0
+            --max-instances=2
+            --memory=2Gi
+            --cpu=2
+            --timeout=300
+          labels: |
+            environment=${{ env.ENVIRONMENT }}
+            component=backend
+            managed-by=github-actions
+            commit-sha=${{ github.sha }}
+          secrets: |
+            POSTGRES_PASSWORD=${{ env.ENVIRONMENT }}-POSTGRES_PASSWORD:latest
+            API_KEY=${{ env.ENVIRONMENT }}-API_KEY:latest
+            LLM_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
+            GOOGLE_API_KEY=${{ env.ENVIRONMENT }}-LLM_API_KEY:latest
+            ALLOWED_ORIGINS=${{ env.ENVIRONMENT }}-ALLOWED_ORIGINS:latest
+            POSTGRES_HOST=${{ env.ENVIRONMENT }}-POSTGRES_HOST:latest
+            POSTGRES_DB=${{ env.ENVIRONMENT }}-POSTGRES_DB:latest
+            POSTGRES_USER=${{ env.ENVIRONMENT }}-POSTGRES_USER:latest
+          # Same settings as production, so pre behaves like prod.
+          env_vars: |
+            PROJECT_ID=${{ env.PROJECT_ID }}
+            LOCATION=${{ env.REGION }}
+            APP_ENV=production
+            DEBUG=false
+            LOG_FORMAT=json
+            POSTGRES_PORT=5432
+            LLM_MODEL=${{ secrets.LLM_MODEL || 'gemini-2.5-flash' }}
+            DEFAULT_LLM_TEMPERATURE=0.2
+            MAX_TOKENS=2000
+            MAX_LLM_CALL_RETRIES=3
+            RATE_LIMIT_CHAT=10 per minute
+            RATE_LIMIT_SUGGEST_FOLLOW_UPS=10 per minute
+          env_vars_update_strategy: overwrite
+
+      - name: Verify backend revision and health
+        id: verify-backend
+        env:
+          BACKEND_API_KEY: ${{ steps.backend-secrets.outputs.API_KEY }}
+        run: |
+          EXPECTED_SHA="${{ github.sha }}"
+          BACKEND_URL=""
+
+          echo "Waiting for ${{ env.SERVICE_NAME_BACKEND }} label commit-sha=$EXPECTED_SHA"
+          for i in {1..24}; do
+            SERVICE_JSON=$(gcloud run services describe ${{ env.SERVICE_NAME_BACKEND }} --region=${{ env.REGION }} --format=json)
+            DEPLOYED_SHA=$(printf '%s' "$SERVICE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin)["metadata"]["labels"].get("commit-sha", ""))')
+            BACKEND_URL=$(printf '%s' "$SERVICE_JSON" | python3 -c 'import json,sys; print(json.load(sys.stdin)["status"].get("url", ""))')
+
+            echo "Attempt $i/24: deployed_sha=$DEPLOYED_SHA url=$BACKEND_URL"
+            if [ "$DEPLOYED_SHA" = "$EXPECTED_SHA" ] && [ -n "$BACKEND_URL" ]; then
+              break
+            fi
+
+            if [ "$i" -eq 24 ]; then
+              echo "Backend deploy did not converge to commit $EXPECTED_SHA"
+              exit 1
+            fi
+
+            sleep 5
+          done
+
+          # TODO: once pre has data, set EXPECTED_STATUS="200" and TRANSLATION_TARGET_LANGUAGE="es".
+          # Until then only health and "no 5xx" are checked, as the database is empty.
+          BACKEND_URL="$BACKEND_URL" \
+          BACKEND_API_KEY="$BACKEND_API_KEY" \
+          SMOKE_TEST_LOCATION_ORG_ID="59677" \
+          SMOKE_TEST_TRANSLATION_ORG_ID="59677" \
+          SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE="" \
+          SMOKE_TEST_LOCATION_EXPECTED_STATUS="" \
+          bash backend/scripts/smoke_test_deployment.sh
+
+          echo "url=$BACKEND_URL" >> "$GITHUB_OUTPUT"
+          echo "Backend ready: $BACKEND_URL"
+
+  deploy-frontend:
+    name: Pre / deploy frontend
+    needs: deploy-backend
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup frontend build
+        uses: ./.github/actions/setup-frontend-build
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install docs dependencies
+        run: npm ci
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Get Frontend Secrets from Secret Manager
+        id: frontend-secrets
+        uses: google-github-actions/get-secretmanager-secrets@v2
+        with:
+          secrets: |-
+            API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-API_KEY
+            AI_SERVER_API_KEY:${{ env.PROJECT_ID }}/shared-AI_SERVER_API_KEY
+            GOOGLE_MAPS_API_KEY:${{ env.PROJECT_ID }}/${{ env.ENVIRONMENT }}-GOOGLE_MAPS_API_KEY
+
+      # Analytics off so pre traffic doesn't mix with production numbers.
+      - name: Create pre environment.ts
+        working-directory: frontend
+        run: |
+          FRONTEND_BASE_URL='${{ needs.deploy-backend.outputs.url }}' \
+          FRONTEND_AI_SERVER_URL='${{ env.AI_SERVER_URL }}' \
+          FRONTEND_API_KEY='${{ steps.frontend-secrets.outputs.API_KEY }}' \
+          FRONTEND_AI_SERVER_API_KEY='${{ steps.frontend-secrets.outputs.AI_SERVER_API_KEY }}' \
+          FRONTEND_DEBUG_MODE='false' \
+          FRONTEND_MAPS_API_KEY='${{ steps.frontend-secrets.outputs.GOOGLE_MAPS_API_KEY }}' \
+          FRONTEND_GOOGLE_ANALYTICS_ENABLED='false' \
+          FRONTEND_POSTHOG_KEY='${{ vars.FRONTEND_POSTHOG_KEY }}' \
+          FRONTEND_POSTHOG_HOST='${{ vars.FRONTEND_POSTHOG_HOST }}' \
+          FRONTEND_POSTHOG_UI_HOST='${{ vars.FRONTEND_POSTHOG_UI_HOST }}' \
+          FRONTEND_POSTHOG_ENABLED='false' \
+          FRONTEND_SENTRY_DSN='${{ vars.FRONTEND_SENTRY_DSN }}' \
+          FRONTEND_SENTRY_ENABLED='${{ vars.FRONTEND_SENTRY_ENABLED }}' \
+          FRONTEND_SENTRY_ENVIRONMENT='${{ env.ENVIRONMENT }}' \
+          FRONTEND_SENTRY_RELEASE='${{ github.sha }}' \
+          FRONTEND_SENTRY_TRACES_SAMPLE_RATE='${{ vars.FRONTEND_SENTRY_TRACES_SAMPLE_RATE }}' \
+          bash scripts/write-environment.sh
+
+      - name: Validate generated frontend environment
+        working-directory: frontend
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          text = Path('src/environments/environment.ts').read_text(encoding='utf-8')
+
+          def extract(name: str) -> str:
+              match = re.search(rf"{name}: '([^']*)'", text)
+              return match.group(1) if match else ''
+
+          required = ('baseUrl', 'aiServerUrl', 'apiKey', 'aiServerApiKey')
+          for key in required:
+              print(f"{key}_set={'yes' if extract(key) else 'no'}")
+          missing = [key for key in required if not extract(key)]
+          if missing:
+              raise SystemExit(f"Missing generated frontend environment values: {', '.join(missing)}")
+          PY
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Run frontend tests
+        working-directory: frontend
+        run: npm run test:ci
+
+      - name: Build docs into frontend artifact
+        env:
+          FRONTEND_GOOGLE_ANALYTICS_ENABLED: "false"
+          FRONTEND_POSTHOG_ENABLED: "false"
+        run: npm run docs:build:frontend
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }} --quiet
+
+      - name: Build and push frontend Docker image
+        working-directory: frontend
+        run: |
+          IMAGE_TAG="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_FRONTEND }}:${{ github.sha }}"
+          IMAGE_LATEST="${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_FRONTEND }}:latest"
+
+          docker build -t $IMAGE_TAG -t $IMAGE_LATEST .
+          docker push $IMAGE_TAG
+          docker push $IMAGE_LATEST
+
+      - name: Deploy frontend to Cloud Run
+        id: deploy-frontend
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME_FRONTEND }}
+          region: ${{ env.REGION }}
+          image: ${{ env.ARTIFACT_REGISTRY }}/${{ env.PROJECT_ID }}/cdp/${{ env.SERVICE_NAME_FRONTEND }}:${{ github.sha }}
+          flags: |
+            --allow-unauthenticated
+            --min-instances=0
+            --max-instances=2
+            --memory=512Mi
+            --cpu=1
+            --timeout=60
+            --port=8080
+          labels: |
+            environment=${{ env.ENVIRONMENT }}
+            component=frontend
+            managed-by=github-actions
+            commit-sha=${{ github.sha }}
+
+      - name: Verify frontend deployment health
+        run: |
+          URL="${{ steps.deploy-frontend.outputs.url }}"
+          echo "Checking health of pre frontend at $URL..."
+          for i in {1..10}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo "000")
+            DOCS_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL/docs/" || echo "000")
+            if [ "$STATUS" = "200" ] && [ "$DOCS_STATUS" = "200" ]; then
+              echo "Frontend healthy (HTTP $STATUS), docs healthy (HTTP $DOCS_STATUS)"
+              echo "Pre frontend: $URL"
+              echo "Pre backend:  ${{ needs.deploy-backend.outputs.url }}"
+              exit 0
+            fi
+            echo "Attempt $i/10: frontend HTTP $STATUS, docs HTTP $DOCS_STATUS, waiting 5s..."
+            sleep 5
+          done
+          echo "Frontend deployment health check failed"
+          exit 1
