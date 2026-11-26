@@ -53,7 +53,7 @@ if [ -n "$SMOKE_TEST_LOCATION_EXPECTED_STATUS" ] &&
 fi
 
 if [ -n "$SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE" ]; then
-  translation_url="${BACKEND_URL}/api/v1/locations/id/${SMOKE_TEST_TRANSLATION_ORG_ID}?target_language=${SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE}"
+  translation_url="${BACKEND_URL}/api/v1/locations/id/${SMOKE_TEST_TRANSLATION_ORG_ID}?target_language=${SMOKE_TEST_TRANSLATION_TARGET_LANGUAGE}&disclosing_year=2025"
   translation_body="$(mktemp)"
   translation_status="$(request_status "$translation_url" "$translation_body")"
 
