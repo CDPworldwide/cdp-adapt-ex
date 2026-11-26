@@ -222,7 +222,7 @@ Triggered on pushes to `develop` (and temporarily `feat/pre-pipeline`), or by ma
 - **URLs**: Cloud Run URLs are derived from service name, project and region, so they stay the same across deploys:
   - Frontend: `https://frontend-pre-pbybuiwoxq-uc.a.run.app`
   - Backend: `https://cdp-server-pre-pbybuiwoxq-uc.a.run.app`
-- **Database**: Nothing in CI empties or reseeds `aae-pre`. To refresh it from prod's latest automated backup, run `backend/scripts/refresh_pre_from_prod.sh` locally. It only reads prod's backups, overwrites everything on pre, then resets pre's password and re-runs migrations.
+- **Database**: Nothing in CI empties or reseeds `aae-pre`.
 
 ### 3. PR Previews (`backend-deploy.yml` & `frontend-preview.yml`)
 Triggered on **pull request** updates.
