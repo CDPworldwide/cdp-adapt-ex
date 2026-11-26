@@ -12,7 +12,7 @@ export type LocationData = LocationProfile;
 export class SearchService {
   constructor(private locationService: LocationService) {}
 
-  searchLocation(query: string): Observable<LocationData> {
-    return this.locationService.getLocation(query);
+  searchLocation(query: string, disclosingYear: number): Observable<LocationData> {
+    return this.locationService.getLocation(query, disclosingYear);
   }
 }

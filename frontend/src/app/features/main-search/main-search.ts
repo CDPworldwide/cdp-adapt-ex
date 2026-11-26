@@ -157,21 +157,25 @@ export class MainSearchComponent implements OnInit {
         },
       });
 
-    this.mapSelectionService.selectedMapLocation$
-      .pipe(
+    combineLatest([
+      this.mapSelectionService.selectedMapLocation$.pipe(
         tap((location) => {
           this.selectedLocation = location;
-          if (location) {
-            this.totalHazardsCount = 0;
-            this.disclosedActionsCount = 0;
-            this.projectsRequiringFundingCount = 0;
-            this.topFourHazards = [];
-            this.isLoadingHazardData = true;
-          }
         }),
         filter((location): location is LocationPin => location !== null),
-        switchMap((location) =>
-          this.searchService.searchLocation(location.name).pipe(
+      ),
+      this.disclosingYearService.disclosingYear$.pipe(distinctUntilChanged()),
+    ])
+      .pipe(
+        tap(() => {
+          this.totalHazardsCount = 0;
+          this.disclosedActionsCount = 0;
+          this.projectsRequiringFundingCount = 0;
+          this.topFourHazards = [];
+          this.isLoadingHazardData = true;
+        }),
+        switchMap(([location, disclosingYear]) =>
+          this.searchService.searchLocation(location.name, disclosingYear).pipe(
             tap(() => (this.isLoadingHazardData = false)),
             catchError((err) => {
               console.error('Error fetching location details:', err);
@@ -429,7 +433,7 @@ export class MainSearchComponent implements OnInit {
     this.mapSelectionService.clearSelection();
     this.isNotFound = false;
     this.searchService
-      .searchLocation(locationName)
+      .searchLocation(locationName, this.disclosingYearService.disclosingYear)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {

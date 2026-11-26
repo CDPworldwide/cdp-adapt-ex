@@ -11,6 +11,7 @@ import { GlobalSearchService } from '../../core/global-search/global-search.serv
 import { LocationService } from '../../shared/services/location.service';
 import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 import { ChatPageComponent } from './chat-page.component';
+import { DisclosingYearService } from '../../shared/services/disclosing-year.service';
 
 describe('ChatPageComponent', () => {
   let fixture: ComponentFixture<ChatPageComponent>;
@@ -86,6 +87,13 @@ describe('ChatPageComponent', () => {
           provide: GlobalSearchService,
           useValue: jasmine.createSpyObj<GlobalSearchService>('GlobalSearchService', ['open']),
         },
+        {
+          provide: DisclosingYearService,
+          useValue: {
+            disclosingYear$: new BehaviorSubject<number>(2026).asObservable(),
+            disclosingYear: 2026,
+          },
+        },
       ],
     }).compileComponents();
 
@@ -120,7 +128,7 @@ describe('ChatPageComponent', () => {
     routeQueryParamMap$.next(convertToParamMap({ organizationId: '10894' }));
     fixture.detectChanges();
 
-    expect(locationService.getLocationByOrganizationId).toHaveBeenCalledWith('10894');
+    expect(locationService.getLocationByOrganizationId).toHaveBeenCalledWith('10894', 2026);
     expect(fixture.componentInstance.locationData).toEqual(mockLocationData);
   });
 

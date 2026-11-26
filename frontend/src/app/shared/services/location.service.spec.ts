@@ -83,14 +83,14 @@ describe('LocationService', () => {
   });
 
   it('should return an Observable from getLocation', () => {
-    const result = service.getLocation('Test');
+    const result = service.getLocation('Test', 2025);
     expect(result).toBeDefined();
     expect(result.subscribe).toBeDefined();
   });
 
-  it('should accept string parameter for location name', () => {
-    expect(() => service.getLocation('Minas Gerais')).not.toThrow();
-    expect(() => service.getLocation('São Paulo')).not.toThrow();
+  it('should accept a location name and disclosing year', () => {
+    expect(() => service.getLocation('Minas Gerais', 2025)).not.toThrow();
+    expect(() => service.getLocation('São Paulo', 2025)).not.toThrow();
   });
 
   describe('getLocation error handling', () => {
@@ -99,7 +99,7 @@ describe('LocationService', () => {
 
       // Skipped: This test requires a real API endpoint which causes timeouts in CI.
       // Error handling is tested through integration tests.
-      service.getLocation('NonexistentLocation').subscribe({
+      service.getLocation('NonexistentLocation', 2025).subscribe({
         next: () => {
           done();
         },

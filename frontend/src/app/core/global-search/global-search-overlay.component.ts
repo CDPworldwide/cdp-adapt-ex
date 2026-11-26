@@ -26,7 +26,7 @@ import { CdpLogoIconComponent, WarningIconComponent } from '../../shared/icons';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { GlobalSearchService } from './global-search.service';
-import { DisclosingYearService } from 'src/app/shared/services/disclosing-year.service';
+import { DisclosingYearService } from '../../shared/services/disclosing-year.service';
 
 @Component({
   selector: 'app-global-search-overlay',
@@ -330,7 +330,7 @@ export class GlobalSearchOverlayComponent implements OnInit {
     }
 
     this.searchService
-      .searchLocation(trimmedQuery)
+      .searchLocation(trimmedQuery, this.disclosingYearService.disclosingYear)
       .pipe(
         switchMap((data) => {
           this.posthog.capture('search_location_selected', {
