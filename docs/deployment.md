@@ -215,7 +215,16 @@ Production Cloud Run deploys are driven from `main` or by manual dispatch.
 - **Full-stack manual deploy**: `deploy.yml` is manual dispatch only. It deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, Google Maps key, and optional PostHog analytics and Sentry error reporting settings injected at compile time.
 - **Verification**: Production backend deploys run smoke tests. Production frontend deploys verify both `/` and `/docs/` return `200`.
 
-### 2. PR Previews (`backend-deploy.yml` & `frontend-preview.yml`)
+### 2. Pre (`pre-deploy.yml`)
+Triggered on pushes to `develop` (and temporarily `feat/pre-pipeline`), or by manual dispatch.
+- **Migrations**: Runs `alembic upgrade head` against `aae-pre` via the `cdp-migrate-pre` Cloud Run job before the backend deploys. A failed migration stops the deploy.
+- **Deploy**: Deploys `cdp-server-pre`, smoke tests it, then builds `frontend-pre` against that backend's URL.
+- **URLs**: Cloud Run URLs are derived from service name, project and region, so they stay the same across deploys:
+  - Frontend: `https://frontend-pre-pbybuiwoxq-uc.a.run.app`
+  - Backend: `https://cdp-server-pre-pbybuiwoxq-uc.a.run.app`
+- **Database**: Nothing in CI empties or reseeds `aae-pre`. To refresh it from prod's latest automated backup, run `backend/scripts/refresh_pre_from_prod.sh` locally. It only reads prod's backups, overwrites everything on pre, then resets pre's password and re-runs migrations.
+
+### 3. PR Previews (`backend-deploy.yml` & `frontend-preview.yml`)
 Triggered on **pull request** updates.
 - **Frontend previews**: Each frontend PR gets a readable, unique frontend service name (`frontend-preview-{SANITISED_TITLE}-pr-{NUMBER}`). It uses the matching backend preview when one exists, otherwise it builds against the shared `cdp-server-dev` backend deployed from `main`.
 - **Backend previews**: Backend PRs get a readable, unique backend service name (`cdp-server-preview-{SANITISED_TITLE}-pr-{NUMBER}`) when backend code or backend deployment workflow files change. Preview names are limited to 49 characters to meet Cloud Run's service-name limit.
@@ -223,7 +232,7 @@ Triggered on **pull request** updates.
 - **Title changes**: Editing a PR title deploys a newly named preview. Earlier URLs remain available so existing frontend builds and circulated links do not break.
 - **Cleanup**: Previews are labelled by PR number and component, then all services for that PR (including earlier title variants) are automatically deleted when the PR is closed.
 
-### 3. AI Server (`ai-server-deploy.yml`)
+### 4. AI Server (`ai-server-deploy.yml`)
 Triggered on pushes to `main` or `production` that touch `ai-server/**`, excluding prompt-only edits to `app/prompts/system_prompt.md`.
 - **Runtime**: Deploys the shared `cdp-ai-server` Cloud Run service.
 - **Prompt source**: The deployed service reads `SYSTEM_PROMPT` from a stable Gist URL and refreshes it after `SYSTEM_PROMPT_CACHE_SECONDS`.
