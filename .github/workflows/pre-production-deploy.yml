@@ -1,4 +1,4 @@
-name: Pre Deploy
+name: Pre-production Deploy
 
 # Deploys develop to the pre environment: migrates aae-pre, then deploys backend and frontend.
 on:
@@ -27,7 +27,7 @@ env:
 
 jobs:
   deploy-backend:
-    name: Pre / deploy backend
+    name: Deploy backend to pre-production
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -175,7 +175,7 @@ jobs:
           echo "Backend ready: $BACKEND_URL"
 
   deploy-frontend:
-    name: Pre / deploy frontend
+    name: Deploy frontend to pre-production
     needs: deploy-backend
     runs-on: ubuntu-24.04
     permissions:
