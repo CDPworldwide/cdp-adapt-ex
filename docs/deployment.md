@@ -50,7 +50,8 @@ We maintain separate environments for development (including PR previews), pre a
 |--------|-------------|-----------------|------------------|------------|-------------------|---------------|
 | `production-backend-deploy.yml` on `main` | `production` | `cdp-server-prod` | n/a | shared `cdp-ai-server` | `cdp-prod` | `production-` |
 | `production-frontend-deploy.yml` on `main` | `production` | existing `cdp-server-prod` | `frontend-prod` | shared `cdp-ai-server` | `cdp-prod` | `production-` |
-| `pre-deploy.yml` on `develop` | `pre` | `cdp-server-pre` | `frontend-pre` | shared `cdp-ai-server` | `aae-pre` | `pre-` |
+| `pre-production-backend-deploy.yml` on `develop` | `pre` | `cdp-server-pre` | n/a | shared `cdp-ai-server` | `aae-pre` | `pre-` |
+| `pre-production-frontend-deploy.yml` on `develop` | `pre` | existing `cdp-server-pre` | `frontend-pre` | shared `cdp-ai-server` | n/a | `pre-` |
 | `deploy.yml` manual dispatch | `production` | `cdp-server-prod` | `frontend-prod` | shared `cdp-ai-server` | `cdp-prod` | `production-` |
 | Frontend PR previews | `development` / preview | matching `cdp-server-preview-{TITLE}-pr-X`, or shared `cdp-server-dev` | `frontend-preview-{TITLE}-pr-X` | shared `cdp-ai-server` | `cdp-test` | `development-` |
 | Backend PR previews | `development` / preview | `cdp-server-preview-{TITLE}-pr-X` | n/a | shared `cdp-ai-server` | `cdp-test` | `development-` |
@@ -215,10 +216,11 @@ Production Cloud Run deploys are driven from `main` or by manual dispatch.
 - **Full-stack manual deploy**: `deploy.yml` is manual dispatch only. It deploys the backend first, verifies health via `/api/v1/health`, then builds the frontend with the backend `baseUrl`, AI server URL, API keys, Google Maps key, and optional PostHog analytics and Sentry error reporting settings injected at compile time.
 - **Verification**: Production backend deploys run smoke tests. Production frontend deploys verify both `/` and `/docs/` return `200`.
 
-### 2. Pre (`pre-deploy.yml`)
-Triggered on pushes to `develop` (and temporarily `feat/pre-pipeline`), or by manual dispatch.
-- **Migrations**: Runs `alembic upgrade head` against `aae-pre` via the `cdp-migrate-pre` Cloud Run job before the backend deploys. A failed migration stops the deploy.
-- **Deploy**: Deploys `cdp-server-pre`, smoke tests it, then builds `frontend-pre` against that backend's URL.
+### 2. Pre (`pre-production-backend-deploy.yml` & `pre-production-frontend-deploy.yml`)
+Two path-filtered workflows, mirroring the production pair. Triggered on pushes to `develop` (and temporarily `feat/pre-pipeline`), or by manual dispatch.
+- **Backend**: `backend/**` changes trigger a `cdp-server-pre` deploy. Migrations run `alembic upgrade head` against `aae-pre` via the `cdp-migrate-pre` Cloud Run job before the backend deploys. A failed migration stops the deploy.
+- **Frontend**: `frontend/**`, `client/**` and `docs/**` changes build `frontend-pre` against the resolved backend URL. Docs build into the frontend artifact, so docs changes rebuild the frontend but not the backend.
+- **URLs**: Cloud Run URLs are derived from service name, project and region, so they stay the same across deploys:
 - **URLs**: Cloud Run URLs are derived from service name, project and region, so they stay the same across deploys:
   - Frontend: `https://frontend-pre-pbybuiwoxq-uc.a.run.app`
   - Backend: `https://cdp-server-pre-pbybuiwoxq-uc.a.run.app`
