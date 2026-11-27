@@ -4,7 +4,13 @@
     class="flex min-w-0 items-center gap-3 no-underline text-cdp-dark hover:opacity-80 transition-opacity md:gap-4"
     [attr.aria-label]="'shared.home' | translate"
   >
-    <app-cdp-logo-with-text-icon width="70" height="18" color="black"></app-cdp-logo-with-text-icon>
+    <!-- The full logo is too wide for phones, so they get the mark alone. -->
+    <app-cdp-logo-icon size="20" class="shrink-0 text-black md:hidden"></app-cdp-logo-icon>
+    <app-cdp-logo-with-text-icon
+      height="14"
+      color="black"
+      class="hidden shrink-0 md:block"
+    ></app-cdp-logo-with-text-icon>
     <div class="h-6 w-px flex-shrink-0 bg-cdp-neutral-02"></div>
     <span class="min-w-0 truncate text-sm font-medium leading-none">
       {{ (chatMode ? 'askCdpAi.buttonText' : 'shared.appTitle') | translate }}

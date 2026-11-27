@@ -1,6 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="1024" height="1024"><svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M246.582 511.991C246.582 658.606 365.421 777.444 512.036 777.444C585.343 777.444 651.702 747.74 699.743 699.698L324.328 324.283C276.287 372.325 246.582 438.683 246.582 511.991Z" fill="#1B232C"></path>
-<path fill-rule="evenodd" clip-rule="evenodd" d="M324.293 324.293C372.334 276.251 438.692 246.546 512 246.546C658.615 246.546 777.454 365.385 777.454 512C777.454 585.308 747.749 651.666 699.707 699.708L922 922V102H102L324.293 324.293Z" fill="#1B232C"></path>
-</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
-@media (prefers-color-scheme: dark) { :root { filter: none; } }
-</style></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 829.57 829.57" fill="#1B232C">
+<path d="M829.52,0l.05,829.57C775.39,391.31,513.55,54.71,0,0h829.52Z"/>
+<path d="M0,396.91v432.66h431.97c0-.14.02-.28,0-.42C414.83,579.58,234.63,411.27,0,396.91Z"/>
+</svg>

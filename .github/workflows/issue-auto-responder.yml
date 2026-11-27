@@ -16,7 +16,7 @@ permissions:
 jobs:
   reply:
     name: Reply to issue
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.event_name == 'workflow_dispatch' || github.event.issue.pull_request == null
     steps:
       - name: Post issue response
