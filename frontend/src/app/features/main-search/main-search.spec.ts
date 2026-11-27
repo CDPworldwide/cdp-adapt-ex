@@ -3,7 +3,9 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainSearchComponent } from './main-search';
 import { SearchService } from './search.service';
+import { MapSelectionService } from './map-selection.service';
 import { LocationService } from '../../shared/services/location.service';
+import { DisclosingYearService } from '../../shared/services/disclosing-year.service';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { of, throwError, Observable, Subject, skip, take } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -155,6 +157,52 @@ describe('MainSearchComponent', () => {
     expect(component).toBeTruthy();
     expect(mockLocationService.getAllLocationNames).toHaveBeenCalled();
     expect(component.allLocations).toEqual(MOCK_SUGGESTIONS);
+  });
+
+  it('does not refetch a cleared location when the disclosure year changes', () => {
+    mockSearchService.searchLocation.and.returnValue(of(MOCK_LOCATION_DATA));
+    const mapSelectionService = TestBed.inject(MapSelectionService);
+    const disclosingYearService = TestBed.inject(DisclosingYearService);
+
+    mapSelectionService.selectLocation({ name: 'London', lat: 51.5074, lng: -0.1278 });
+    expect(mockSearchService.searchLocation).toHaveBeenCalledOnceWith('London', 2026);
+    expect(component.selectedLocationData).toEqual(MOCK_LOCATION_DATA);
+
+    mapSelectionService.clearSelection();
+    expect(component.selectedLocationData).toBeNull();
+    expect(component.isLoadingHazardData).toBeFalse();
+    expect(component.totalHazardsCount).toBe(0);
+
+    disclosingYearService.setDisclosingYear(2025);
+
+    expect(mockSearchService.searchLocation).toHaveBeenCalledTimes(1);
+    expect(component.isLoadingHazardData).toBeFalse();
+  });
+
+  it('does not display the previous location data while a new pin is loading', () => {
+    const nextLocationData$ = new Subject<any>();
+    mockSearchService.searchLocation.and.returnValues(of(MOCK_LOCATION_DATA), nextLocationData$);
+    const mapSelectionService = TestBed.inject(MapSelectionService);
+
+    mapSelectionService.selectLocation({ name: 'London', lat: 51.5074, lng: -0.1278 });
+    expect(component.selectedLocationData).toEqual(MOCK_LOCATION_DATA);
+
+    mapSelectionService.selectLocation({ name: 'Los Angeles', lat: 34.0522, lng: -118.2437 });
+
+    expect(component.selectedLocationData).toBeNull();
+    expect(component.selectedLocationDisplay?.name).toBe('Los Angeles');
+    expect(component.isLoadingHazardData).toBeTrue();
+
+    nextLocationData$.next({
+      ...MOCK_LOCATION_DATA,
+      organizationId: 102,
+      name: 'Los Angeles',
+      lat: 34.0522,
+      lng: -118.2437,
+    });
+
+    expect(component.selectedLocationData?.name).toBe('Los Angeles');
+    expect(component.isLoadingHazardData).toBeFalse();
   });
 
   it('should render the search input', () => {

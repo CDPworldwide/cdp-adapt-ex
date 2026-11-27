@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, combineLatest, map, of, startWith } from 'rxjs';
-import { catchError, distinctUntilChanged, filter, switchMap, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
@@ -162,28 +162,33 @@ export class MainSearchComponent implements OnInit {
         tap((location) => {
           this.selectedLocation = location;
         }),
-        filter((location): location is LocationPin => location !== null),
       ),
       this.disclosingYearService.disclosingYear$.pipe(distinctUntilChanged()),
     ])
       .pipe(
-        tap(() => {
+        switchMap(([location, disclosingYear]) => {
           this.totalHazardsCount = 0;
           this.disclosedActionsCount = 0;
           this.projectsRequiringFundingCount = 0;
           this.topFourHazards = [];
+          this.selectedLocationData = null;
+
+          if (!location) {
+            this.isLoadingHazardData = false;
+            return of(null);
+          }
+
           this.isLoadingHazardData = true;
-        }),
-        switchMap(([location, disclosingYear]) =>
-          this.searchService.searchLocation(location.name, disclosingYear).pipe(
+
+          return this.searchService.searchLocation(location.name, disclosingYear).pipe(
             tap(() => (this.isLoadingHazardData = false)),
             catchError((err) => {
               console.error('Error fetching location details:', err);
               this.isLoadingHazardData = false;
               return of(null);
             }),
-          ),
-        ),
+          );
+        }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((data) => {
