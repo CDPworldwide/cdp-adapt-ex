@@ -14,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, combineLatest, of, startWith } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { SearchService } from '../../features/main-search/search.service';
 import {
   filterLocationSuggestions,
@@ -26,6 +26,7 @@ import { CdpLogoIconComponent, WarningIconComponent } from '../../shared/icons';
 import { LocationService } from '../../shared/services/location.service';
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { GlobalSearchService } from './global-search.service';
+import { DisclosingYearService } from '../../shared/services/disclosing-year.service';
 
 @Component({
   selector: 'app-global-search-overlay',
@@ -167,6 +168,7 @@ export class GlobalSearchOverlayComponent implements OnInit {
   private readonly posthog = inject(AnalyticsService);
   private readonly router = inject(Router);
   private readonly searchService = inject(SearchService);
+  private readonly disclosingYearService = inject(DisclosingYearService);
 
   @ViewChild('searchInput') private searchInputRef?: ElementRef<HTMLInputElement>;
 
@@ -190,9 +192,12 @@ export class GlobalSearchOverlayComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef),
     );
 
-    this.locationService
-      .getAllLocationNames()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.disclosingYearService.disclosingYear$
+      .pipe(
+        distinctUntilChanged(),
+        switchMap((year) => this.locationService.getAllLocationNames(year)),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe((names) => {
         this.allLocations = names;
         this.defaultSuggestions = [...names]
@@ -325,7 +330,7 @@ export class GlobalSearchOverlayComponent implements OnInit {
     }
 
     this.searchService
-      .searchLocation(trimmedQuery)
+      .searchLocation(trimmedQuery, this.disclosingYearService.disclosingYear)
       .pipe(
         switchMap((data) => {
           this.posthog.capture('search_location_selected', {

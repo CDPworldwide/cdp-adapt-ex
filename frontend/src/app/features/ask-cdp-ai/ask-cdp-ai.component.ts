@@ -153,17 +153,15 @@ export class AskCdpAiComponent implements OnInit, OnChanges {
       ? this.askCdpAiService.sendChatQuery(query)
       : this.askCdpAiService.sendChatQuery(query, false);
 
-    chatQuery$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.isFollowUpLoading.set(false);
-        },
-        error: (error) => {
-          this.isFollowUpLoading.set(false);
-          // The service already handles setting the error signal
-        },
-      });
+    chatQuery$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        this.isFollowUpLoading.set(false);
+      },
+      error: (error) => {
+        this.isFollowUpLoading.set(false);
+        // The service already handles setting the error signal
+      },
+    });
   }
 
   private setChatContext(): void {

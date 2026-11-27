@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { distinctUntilChanged, switchMap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -20,6 +21,7 @@ import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyb
 import { LocationSuggestion } from '../../shared/services/location-suggestion';
 import { filterLocationSuggestions } from '../../shared/services/location-search.util';
 import { countryFlagImageUrl } from '../../shared/utils/country-flag.util';
+import { DisclosingYearService } from 'src/app/shared/services/disclosing-year.service';
 
 @Component({
   selector: 'app-ask-cdp-ai-organization-selector',
@@ -44,6 +46,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   private readonly destroyRef = inject(DestroyRef);
   private readonly document = inject(DOCUMENT);
   private readonly locationService = inject(LocationService);
+  private readonly disclosingYearService = inject(DisclosingYearService);
   private readonly mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
   private readonly translateService = inject(TranslateService);
   private allOrganizations: LocationSuggestion[] = [];
@@ -229,11 +232,15 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
   }
 
   private loadOrganizationOptions(): void {
-    this.locationService
-      .getAllLocationNames()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.disclosingYearService.disclosingYear$
+      .pipe(
+        distinctUntilChanged(),
+        switchMap((year) => this.locationService.getAllLocationNames(year)),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe((organizations) => {
         this.allOrganizations = organizations;
+
         this.defaultOrganizationOptions = [...organizations]
           .map((organization) => ({
             organization,
@@ -242,6 +249,7 @@ export class AskCdpAiOrganizationSelectorComponent implements OnInit, OnChanges 
           }))
           .sort((a, b) => a.group - b.group || a.key.localeCompare(b.key))
           .map((entry) => entry.organization);
+
         this.updateOrganizationOptions(this.searchControl.value);
       });
   }

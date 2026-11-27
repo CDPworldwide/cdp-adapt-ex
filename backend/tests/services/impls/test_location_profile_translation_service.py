@@ -1,8 +1,7 @@
 import pytest
-
 from app.schemas.location import (
-    ActionStatus,
     ActionsTab,
+    ActionStatus,
     AdaptationAction,
     AdaptationGoal,
     Hazard,
@@ -365,7 +364,11 @@ async def test_translate_profile_ignores_cached_translations_with_missing_acrony
     assert translated.hazards.hazards[0].description == "es:EPA resilience plan"
     assert translate_client.calls == [
         {
-            "texts": ["Mountain View", "United States of America", "EPA resilience plan"],
+            "texts": [
+                "Mountain View",
+                "United States of America",
+                "EPA resilience plan",
+            ],
             "target_language": "es",
             "source_language": "en",
         }

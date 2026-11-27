@@ -21,9 +21,7 @@
       <h2
         class="text-2xl lg:text-[31px] font-roboto font-normal leading-normal text-white pr-10 lg:pr-0"
       >
-        <span
-          [innerHTML]="data.solution.solution | protectedTranslationHtml"
-        ></span>
+        <span [innerHTML]="data.solution.solution | protectedTranslationHtml"></span>
       </h2>
       @if (data.solution.hasLocalAction) {
         <div
@@ -52,7 +50,6 @@
           </div>
         </div>
       }
-
     </div>
 
     <!-- Navigation Controls for Example Actions -->

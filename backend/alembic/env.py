@@ -1,16 +1,15 @@
 import asyncio
 from logging.config import fileConfig
 
+import app.models.location_details  # noqa: F401  (registers the tables)
+import app.models.onboarding  # noqa: F401
+import app.models.translation_cache  # noqa: F401
 from alembic import context
+from app.shared.config import settings
 from sqlalchemy import pool
 from sqlalchemy.engine import URL, Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from sqlmodel import SQLModel
-
-from app.shared.config import settings
-import app.models.location_details   # noqa: F401  (registers the tables)
-import app.models.onboarding         # noqa: F401
-import app.models.translation_cache  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:
@@ -43,8 +42,8 @@ target_metadata = SQLModel.metadata
 
 # Tables Alembic must never try to create or drop
 IGNORED_TABLES = {
-    "spatial_ref_sys",          # PostGIS
-    "checkpoints",              # LangGraph
+    "spatial_ref_sys",  # PostGIS
+    "checkpoints",  # LangGraph
     "checkpoint_blobs",
     "checkpoint_writes",
     "checkpoint_migrations",

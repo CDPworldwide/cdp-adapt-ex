@@ -12,6 +12,7 @@ import { GoogleMapsLoaderService } from '../../shared/services/google-maps-loade
 import { AskCdpAiService } from '../../core/ask-cdp-ai/ask-cdp-ai.service';
 import { By } from '@angular/platform-browser';
 import { LanguageService } from '../../shared/services/language.service';
+import { DisclosingYearService } from '../../shared/services/disclosing-year.service';
 
 class FakeLoader implements TranslateLoader {
   getTranslation(): Observable<any> {
@@ -144,6 +145,13 @@ describe('CityDetailPageComponent', () => {
           },
         },
         { provide: AskCdpAiService, useValue: askCdpAiServiceMock },
+        {
+          provide: DisclosingYearService,
+          useValue: {
+            disclosingYear$: new BehaviorSubject<number>(2026).asObservable(),
+            disclosingYear: 2026,
+          },
+        },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     })
@@ -168,7 +176,7 @@ describe('CityDetailPageComponent', () => {
   });
 
   it('loads location details by organization ID', () => {
-    expect(mockLocationService.getLocationByOrganizationId).toHaveBeenCalledWith('867355');
+    expect(mockLocationService.getLocationByOrganizationId).toHaveBeenCalledWith('867355', 2026);
     expect(component.locationData).toEqual(MOCK_LOCATION_DATA);
     expect(component.isLoading).toBeFalse();
     expect(component.isNotFound).toBeFalse();
@@ -285,14 +293,11 @@ describe('CityDetailPageComponent', () => {
     routeParamMap$.next(convertToParamMap({ organizationSlug: '867355', tab: 'hazards' }));
     fixture.detectChanges();
 
-    expect(mockLocationService.getLocationByOrganizationId).toHaveBeenCalledWith('867355');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(
-      ['/org', '867355-junagadh-india', 'hazards'],
-      {
-        replaceUrl: true,
-        queryParamsHandling: 'preserve',
-      },
-    );
+    expect(mockLocationService.getLocationByOrganizationId).toHaveBeenCalledWith('867355', 2026);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/org', '867355-junagadh-india', 'hazards'], {
+      replaceUrl: true,
+      queryParamsHandling: 'preserve',
+    });
   });
 
   it('preserves the chatopen query parameter when tabs change while the AI sidebar is open', () => {
@@ -353,9 +358,8 @@ describe('CityDetailPageComponent', () => {
     routeQueryParamMap$.next(convertToParamMap({ chatopen: 'true' }));
     fixture.detectChanges();
 
-    const backdrop: HTMLButtonElement | null = fixture.nativeElement.querySelector(
-      'button.bg-black\\/40',
-    );
+    const backdrop: HTMLButtonElement | null =
+      fixture.nativeElement.querySelector('button.bg-black\\/40');
     expect(backdrop).not.toBeNull();
 
     backdrop?.click();

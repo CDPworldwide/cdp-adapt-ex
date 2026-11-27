@@ -49,10 +49,7 @@ const SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
 // WRI Aqueduct flood data is published with RCP scenarios (CMIP5-era), so the
 // flood layers carry the SSP enum from backend but labelled as their
 // RCP equivalents in the UI.
-const FLOOD_HAZARDS = new Set<HazardEnum>([
-  HazardEnum.COASTAL_FLOODING,
-  HazardEnum.RIVER_FLOODING,
-]);
+const FLOOD_HAZARDS = new Set<HazardEnum>([HazardEnum.COASTAL_FLOODING, HazardEnum.RIVER_FLOODING]);
 
 const FLOOD_SCENARIO_LABELS: Partial<Record<ScenarioEnum, string>> = {
   [ScenarioEnum.SSP245]: 'RCP 4.5',
@@ -262,8 +259,7 @@ export class HazardMapComponent implements OnInit, AfterViewInit, OnDestroy, OnC
   }
 
   get scoreMeasureKey(): string {
-    return this.hazardType &&
-      HazardMapComponent.HAZARDS_WITH_SPECIFIC_MEASURE.has(this.hazardType)
+    return this.hazardType && HazardMapComponent.HAZARDS_WITH_SPECIFIC_MEASURE.has(this.hazardType)
       ? this.hazardType
       : 'default';
   }

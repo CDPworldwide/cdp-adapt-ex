@@ -20,7 +20,7 @@ from app.services.impls.location_details_service import (
 )
 from app.shared.exceptions import CityNotFoundException
 
-DEFAULT_DISCLOSING_YEAR = 2025
+DEFAULT_DISCLOSING_YEAR = 2026
 
 
 @pytest.fixture

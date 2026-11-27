@@ -73,7 +73,8 @@ describe('AskCdpAiComponent', () => {
           'Beta: Trained on CDP disclosure data from cities, states, and regions. Results may be inaccurate and are not guaranteed.',
         emptyState: {
           title: 'Ask a question about {{location}}.',
-          description: 'Use the input below to ask about risks, actions, or climate context for this location.',
+          description:
+            'Use the input below to ask about risks, actions, or climate context for this location.',
         },
         locationFallback: 'this location',
         input: {
@@ -281,9 +282,9 @@ describe('AskCdpAiComponent', () => {
       '[data-testid="ask-ai-suggestions-toggle"]',
     );
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
-    expect(
-      fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-suggestion"]').length,
-    ).toBe(0);
+    expect(fixture.nativeElement.querySelectorAll('[data-testid="ask-ai-suggestion"]').length).toBe(
+      0,
+    );
   });
 
   it('does not ask the service to load follow-ups after a manual query when suggestions are disabled', () => {

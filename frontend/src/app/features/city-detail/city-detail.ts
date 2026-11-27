@@ -3,7 +3,7 @@ import { DOCUMENT, Location } from '@angular/common';
 import { Component, DestroyRef, OnInit, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { combineLatest, distinctUntilChanged } from 'rxjs';
 import { AskCdpAiComponent } from '../ask-cdp-ai/ask-cdp-ai.component';
 import {
   LocationCardComponent,
@@ -22,6 +22,7 @@ import {
   buildOrganizationSlugSegment,
   extractOrganizationIdFromRouteSegment,
 } from '../../shared/utils/org-slug.util';
+import { DisclosingYearService } from '../../shared/services/disclosing-year.service';
 
 const DEFAULT_TAB: LocationCardTabKey = 'hazards';
 const VALID_TABS: readonly LocationCardTabKey[] = ['hazards', 'actions', 'solutions'];
@@ -49,6 +50,7 @@ export class CityDetailPageComponent implements OnInit {
   activeTab: LocationCardTabKey = DEFAULT_TAB;
   isAiOpen = false;
   selectedActionHazardFilter: string | null = null;
+  private loadedDisclosingYear: number | null = null;
   private loadedOrganizationId: string | null = null;
   private loadedLanguage: string | null = null;
   private locationLoadRequestId = 0;
@@ -65,6 +67,7 @@ export class CityDetailPageComponent implements OnInit {
 
   constructor(
     private locationService: LocationService,
+    private disclosingYearService: DisclosingYearService,
     private askCdpAiService: AskCdpAiService,
     private route: ActivatedRoute,
     private router: Router,
@@ -76,7 +79,10 @@ export class CityDetailPageComponent implements OnInit {
         return;
       }
 
-      this.loadLocationByOrganizationId(this.loadedOrganizationId);
+      this.loadLocationByOrganizationId(
+        this.loadedOrganizationId,
+        this.disclosingYearService.disclosingYear,
+      );
     });
   }
 
@@ -88,9 +94,14 @@ export class CityDetailPageComponent implements OnInit {
       this.setDocumentScrollLocked(false);
     });
 
-    combineLatest([this.route.paramMap, this.route.queryParamMap, this.route.data])
+    combineLatest([
+      this.route.paramMap,
+      this.route.queryParamMap,
+      this.route.data,
+      this.disclosingYearService.disclosingYear$.pipe(distinctUntilChanged()),
+    ])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([params, queryParams, data]) => {
+      .subscribe(([params, queryParams, data, disclosingYear]) => {
         const organizationSegment = params.get('organizationSlug') ?? params.get('organizationId');
         const organizationId = extractOrganizationIdFromRouteSegment(organizationSegment);
         this.organizationRouteSegment = organizationSegment;
@@ -106,9 +117,12 @@ export class CityDetailPageComponent implements OnInit {
           return;
         }
 
-        if (this.loadedOrganizationId !== organizationId) {
+        if (
+          this.loadedOrganizationId !== organizationId ||
+          this.loadedDisclosingYear !== disclosingYear
+        ) {
           this.loadedOrganizationId = organizationId;
-          this.loadLocationByOrganizationId(organizationId);
+          this.loadLocationByOrganizationId(organizationId, disclosingYear);
           return;
         }
 
@@ -177,22 +191,32 @@ export class CityDetailPageComponent implements OnInit {
     });
   }
 
-  private loadLocationByOrganizationId(organizationId: string): void {
+  private loadLocationByOrganizationId(organizationId: string, disclosingYear: number): void {
     const requestedLanguage = this.languageService.currentLang();
     const requestId = ++this.locationLoadRequestId;
+
     this.isLoading = true;
     this.isNotFound = false;
     this.locationData = null;
     this.loadedLanguage = requestedLanguage;
+    this.loadedDisclosingYear = disclosingYear;
 
     this.locationService
-      .getLocationByOrganizationId(organizationId)
+      .getLocationByOrganizationId(organizationId, disclosingYear)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
-          if (!this.isCurrentLocationRequest(organizationId, requestedLanguage, requestId)) {
+          if (
+            !this.isCurrentLocationRequest(
+              organizationId,
+              requestedLanguage,
+              disclosingYear,
+              requestId,
+            )
+          ) {
             return;
           }
+
           this.locationData = data;
           this.ensureCanonicalOrganizationRoute(data);
           this.updateFeedbackContext();
@@ -200,9 +224,17 @@ export class CityDetailPageComponent implements OnInit {
           this.prefetchStarterQuestions();
         },
         error: () => {
-          if (!this.isCurrentLocationRequest(organizationId, requestedLanguage, requestId)) {
+          if (
+            !this.isCurrentLocationRequest(
+              organizationId,
+              requestedLanguage,
+              disclosingYear,
+              requestId,
+            )
+          ) {
             return;
           }
+
           this.isLoading = false;
           this.isNotFound = true;
         },
@@ -212,12 +244,14 @@ export class CityDetailPageComponent implements OnInit {
   private isCurrentLocationRequest(
     organizationId: string,
     language: string,
+    disclosingYear: number,
     requestId: number,
   ): boolean {
     return (
       requestId === this.locationLoadRequestId &&
       organizationId === this.loadedOrganizationId &&
-      language === this.loadedLanguage
+      language === this.loadedLanguage &&
+      disclosingYear === this.loadedDisclosingYear
     );
   }
 

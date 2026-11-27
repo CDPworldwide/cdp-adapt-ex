@@ -3,12 +3,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import type { LocationProfile } from '@pac-api/client';
-import { distinctUntilChanged, map, switchMap, of, catchError } from 'rxjs';
+import { catchError, combineLatest, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { environment } from '@env/environment';
 import { AppHeaderComponent } from '../../shared/app-header/app-header';
 import { LocationService } from '../../shared/services/location.service';
 import { MobileKeyboardViewportService } from '../../shared/services/mobile-keyboard-viewport.service';
 import { AskCdpAiComponent } from '../ask-cdp-ai/ask-cdp-ai.component';
+import { DisclosingYearService } from '../../shared/services/disclosing-year.service';
 
 @Component({
   selector: 'app-chat-page',
@@ -27,24 +28,27 @@ export class ChatPageComponent implements OnInit {
   private readonly mobileKeyboardViewportService = inject(MobileKeyboardViewportService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly disclosingYearService = inject(DisclosingYearService);
 
   ngOnInit(): void {
     this.mobileKeyboardViewportService.startTracking(this.destroyRef);
 
-    this.route.queryParamMap
-      .pipe(
+    combineLatest([
+      this.route.queryParamMap.pipe(
         map((queryParams) => queryParams.get('organizationId')),
         distinctUntilChanged(),
-        switchMap((organizationId) => {
+      ),
+      this.disclosingYearService.disclosingYear$.pipe(distinctUntilChanged()),
+    ])
+      .pipe(
+        switchMap(([organizationId, disclosingYear]) => {
           if (!organizationId) {
             return of(null);
           }
 
-          return this.locationService.getLocationByOrganizationId(organizationId).pipe(
-            catchError(() => {
-              return of(null);
-            }),
-          );
+          return this.locationService
+            .getLocationByOrganizationId(organizationId, disclosingYear)
+            .pipe(catchError(() => of(null)));
         }),
         takeUntilDestroyed(this.destroyRef),
       )

@@ -8,7 +8,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
-
 from sqlmodel import SQLModel
 
 from app.api.v1.api import api_router
@@ -38,9 +37,7 @@ async def lifespan(app: FastAPI):
     else:
         database_service.initialize()
         async with database_service.engine.begin() as conn:
-            await conn.run_sync(
-                SQLModel.metadata.create_all, tables=APP_OWNED_TABLES
-            )
+            await conn.run_sync(SQLModel.metadata.create_all, tables=APP_OWNED_TABLES)
 
     yield
 

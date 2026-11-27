@@ -38,7 +38,7 @@ _HAZARD_LAYER_CONFIG: dict[HazardEnum, HazardLayerOptions] = {
         source=_WRI_AQUEDUCT_SOURCE,
         partial_image_id_templates={
             "historical": "coastal-flood/coastal-flood_historical_{year1}_rp100",
-            "projected": "coastal-flood/coastal-flood_{scenario}_{year1}_rp100"
+            "projected": "coastal-flood/coastal-flood_{scenario}_{year1}_rp100",
         },
     ),
     HazardEnum.EXTREME_COLD: HazardLayerOptions(

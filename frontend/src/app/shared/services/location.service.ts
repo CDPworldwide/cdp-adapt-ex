@@ -28,13 +28,15 @@ export class LocationService {
   private client = createApiClient();
   private languageService = inject(LanguageService);
 
-  // TODO - Add disclosing_year as a parameter to this function and pass it in the API call.
-  getLocation(locationName: string): Observable<LocationProfile> {
+  getLocation(locationName: string, disclosingYear: number): Observable<LocationProfile> {
     return from(
       getLocationApiV1LocationsLocationNameGet({
         client: this.client,
         path: { location_name: locationName },
-        query: this.locationTranslationQuery(),
+        query: {
+          ...this.locationTranslationQuery(),
+          disclosing_year: disclosingYear,
+        },
       } as unknown as Parameters<typeof getLocationApiV1LocationsLocationNameGet>[0]),
     ).pipe(
       map((response) => {
@@ -47,8 +49,10 @@ export class LocationService {
     );
   }
 
-  // TODO - Add disclosing_year as a parameter to this function and pass it in the API call.
-  getLocationByOrganizationId(organizationId: string): Observable<LocationProfile> {
+  getLocationByOrganizationId(
+    organizationId: string,
+    disclosingYear: number,
+  ): Observable<LocationProfile> {
     const normalizedOrganizationId = extractOrganizationIdFromRouteSegment(organizationId);
     if (!normalizedOrganizationId) {
       throw new Error(`Invalid organization ID: ${organizationId}`);
@@ -58,7 +62,10 @@ export class LocationService {
       getLocationByOrgIdApiV1LocationsIdOrganizationIdGet({
         client: this.client,
         path: { organization_id: Number(normalizedOrganizationId) },
-        query: this.locationTranslationQuery(),
+        query: {
+          ...this.locationTranslationQuery(),
+          disclosing_year: disclosingYear,
+        },
       } as unknown as Parameters<typeof getLocationByOrgIdApiV1LocationsIdOrganizationIdGet>[0]),
     ).pipe(
       map((response) => {
@@ -71,11 +78,11 @@ export class LocationService {
     );
   }
 
-  // TODO - Add disclosing_year as a parameter to this function and pass it in the API call.
-  getAllLocationNames(): Observable<LocationSuggestion[]> {
+  getAllLocationNames(disclosingYear: number): Observable<LocationSuggestion[]> {
     return from(
       getAllLocationNamesApiV1LocationsNamesGet({
         client: this.client,
+        query: { disclosing_year: disclosingYear },
       }),
     ).pipe(
       map((response) => {

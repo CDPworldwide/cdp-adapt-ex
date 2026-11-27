@@ -1,6 +1,5 @@
-from geoalchemy2 import WKTElement
-
 from app.models.location_details import DimCentral
+from geoalchemy2 import WKTElement
 from seeds.discloser import HAZARD, ORG_ID, ORG_NAME, YEAR
 
 ROWS = [

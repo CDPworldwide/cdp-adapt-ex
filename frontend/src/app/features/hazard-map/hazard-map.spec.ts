@@ -36,7 +36,7 @@ describe('HazardMapComponent', () => {
 
     mapConstructorSpy = jasmine.createSpy('Map').and.callFake(function (this: any) {
       Object.assign(this, mockMapInstance);
-      return this
+      return this;
     });
 
     eventTriggerSpy = jasmine.createSpy('trigger');

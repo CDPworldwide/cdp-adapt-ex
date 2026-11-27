@@ -1,4 +1,6 @@
-<div class="flex flex-col lg:flex-row w-full max-w-full bg-white lg:rounded-2xl overflow-hidden break-words">
+<div
+  class="flex flex-col lg:flex-row w-full max-w-full bg-white lg:rounded-2xl overflow-hidden break-words"
+>
   <!-- Top/Left Side: Hero Image -->
   @if (showHeroImage) {
     <div
@@ -56,9 +58,7 @@
                 <app-location-pin-icon></app-location-pin-icon>
               }
               <div class="flex flex-col justify-center items-start gap-2.5 min-w-0">
-                <div
-                  class="text-cdp-border text-sm font-bold font-inter leading-tight break-words"
-                >
+                <div class="text-cdp-border text-sm font-bold font-inter leading-tight break-words">
                   {{ locationName }}
                 </div>
                 @if (countryName) {
@@ -82,9 +82,7 @@
               class="text-black text-2xl lg:text-[31px] font-normal font-roboto leading-tight lg:leading-normal break-words"
             >
               <span
-                [innerHTML]="
-                  splitTitleAtLastColon(action.title).main | protectedTranslationHtml
-                "
+                [innerHTML]="splitTitleAtLastColon(action.title).main | protectedTranslationHtml"
               ></span>
             </h2>
           </div>
@@ -98,7 +96,7 @@
               >
                 {{
                   action.status.statusType === 'OTHERS' && action.status.otherStatusDetails
-                    ? (action.status.otherStatusDetails)
+                    ? action.status.otherStatusDetails
                     : ('locationCard.actionStatuses.' + action.status.statusType | translate)
                 }}
               </div>
@@ -214,8 +212,8 @@
                   ></app-hazard-icon>
                   <div class="text-cdp-border font-roboto text-sm font-normal leading-5">
                     {{
-                      hazard.otherHazardDetails
-                        || ('locationCard.hazardNames.' + hazard.hazardType | translate)
+                      hazard.otherHazardDetails ||
+                        ('locationCard.hazardNames.' + hazard.hazardType | translate)
                     }}
                   </div>
                 </div>
@@ -235,7 +233,7 @@
             <div class="flex-1 text-cdp-border font-roboto text-sm font-normal leading-5">
               {{
                 action.status.statusType === 'OTHERS' && action.status.otherStatusDetails
-                  ? (action.status.otherStatusDetails)
+                  ? action.status.otherStatusDetails
                   : ('locationCard.actionStatusesFull.' + action.status.statusType | translate)
               }}
             </div>
@@ -297,8 +295,8 @@
                   <div class="text-cdp-border font-roboto text-sm font-normal leading-5">
                     {{
                       sector.sectorType === 'OTHERS'
-                        ? ((sector.otherSectorDetails ??
-                            ('locationCard.sectorNames.OTHERS' | translate)))
+                        ? sector.otherSectorDetails ??
+                          ('locationCard.sectorNames.OTHERS' | translate)
                         : ('locationCard.sectorNames.' + sector.sectorType | translate)
                     }}
                   </div>

@@ -302,11 +302,13 @@ export class LocationCardComponent implements OnChanges, OnInit, AfterViewInit, 
   private countActionsForHazardKey(filter: string): number {
     const [hazardType, otherDetails = ''] = filter.split('|');
     return (
-      this.data?.governmentActions?.actions?.filter((action) =>
-        action.hazardsAddressed?.some(
-          (hazard) =>
-            hazard.hazardType === hazardType && (hazard.otherHazardDetails || '') === otherDetails,
-        ),
+      this.data?.governmentActions?.actions?.filter(
+        (action) =>
+          action.hazardsAddressed?.some(
+            (hazard) =>
+              hazard.hazardType === hazardType &&
+              (hazard.otherHazardDetails || '') === otherDetails,
+          ),
       ).length ?? 0
     );
   }

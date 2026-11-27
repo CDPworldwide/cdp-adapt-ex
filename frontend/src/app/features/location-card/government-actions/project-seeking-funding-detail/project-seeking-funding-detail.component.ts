@@ -20,12 +20,7 @@ import { ProtectedTranslationHtmlPipe } from '../../../../shared/pipes/protected
 @Component({
   selector: 'app-project-seeking-funding-detail',
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslateModule,
-    CloseIconComponent,
-    ProtectedTranslationHtmlPipe,
-  ],
+  imports: [CommonModule, TranslateModule, CloseIconComponent, ProtectedTranslationHtmlPipe],
   templateUrl: './project-seeking-funding-detail.component.html',
 })
 export class ProjectSeekingFundingDetailComponent implements AfterViewInit, OnChanges {

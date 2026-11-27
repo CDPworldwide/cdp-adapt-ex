@@ -70,7 +70,8 @@ export class GoogleAnalyticsService {
 
   private isEnabled(): boolean {
     return Boolean(
-      this.gtag() || (environment.googleAnalytics.enabled && environment.googleAnalytics.measurementId),
+      this.gtag() ||
+        (environment.googleAnalytics.enabled && environment.googleAnalytics.measurementId),
     );
   }
 
@@ -78,9 +79,7 @@ export class GoogleAnalyticsService {
     return { ...properties, ...this.userTypeProperty(properties) };
   }
 
-  private userTypeProperty(
-    properties: GoogleAnalyticsProperties = {},
-  ): GoogleAnalyticsProperties {
+  private userTypeProperty(properties: GoogleAnalyticsProperties = {}): GoogleAnalyticsProperties {
     const userType = readStoredUserRole();
     if (!userType || properties['user_type']) {
       return {};

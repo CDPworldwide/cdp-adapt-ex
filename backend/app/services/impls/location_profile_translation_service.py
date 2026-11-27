@@ -9,8 +9,8 @@ from app.schemas.location import LocationProfile
 from app.services.clients.database.translation_cache_repository import (
     TranslationCacheRepository,
 )
-from app.services.clients.translation_text_processor import validate_restored_acronyms
 from app.services.clients.translate_client import TranslateClient
+from app.services.clients.translation_text_processor import validate_restored_acronyms
 from app.shared.logging import logger
 
 TRANSLATION_BATCH_SIZE = 50

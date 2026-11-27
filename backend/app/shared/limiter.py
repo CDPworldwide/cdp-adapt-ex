@@ -3,9 +3,9 @@
 This module configures rate limiting using slowapi, with default limits
 defined in the application settings."""
 
-from starlette.requests import Request
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+from starlette.requests import Request
 
 
 def get_client_ip(request: Request) -> str:

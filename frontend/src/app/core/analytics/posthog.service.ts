@@ -9,7 +9,9 @@ import { readStoredUserRole } from './user-role';
 type PosthogEventProperties = Record<string, string | number | boolean | null | undefined>;
 
 export function isPosthogHostAllowed(hostname: string): boolean {
-  return hostname === 'cdp-action-explorer.net' || hostname === 'localhost' || hostname === '127.0.0.1';
+  return (
+    hostname === 'cdp-action-explorer.net' || hostname === 'localhost' || hostname === '127.0.0.1'
+  );
 }
 
 @Injectable({ providedIn: 'root' })

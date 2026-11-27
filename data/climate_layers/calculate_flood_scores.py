@@ -40,7 +40,7 @@ def select_image(subset, ft, scenario, yr, rp):
                  .filter(ee.Filter.eq("returnperiod", rp))
 
     if ft == "inuncoast":
-        # All inuncoast scenarios use projection=95 (95th-percentile SLR) because only 
+        # All inuncoast scenarios use projection=95 (95th-percentile SLR) because only
         # 95th is available in historical scenario.
         # subsidence='wtsub' (with subsidence) — realistic coastal-cities variant.
         img = base.filter(ee.Filter.eq("projection", 95)) \

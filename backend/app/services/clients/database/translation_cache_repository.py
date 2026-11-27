@@ -71,9 +71,7 @@ class TranslationCacheRepository:
         if not translations:
             return
 
-        hashes = [
-            translation_source_hash(source_text) for source_text in translations
-        ]
+        hashes = [translation_source_hash(source_text) for source_text in translations]
         statement = select(TranslationCache).where(
             TranslationCache.source_language == source_language,
             TranslationCache.target_language == target_language,

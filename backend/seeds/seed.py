@@ -6,8 +6,6 @@ Safe to re-run (upserts by primary key); refuses to run in production.
 
 import asyncio
 
-from sqlmodel.ext.asyncio.session import AsyncSession
-
 from app.services.clients.database.base import database_service
 from app.shared.config import Environment, settings
 from seeds import (
@@ -19,6 +17,7 @@ from seeds import (
     projects,
     solution_examples,
 )
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 TABLES = [
     dim_central,

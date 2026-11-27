@@ -1,6 +1,5 @@
-from starlette.requests import Request
-
 from app.shared.limiter import get_client_ip, limiter
+from starlette.requests import Request
 
 
 def make_request(
@@ -22,9 +21,7 @@ def make_request(
 
 
 def test_get_client_ip_uses_first_forwarded_for_address() -> None:
-    request = make_request(
-        {"X-Forwarded-For": "198.51.100.10, 169.254.169.126"}
-    )
+    request = make_request({"X-Forwarded-For": "198.51.100.10, 169.254.169.126"})
 
     assert get_client_ip(request) == "198.51.100.10"
 

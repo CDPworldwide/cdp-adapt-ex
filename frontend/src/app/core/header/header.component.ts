@@ -8,7 +8,14 @@ import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
-  imports: [MatToolbarModule, MatButtonModule, MatIconModule, CommonModule, RouterModule, TranslateModule],
+  imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    CommonModule,
+    RouterModule,
+    TranslateModule,
+  ],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })

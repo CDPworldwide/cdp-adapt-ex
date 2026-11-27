@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, combineLatest, map, of, startWith } from 'rxjs';
-import { catchError, filter, switchMap, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { SearchService, LocationData } from './search.service';
 import { LocationService } from '../../shared/services/location.service';
@@ -36,6 +36,7 @@ import type { DisclosureTrendsSummary } from '../location-card/disclosure-trends
 import { Footer } from '../../core/footer/footer';
 import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { buildOrganizationSlugSegment } from '../../shared/utils/org-slug.util';
+import { DisclosingYearService } from 'src/app/shared/services/disclosing-year.service';
 
 type LocationRouteTarget = {
   organizationId: number;
@@ -99,6 +100,7 @@ export class MainSearchComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   constructor(
+    private disclosingYearService: DisclosingYearService,
     private searchService: SearchService,
     private locationService: LocationService,
     private mapSelectionService: MapSelectionService,
@@ -132,43 +134,61 @@ export class MainSearchComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef),
     );
 
-    this.locationService
-      .getAllLocationNames()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.disclosingYearService.disclosingYear$
+      .pipe(
+        distinctUntilChanged(),
+        switchMap((year) => this.locationService.getAllLocationNames(year)),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (names) => {
           this.allLocations = names;
+
           this.defaultSuggestions = [...names]
-            .map((loc) => ({ loc, group: loc.isReportingLeader ? 0 : 1, key: Math.random() }))
+            .map((loc) => ({
+              loc,
+              group: loc.isReportingLeader ? 0 : 1,
+              key: Math.random(),
+            }))
             .sort((a, b) => a.group - b.group || a.key - b.key)
             .map((entry) => entry.loc);
+
           this.allLocations$.next(names);
         },
       });
 
-    this.mapSelectionService.selectedMapLocation$
-      .pipe(
+    combineLatest([
+      this.mapSelectionService.selectedMapLocation$.pipe(
         tap((location) => {
           this.selectedLocation = location;
-          if (location) {
-            this.totalHazardsCount = 0;
-            this.disclosedActionsCount = 0;
-            this.projectsRequiringFundingCount = 0;
-            this.topFourHazards = [];
-            this.isLoadingHazardData = true;
-          }
         }),
-        filter((location): location is LocationPin => location !== null),
-        switchMap((location) =>
-          this.searchService.searchLocation(location.name).pipe(
+      ),
+      this.disclosingYearService.disclosingYear$.pipe(distinctUntilChanged()),
+    ])
+      .pipe(
+        switchMap(([location, disclosingYear]) => {
+          this.totalHazardsCount = 0;
+          this.disclosedActionsCount = 0;
+          this.projectsRequiringFundingCount = 0;
+          this.topFourHazards = [];
+          this.selectedLocationData = null;
+
+          if (!location) {
+            this.isLoadingHazardData = false;
+            return of(null);
+          }
+
+          this.isLoadingHazardData = true;
+
+          return this.searchService.searchLocation(location.name, disclosingYear).pipe(
             tap(() => (this.isLoadingHazardData = false)),
             catchError((err) => {
               console.error('Error fetching location details:', err);
               this.isLoadingHazardData = false;
               return of(null);
             }),
-          ),
-        ),
+          );
+        }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((data) => {
@@ -418,7 +438,7 @@ export class MainSearchComponent implements OnInit {
     this.mapSelectionService.clearSelection();
     this.isNotFound = false;
     this.searchService
-      .searchLocation(locationName)
+      .searchLocation(locationName, this.disclosingYearService.disclosingYear)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
