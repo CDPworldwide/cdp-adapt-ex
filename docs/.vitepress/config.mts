@@ -13,20 +13,20 @@ export default defineConfig({
     "How the CDP Adaptation & Action Explorer is structured and operated.",
   base: "/docs/",
   head: [
-    ["link", { rel: "icon", href: "/docs/favicon.ico?v=cdp-20260617" }],
+    ["link", { rel: "icon", href: "/docs/favicon.ico?v=cdpf-20261201" }],
     [
       "link",
       {
         rel: "icon",
         type: "image/svg+xml",
-        href: "/docs/icon.svg?v=cdp-20260617",
+        href: "/docs/icon.svg?v=cdpf-20261201",
       },
     ],
     [
       "link",
       {
         rel: "apple-touch-icon",
-        href: "/docs/apple-icon.png?v=cdp-20260617",
+        href: "/docs/apple-icon.png?v=cdpf-20261201",
       },
     ],
   ],

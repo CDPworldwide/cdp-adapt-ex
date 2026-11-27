@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
 import { GlobalSearchService } from '../../core/global-search/global-search.service';
 import { WelcomeModalService } from '../../features/welcome-modal/welcome-modal.service';
-import { CdpLogoWithTextIconComponent } from '../icons';
+import { CdpLogoIconComponent, CdpLogoWithTextIconComponent } from '../icons';
 import { FeedbackService } from '../services/feedback.service';
 import { LanguageService } from '../services/language.service';
 
@@ -21,6 +21,7 @@ import { LanguageService } from '../services/language.service';
     MatMenuModule,
     RouterLink,
     TranslateModule,
+    CdpLogoIconComponent,
     CdpLogoWithTextIconComponent,
   ],
   templateUrl: './app-header.html',
