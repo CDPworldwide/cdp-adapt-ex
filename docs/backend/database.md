@@ -63,7 +63,7 @@ This is the primary repository for retrieving jurisdiction-level data.
 | `get_actions(org_id)` | Returns adaptation actions. |
 | `get_goals(org_id)` | Returns adaptation goals. |
 | `get_projects(org_id)` | Returns projects seeking funding. |
-| `get_all_location_summaries()` | Used for search suggestions. |
+| `get_all_location_summaries(disclosing_year)` | Used for search suggestions. |
 | `get_all_location_geometries()` | Used for map pins. |
 
 ## Usage Pattern

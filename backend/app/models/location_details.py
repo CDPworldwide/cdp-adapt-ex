@@ -10,6 +10,8 @@ from geoalchemy2 import Geometry
 from pydantic import ConfigDict
 from sqlmodel import TEXT, Column, Field, SQLModel
 
+from app.shared.config import settings
+
 
 class SafeGeometry(types.TypeDecorator):
     """
@@ -74,7 +76,7 @@ class DimCentral(SQLModel, table=True):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    __tablename__ = "CSTAR_2025_Dim_Central"
+    __tablename__ = f"{settings.CSTAR_TABLE_PREFIX}Dim_Central"
 
     cdp_disclosing_org_number: int = Field(primary_key=True)
     disclosing_organization: str | None = None
@@ -104,7 +106,7 @@ class DimCentral(SQLModel, table=True):
 class FactAdaptationGoals(SQLModel, table=True):
     """Fact table for adaptation goals."""
 
-    __tablename__ = "CSTAR_2025_Fact_Goal"
+    __tablename__ = f"{settings.CSTAR_TABLE_PREFIX}Fact_Goal"
 
     cdp_disclosing_org_number: int = Field(primary_key=True)
     disclosing_organization: str | None = None
@@ -122,7 +124,7 @@ class FactAdaptationGoals(SQLModel, table=True):
 class FactActions(SQLModel, table=True):
     """Partial model for 2025 fact actions."""
 
-    __tablename__ = "CSTAR_2025_Fact_Action"
+    __tablename__ = f"{settings.CSTAR_TABLE_PREFIX}Fact_Action"
 
     cdp_disclosing_org_number: int = Field(primary_key=True)
     disclosing_organization: str | None = None
@@ -145,7 +147,7 @@ class FactActions(SQLModel, table=True):
 class FactHazards(SQLModel, table=True):
     """Table for 2025 fact hazards."""
 
-    __tablename__ = "CSTAR_2025_Fact_Hazard"
+    __tablename__ = f"{settings.CSTAR_TABLE_PREFIX}Fact_Hazard"
 
     cdp_disclosing_org_number: int = Field(primary_key=True)
     hazard_rank: int = Field(primary_key=True)
@@ -168,9 +170,10 @@ class FactHazards(SQLModel, table=True):
 class FactProjects(SQLModel, table=True):
     """Fact table for projects seeking funding."""
 
-    __tablename__ = "CSTAR_2025_Fact_Funding_Gap"
+    __tablename__ = f"{settings.CSTAR_TABLE_PREFIX}Fact_Funding_Gap"
 
     project_index: int = Field(primary_key=True)
+    project_area_index: int = Field(primary_key=True)
     cdp_disclosing_org_number: int = Field(primary_key=True)
     project_title_english: str | None = None
     disclosing_organization: str | None = None
@@ -188,7 +191,7 @@ class FactProjects(SQLModel, table=True):
 class PeerSolutions(SQLModel, table=True):
     """Fact table for peer solutions."""
 
-    __tablename__ = "CSTAR_2025_Peer_Solutions"
+    __tablename__ = f"{settings.CSTAR_TABLE_PREFIX}Peer_Solutions"
 
     disclosing_year: int = Field(primary_key=True)
     target_org_id: int = Field(primary_key=True)
@@ -208,7 +211,7 @@ class PeerSolutions(SQLModel, table=True):
 class SolutionsExamples(SQLModel, table=True):
     """Fact table for solution examples."""
 
-    __tablename__ = "CSTAR_2025_Solution_Examples"
+    __tablename__ = f"{settings.CSTAR_TABLE_PREFIX}Solution_Examples"
 
     disclosing_year: int = Field(primary_key=True)
     target_org_id: int = Field(primary_key=True)

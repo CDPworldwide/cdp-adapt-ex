@@ -28,7 +28,7 @@ env:
 jobs:
   verify-openapi:
     name: Verify client/openapi.json is up-to-date
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:

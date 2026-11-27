@@ -4,8 +4,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from app.api.v1.deps import (
     get_database_service,
-    get_location_details_service,
     get_location_details_repository,
+    get_location_details_service,
 )
 from app.main import app
 from app.schemas.location import ActionsTab, HazardsTab, LocationProfile, SolutionsTab
@@ -57,8 +57,11 @@ async def client(db_service):
 
     mock_location_service = MagicMock()
 
-    async def get_location_details_by_org_id(organization_id: int):
+    async def get_location_details_by_org_id(
+        disclosing_year: int, organization_id: int
+    ):
         return LocationProfile(
+            disclosing_year=disclosing_year,
             organization_id=organization_id,
             name="Verified test location",
             country_name="Test Country",

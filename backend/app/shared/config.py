@@ -17,10 +17,11 @@ class Environment(str, Enum):
     """Application environment types.
 
     Defines the possible environments the application can run in:
-    development, production, and test.
+    development, staging, production, and test.
     """
 
     DEVELOPMENT = "development"
+    STAGING = "staging"
     PRODUCTION = "production"
     TEST = "test"
 
@@ -38,6 +39,8 @@ def get_environment() -> Environment:
     match env_val:
         case "production" | "prod":
             return Environment.PRODUCTION
+        case "staging" | "stage":
+            return Environment.STAGING
         case "test":
             return Environment.TEST
         case _:
@@ -131,6 +134,8 @@ class Settings:
             "DESCRIPTION",
             "CDP climate data platform webapp",
         )
+        self.MAX_YEAR_CACHE_ENTRIES = int(os.getenv("MAX_YEAR_CACHE_ENTRIES", "3"))
+        self.DEFAULT_DISCLOSING_YEAR = int(os.getenv("DEFAULT_DISCLOSING_YEAR", "2025"))
         self.API_V1_STR = os.getenv("API_V1_STR", "/api/v1")
         self.DEBUG = os.getenv("DEBUG", "false").lower() in ("true", "1", "t", "yes")
         self.SKIP_DATABASE_INIT = os.getenv("SKIP_DATABASE_INIT", "false").lower() in (
@@ -170,6 +175,10 @@ class Settings:
         self.POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "")
         self.POSTGRES_POOL_SIZE = int(os.getenv("POSTGRES_POOL_SIZE", "20"))
         self.POSTGRES_MAX_OVERFLOW = int(os.getenv("POSTGRES_MAX_OVERFLOW", "10"))
+        # Which set of CSTAR tables the app reads (blue/green switch):
+        #   "CSTAR_2025_" -> CSTAR_2025_Dim_Central etc. (current)
+        #   "CSTAR_"      -> CSTAR_Dim_Central etc. (multi-year)
+        self.CSTAR_TABLE_PREFIX = os.getenv("CSTAR_TABLE_PREFIX") or ""
         self.CHECKPOINT_TABLES = [
             "checkpoint_blobs",
             "checkpoint_writes",
@@ -222,6 +231,12 @@ class Settings:
                 "LOG_LEVEL": "DEBUG",
                 "LOG_FORMAT": "console",
                 "RATE_LIMIT_DEFAULT": ["1000 per day", "200 per hour"],
+            },
+            Environment.STAGING: {
+                # Production-like, with INFO logs so issues are visible before prod.
+                "DEBUG": False,
+                "LOG_LEVEL": "INFO",
+                "RATE_LIMIT_DEFAULT": ["200 per day", "50 per hour"],
             },
             Environment.PRODUCTION: {
                 "DEBUG": False,

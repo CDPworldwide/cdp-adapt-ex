@@ -21,15 +21,15 @@ class TestCityResolutionService:
     async def test_resolve_org_id_found(self, service, mock_repository):
         mock_repository.get_orgs_by_name.return_value = [OrganizationSummary(id=12345)]
 
-        result = await service.resolve_org_id("Test City")
+        result = await service.resolve_org_id(2025, "Test City")
         assert result == 12345
-        mock_repository.get_orgs_by_name.assert_called_once_with("Test City")
+        mock_repository.get_orgs_by_name.assert_called_once_with(2025, "Test City")
 
     async def test_resolve_org_id_not_found(self, service, mock_repository):
         mock_repository.get_orgs_by_name.return_value = []
-        result = await service.resolve_org_id("Unknown City")
+        result = await service.resolve_org_id(2025, "Unknown City")
         assert result is None
-        mock_repository.get_orgs_by_name.assert_called_once_with("Unknown City")
+        mock_repository.get_orgs_by_name.assert_called_once_with(2025, "Unknown City")
 
     @pytest.mark.parametrize(
         "legacy_name",
@@ -43,7 +43,7 @@ class TestCityResolutionService:
     async def test_resolve_org_id_redirects_mexico_city_legacy_names(
         self, service, mock_repository, legacy_name
     ):
-        result = await service.resolve_org_id(legacy_name)
+        result = await service.resolve_org_id(2025, legacy_name)
 
         assert result == 31172
         mock_repository.get_orgs_by_name.assert_not_called()
@@ -57,7 +57,7 @@ class TestCityResolutionService:
         ]
 
         with pytest.raises(MultipleCitiesFoundException) as exc:
-            await service.resolve_org_id("City")
+            await service.resolve_org_id(2025, "City")
 
         assert len(exc.value.candidates) == 2
         assert exc.value.candidates[0]["id"] == 1

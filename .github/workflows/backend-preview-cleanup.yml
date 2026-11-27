@@ -3,7 +3,6 @@ name: Backend Preview Cleanup
 on:
   pull_request:
     types: [closed]
-    branches: [main, production]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
@@ -59,6 +58,18 @@ jobs:
             } | sort -u
           )
 
+      - name: Delete preview database and its job
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gcloud run jobs delete "cdp-migrate-pr-${PR_NUMBER}" \
+            --region=${{ env.REGION }} \
+            --quiet || echo "Job already deleted or not found"
+
+          gcloud sql databases delete "aae_preview_pr_${PR_NUMBER}" \
+            --instance=cdp-test \
+            --quiet || echo "Database already deleted or not found"
+
       - name: Comment PR about cleanup
         if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
@@ -67,4 +78,4 @@ jobs:
           body: |
             ## Backend Preview Environment Cleaned Up
 
-            All backend preview deployments for PR #${{ github.event.pull_request.number }} have been deleted.
+            All backend preview deployments for PR #${{ github.event.pull_request.number }} have been deleted, along with the `aae_preview_pr_${{ github.event.pull_request.number }}` database.
